@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BrunoTheBot.DataContext;
-
+using BrunoTheBot.CoreBusiness;
 
 namespace BrunoTheBot.DataContext
 {
@@ -18,16 +17,17 @@ namespace BrunoTheBot.DataContext
 
             if (await context.Database.EnsureCreatedAsync())
             {
+                var schoolSeed = new SchoolSeed();
                 var answerSeed = new AnswerSeed();
                 var optionSeed = new OptionSeed();
                 var questionSeed = new QuestionSeed();
                 var topicSeed = new TopicSeed();
 
-
-                await answerSeed.SeedDatabaseWithAnswerCountAsync(context, count);
-                await optionSeed.SeedDatabaseWithOptionsCountAsync(context, count);
-                await questionSeed.SeedDatabaseWithQuestionCountAsync(context, count);
+                await schoolSeed.SeedDatabaseWithSchoolCountAsync(context, count, topicSeed.GetTopicsAsync(50).Result);
                 await topicSeed.SeedDatabaseWithTopicCountAsync(context, count);
+                await questionSeed.SeedDatabaseWithQuestionCountAsync(context, count);
+                await optionSeed.SeedDatabaseWithOptionsCountAsync(context, count);
+                await answerSeed.SeedDatabaseWithAnswerCountAsync(context, count);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness;
 
-namespace BrunoTheBot.DataContext.DataService.Repository
+namespace BrunoTheBot.DataContext
 {
     public class OptionRepository
     {

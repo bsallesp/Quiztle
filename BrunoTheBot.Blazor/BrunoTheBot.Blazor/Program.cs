@@ -1,6 +1,7 @@
 using BrunoTheBot.Blazor.Components;
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.DataContext;
+using BrunoTheBot.APIs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddScoped<SchoolRepository>();
+builder.Services.AddScoped<HuggingFaceAPI>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
@@ -45,3 +49,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(BrunoTheBot.Blazor.Client._Imports).Assembly);
 
 app.Run();
+
+// HF TOKEN
+//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

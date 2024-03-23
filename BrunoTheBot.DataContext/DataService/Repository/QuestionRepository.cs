@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness;
 
-namespace BrunoTheBot.DataContext.DataService.Repository
+namespace BrunoTheBot.DataContext
 {
     public class QuestionRepository
     {

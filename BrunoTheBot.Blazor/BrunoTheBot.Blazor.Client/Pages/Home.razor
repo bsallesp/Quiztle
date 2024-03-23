@@ -1,7 +1,51 @@
 ﻿@page "/"
+@using CoreBusiness.Entities
+@inject SchoolRepository SchoolRepository
+@inject HuggingFaceAPI HuggingFaceAPI
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
+<input @bind=inputAPI />
+<button @onclick="GetAIAPI">Get</button>
+@resultAPI
+
+@* 
+@foreach (var school in Schools)
+{
+    <div>
+        <h2>@school.Name</h2>
+        <p>Created: @school.Created.ToShortDateString()</p>
+        <p>Topics:</p>
+        <ul>
+            @foreach (var topic in school.Topics)
+            {
+                <li>@topic.Name</li>
+            }
+        </ul>
+    </div>
+}
+ *@
+
 Welcome to your new app.
+
+@code {
+    private string inputAPI = "";
+    private string resultAPI = "no results yet.";
+
+    private async void GetAIAPI()
+    {
+        Console.WriteLine("Retrieving API...");
+        resultAPI = await HuggingFaceAPI.GenerateTextAsync(inputAPI);
+        Console.WriteLine(resultAPI);
+        StateHasChanged();
+    }
+
+    private IQueryable<School>? Schools { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Schools = await SchoolRepository.GetAllSchoolsAsync();
+    }
+}

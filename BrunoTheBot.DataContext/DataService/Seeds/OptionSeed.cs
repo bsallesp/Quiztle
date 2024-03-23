@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BrunoTheBot.CoreBusiness;
+﻿using BrunoTheBot.CoreBusiness;
 
 namespace BrunoTheBot.DataContext
 {

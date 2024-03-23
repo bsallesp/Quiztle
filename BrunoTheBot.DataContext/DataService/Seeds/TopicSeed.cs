@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BrunoTheBot.CoreBusiness;
+﻿using BrunoTheBot.CoreBusiness;
 
 namespace BrunoTheBot.DataContext
 {
@@ -41,6 +38,29 @@ namespace BrunoTheBot.DataContext
                 }
                 currentCycle = 0;
             }
+        }
+
+        public Task<List<Topic>> GetTopicsAsync(int totalCount)
+        {
+            var count = 0;
+            var currentCycle = 0;
+            var topics = new List<Topic>();
+
+            while (count < totalCount)
+            {
+                var list = new List<Topic>();
+                while (currentCycle++ < 100 && count++ < totalCount)
+                {
+                    list.Add(MakeTopic());
+                }
+                if (list.Count > 0)
+                {
+                    topics.AddRange(list);
+                }
+                currentCycle = 0;
+            }
+
+            return Task.FromResult(topics);
         }
 
         private readonly string[] _names = new[]

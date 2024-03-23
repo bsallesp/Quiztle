@@ -1,4 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness;
+using BrunoTheBot.CoreBusiness.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -21,6 +22,8 @@ namespace BrunoTheBot.DataContext
         }
 
         // List of Contact.
+
+        public DbSet<School>? Schools { get; set; }
         public DbSet<Topic>? Topics { get; set; }
         public DbSet<Question>? Questions { get; set; }
         public DbSet<Option>? Options { get; set; }
@@ -32,6 +35,9 @@ namespace BrunoTheBot.DataContext
         {
             // This property isn't on the C# class,
             // so we set it up as a "shadow" property and use it for concurrency.
+            modelBuilder.Entity<School>()
+                .Property<byte[]>(RowVersion)
+                .IsRowVersion();
             modelBuilder.Entity<Topic>()
                 .Property<byte[]>(RowVersion)
                 .IsRowVersion();
