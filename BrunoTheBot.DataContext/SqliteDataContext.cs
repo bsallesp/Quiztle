@@ -1,6 +1,7 @@
 ﻿using BrunoTheBot.CoreBusiness;
 using BrunoTheBot.CoreBusiness.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using System.Diagnostics;
 
 namespace BrunoTheBot.DataContext
@@ -28,6 +29,7 @@ namespace BrunoTheBot.DataContext
         public DbSet<Question>? Questions { get; set; }
         public DbSet<Option>? Options { get; set; }
         public DbSet<Answer>? Answers { get; set; }
+        public DbSet<AILog>? AILogs { get; set; }
 
         // Define the model.
         // modelBuilder: The ModelBuilder.
@@ -53,6 +55,10 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Answer>()
                 .Property<byte[]>(RowVersion)
                 .IsRowVersion();
+
+            modelBuilder.Entity<AILog>()
+            .Property<byte[]>(RowVersion)
+            .IsRowVersion();
 
             base.OnModelCreating(modelBuilder);
         }

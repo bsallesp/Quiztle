@@ -4,20 +4,29 @@ using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+    .Build();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddScoped<SchoolRepository>();
-builder.Services.AddScoped<HuggingFaceAPI>();
+builder.Services.AddTransient<SchoolRepository>();
+builder.Services.AddTransient<HuggingFaceAPI>();
+builder.Services.AddTransient<DeepSeekAPI>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
-    opt.UseSqlite($"Data Source={nameof(SqliteDataContext.BrunoTheBotDb)}.db"));
+{
+    string connectionString = configuration.GetConnectionString("SqliteConnection") ??
+    throw new Exception("Connection string not found");
 
-Console.WriteLine($"Data Source={nameof(SqliteDataContext.BrunoTheBotDb)}.db");
+    Console.WriteLine(connectionString);
+    opt.UseSqlite(connectionString);
+});
 #endregion
 
 var app = builder.Build();
@@ -49,6 +58,3 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(BrunoTheBot.Blazor.Client._Imports).Assembly);
 
 app.Run();
-
-// HF TOKEN
-//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

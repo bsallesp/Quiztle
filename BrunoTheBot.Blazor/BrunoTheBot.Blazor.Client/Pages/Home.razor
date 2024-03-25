@@ -2,13 +2,13 @@
 @using CoreBusiness.Entities
 @inject SchoolRepository SchoolRepository
 @inject HuggingFaceAPI HuggingFaceAPI
+@inject DeepSeekAPI DeepSeekAPI
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
 <input @bind=inputAPI />
 <button @onclick="GetAIAPI">Get</button>
+
 @resultAPI
 
 @* 
@@ -28,8 +28,6 @@
 }
  *@
 
-Welcome to your new app.
-
 @code {
     private string inputAPI = "";
     private string resultAPI = "no results yet.";
@@ -37,7 +35,7 @@ Welcome to your new app.
     private async void GetAIAPI()
     {
         Console.WriteLine("Retrieving API...");
-        resultAPI = await HuggingFaceAPI.GenerateTextAsync(inputAPI);
+        resultAPI = await DeepSeekAPI.GenerateTextAsync(inputAPI);
         Console.WriteLine(resultAPI);
         StateHasChanged();
     }
