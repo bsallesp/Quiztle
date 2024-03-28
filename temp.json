@@ -1,63 +1,11 @@
-﻿{
-  "school": "Computer Science",
-  "topics": [
-    {
-      "name": "Topic name here",
-      "authors": [ "list of names here" ]
-    }
-    // Add more topics if necessary
-  ]
-}
-
-//Please provide a list of the most relevant topics to learn in computer science,
-//along with the authors of the most renowned books on each topic.
-//I aim to gain a comprehensive understanding of both the foundational concepts and recent advancements in this field.
-
-
-{"id":"e7fa76cc-b4b1-4025-8ea5-26d076552f6a","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":" Certainly! Here's a list of some key topics in computer science along with renowned authors of books on each topic. Keep in mind that this is not an exhaustive list, and there are many other excellent books and resources available:\n\n1. **Algorithms and Data Structures**\n   - **Authors:** Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein (for \"Introduction to Algorithms\")\n   - **Authors:** Robert Sedgewick and Kevin Wayne (for \"Algorithms\")\n\n2. **Artificial Intelligence**\n   - **Author:** Stuart Russell and Peter Norvig (for \"Artificial Intelligence: A Modern Approach\")\n\n3. **Computer Networks**\n   - **Authors:** James F. Kurose and Keith W. Ross (for \"Computer Networking: A Top-Down Approach\")\n\n4. **Cryptography**\n   - **Authors:** Bruce Schneier (for \"Applied Cryptography\")\n   - **Authors:** Dan Boneh and Victor Shoup (for \"A Graduate Course in Applied Cryptography\")\n\n5. **Database Systems**\n   - **Authors:** Ramakant K. Gayawali and Ramamohanarao Kotagiri (for \"Database Systems: Concepts, Design and Applications\")\n\n6. **Discrete Mathematics for Computer Science**\n   - **Authors:** Kenneth H. Rosen (for \"Discrete Mathematics and Its Applications\")\n\n7. **Programming Languages**\n   - **Author:** Robert W. Sebesta (for \"Concepts of Programming Languages\")\n   - **Authors:** Brian W. Kernighan and Dennis M. Ritchie (for \"The C Programming Language\", also known as K&R)\n\n8. **Operating Systems**\n   - **Authors:** Abraham Silberschatz, Peter B. Galvin, and Greg Gagne (for \"Operating System Concepts\")\n   - **Authors:** Andrew S. Tanenbaum (for \"Modern Operating Systems\")\n\n9. **Software Engineering**\n   - **Author:** Ian Sommerville (for \"Software Engineering\")\n\n10. **Computer Graphics**\n    - **Author:** Edward Angel and Dave Shreiner (for \"Interactive Computer Graphics: A Top-Down Approach with Shader-Based OpenGL\")\n\n11. **Human-Computer Interaction**\n    - **Authors:** Ben Shneiderman and Catherine Plaisant (for \"Designing the User Interface: Strategies for Effective Human-Computer Interaction\")\n\n12. **Machine Learning**\n    - **Author:** Ian Goodfellow, Yoshua Bengio, and Aaron Courville (for \"Deep Learning\")\n    - **Author:** Tom M. Mitchell (for \"Machine Learning\")\n\n13. **Software Testing**\n    - **Author:** Paul C. Jorgensen (for \"Software Engineering: A Practitioner's Approach\")\n\n14. **Computer Architecture**\n    - **Authors:** John L. Hennessy and David A. Patterson (for \"Computer Architecture: A Quantitative Approach\")\n\n15. **Information Retrieval**\n    - **Authors:** Christopher D. Manning, Prabhakar Raghavan, and Hinrich Sch�tze (for \"Introduction to Information Retrieval\")\n\n16. **Distributed Systems**\n    - **Authors:** Andrew S. Tanenbaum and Maarten van Steen (for \"Distributed Systems: Principles and Paradigms\")\n\n17. **Computer Security**\n    - **Authors:** William Stallings and Lawrie Brown (for \"Computer Security: Principles and Practice\")\n\n18. **Computer Systems Organization**\n    - **Authors:** William Stallings (for \"Computer Organization and Architecture\")\n\nEach of these topics is essential in understanding the core concepts of computer science. As the field is always evolving, it's also important to stay updated with recent advancements through research papers, online courses, and technology news.","role":"assistant","function_call":null,"tool_calls":null}}],"created":1711579170,"model":"deepseek-chat","object":"chat.completion","system_fingerprint":null,"usage":{"completion_tokens":842,"prompt_tokens":128,"total_tokens":970}}
-{
-  "school": "Computer Science",
-  "topics": [
-    {
-      "name": "Topic name here",
-      "authors": [ "list of names here" ]
-    }
-    // Add more topics if necessary
-  ]
-}
-
-//Please provide a list of the most relevant topics to learn in computer science,
-//along with the authors of the most renowned books on each topic.
-//I aim to gain a comprehensive understanding of both the foundational concepts and recent advancements in this field.
-
-
-[
-  {
-    "generated_text": {
-      "school": "Computer Science",
-      "topics": [
-        {
-          "name": "Topic name here",
-          "authors": [ "list of names here" ]
-        }
-        // Add more topics if necessary
-      ]
-    }
-  },
-  {
-    "generated_text": "//Please provide a list of the most relevant topics to learn in computer science,\n//along with the authors of the most renowned books on each topic.\n//I aim to gain a comprehensive understanding of both the foundational concepts and recent advancements in this field.\n\n{\n  \"school\": \"Computer Science\",\n  \"topics\": [\n    {\n      \"name\": \"Introduction to Computer Science\",\n      \"authors\": [ \"David J. Eck\" ]\n    },\n    {\n      \"name\": \"Algorithms\",\n      \"authors\": [ \"Thomas H. Cormen\", \"Charles E. Leiserson\", \"Ronald L. Rivest\", \""
-  }
-]
-
-
-{"id":"e7fa76cc-b4b1-4025-8ea5-26d076552f6a","choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"content":" Certainly! Here's a list of some key topics in computer science along with renowned authors of books on each topic. Keep in mind that this is not an exhaustive list, and there are many other excellent books and resources available:\n\n1. **Algorithms and Data Structures**\n   - **Authors:** Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein (for \"Introduction to Algorithms\")\n   - **Authors:** Robert Sedgewick and Kevin Wayne (for \"Algorithms\")\n\n2. **Artificial Intelligence**\n   - **Author:** Stuart Russell and Peter Norvig (for \"Artificial Intelligence: A Modern Approach\")\n\n3. **Computer Networks**\n   - **Authors:** James F. Kurose and Keith W. Ross (for \"Computer Networking: A Top-Down Approach\")\n\n4. **Cryptography**\n   - **Authors:** Bruce Schneier (for \"Applied Cryptography\")\n   - **Authors:** Dan Boneh and Victor Shoup (for \"A Graduate Course in Applied Cryptography\")\n\n5. **Database Systems**\n   - **Authors:** Ramakant K. Gayawali and Ramamohanarao Kotagiri (for \"Database Systems: Concepts, Design and Applications\")\n\n6. **Discrete Mathematics for Computer Science**\n   - **Authors:** Kenneth H. Rosen (for \"Discrete Mathematics and Its Applications\")\n\n7. **Programming Languages**\n   - **Author:** Robert W. Sebesta (for \"Concepts of Programming Languages\")\n   - **Authors:** Brian W. Kernighan and Dennis M. Ritchie (for \"The C Programming Language\", also known as K&R)\n\n8. **Operating Systems**\n   - **Authors:** Abraham Silberschatz, Peter B. Galvin, and Greg Gagne (for \"Operating System Concepts\")\n   - **Authors:** Andrew S. Tanenbaum (for \"Modern Operating Systems\")\n\n9. **Software Engineering**\n   - **Author:** Ian Sommerville (for \"Software Engineering\")\n\n10. **Computer Graphics**\n    - **Author:** Edward Angel and Dave Shreiner (for \"Interactive Computer Graphics: A Top-Down Approach with Shader-Based OpenGL\")\n\n11. **Human-Computer Interaction**\n    - **Authors:** Ben Shneiderman and Catherine Plaisant (for \"Designing the User Interface: Strategies for Effective Human-Computer Interaction\")\n\n12. **Machine Learning**\n    - **Author:** Ian Goodfellow, Yoshua Bengio, and Aaron Courville (for \"Deep Learning\")\n    - **Author:** Tom M. Mitchell (for \"Machine Learning\")\n\n13. **Software Testing**\n    - **Author:** Paul C. Jorgensen (for \"Software Engineering: A Practitioner's Approach\")\n\n14. **Computer Architecture**\n    - **Authors:** John L. Hennessy and David A. Patterson (for \"Computer Architecture: A Quantitative Approach\")\n\n15. **Information Retrieval**\n    - **Authors:** Christopher D. Manning, Prabhakar Raghavan, and Hinrich Sch�tze (for \"Introduction to Information Retrieval\")\n\n16. **Distributed Systems**\n    - **Authors:** Andrew S. Tanenbaum and Maarten van Steen (for \"Distributed Systems: Principles and Paradigms\")\n\n17. **Computer Security**\n    - **Authors:** William Stallings and Lawrie Brown (for \"Computer Security: Principles and Practice\")\n\n18. **Computer Systems Organization**\n    - **Authors:** William Stallings (for \"Computer Organization and Architecture\")\n\nEach of these topics is essential in understanding the core concepts of computer science. As the field is always evolving, it's also important to stay updated with recent advancements through research papers, online courses, and technology news.","role":"assistant","function_call":null,"tool_calls":null}}],"created":1711579170,"model":"deepseek-chat","object":"chat.completion","system_fingerprint":null,"usage":{"completion_tokens":842,"prompt_tokens":128,"total_tokens":970}}
-{
-  "school": "Computer Science",
-  "topics": [
-    {
-      "name": "Topic name here",
-      "authors": [ "list of names here" ]
-    }
-    // Add more topics if necessary
-  ]
-}
+﻿//Create a list of three random source phrases and three random translations for each.
+//Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+[{
+  "source_language": "language of original phrase",
+  "source_phrase": "the phrase to be translated",
+  "translations": [{
+    "trans_language": "language of the translation",
+    "translation": "the translated phrase"
+  }]
+}]
+The JSON response:

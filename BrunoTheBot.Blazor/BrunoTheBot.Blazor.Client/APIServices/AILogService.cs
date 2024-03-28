@@ -28,6 +28,7 @@ namespace BrunoTheBot.Blazor.APIServices
         public async Task<AILog> CreateAILogAsync(AILog aILog)
         {
             var response = await _httpClient.PostAsJsonAsync("api/AILogs", aILog);
+            Console.WriteLine("JSON AT GetAILogsAsync BLAZOR: " + aILog.JSON);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<AILog>();
         }

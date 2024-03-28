@@ -45,8 +45,10 @@ namespace BrunoTheBot.API.Controllers
 
         // POST: api/AILogs
         [HttpPost]
-        public async Task<ActionResult<AILog>> Create(AILog aILog)
+        public async Task<ActionResult<AILog>> Create([FromBody]AILog aILog)
         {
+            Console.WriteLine("JSON AT HTTPPOST API:: " + aILog.JSON);
+
             if (aILog == null)
             {
                 return BadRequest();

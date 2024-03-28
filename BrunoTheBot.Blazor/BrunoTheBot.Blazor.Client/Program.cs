@@ -8,9 +8,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddTransient<HuggingFaceAPI>();
 builder.Services.AddTransient<DeepSeekAPI>();
+builder.Services.AddTransient<ChatGPTAPI>();
 builder.Services.AddTransient<AILogService>();
-
-
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
