@@ -22,6 +22,7 @@ builder.Services.AddTransient<HuggingFaceAPI>();
 builder.Services.AddTransient<DeepSeekAPI>();
 builder.Services.AddTransient<AILogService>();
 builder.Services.AddScoped<ChatGPTAPI>();
+builder.Services.AddScoped<ChatGPTAPIService>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>

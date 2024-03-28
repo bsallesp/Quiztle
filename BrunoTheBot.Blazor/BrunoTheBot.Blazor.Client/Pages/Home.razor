@@ -4,30 +4,32 @@
 @using System.Text.Json
 @using BrunoTheBot.CoreBusiness
 @using CoreBusiness.Entities
+@using Newtonsoft.Json.Linq
 
 @inject AILogService AILogService
-@inject ChatGPTAPI ChatGPTAPI
+@inject ChatGPTAPIService ChatGPTAPIService
 
 <PageTitle>Home</PageTitle>
 
 <textarea type="text" size="50000" style="width: 600px; height: 30vh;" @bind=inputAPI1 />
 <button @onclick="GetChatGPTAPI">Get</button>
 
-<h2>API Result:</h2>
-<pre>
-    @resultAPI
-</pre>
-
-@if(logs != null)
-{
-    foreach (var log in logs)
-    {
-        <p>@log.JSON</p> <!-- substitua PropertyName pelos nomes das propriedades de AILog -->
-    }
-}
+<h4>
+    API Result:
+    <pre>
+        @contentGPT
+    </pre>
+</h4>
+<h4>
+    API Result:
+    <pre>
+        @resultAPI
+    </pre>
+</h4>
 
 @code {
     private string inputAPI1 = "";
+    private string contentGPT = "";
     private string resultAPI = "no results yet.";
     private IEnumerable<AILog>? logs;
 
@@ -39,17 +41,17 @@
     private async Task GetChatGPTAPI()
     {
         Console.WriteLine("Retrieving ChatGPT API...");
-        resultAPI = "Retrieving ChatGPT API...";
-        resultAPI = await ChatGPTAPI.ChatWithGPT(inputAPI1);
         Console.WriteLine(resultAPI);
 
-        if (!string.IsNullOrEmpty(resultAPI)) // Verifica se resultAPI não está vazio
-        {
-            await AILogService.CreateAILogAsync(new CoreBusiness.AILog
-                {
-                    JSON = resultAPI
-                });
-        }
+        resultAPI = "Retrieving ChatGPT API...";
+        resultAPI = await ChatGPTAPIService.GetSchoolResearch(inputAPI1);
+        JObject jsonObject = JObject.Parse(resultAPI);
+        contentGPT = (string)jsonObject["choices"][0]["message"]["content"];
+
+        await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+            {
+                JSON = resultAPI
+            });
 
         StateHasChanged();
     }
