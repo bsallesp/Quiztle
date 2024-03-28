@@ -4,6 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// No método ConfigureServices do seu Startup.cs
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 // Add services to the container.
 builder.Services.AddTransient<AILog>();
 
@@ -26,6 +35,9 @@ builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
 #endregion
 
 var app = builder.Build();
+
+// No método Configure do seu Startup.cs
+app.UseCors("AllowAnyOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
