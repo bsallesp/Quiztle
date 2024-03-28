@@ -1,0 +1,6 @@
+@BrunoTheBot.API_HostAddress = http://localhost:5044
+
+GET {{BrunoTheBot.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

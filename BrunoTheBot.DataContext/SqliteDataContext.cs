@@ -1,7 +1,6 @@
 ﻿using BrunoTheBot.CoreBusiness;
 using BrunoTheBot.CoreBusiness.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using System.Diagnostics;
 
 namespace BrunoTheBot.DataContext
@@ -26,6 +25,7 @@ namespace BrunoTheBot.DataContext
 
         public DbSet<School>? Schools { get; set; }
         public DbSet<Topic>? Topics { get; set; }
+        public DbSet<Author>? Authors { get; set; }
         public DbSet<Question>? Questions { get; set; }
         public DbSet<Option>? Options { get; set; }
         public DbSet<Answer>? Answers { get; set; }
@@ -47,6 +47,10 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Question>()
                 .Property<byte[]>(RowVersion)
                 .IsRowVersion();
+
+            modelBuilder.Entity<Author>()
+            .Property<byte[]>(RowVersion)
+            .IsRowVersion();
 
             modelBuilder.Entity<Option>()
                 .Property<byte[]>(RowVersion)

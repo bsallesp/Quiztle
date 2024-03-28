@@ -2,6 +2,7 @@ using BrunoTheBot.Blazor.Components;
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs;
+using BrunoTheBot.Blazor.APIServices;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -14,15 +15,21 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddTransient<SchoolRepository>();
+builder.Services.AddTransient<AILogRepository>();
 builder.Services.AddTransient<HuggingFaceAPI>();
 builder.Services.AddTransient<DeepSeekAPI>();
+builder.Services.AddTransient<AILogService>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
 {
-    string connectionString = configuration.GetConnectionString("SqliteConnection") ??
-    throw new Exception("Connection string not found");
+    string connectionString = ConnectionStrings.DevelopmentConnectionString;
+
+    var env = builder.Environment;
+    if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
 
     Console.WriteLine(connectionString);
     opt.UseSqlite(connectionString);

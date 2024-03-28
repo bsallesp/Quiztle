@@ -1,17 +1,88 @@
 ﻿@page "/"
+@page "/API"
+
+@using System.Text.Json
+@using BrunoTheBot.CoreBusiness
 @using CoreBusiness.Entities
-@inject SchoolRepository SchoolRepository
+
 @inject HuggingFaceAPI HuggingFaceAPI
 @inject DeepSeekAPI DeepSeekAPI
+@inject AILogService AILogService
 
 <PageTitle>Home</PageTitle>
 
-<input @bind=inputAPI />
+<h3>API Result:</h3>
+<pre>
+    @resultAPI
+</pre>
+
+<hr />
+
+<textarea type="text" size="50000" style="width: 100vh; height: 30vh;" @bind=inputAPI1 />
+<button @onclick="GetHugginFaceAPI">Get</button>
+
+<hr />
+
+<textarea type="text" size="50000" style="width: 100vh; height: 30vh;" @bind=inputAPI2 />
 <button @onclick="GetAIAPI">Get</button>
+<hr />
 
-@resultAPI
+@if(logs != null)
+{
+    foreach (var log in logs)
+    {
+        <p>@log.JSON</p> <!-- substitua PropertyName pelos nomes das propriedades de AILog -->
+    }
+}
 
-@* 
+
+@code {
+    private string inputAPI1 = "";
+    private string inputAPI2 = "";
+    private string resultAPI = "no results yet.";
+    private IEnumerable<AILog>? logs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        logs = await AILogService.GetAILogsAsync(); // obter os logs do serviço
+    }
+
+
+    private async Task GetHugginFaceAPI()
+    {
+        Console.WriteLine("Retrieving Hugging Face API...");
+        resultAPI = await HuggingFaceAPI.GenerateTextAsync(inputAPI1);
+        Console.WriteLine("API Response:");
+        Console.WriteLine(resultAPI);
+        await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+            {
+                JSON = resultAPI
+            });
+        StateHasChanged();
+    }
+
+    private async Task GetAIAPI()
+    {
+        Console.WriteLine("Retrieving DeepSeekAPI API...");
+        resultAPI = await DeepSeekAPI.GenerateTextAsync(inputAPI2);
+        Console.WriteLine("API Response:");
+        Console.WriteLine(resultAPI);
+        await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+            {
+                JSON = resultAPI
+            });
+        StateHasChanged();
+        StateHasChanged();
+    }
+
+    // private IQueryable<School>? Schools { get; set; }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Schools = await SchoolRepository.GetAllSchoolsAsync();
+    // }
+}
+
+@*
 @foreach (var school in Schools)
 {
     <div>
@@ -27,23 +98,3 @@
     </div>
 }
  *@
-
-@code {
-    private string inputAPI = "";
-    private string resultAPI = "no results yet.";
-
-    private async void GetAIAPI()
-    {
-        Console.WriteLine("Retrieving API...");
-        resultAPI = await DeepSeekAPI.GenerateTextAsync(inputAPI);
-        Console.WriteLine(resultAPI);
-        StateHasChanged();
-    }
-
-    private IQueryable<School>? Schools { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        Schools = await SchoolRepository.GetAllSchoolsAsync();
-    }
-}

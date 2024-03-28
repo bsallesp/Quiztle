@@ -15,7 +15,7 @@ namespace BrunoTheBot.DataContext
             string databaseName = "BrunoTheBotDb.db";
             string directoryName = "BrunoTheBotDb";
 
-            string appPath = Configuration?.GetConnectionString("SqliteConnection") ?? "";
+            string appPath = ConnectionStrings.DevelopmentConnectionString;
 
             Console.WriteLine("Opening " + appPath);
 

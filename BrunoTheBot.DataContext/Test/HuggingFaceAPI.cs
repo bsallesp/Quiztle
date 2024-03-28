@@ -6,7 +6,7 @@ namespace BrunoTheBot.APIs
     public class HuggingFaceAPI
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "sk-62c786ca9d7f49ffa383ac9815799642";
+        private readonly string _apiKey = "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";
 
         public HuggingFaceAPI()
         {
@@ -22,8 +22,8 @@ namespace BrunoTheBot.APIs
                     inputs = inputText,
                     parameters = new
                     {
-                        temperature = 0.7,
-                        max_length = 500,
+                        temperature = 0.2,
+                        max_length = 50000,
                         top_k = 40,
                         top_p = 0.9,
                         num_return_sequences = 1
@@ -33,15 +33,18 @@ namespace BrunoTheBot.APIs
                 var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _apiKey);
 
-                var model = "meta-llama/Llama-2-7b-chat-hf";
-                var model2 = "deepseek-ai/deepseek-vl-7b-base";
-
-                var urlDeepSeek = "https://api.deepseek.com/v1/chat/completions";
+                string[] model = new string[]
+                {
+                    "meta-llama/Llama-2-7b-chat-hf",
+                    "deepseek-ai/deepseek-vl-7b-base",
+                    "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
+                    "mistralai/Mixtral-8x7B-Instruct-v0.1"
+                };
 
                 var url = "https://api-inference.huggingface.co/models/";
-                var finalurl = url + model2;
+                var finalurl = url + model[3];
 
-                var response = await _httpClient.PostAsync(urlDeepSeek, content);
+                var response = await _httpClient.PostAsync(finalurl, content);
 
                 Console.WriteLine("Using " + finalurl);
 

@@ -22,7 +22,7 @@ namespace BrunoTheBot.APIs
                     model = "deepseek-chat",
                     messages = new[]
                     {
-                        new { role = "system", content = "You are a helpful assistant." },
+                        new { role = "system", content = "You are a computer science specialist." },
                         new { role = "user", content = inputText }
                     }
                 };

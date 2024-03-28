@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BrunoTheBot.API\BrunoTheBot.API.csproj" />
     <ProjectReference Include="..\..\BrunoTheBot.CoreBusiness\BrunoTheBot.CoreBusiness.csproj" />
     <ProjectReference Include="..\..\BrunoTheBot.DataContext\BrunoTheBot.DataContext.csproj" />
     <ProjectReference Include="..\BrunoTheBot.Blazor.Client\BrunoTheBot.Blazor.Client.csproj" />
@@ -16,6 +17,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" />
   </ItemGroup>
 
 </Project>
