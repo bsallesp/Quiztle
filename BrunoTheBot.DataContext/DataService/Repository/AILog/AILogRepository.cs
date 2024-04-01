@@ -1,4 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrunoTheBot.DataContext
 {
@@ -22,6 +23,26 @@ namespace BrunoTheBot.DataContext
             catch (Exception ex)
             {
                 Console.WriteLine("An exception occurred while creating the answer:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+        public async Task<AILog?> GetAILogByIdAsync(int id)
+        {
+            try
+            {
+                if (_context.AILogs == null)
+                {
+                    throw new InvalidOperationException("The AILogs DbSet is null. Make sure it is properly initialized.");
+                }
+
+                var result = await _context.AILogs.FirstOrDefaultAsync(x => x.Id == id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occurred while retrieving the AILog by ID:");
                 Console.WriteLine(ex.ToString());
                 throw;
             }

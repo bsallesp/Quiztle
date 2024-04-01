@@ -6,16 +6,17 @@
 @using CoreBusiness.Entities
 @using Newtonsoft.Json.Linq
 
+
 @inject AILogService AILogService
 @inject ChatGPTAPIService ChatGPTAPIService
 
 <PageTitle>Home</PageTitle>
 
 <textarea type="text" size="50000" style="width: 600px; height: 30vh;" @bind=inputAPI1 />
-<button @onclick="GetChatGPTAPI">Get</button>
+<button @onclick="MakeChatGPTAPIRequest">Get</button>
 
 <h4>
-    API Result:
+    Content:
     <pre>
         @contentGPT
     </pre>
@@ -29,16 +30,16 @@
 
 @code {
     private string inputAPI1 = "";
-    private string contentGPT = "";
+    private string contentGPT = "no results yet";
     private string resultAPI = "no results yet.";
     private IEnumerable<AILog>? logs;
 
     protected override async Task OnInitializedAsync()
     {
-        logs = await AILogService.GetAILogsAsync(); // obter os logs do serviço
+        logs = await AILogService.GetAILogsAsync();
     }
 
-    private async Task GetChatGPTAPI()
+    private async Task MakeChatGPTAPIRequest()
     {
         Console.WriteLine("Retrieving ChatGPT API...");
         Console.WriteLine(resultAPI);
@@ -52,7 +53,6 @@
             {
                 JSON = resultAPI
             });
-
         StateHasChanged();
     }
 }

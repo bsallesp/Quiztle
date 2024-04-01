@@ -1,11 +1,1 @@
-﻿//Create a list of three random source phrases and three random translations for each.
-//Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
-[{
-  "source_language": "language of original phrase",
-  "source_phrase": "the phrase to be translated",
-  "translations": [{
-    "trans_language": "language of the translation",
-    "translation": "the translated phrase"
-  }]
-}]
-The JSON response:
+﻿

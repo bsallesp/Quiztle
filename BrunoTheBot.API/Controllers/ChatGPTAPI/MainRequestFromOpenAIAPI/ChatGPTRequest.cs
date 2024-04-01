@@ -1,14 +1,14 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-namespace BrunoTheBot.APIs
+namespace BrunoTheBot.API
 {
-    public class ChatGPTAPI
+    public class ChatGPTRequest : IChatGPTRequest
     {
         private readonly HttpClient _client;
         private readonly string _apiKey;
 
-        public ChatGPTAPI(HttpClient client)
+        public ChatGPTRequest(HttpClient client)
         {
             _client = client;
             _apiKey = "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";

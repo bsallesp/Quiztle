@@ -1,10 +1,16 @@
-using BrunoTheBot.CoreBusiness;
+using BrunoTheBot.API;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// No método ConfigureServices do seu Startup.cs
+// Adiciona serviços HTTP Client e Controllers
+builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddScoped<AILogRepository>();
+builder.Services.AddScoped<SchoolRepository>();
+builder.Services.AddControllers();
+
+// Configuração CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAnyOrigin",
@@ -13,15 +19,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 
-// Add services to the container.
-builder.Services.AddTransient<AILog>();
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-#region snippet1
+// Configuração do DbContext
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
 {
     string connectionString = ConnectionStrings.DevelopmentConnectionString;
@@ -32,14 +30,17 @@ builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
     Console.WriteLine(connectionString);
     opt.UseSqlite(connectionString);
 });
-#endregion
+
+// Configuração do Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// No método Configure do seu Startup.cs
+// Habilita CORS
 app.UseCors("AllowAnyOrigin");
 
-// Configure the HTTP request pipeline.
+// Configurações adicionais do ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -47,9 +48,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
+// Mapeia os controllers
 app.MapControllers();
 
 app.Run();

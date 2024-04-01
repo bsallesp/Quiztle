@@ -3,6 +3,7 @@ using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs;
 using BrunoTheBot.Blazor.APIServices;
 using BrunoTheBot.Blazor.Components;
+using BrunoTheBot.API.Controllers.ChatGPTAPI.MainRequestFromOpenAIAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -21,8 +22,9 @@ builder.Services.AddTransient<SchoolRepository>();
 builder.Services.AddTransient<HuggingFaceAPI>();
 builder.Services.AddTransient<DeepSeekAPI>();
 builder.Services.AddTransient<AILogService>();
-builder.Services.AddScoped<ChatGPTAPI>();
-builder.Services.AddScoped<ChatGPTAPIService>();
+builder.Services.AddTransient<ChatGPTAPIService>();
+
+builder.Services.AddScoped<IChatGPTRequest, ChatGPTRequest>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>

@@ -9,7 +9,7 @@ namespace BrunoTheBot.Blazor.APIServices
         public ChatGPTAPIService(HttpClient httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.BaseAddress = new Uri("http://localhost:5044"); // Substitua pela URL da sua API
+            _httpClient.BaseAddress = new Uri("http://localhost:5044");
         }
 
         public async Task<string> GetSchoolResearch(string input, string systemProfile = "")

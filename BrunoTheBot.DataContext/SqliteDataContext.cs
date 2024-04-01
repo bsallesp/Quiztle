@@ -21,8 +21,6 @@ namespace BrunoTheBot.DataContext
             Debug.WriteLine($"{ContextId} context created.");
         }
 
-        // List of Contact.
-
         public DbSet<School>? Schools { get; set; }
         public DbSet<Topic>? Topics { get; set; }
         public DbSet<Author>? Authors { get; set; }

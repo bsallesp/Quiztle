@@ -27,7 +27,7 @@ The JSON response:
 
 On a scale from zero to 10, what is the likelihood that this is a name of a college, course, or something that can be used to build a study plan?
 
-[Insert the method's parameter here]
+[here is the parameter]
 
 Return a JSON with this structure:
 
