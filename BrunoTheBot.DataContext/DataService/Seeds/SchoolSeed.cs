@@ -23,7 +23,7 @@ namespace BrunoTheBot.DataContext
             return school;
         }
 
-        public async Task SeedDatabaseWithSchoolCountAsync(SqliteDataContext context, int totalCount, List<Topic> topics)
+        public async Task SeedDatabaseWithSchoolCountAsync(PostgreBrunoTheBotContext context, int totalCount, List<Topic> topics)
         {
             var count = 0;
             var currentCycle = 0;

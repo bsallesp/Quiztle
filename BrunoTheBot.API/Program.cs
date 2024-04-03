@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 });
 
 // Configuração do DbContext
-builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
+builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
     string connectionString = ConnectionStrings.DevelopmentConnectionString;
 
@@ -28,7 +28,7 @@ builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
     if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
 
     Console.WriteLine(connectionString);
-    opt.UseSqlite(connectionString);
+    opt.UseNpgsql(connectionString);
 });
 
 // Configuração do Swagger

@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JSONs", "JSONs", "{AC4A71A1-CFF3-4E74-B909-1F3AC1A68DE5}"
 	ProjectSection(SolutionItems) = preProject
 		123.json = 123.json
+		Postgres.MD = Postgres.MD
 		PROMPTS.MD = PROMPTS.MD
 		temp.json = temp.json
 	EndProjectSection

@@ -18,15 +18,15 @@ namespace BrunoTheBot.API.Controllers
         }
 
         [HttpGet("FillSchoolRepository")]
-        public async Task<ActionResult<string>> GetSchoolFeatures(int idSchoolInput)
+        public async Task<ActionResult<string>> FillSchoolRepositoryFromAILog(int AILogID)
         {
             try
             {
-                var content = await _aILogRepository.GetAILogByIdAsync(idSchoolInput);
+                var content = await _aILogRepository.GetAILogByIdAsync(AILogID);
 
                 if (content == null)
                 {
-                    return StatusCode(404, $"No content found for the specified ID: {idSchoolInput}");
+                    return StatusCode(404, $"No content found for the specified ID: {AILogID}");
                 }
 
                 // Parse the JSON content using ChatGPTContentJSONParse

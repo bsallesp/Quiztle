@@ -3,7 +3,7 @@ using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs;
 using BrunoTheBot.Blazor.APIServices;
 using BrunoTheBot.Blazor.Components;
-using BrunoTheBot.API.Controllers.ChatGPTAPI.MainRequestFromOpenAIAPI;
+using BrunoTheBot.API;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -27,7 +27,7 @@ builder.Services.AddTransient<ChatGPTAPIService>();
 builder.Services.AddScoped<IChatGPTRequest, ChatGPTRequest>();
 
 #region snippet1
-builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
+builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
     string connectionString = ConnectionStrings.DevelopmentConnectionString;
 
@@ -35,14 +35,14 @@ builder.Services.AddDbContextFactory<SqliteDataContext>(opt =>
     if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
 
     Console.WriteLine(connectionString);
-    opt.UseSqlite(connectionString);
+    opt.UseNpgsql(connectionString);
 });
 #endregion
 
 var app = builder.Build();
 
 await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
-var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<SqliteDataContext>>();
+var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<PostgreBrunoTheBotContext>>();
 await DatabaseUtility.EnsureDbCreatedAndSeedWithCountOfAsync(options, 500);
 
 // Configure the HTTP request pipeline.

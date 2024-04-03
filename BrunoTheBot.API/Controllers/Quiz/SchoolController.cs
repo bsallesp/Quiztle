@@ -9,9 +9,9 @@ namespace BrunoTheBot.API.Controllers
     [ApiController]
     public class SchoolsController : ControllerBase
     {
-        private readonly SqliteDataContext _context;
+        private readonly PostgreBrunoTheBotContext _context;
 
-        public SchoolsController(SqliteDataContext context)
+        public SchoolsController(PostgreBrunoTheBotContext context)
         {
             _context = context;
         }
@@ -34,3 +34,4 @@ namespace BrunoTheBot.API.Controllers
         }
     }
 }
+

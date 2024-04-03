@@ -20,7 +20,7 @@ namespace BrunoTheBot.DataContext
             return question;
         }
 
-        public async Task SeedDatabaseWithQuestionCountAsync(SqliteDataContext context, int totalCount)
+        public async Task SeedDatabaseWithQuestionCountAsync(PostgreBrunoTheBotContext context, int totalCount)
         {
             var count = 0;
             var currentCycle = 0;

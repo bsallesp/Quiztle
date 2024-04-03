@@ -9,9 +9,9 @@ namespace BrunoTheBot.API.Controllers
     [ApiController]
     public class AILogsController : ControllerBase
     {
-        private readonly SqliteDataContext _context;
+        private readonly PostgreBrunoTheBotContext _context;
 
-        public AILogsController(SqliteDataContext context)
+        public AILogsController(PostgreBrunoTheBotContext context)
         {
             _context = context;
         }

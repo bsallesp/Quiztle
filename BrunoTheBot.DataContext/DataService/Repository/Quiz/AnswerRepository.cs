@@ -5,9 +5,9 @@ namespace BrunoTheBot.DataContext
 {
     public class AnswerRepository
     {
-        private readonly SqliteDataContext _context;
+        private readonly PostgreBrunoTheBotContext _context;
 
-        public AnswerRepository(SqliteDataContext context)
+        public AnswerRepository(PostgreBrunoTheBotContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
