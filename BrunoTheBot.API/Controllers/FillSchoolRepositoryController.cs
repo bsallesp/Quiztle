@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs.Service;
+using BrunoTheBot.DataContext.Repositories;
 
 namespace BrunoTheBot.API.Controllers
 {

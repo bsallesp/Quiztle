@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Entities;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
-namespace BrunoTheBot.DataContext
+namespace BrunoTheBot.DataContext.Repositories
 {
     public class SchoolRepository
     {
@@ -31,13 +32,14 @@ namespace BrunoTheBot.DataContext
         public async Task<School?> GetSchoolByIdAsync(int id)
         {
             EnsureSchoolsNotNull();
-            return await _context.Schools.FindAsync(id);
+            return await _context.Schools!.FindAsync(id);
         }
 
         public async Task<IQueryable<School>> GetAllSchoolsAsync()
         {
             EnsureSchoolsNotNull();
-            return _context.Schools.AsQueryable();
+            var schools = await _context.Schools!.ToListAsync();
+            return schools.AsQueryable();
         }
 
         public async Task UpdateSchoolAsync(School school)
@@ -50,7 +52,7 @@ namespace BrunoTheBot.DataContext
         public async Task DeleteSchoolAsync(int id)
         {
             EnsureSchoolsNotNull();
-            var school = await _context.Schools.FindAsync(id);
+            var school = await _context.Schools!.FindAsync(id);
             if (school != null)
             {
                 _context.Schools.Remove(school);

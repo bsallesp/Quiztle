@@ -1,4 +1,4 @@
-﻿using BrunoTheBot.CoreBusiness;
+﻿using BrunoTheBot.CoreBusiness.Log;
 using System.Net.Http.Json;
 
 namespace BrunoTheBot.Blazor.APIServices
@@ -22,6 +22,7 @@ namespace BrunoTheBot.Blazor.APIServices
         public async Task<AILog> GetAILogAsync(int id)
         {
             var response = await _httpClient.GetFromJsonAsync<AILog>($"api/AILogs/{id}");
+            if (response == null) throw new Exception();
             return response;
         }
 
@@ -30,18 +31,21 @@ namespace BrunoTheBot.Blazor.APIServices
             var response = await _httpClient.PostAsJsonAsync("api/AILogs", aILog);
             Console.WriteLine("JSON AT GetAILogsAsync BLAZOR: " + aILog.JSON);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<AILog>();
+            if (response == null) throw new Exception();
+            return await response.Content.ReadFromJsonAsync<AILog>() ?? throw new Exception();
         }
 
         public async Task UpdateAILogAsync(int id, AILog aILog)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/AILogs/{id}", aILog);
+            if (response == null) throw new Exception();
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteAILogAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/AILogs/{id}");
+            if (response == null) throw new Exception();
             response.EnsureSuccessStatusCode();
         }
     }

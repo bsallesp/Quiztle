@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240404122633_HintInQuestionEntity")]
+    partial class HintInQuestionEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,30 +147,6 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Reference", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("TopicId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("TopicId");
-
-                    b.ToTable("References");
-                });
-
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.School", b =>
                 {
                     b.Property<int>("Id")
@@ -266,13 +245,6 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Navigation("Answer");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Reference", b =>
-                {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Topic", null)
-                        .WithMany("References")
-                        .HasForeignKey("TopicId");
-                });
-
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Topic", b =>
                 {
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.School", null)
@@ -298,8 +270,6 @@ namespace BrunoTheBot.DataContext.Migrations
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Topic", b =>
                 {
                     b.Navigation("Questions");
-
-                    b.Navigation("References");
                 });
 #pragma warning restore 612, 618
         }

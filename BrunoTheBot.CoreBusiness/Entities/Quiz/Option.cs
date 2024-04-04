@@ -1,4 +1,4 @@
-﻿namespace BrunoTheBot.CoreBusiness
+﻿namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
     public class Option
     {

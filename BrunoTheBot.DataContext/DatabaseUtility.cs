@@ -11,7 +11,7 @@ namespace BrunoTheBot.DataContext
             var builder = new DbContextOptionsBuilder<PostgreBrunoTheBotContext>(options)
                 .UseLoggerFactory(factory);
 
-            using var context = new PostgreBrunoTheBotContext();
+            using var context = new PostgreBrunoTheBotContext(builder.Options);
             // Result is true if the database had to be created.
 
             if (await context.Database.EnsureCreatedAsync())

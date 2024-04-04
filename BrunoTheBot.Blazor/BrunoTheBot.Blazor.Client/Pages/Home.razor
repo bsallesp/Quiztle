@@ -3,6 +3,7 @@
 
 @using System.Text.Json
 @using BrunoTheBot.CoreBusiness
+@using BrunoTheBot.CoreBusiness.Log
 @using CoreBusiness.Entities
 @using Newtonsoft.Json.Linq
 
@@ -47,9 +48,11 @@
         resultAPI = "Retrieving ChatGPT API...";
         resultAPI = await ChatGPTAPIService.GetSchoolResearch(inputAPI1);
         JObject jsonObject = JObject.Parse(resultAPI);
+#pragma warning disable
         contentGPT = (string)jsonObject["choices"][0]["message"]["content"];
+#pragma warning restore CS8600
 
-        await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+        await AILogService.CreateAILogAsync(new AILog
             {
                 JSON = resultAPI
             });

@@ -1,4 +1,4 @@
-﻿namespace BrunoTheBot.CoreBusiness.Entities
+﻿namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
     public class School
     {

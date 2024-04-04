@@ -21,8 +21,4 @@
     <ProjectReference Include="..\BrunoTheBot.DataContext\BrunoTheBot.DataContext.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\HeadControllers\" />
-  </ItemGroup>
-
 </Project>

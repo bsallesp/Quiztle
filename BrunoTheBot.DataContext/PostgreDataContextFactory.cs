@@ -1,24 +1,19 @@
-﻿//using Microsoft.EntityFrameworkCore;
-//using Microsoft.EntityFrameworkCore.Design;
-//using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
-//namespace BrunoTheBot.DataContext
-//{
-//    public class PostgreDataContextFactory : IDesignTimeDbContextFactory<PostgreDataContextFactory>
-//    {
-//        public IConfiguration? Configuration { get; }
+namespace BrunoTheBot.DataContext
+{
+    public class PostgreDataContextFactory : IDesignTimeDbContextFactory<PostgreBrunoTheBotContext>
+    {
+        public PostgreBrunoTheBotContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<PostgreBrunoTheBotContext>();
 
-//        public PostgreDataContextFactory CreateDbContext(string[] args)
-//        {
-//            var optionsBuilder = new DbContextOptionsBuilder<PostgreBrunoTheBotContext>();
+            string connectionString = ConnectionStrings.DevelopmentConnectionString;
 
-//            string connectionString = ConnectionStrings.DevelopmentConnectionString;
+            optionsBuilder.UseNpgsql(connectionString);
 
-//            Console.WriteLine("Opening " + connectionString);
-
-//            optionsBuilder.UseNpgsql(connectionString);
-
-//            return new PostgreBrunoTheBotContext();
-//        }
-//    }
-//}
+            return new PostgreBrunoTheBotContext(optionsBuilder.Options);
+        }
+    }
+}

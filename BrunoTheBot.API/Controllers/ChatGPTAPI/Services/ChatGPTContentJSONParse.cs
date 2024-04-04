@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using BrunoTheBot.CoreBusiness.Entities;
-using System;
-using System.Collections.Generic;
-using BrunoTheBot.CoreBusiness;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
 namespace BrunoTheBot.APIs.Service
 {
@@ -18,8 +15,11 @@ namespace BrunoTheBot.APIs.Service
                 if (!string.IsNullOrEmpty(json))
                 {
                     JObject jsonObject = JObject.Parse(json);
+#pragma warning disable CS8600
                     json = (string)jsonObject["choices"]?[0]?["message"]?["content"] ?? "";
+#pragma warning restore CS8600
                 }
+
                 else
                 {
                     Console.WriteLine("Input JSON is empty or null.");
@@ -41,7 +41,10 @@ namespace BrunoTheBot.APIs.Service
             var jsonObject = JObject.Parse(content);
 
             // Extract the topic name and subtopics
+#pragma warning disable CS8600
             var topicName = (string)jsonObject["topic"];
+#pragma warning restore CS8600
+
             var subtopics = jsonObject["subtopics"]?.ToObject<List<string>>();
 
             // Create a new school

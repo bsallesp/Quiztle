@@ -1,7 +1,7 @@
-﻿using BrunoTheBot.CoreBusiness;
+﻿using BrunoTheBot.CoreBusiness.Log;
 using Microsoft.EntityFrameworkCore;
 
-namespace BrunoTheBot.DataContext
+namespace BrunoTheBot.DataContext.Repositories
 {
     public class AILogRepository
     {

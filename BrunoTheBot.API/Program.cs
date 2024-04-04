@@ -1,5 +1,6 @@
 using BrunoTheBot.API;
 using BrunoTheBot.DataContext;
+using BrunoTheBot.DataContext.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BrunoTheBot.CoreBusiness;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
-namespace BrunoTheBot.DataContext
+namespace BrunoTheBot.DataContext.Repositories
 {
     public class TopicRepository
     {
@@ -31,13 +31,14 @@ namespace BrunoTheBot.DataContext
         public async Task<Topic?> GetTopicByIdAsync(int id)
         {
             EnsureTopicsNotNull();
-            return await _context.Topics.FindAsync(id);
+            return await _context.Topics!.FindAsync(id);
         }
 
         public async Task<IQueryable<Topic>> GetAllTopicsAsync()
         {
             EnsureTopicsNotNull();
-            return _context.Topics.AsQueryable();
+            var topics = await _context.Topics!.ToListAsync();
+            return topics.AsQueryable();
         }
 
         public async Task UpdateTopicAsync(Topic topic)
@@ -50,7 +51,7 @@ namespace BrunoTheBot.DataContext
         public async Task DeleteTopicAsync(int id)
         {
             EnsureTopicsNotNull();
-            var topic = await _context.Topics.FindAsync(id);
+            var topic = await _context.Topics!.FindAsync(id);
             if (topic != null)
             {
                 _context.Topics.Remove(topic);

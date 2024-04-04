@@ -1,5 +1,4 @@
-﻿using BrunoTheBot.CoreBusiness;
-using BrunoTheBot.CoreBusiness.Entities;
+﻿using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.DataContext;
 
 namespace BrunoTheBot.DataContext

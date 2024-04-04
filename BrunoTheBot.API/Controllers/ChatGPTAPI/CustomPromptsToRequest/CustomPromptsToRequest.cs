@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-
-namespace BrunoTheBot.API
+﻿namespace BrunoTheBot.API.Prompts
 {
     public static class CustomPromptsToRequest
     {
@@ -38,13 +36,13 @@ namespace BrunoTheBot.API
             return prompt;
         }
 
-        public static string GetSubTopics(string input, int amount = 10)
+        public static string GetTopics(string input, int amount = 10)
         {
             // Construir a prompt conforme o formato especificado
-            string prompt = $"Return a JSON containing {amount} subtopics related to the topic '{input}'.\n\n";
+            string prompt = $"Return a JSON containing {amount} subtopics related to the professional and technical topic '{input}'.\n\n";
             prompt += "{\n";
             prompt += $"  \"topic\": \"{input}\",\n";
-            prompt += "  \"subtopics\": [subTopic1, subtopic2, and so on]\n";
+            prompt += "  \"subtopics\": [topics such as algorithms, data structures, networking, cybersecurity, machine learning, artificial intelligence, software development methodologies, and more]\n";
             prompt += "}\n";
 
             return prompt;
@@ -68,6 +66,14 @@ namespace BrunoTheBot.API
             }
             prompt += "  ]\n";
             prompt += "}\n";
+
+            return prompt;
+        }
+
+        public static string BachelorDegrees(string input, int amount = 20)
+        {
+            // Construir a prompt conforme o formato especificado
+            string prompt = $"Return a JSON containing the most relevant {amount} bachelor degrees worldwide, such as medicine, law, engineering, computer science, economics, psychology, biology, physics, mathematics, chemistry, architecture, business administration, environmental science, sociology, political science, literature, history, education, anthropology, and more.\n\n";
 
             return prompt;
         }

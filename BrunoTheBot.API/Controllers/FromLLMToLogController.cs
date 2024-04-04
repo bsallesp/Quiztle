@@ -1,15 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BrunoTheBot.API.Prompts;
+using BrunoTheBot.CoreBusiness.Log;
+using BrunoTheBot.DataContext.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BrunoTheBot.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RequestLLMController : ControllerBase
+    public class FromLLMToLogController : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest;
-        private readonly DataContext.AILogRepository aiLogDb;
+        private readonly AILogRepository aiLogDb;
+        
+        private const string SuccessStatus = "Success";
+        private const string ErrorStatus = "Error";
 
-        public RequestLLMController(IChatGPTRequest chatGPTAPI, DataContext.AILogRepository aiLogDb)
+        public FromLLMToLogController(IChatGPTRequest chatGPTAPI, AILogRepository aiLogDb)
         {
             _chatGPTRequest = chatGPTAPI;
             this.aiLogDb = aiLogDb;
@@ -51,17 +58,30 @@ namespace BrunoTheBot.API.Controllers
         {
             try
             {
-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetSubTopics(input, amount));
+                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetTopics(input, amount));
 
                 await SaveLog(input, response);
-                return Ok(response);
+
+                var responseObject = new
+                {
+                    status = SuccessStatus,
+                    response
+                };
+
+                return JsonConvert.SerializeObject(responseObject);
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao interagir com a API ChatGPT: {ex.Message}");
+                var responseObject = new
+                {
+                    status = ErrorStatus,
+                    response = ex.Message
+                };
+
+                return JsonConvert.SerializeObject(responseObject);
             }
         }
-
 
         [HttpPost("GetBestAuthors")]
         public async Task<ActionResult<string>> GetBestAuthors([FromBody] string input)
@@ -81,7 +101,7 @@ namespace BrunoTheBot.API.Controllers
 
         private async Task SaveLog(string name, string json)
         {
-            await aiLogDb.CreateAILogAsync(new CoreBusiness.AILog
+            await aiLogDb.CreateAILogAsync(new AILog
             {
                 Name = name,
                 JSON = json

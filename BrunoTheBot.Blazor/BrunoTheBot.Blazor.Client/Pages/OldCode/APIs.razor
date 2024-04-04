@@ -2,6 +2,7 @@
 
 @using System.Text.Json
 @using BrunoTheBot.CoreBusiness
+@using BrunoTheBot.CoreBusiness.Log
 @using CoreBusiness.Entities
 
 @inject HuggingFaceAPI HuggingFaceAPI
@@ -54,7 +55,7 @@
 
         if (!string.IsNullOrEmpty(resultAPI)) // Verifica se resultAPI não está vazio
         {
-            await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+            await AILogService.CreateAILogAsync(new AILog
                 {
                     JSON = resultAPI
                 });
@@ -72,7 +73,7 @@
 
         if (!string.IsNullOrEmpty(resultAPI))
         {
-            await AILogService.CreateAILogAsync(new CoreBusiness.AILog
+            await AILogService.CreateAILogAsync(new AILog
                 {
                     JSON = resultAPI
                 });
