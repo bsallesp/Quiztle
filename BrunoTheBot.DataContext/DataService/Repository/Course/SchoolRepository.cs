@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BrunoTheBot.CoreBusiness.Entities;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 
-namespace BrunoTheBot.DataContext.Repositories
+namespace BrunoTheBot.DataContext.DataService.Repository.Course
 {
     public class SchoolRepository
     {

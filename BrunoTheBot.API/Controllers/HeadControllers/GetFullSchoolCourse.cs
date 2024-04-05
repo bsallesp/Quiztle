@@ -1,20 +1,19 @@
-﻿using BrunoTheBot.CoreBusiness.Entities;
-using BrunoTheBot.DataContext.Repositories;
+﻿using BrunoTheBot.API.Controllers.FromLLMControllers;
+using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.HeadControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetSchoolTopicsAuthorsController : ControllerBase
+    public class GetFullSchoolCourse : ControllerBase
     {
         private readonly SchoolRepository _schoolDb;
-        private readonly FromLLMToLogController _requestLLMController;
 
-        public GetSchoolTopicsAuthorsController(SchoolRepository schoolDb, FromLLMToLogController requestLLMController)
+        public GetFullSchoolCourse(SchoolRepository schoolDb, FromLLMToLogController requestLLMController)
         {
             _schoolDb = schoolDb;
-            _requestLLMController = requestLLMController;
         }
 
         [HttpPost("GetSchoolTopicsAuthors")]
@@ -25,10 +24,8 @@ namespace BrunoTheBot.API.Controllers.HeadControllers
                 School _school = new School();
 
                 var subTopicsResponse = await _requestLLMController.GetSubTopics(input, subTopicsAmount);
-                
-                
 
-                await _schoolDb.CreateSchoolAsync(new CoreBusiness.Entities.School
+                await _schoolDb.CreateSchoolAsync(new School
                 {
 
                 });

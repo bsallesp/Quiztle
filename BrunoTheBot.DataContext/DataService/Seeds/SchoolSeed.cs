@@ -1,4 +1,4 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Quiz;
+﻿using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext;
 
 namespace BrunoTheBot.DataContext
@@ -11,7 +11,7 @@ namespace BrunoTheBot.DataContext
             return list[idx];
         }
 
-        private School MakeSchool(List<Topic> topics)
+        private School MakeSchool(List<TopicClass> topics)
         {
             var school = new School
             {
@@ -22,7 +22,7 @@ namespace BrunoTheBot.DataContext
             return school;
         }
 
-        public async Task SeedDatabaseWithSchoolCountAsync(PostgreBrunoTheBotContext context, int totalCount, List<Topic> topics)
+        public async Task SeedDatabaseWithSchoolCountAsync(PostgreBrunoTheBotContext context, int totalCount, List<TopicClass> topics)
         {
             var count = 0;
             var currentCycle = 0;

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.APIs.Service
 {
@@ -52,7 +52,7 @@ namespace BrunoTheBot.APIs.Service
             {
                 Name = topicName ?? "",
                 Created = DateTime.Now,
-                Topics = new List<Topic>()
+                Topics = new List<TopicClass>()
             };
 
             // Populate topics with subtopics
@@ -60,7 +60,7 @@ namespace BrunoTheBot.APIs.Service
             {
                 foreach (var subtopic in subtopics)
                 {
-                    school.Topics.Add(new Topic
+                    school.Topics.Add(new TopicClass
                     {
                         Name = subtopic,
                         Created = DateTime.Now

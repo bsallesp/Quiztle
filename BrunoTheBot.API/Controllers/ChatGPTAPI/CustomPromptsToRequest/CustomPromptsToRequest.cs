@@ -1,7 +1,17 @@
 ﻿namespace BrunoTheBot.API.Prompts
 {
-    public static class CustomPromptsToRequest
+    public static class LLMPrompts
     {
+        public static string GetTopicsClassesToSchoolPrompt(string school, int topicClassAmount = 10)
+        {
+            return "{" +
+                    "\"prompt\": \"What are the " + topicClassAmount + " most relevant classes of " + school + "?\"," +
+                    "\"completion\": \"return array into a json answering: what is the " + topicClassAmount + " most relevant classes of " + school + "? {" +
+                        "\\" + "\"" + school + "\\" + "\"" + ": [class1, class2, class3, so on]" +
+                    "}\"" +
+                "}";
+        }
+
         public static string SearchSchoolPrompt(string schoolInput)
         {
             // Construir a prompt conforme o formato especificado
@@ -47,6 +57,23 @@
 
             return prompt;
         }
+
+        //public static string GetTopicsAndReferencesOfSchool(bool literal = false, string school, int topicsAmount = 10, int referencesAmount = 3)
+        //{
+        //    //if (!literal) return $"return a json with main key = {school}, who has another json of {topicsAmount} keys," +
+        //    //        $" and each keys have "
+
+        //    string prompt = $"Return a JSON with this structure:";
+        //    prompt += "{\n";
+        //    prompt += $"  \"school\": \"{school}\",\n";
+        //    prompt += $"  \"topics\": [divide the most important content about {school} in {topicsAmount} parts, in array format.]\n";
+        //    prompt += "{\n";
+        //    prompt += $"  \"references\": [each topic, must to have {referencesAmount} references about. ]\n";
+        //    prompt += "}\n";
+        //    prompt += "}\n";
+
+        //    return prompt;
+        //}
 
         public static string GetBestAuthors(string input, int amount = 10)
         {

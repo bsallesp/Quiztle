@@ -1,5 +1,7 @@
 using BrunoTheBot.API;
+using BrunoTheBot.API.Controllers.FromLLMControllers;
 using BrunoTheBot.DataContext;
+using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.DataContext.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddScoped<AILogRepository>();
 builder.Services.AddScoped<SchoolRepository>();
+builder.Services.AddScoped<FromLLMToLogController>();
 builder.Services.AddControllers();
 
 // Configuração CORS

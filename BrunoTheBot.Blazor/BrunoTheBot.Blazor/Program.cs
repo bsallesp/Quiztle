@@ -4,7 +4,7 @@ using BrunoTheBot.APIs;
 using BrunoTheBot.Blazor.APIServices;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.API;
-using BrunoTheBot.DataContext.Repositories;
+using BrunoTheBot.DataContext.DataService.Repository.Course;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()

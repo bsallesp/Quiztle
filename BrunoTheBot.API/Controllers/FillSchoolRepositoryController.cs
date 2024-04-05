@@ -2,6 +2,7 @@
 using BrunoTheBot.DataContext;
 using BrunoTheBot.APIs.Service;
 using BrunoTheBot.DataContext.Repositories;
+using BrunoTheBot.DataContext.DataService.Repository.Course;
 
 namespace BrunoTheBot.API.Controllers
 {

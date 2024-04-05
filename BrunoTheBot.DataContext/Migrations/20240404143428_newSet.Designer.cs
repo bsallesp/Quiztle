@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240404143428_newSet")]
+    partial class newSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,14 +43,9 @@ namespace BrunoTheBot.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("TopicClassId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentId");
-
-                    b.HasIndex("TopicClassId");
 
                     b.ToTable("Authors");
                 });
@@ -71,7 +69,7 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("Contents");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Places", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Reference", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -85,14 +83,14 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TopicClassId")
+                    b.Property<int?>("TopicId")
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("TopicClassId");
+                    b.HasIndex("TopicId");
 
-                    b.ToTable("Places");
+                    b.ToTable("References");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.School", b =>
@@ -115,7 +113,7 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("Schools");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Topic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,7 +135,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     b.HasIndex("SchoolId");
 
-                    b.ToTable("TopicClasses");
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Answer", b =>
@@ -247,20 +245,16 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Content", null)
                         .WithMany("Authors")
                         .HasForeignKey("ContentId");
-
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
-                        .WithMany("Authors")
-                        .HasForeignKey("TopicClassId");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Places", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Reference", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
-                        .WithMany("Places")
-                        .HasForeignKey("TopicClassId");
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Topic", null)
+                        .WithMany("References")
+                        .HasForeignKey("TopicId");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Topic", b =>
                 {
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.School", null)
                         .WithMany("Topics")
@@ -282,8 +276,8 @@ namespace BrunoTheBot.DataContext.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", "Topic")
-                        .WithMany()
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Topic", "Topic")
+                        .WithMany("Questions")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -303,11 +297,11 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Navigation("Topics");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Topic", b =>
                 {
-                    b.Navigation("Authors");
+                    b.Navigation("Questions");
 
-                    b.Navigation("Places");
+                    b.Navigation("References");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>

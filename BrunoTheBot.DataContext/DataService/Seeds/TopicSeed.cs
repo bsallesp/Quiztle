@@ -1,4 +1,4 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Quiz;
+﻿using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.DataContext
 {
@@ -10,9 +10,9 @@ namespace BrunoTheBot.DataContext
             return list[idx];
         }
 
-        private Topic MakeTopic()
+        private TopicClass MakeTopic()
         {
-            var topic = new Topic
+            var topic = new TopicClass
             {
                 Name = RandomOne(_names),
                 Created = DateTime.Now
@@ -26,29 +26,29 @@ namespace BrunoTheBot.DataContext
             var currentCycle = 0;
             while (count < totalCount)
             {
-                var list = new List<Topic>();
+                var list = new List<TopicClass>();
                 while (currentCycle++ < 100 && count++ < totalCount)
                 {
                     list.Add(MakeTopic());
                 }
                 if (list.Count > 0)
                 {
-                    context.Topics?.AddRange(list);
+                    context.TopicClasses?.AddRange(list);
                     await context.SaveChangesAsync();
                 }
                 currentCycle = 0;
             }
         }
 
-        public Task<List<Topic>> GetTopicsAsync(int totalCount)
+        public Task<List<TopicClass>> GetTopicsAsync(int totalCount)
         {
             var count = 0;
             var currentCycle = 0;
-            var topics = new List<Topic>();
+            var topics = new List<TopicClass>();
 
             while (count < totalCount)
             {
-                var list = new List<Topic>();
+                var list = new List<TopicClass>();
                 while (currentCycle++ < 100 && count++ < totalCount)
                 {
                     list.Add(MakeTopic());

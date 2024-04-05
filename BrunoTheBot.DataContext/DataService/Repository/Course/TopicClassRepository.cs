@@ -1,23 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 
-namespace BrunoTheBot.DataContext.Repositories
+namespace BrunoTheBot.DataContext.DataService.Repository.Course
 {
-    public class TopicRepository
+    public class TopicClassRepository
     {
         private readonly PostgreBrunoTheBotContext _context;
 
-        public TopicRepository(PostgreBrunoTheBotContext context)
+        public TopicClassRepository(PostgreBrunoTheBotContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task CreateTopicAsync(Topic topic)
+        public async Task CreateTopicAsync(TopicClass topic)
         {
             try
             {
                 EnsureTopicsNotNull();
-                _context.Topics!.Add(topic);
+                _context.TopicClasses!.Add(topic);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -28,20 +28,20 @@ namespace BrunoTheBot.DataContext.Repositories
             }
         }
 
-        public async Task<Topic?> GetTopicByIdAsync(int id)
+        public async Task<TopicClass?> GetTopicByIdAsync(int id)
         {
             EnsureTopicsNotNull();
-            return await _context.Topics!.FindAsync(id);
+            return await _context.TopicClasses!.FindAsync(id);
         }
 
-        public async Task<IQueryable<Topic>> GetAllTopicsAsync()
+        public async Task<IQueryable<TopicClass>> GetAllTopicsAsync()
         {
             EnsureTopicsNotNull();
-            var topics = await _context.Topics!.ToListAsync();
+            var topics = await _context.TopicClasses!.ToListAsync();
             return topics.AsQueryable();
         }
 
-        public async Task UpdateTopicAsync(Topic topic)
+        public async Task UpdateTopicAsync(TopicClass topic)
         {
             EnsureTopicsNotNull();
             _context.Entry(topic).State = EntityState.Modified;
@@ -51,17 +51,17 @@ namespace BrunoTheBot.DataContext.Repositories
         public async Task DeleteTopicAsync(int id)
         {
             EnsureTopicsNotNull();
-            var topic = await _context.Topics!.FindAsync(id);
+            var topic = await _context.TopicClasses!.FindAsync(id);
             if (topic != null)
             {
-                _context.Topics.Remove(topic);
+                _context.TopicClasses.Remove(topic);
                 await _context.SaveChangesAsync();
             }
         }
 
         private void EnsureTopicsNotNull()
         {
-            if (_context.Topics == null)
+            if (_context.TopicClasses == null)
             {
                 throw new InvalidOperationException("The Topics DbSet is null. Make sure it is properly initialized.");
             }

@@ -3,8 +3,9 @@ using BrunoTheBot.CoreBusiness.Log;
 using BrunoTheBot.DataContext.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using BrunoTheBot.API.Controllers.StaticsStatusCodes;
 
-namespace BrunoTheBot.API.Controllers
+namespace BrunoTheBot.API.Controllers.FromLLMControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -12,9 +13,7 @@ namespace BrunoTheBot.API.Controllers
     {
         private readonly IChatGPTRequest _chatGPTRequest;
         private readonly AILogRepository aiLogDb;
-        
-        private const string SuccessStatus = "Success";
-        private const string ErrorStatus = "Error";
+
 
         public FromLLMToLogController(IChatGPTRequest chatGPTAPI, AILogRepository aiLogDb)
         {
@@ -27,7 +26,7 @@ namespace BrunoTheBot.API.Controllers
         {
             try
             {
-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.SearchSchoolPrompt(input));
+                var response = await _chatGPTRequest.ChatWithGPT(LLMPrompts.SearchSchoolPrompt(input));
                 await SaveLog(input, response);
                 return Ok(response);
             }
@@ -42,7 +41,7 @@ namespace BrunoTheBot.API.Controllers
         {
             try
             {
-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.SearchLearningContentPrompt(input));
+                var response = await _chatGPTRequest.ChatWithGPT(LLMPrompts.SearchLearningContentPrompt(input));
 
                 await SaveLog(input, response);
                 return Ok(response);
@@ -58,13 +57,13 @@ namespace BrunoTheBot.API.Controllers
         {
             try
             {
-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetTopics(input, amount));
+                var response = await _chatGPTRequest.ChatWithGPT(LLMPrompts.GetTopics(input, amount));
 
                 await SaveLog(input, response);
 
                 var responseObject = new
                 {
-                    status = SuccessStatus,
+                    status = CustomStatusCodes.SuccessStatus,
                     response
                 };
 
@@ -75,7 +74,7 @@ namespace BrunoTheBot.API.Controllers
             {
                 var responseObject = new
                 {
-                    status = ErrorStatus,
+                    status = CustomStatusCodes.ErrorStatus,
                     response = ex.Message
                 };
 
@@ -88,7 +87,7 @@ namespace BrunoTheBot.API.Controllers
         {
             try
             {
-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetBestAuthors(input));
+                var response = await _chatGPTRequest.ChatWithGPT(LLMPrompts.GetBestAuthors(input));
 
                 await SaveLog(input, response);
                 return Ok(response);
@@ -99,7 +98,8 @@ namespace BrunoTheBot.API.Controllers
             }
         }
 
-        private async Task SaveLog(string name, string json)
+        [HttpPost]
+        public async Task SaveLog(string name, string json)
         {
             await aiLogDb.CreateAILogAsync(new AILog
             {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
-namespace BrunoTheBot.DataContext.Repositories
+namespace BrunoTheBot.DataContext.Repositories.Quiz
 {
     public class OptionRepository
     {

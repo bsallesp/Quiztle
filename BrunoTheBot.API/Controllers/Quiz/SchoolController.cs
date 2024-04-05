@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.API.Controllers
 {
