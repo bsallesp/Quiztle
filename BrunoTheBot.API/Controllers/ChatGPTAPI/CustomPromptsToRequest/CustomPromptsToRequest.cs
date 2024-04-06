@@ -1,16 +1,16 @@
-﻿namespace BrunoTheBot.API.Prompts
+﻿using Microsoft.Extensions.Hosting;
+
+namespace BrunoTheBot.API.Prompts
 {
     public static class LLMPrompts
     {
         public static string GetTopicsClassesToSchoolPrompt(string school, int topicClassAmount = 10)
         {
-            return "{" +
-                    "\"prompt\": \"What are the " + topicClassAmount + " most relevant classes of " + school + "?\"," +
-                    "\"completion\": \"return array into a json answering: what is the " + topicClassAmount + " most relevant classes of " + school + "? {" +
-                        "\\" + "\"" + school + "\\" + "\"" + ": [class1, class2, class3, so on]" +
-                    "}\"" +
-                "}";
+            return $"\"Let's devise a focused study plan to comprehensively learn about {school}." +
+                $" Return a JSON with the key 'TopicClasses' containing an array of the 10 most crucial components." +
+                $" Omit any commentary and solely provide the JSON.\"";
         }
+
 
         public static string SearchSchoolPrompt(string schoolInput)
         {

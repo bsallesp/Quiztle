@@ -1,5 +1,7 @@
 using BrunoTheBot.API;
 using BrunoTheBot.API.Controllers.FromLLMControllers;
+using BrunoTheBot.API.Controllers.FromLLMToDBControllers;
+using BrunoTheBot.API.Controllers.HeadControllers;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.DataContext.Repositories;
@@ -12,6 +14,8 @@ builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddScoped<AILogRepository>();
 builder.Services.AddScoped<SchoolRepository>();
 builder.Services.AddScoped<FromLLMToLogController>();
+builder.Services.AddScoped<GetFullSchoolCourse>();
+builder.Services.AddScoped<TopicClassesFromLLM>();
 builder.Services.AddControllers();
 
 // Configuração CORS
