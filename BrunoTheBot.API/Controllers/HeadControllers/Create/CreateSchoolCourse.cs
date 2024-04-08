@@ -2,19 +2,20 @@
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.CoreBusiness.APIEntities;
 
 
-namespace BrunoTheBot.API.Controllers.HeadControllers
+namespace BrunoTheBot.API.Controllers.HeadControllers.Create
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetFullSchoolCourse(SchoolRepository schoolDb, TopicClassesFromLLM topicClassesFromLLM) : ControllerBase
+    public class CreateSchoolCourse(SchoolRepository schoolDb, TopicClassesFromLLM topicClassesFromLLM) : ControllerBase
     {
         private readonly SchoolRepository _schoolDb = schoolDb;
         private readonly TopicClassesFromLLM _topicClassesFromLLM = topicClassesFromLLM;
 
-        [HttpPost("GetSchoolTopicsAuthors")]
-        public async Task<ActionResult<string>> GetSchoolTopicsAuthors([FromBody] string schoolName, int subTopicsAmount)
+        [HttpPost("CreateSchoolFullCourse")]
+        public async Task<ActionResult<SchoolAPIResponse>> ExecuteAsync([FromBody] string schoolName, int subTopicsAmount = 10)
         {
             try
             {
@@ -27,10 +28,11 @@ namespace BrunoTheBot.API.Controllers.HeadControllers
                     Topics = newTopicClasses!
                 };
 
-                var subTopicsResponse = await _topicClassesFromLLM.GetNewSubTopicClassesFromLLM(school, 10);
-                await _schoolDb.CreateSchoolAsync(subTopicsResponse.Value!.School);
+                var schoolAPIResponse = await _topicClassesFromLLM.GetNewSubTopicClassesFromLLM(school, 10);
+                var newSchoolWithTopicsAndSubTopics = schoolAPIResponse.Value!.School;
+                await _schoolDb.CreateSchoolAsync(newSchoolWithTopicsAndSubTopics);
 
-                return Ok();
+                return schoolAPIResponse;
             }
             catch (Exception ex)
             {

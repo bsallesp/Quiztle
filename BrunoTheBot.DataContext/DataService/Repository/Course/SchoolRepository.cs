@@ -31,7 +31,10 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Course
         public async Task<School?> GetSchoolByIdAsync(int id)
         {
             EnsureSchoolsNotNull();
-            return await _context.Schools!.FindAsync(id);
+            return await _context.Schools!
+                                 .Include(s => s.Topics)
+                                 .ThenInclude(t => t.SubTopicClasses)
+                                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<IQueryable<School>> GetAllSchoolsAsync()
