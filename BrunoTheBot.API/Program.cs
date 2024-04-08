@@ -15,7 +15,7 @@ builder.Services.AddScoped<AILogRepository>();
 builder.Services.AddScoped<SchoolRepository>();
 builder.Services.AddScoped<FromLLMToLogController>();
 builder.Services.AddScoped<GetFullSchoolCourse>();
-builder.Services.AddScoped<TopicClassesFromLLM>();
+builder.Services.AddTransient<TopicClassesFromLLM>();
 builder.Services.AddControllers();
 
 // Configuração CORS

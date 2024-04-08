@@ -17,9 +17,7 @@ namespace BrunoTheBot.DataContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //COURSE
-            modelBuilder.Entity<Author>();
             modelBuilder.Entity<Content>();
-            modelBuilder.Entity<Place>();
             modelBuilder.Entity<School>();
             modelBuilder.Entity<TopicClass>();
 
@@ -33,9 +31,7 @@ namespace BrunoTheBot.DataContext
         }
 
         //COURSE
-        public DbSet<Author>? Authors { get; set; }
         public DbSet<Content>? Contents { get; set; }
-        public DbSet<Place>? Places { get; set; }
         public DbSet<School>? Schools { get; set; }
         public DbSet<TopicClass>? TopicClasses { get; set; }
 

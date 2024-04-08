@@ -1,16 +1,32 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.API.Prompts
 {
     public static class LLMPrompts
     {
-        public static string GetTopicsClassesToSchoolPrompt(string school, int topicClassAmount = 10)
+        public static string GetTopicsClassesFromSchoolPrompt(string school, int topicClassAmount = 10)
         {
             return $"\"Let's devise a focused study plan to comprehensively learn about {school}." +
-                $" Return a JSON with the key 'TopicClasses' containing an array of the 10 most crucial components." +
-                $" Omit any commentary and solely provide the JSON.\"";
+                $" Return a JSON with the key 'TopicClasses' containing an array of the {topicClassAmount} most crucial components." +
+                $"  \"";
         }
 
+        public static string GetSubTopicsClassesFromSchoolPrompt(string school, string topicClasses, int subTopicClassAmount = 10)
+        {
+            string json = $@"
+            {{
+                ""SubTopicClasses"": [ ""subtopic1"", ""subtopic2"", ... ]
+            }}
+            ";
+
+            return $"Let's devise a part of focused study plan to comprehensively learn about {topicClasses}, a topic class about {school}. Return a JSON with the key 'SubTopicClasses', about {topicClasses} containing an array of the {subTopicClassAmount} most crucial components. The JSON structure must be: {json}. This JSON represents an object with a key 'SubTopicClasses', which contains an array of subtopics (subtopic1, subtopic2, etc.). Each element in the array represents a sub-topic class.";
+        }
+
+
+        public static string GetPlacesFromSchoolPrompt(School school)
+        {
+            return @$"Return a json with an array with best places like universities, to learn about {school}  ";
+        }
 
         public static string SearchSchoolPrompt(string schoolInput)
         {

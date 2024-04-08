@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240407170823_subTopicClass")]
+    partial class subTopicClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,14 +87,14 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Property<int?>("SchoolId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TopicClassId")
+                    b.Property<int>("SubTopicClassId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolId");
 
-                    b.HasIndex("TopicClassId");
+                    b.HasIndex("SubTopicClassId");
 
                     b.ToTable("TopicClasses");
                 });
@@ -215,9 +218,13 @@ namespace BrunoTheBot.DataContext.Migrations
                         .WithMany("Topics")
                         .HasForeignKey("SchoolId");
 
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
-                        .WithMany("SubTopicClasses")
-                        .HasForeignKey("TopicClassId");
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", "SubTopicClass")
+                        .WithMany()
+                        .HasForeignKey("SubTopicClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubTopicClass");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
@@ -249,11 +256,6 @@ namespace BrunoTheBot.DataContext.Migrations
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.School", b =>
                 {
                     b.Navigation("Topics");
-                });
-
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
-                {
-                    b.Navigation("SubTopicClasses");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>

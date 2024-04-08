@@ -1,9 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BrunoTheBot.API
 {
-    public class ChatGPTRequest : IChatGPTRequest
+    public class ChatGPTRequest : IChatGPTRequest, IDisposable
     {
         private readonly HttpClient _client;
         private readonly string _apiKey;
@@ -33,8 +36,7 @@ namespace BrunoTheBot.API
             var jsonRequest = JsonSerializer.Serialize(requestData);
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
-
+            if (!_client.DefaultRequestHeaders.Any()) _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
             var response = await _client.PostAsync("https://api.openai.com/v1/chat/completions", content);
 
             if (response.IsSuccessStatusCode)
@@ -49,6 +51,12 @@ namespace BrunoTheBot.API
                 errorMessage += $"Motivo: {response.ReasonPhrase}. Conteúdo da resposta: {await response.Content.ReadAsStringAsync()}";
                 return errorMessage;
             }
+        }
+
+        // Implementação do método Dispose para liberar recursos
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

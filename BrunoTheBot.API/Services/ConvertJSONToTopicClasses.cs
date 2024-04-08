@@ -1,29 +1,38 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Course;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.JSInterop.Implementation;
 using Newtonsoft.Json.Linq;
 
 namespace BrunoTheBot.API.Services
 {
     public static class ConvertJSONToObjects
     {
-        public static List<TopicClass> ConvertToTopicClasses(string input)
+        public static List<TopicClass> ConvertToTopicClasses(string input, string key)
         {
-            var content = ExtractChatGPTContentFromJSON(input);
-            JObject contentData = JObject.Parse(content);
-            var topicClassesArray = (JArray)contentData["TopicClasses"]! ?? throw new Exception("TopicClasses not found in JSON.");
-
-            List<TopicClass> _topicClassesList = new List<TopicClass>(topicClassesArray.Count);
-
-            foreach (var item in topicClassesArray)
+            try
             {
-                var topicClass = new TopicClass();
-                topicClass.Name = item.ToString();
-                Console.WriteLine(item.ToString());
-                _topicClassesList.Add(topicClass);
+                var content = ExtractChatGPTContentFromJSON(input);
+                JObject contentData = JObject.Parse(content);
+                var topicClassesArray = (JArray)contentData[key]! ?? throw new Exception("TopicClasses not found in JSON.");
+
+                List<TopicClass> _topicClassesList = new(topicClassesArray.Count);
+
+                foreach (var item in topicClassesArray)
+                {
+                    var topicClass = new TopicClass
+                    {
+                        Name = item.ToString()
+                    };
+                    _topicClassesList.Add(topicClass);
+                }
+
+                if (_topicClassesList.Count == 0 || _topicClassesList == null) throw new Exception();
+
+                return _topicClassesList;
             }
 
-            return _topicClassesList;
+            catch
+            {
+                throw new Exception();
+            }
         }
 
         public static string ExtractChatGPTContentFromJSON(string input)
