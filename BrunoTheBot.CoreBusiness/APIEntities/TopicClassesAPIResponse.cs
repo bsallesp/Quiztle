@@ -1,11 +1,9 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Course;
-
-namespace BrunoTheBot.CoreBusiness.APIEntities
+﻿namespace BrunoTheBot.CoreBusiness.APIEntities
 {
-    public class TopicClassesAPIResponse
+    public class ContentAPIResponse
     {
         public string Status { get; set; } = "";
-        public List<TopicClass> TopicClassesAquired { get; set; } = [];
+        public string NewContent { get; set; } = "";
 
     }
 }

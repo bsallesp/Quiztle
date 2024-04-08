@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
-namespace BrunoTheBot.API.Controllers
+namespace BrunoTheBot.API.Services
 {
     [Route("api/[controller]")]
     [ApiController]

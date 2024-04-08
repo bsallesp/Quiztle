@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
 {
-    public class TopicClassesFromLLM(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
+    public class FromLLMToTopicClasses(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
@@ -17,10 +17,10 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
         {
             try
             {
-                var prompt = LLMPrompts.GetTopicsClassesFromSchoolPrompt(school, subTopicsClassesAmount);
+                var prompt = LLMPrompts.GetNewTopicsClassesFromSchoolPrompt(school, subTopicsClassesAmount);
                 var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
                 await _fromLLMToLogController.SaveLog(nameof(GetNewTopicClassesFromLLM), responseLLM);
-                var newTopicClasses = ConvertJSONToObjects.ConvertToTopicClasses(responseLLM, "TopicClasses");
+                var newTopicClasses = JSONConverter.ConvertToTopicClasses(responseLLM, "NewTopicClasses");
                 if (newTopicClasses.Count <= 0 || newTopicClasses == null) throw new Exception("The TopicClassesResponseAPILLM amount is zero or null");
 
                 TopicClassesAPIResponse TopicClassesResponseAPILLM = new()
@@ -55,10 +55,10 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
             {
                 foreach(var topic in school.Topics)
                 {
-                    var prompt = LLMPrompts.GetSubTopicsClassesFromSchoolPrompt(school.Name, topic.Name, subTopicsClassesAmount);
+                    var prompt = LLMPrompts.GetNewSubTopicsFromTopicClasses(school.Name, topic.Name, subTopicsClassesAmount);
                     var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt);
                     await _fromLLMToLogController.SaveLog(nameof(GetNewSubTopicClassesFromLLM), responseLLM);
-                    var subTopicClasses = ConvertJSONToObjects.ConvertToTopicClasses(responseLLM, "SubTopicClasses");
+                    var subTopicClasses = JSONConverter.ConvertToTopicClasses(responseLLM, "NewSubTopicClasses");
                     topic.SubTopicClasses.AddRange(subTopicClasses);
                     updatedSchool.Topics.Add(topic);
                 }

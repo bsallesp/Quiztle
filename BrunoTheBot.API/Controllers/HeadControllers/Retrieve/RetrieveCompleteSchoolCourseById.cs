@@ -9,7 +9,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RetrieveSchoolCourseById(SchoolRepository schoolDb) : ControllerBase
+    public class RetrieveCompleteSchoolCourseById(SchoolRepository schoolDb) : ControllerBase
     {
         private readonly SchoolRepository _schoolDb = schoolDb;
 
@@ -23,7 +23,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
             {
                 schoolAPIResponse = new SchoolAPIResponse {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = await _schoolDb.GetSchoolByIdAsync(schoolId) ?? new School()
+                    School = await _schoolDb.GetSchoolByIdAsync(schoolId, true, true) ?? new School()
                 };
 
                 return schoolAPIResponse;

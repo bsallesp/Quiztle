@@ -15,7 +15,7 @@ builder.Services.AddScoped<AILogRepository>();
 builder.Services.AddScoped<SchoolRepository>();
 builder.Services.AddScoped<FromLLMToLogController>();
 builder.Services.AddScoped<CreateSchoolCourse>();
-builder.Services.AddTransient<TopicClassesFromLLM>();
+builder.Services.AddTransient<FromLLMToTopicClasses>();
 builder.Services.AddControllers();
 
 // Configuração CORS
@@ -31,11 +31,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
     string connectionString = ConnectionStrings.DevelopmentConnectionString;
-
     var env = builder.Environment;
     if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
-
-    Console.WriteLine(connectionString);
     opt.UseNpgsql(connectionString);
 });
 
