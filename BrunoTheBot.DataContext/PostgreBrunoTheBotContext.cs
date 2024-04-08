@@ -20,6 +20,7 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Content>();
             modelBuilder.Entity<School>();
             modelBuilder.Entity<TopicClass>();
+            modelBuilder.Entity<Section>();
 
             //QUIZ
             modelBuilder.Entity<Answer>();
@@ -34,6 +35,7 @@ namespace BrunoTheBot.DataContext
         public DbSet<Content>? Contents { get; set; }
         public DbSet<School>? Schools { get; set; }
         public DbSet<TopicClass>? TopicClasses { get; set; }
+        public DbSet<Section>? Sections { get; set; }
 
         //QUIZ
         public DbSet<Answer>? Answers { get; set; }

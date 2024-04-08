@@ -13,23 +13,33 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<ContentAPIResponse>> GetNewContentFromLLM(string school, string topicClass, string subTopic)
+        public async Task<ActionResult<SchoolAPIResponse>> GetFullContentFromLLM(School school)
         {
             try
             {
-                var prompt = LLMPrompts.GetNewContentFromSubTopics(school, topicClass, subTopic);
-                var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
-                await _fromLLMToLogController.SaveLog(nameof(GetNewContentFromLLM), responseLLM);
-                var newContent = JSONConverter.ConvertToContent(responseLLM, "NewContent");
-                if (string.IsNullOrEmpty(newContent)) throw new Exception("The FromLLMToContent amount is zero or null");
+                foreach (var topic in school.Topics)
+                {
+                    foreach (var section in topic.Sections)
+                    {
+                        var prompt = LLMPrompts.GetNewContentFromSection(school.Name, topic.Name, section.Name);
+                        var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
+                        var registerName = school.Name + topic.Name + section.Name;
+                        await _fromLLMToLogController.SaveLog(registerName, responseLLM);
+                        var newContent = JSONConverter.ConvertToContent(responseLLM, "NewContent");
+                        if (string.IsNullOrEmpty(newContent)) throw new Exception("The FromLLMToContent amount is zero or null");
 
-                ContentAPIResponse contentAPIResponse = new()
+                        section.Content.Text = newContent;
+                        Console.WriteLine(newContent);
+                    }
+                }
+
+                SchoolAPIResponse schoolAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    NewContent = newContent
+                    School = school
                 };
 
-                return contentAPIResponse ?? throw new Exception("FromLLMToContent is null");
+                return schoolAPIResponse ?? throw new Exception("schoolAPIResponse show some error: ");
             }
             catch (Exception ex)
             {

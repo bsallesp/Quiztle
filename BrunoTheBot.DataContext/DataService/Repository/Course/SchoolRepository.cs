@@ -37,7 +37,8 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Course
             if (showTopics && showSubTopics)
             {
                 query = query.Include(s => s.Topics)
-                             .ThenInclude(t => t.SubTopicClasses);
+                             .ThenInclude(t => t.Sections)
+                             .ThenInclude(c => c.Content); 
             }
             else if (showTopics)
             {

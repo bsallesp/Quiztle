@@ -16,6 +16,7 @@ builder.Services.AddScoped<SchoolRepository>();
 builder.Services.AddScoped<FromLLMToLogController>();
 builder.Services.AddScoped<CreateSchoolCourse>();
 builder.Services.AddTransient<FromLLMToTopicClasses>();
+builder.Services.AddTransient<FromLLMToContent>();
 builder.Services.AddControllers();
 
 // Configuração CORS

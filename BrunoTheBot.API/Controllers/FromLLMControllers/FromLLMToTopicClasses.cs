@@ -13,11 +13,11 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<TopicClassesAPIResponse>> GetNewTopicClassesFromLLM(string school, int subTopicsClassesAmount = 10)
+        public async Task<ActionResult<TopicClassesAPIResponse>> GetNewTopicClassesFromLLM(string school, int topicsAmount = 5)
         {
             try
             {
-                var prompt = LLMPrompts.GetNewTopicsClassesFromSchoolPrompt(school, subTopicsClassesAmount);
+                var prompt = LLMPrompts.GetNewTopicsClassesFromSchoolPrompt(school, topicsAmount);
                 var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
                 await _fromLLMToLogController.SaveLog(nameof(GetNewTopicClassesFromLLM), responseLLM);
                 var newTopicClasses = JSONConverter.ConvertToTopicClasses(responseLLM, "NewTopicClasses");
@@ -43,7 +43,7 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
             }
         }
 
-        public async Task<ActionResult<SchoolAPIResponse>> GetNewSubTopicClassesFromLLM(School school, int subTopicsClassesAmount = 10)
+        public async Task<ActionResult<SchoolAPIResponse>> GetNewSectionsFromLLM(School school, int sectionsAmount = 5)
         {
             School updatedSchool = new School
             {
@@ -55,18 +55,18 @@ namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
             {
                 foreach(var topic in school.Topics)
                 {
-                    var prompt = LLMPrompts.GetNewSubTopicsFromTopicClasses(school.Name, topic.Name, subTopicsClassesAmount);
+                    var prompt = LLMPrompts.GetNewSectionsFromTopicClasses(school.Name, topic.Name, sectionsAmount);
                     var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt);
-                    await _fromLLMToLogController.SaveLog(nameof(GetNewSubTopicClassesFromLLM), responseLLM);
-                    var subTopicClasses = JSONConverter.ConvertToTopicClasses(responseLLM, "NewSubTopicClasses");
-                    topic.SubTopicClasses.AddRange(subTopicClasses);
+                    await _fromLLMToLogController.SaveLog(nameof(GetNewSectionsFromLLM), responseLLM);
+                    var sections = JSONConverter.ConvertToSections(responseLLM, "NewSections");
+                    topic.Sections.AddRange(sections);
                     updatedSchool.Topics.Add(topic);
                 }
 
                 SchoolAPIResponse SchoolAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = school
+                    School = updatedSchool
                 };
 
                 return SchoolAPIResponse ?? throw new Exception();

@@ -30,18 +30,10 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Text")
                         .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<int>("TopicClassId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TopicClassId");
 
                     b.ToTable("Contents");
                 });
@@ -66,6 +58,36 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("Schools");
                 });
 
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Section", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TopicClassId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentId");
+
+                    b.HasIndex("TopicClassId");
+
+                    b.ToTable("Sections");
+                });
+
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
                 {
                     b.Property<int>("Id")
@@ -84,14 +106,9 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Property<int?>("SchoolId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TopicClassId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolId");
-
-                    b.HasIndex("TopicClassId");
 
                     b.ToTable("TopicClasses");
                 });
@@ -198,15 +215,19 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("AILogs");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Content", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Section", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", "TopicClass")
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Content", "Content")
                         .WithMany()
-                        .HasForeignKey("TopicClassId")
+                        .HasForeignKey("ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TopicClass");
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
+                        .WithMany("Sections")
+                        .HasForeignKey("TopicClassId");
+
+                    b.Navigation("Content");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
@@ -214,10 +235,6 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.School", null)
                         .WithMany("Topics")
                         .HasForeignKey("SchoolId");
-
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
-                        .WithMany("SubTopicClasses")
-                        .HasForeignKey("TopicClassId");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
@@ -253,7 +270,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
                 {
-                    b.Navigation("SubTopicClasses");
+                    b.Navigation("Sections");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>

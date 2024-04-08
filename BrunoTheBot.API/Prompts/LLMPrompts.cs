@@ -12,40 +12,31 @@ namespace BrunoTheBot.API.Prompts
                 $" containing an array of the {topicClassAmount} most crucial components.";
         }
 
-        public static string GetNewSubTopicsFromTopicClasses(string school, string topicClasses, int subTopicClassAmount = 10)
+        public static string GetNewSectionsFromTopicClasses(string school, string topicClass, int sectionsAmount = 10)
         {
             string json = $@"
             {{
-                ""NewSubTopicClasses"": [ ""subtopic1"", ""subtopic2"", ... ]
+                ""NewSections"": [ ""Question 1"", ""Question 2"", ... ]
             }}
             ";
 
-            return $"Let's devise a part of focused study plan to comprehensively learn about {topicClasses}," +
-                $" a topic class about {school}. Return a JSON with the key 'NewSubTopicClasses'," +
-                $" about {topicClasses} containing an array of the {subTopicClassAmount} most crucial components." +
-                $" The JSON structure must be: {json}. This JSON represents an object with a key 'NewSubTopicClasses'," +
-                $" which contains an array of subtopics (subtopic1, subtopic2, etc.)." +
-                $" Each element in the array represents a sub-topic class.";
+            return $"I want to learn about charpter {topicClass}, of {school} Course, but I don't know even to ask a question about this." +
+                       $" Please, generate the most smart and intuitive questions about {topicClass} of {school}." +
+                       $" Generate the amount of {sectionsAmount} questions." +
+                       $" The output JSON structure musto to be: {json}";
         }
 
-        public static string GetNewContentFromSubTopics(string school, string topicClass, string subTopic)
+        public static string GetNewContentFromSection(string schoolName, string topicClass, string section)
         {
             string json = $@"
             {{
-                ""NewContent"": ""The content you need to create.
-                It must be didactic and easy to understand,
-                while also aligning with the highest standards of knowledge
-                from the world's top universities
-                and leading scientific authors and materials.""
+                ""NewContent"": ""Here you answer the question in a didactic style, with details.""
             }}
             ";
 
-            return $"Let's devise a focused study plan to comprehensively learn about {subTopic}," +
-                   $" a subtopic within {topicClass}, which is part of the {school} curriculum." +
-                   $" Your task is to create new content that is didactic and easy to understand," +
-                   $" while also ensuring it meets the highest standards of knowledge from the world's top universities" +
-                   $" and leading scientific authors and materials." +
-                   $" Return a JSON object with the key 'NewContent', containing the following structure: {json}";
+            return $"I am studing about {schoolName}. Now I am the {topicClass} charpter. Can you answer this question? {section}" +
+                $" Return a JSON object with the key 'NewContent'," +
+                $" containing the following structure: {json}";
         }
     }
 }

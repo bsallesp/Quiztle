@@ -1,10 +1,10 @@
 ﻿namespace BrunoTheBot.CoreBusiness.Entities.Course
 {
-    public class TopicClass
+    public class Section
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
         public DateTime Created { get; set; } = DateTime.UtcNow;
-        public List<Section> Sections { get; set; } = [];
+        public Content Content { get; set; } = new();
     }
 }
