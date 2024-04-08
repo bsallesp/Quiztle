@@ -28,9 +28,22 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
 
                 return schoolAPIResponse;
             }
-            catch
+            catch(Exception ex)
             {
-                throw new Exception();
+                // Captura e retorna informações detalhadas da exceção
+                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+
+                // Verifica se a exceção possui uma causa (InnerException)
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                }
+
+                // Adiciona outras propriedades da exceção, se necessário
+                errorMessage += $" StackTrace: {ex.StackTrace}";
+
+                // Lança uma nova exceção com a mensagem detalhada
+                throw new Exception(errorMessage);
             }
         }
     }
