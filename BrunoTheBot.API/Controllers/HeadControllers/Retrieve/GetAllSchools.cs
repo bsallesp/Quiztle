@@ -1,7 +1,5 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMToDBControllers;
-using BrunoTheBot.API.Controllers.StaticsStatusCodes;
-using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.Entities.Course;
+﻿using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +10,6 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
     public class GetAllSchools(SchoolRepository schoolDb) : ControllerBase
     {
         private readonly SchoolRepository _schoolDb = schoolDb;
-
 
         [HttpPost("GetAllSchools")]
         public async Task<SchoolsAPIResponse> ExecuteAsync()

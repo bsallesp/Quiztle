@@ -23,7 +23,6 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Section>();
 
             //QUIZ
-            modelBuilder.Entity<Answer>();
             modelBuilder.Entity<Option>();
             modelBuilder.Entity<Question>();
 
@@ -38,7 +37,6 @@ namespace BrunoTheBot.DataContext
         public DbSet<Section>? Sections { get; set; }
 
         //QUIZ
-        public DbSet<Answer>? Answers { get; set; }
         public DbSet<Option>? Options { get; set; }
         public DbSet<Question>? Questions { get; set; }
 

@@ -1,6 +1,5 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMToDBControllers;
-using BrunoTheBot.API.Controllers.StaticsStatusCodes;
-using BrunoTheBot.CoreBusiness.APIEntities;
+﻿using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
             {
                 schoolAPIResponse = new SchoolAPIResponse {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = await _schoolDb.GetSchoolByIdAsync(schoolId, true, true) ?? new School()
+                    School = await _schoolDb.GetSchoolByIdAsync(schoolId, true, true, true) ?? new School()
                 };
 
                 return schoolAPIResponse;

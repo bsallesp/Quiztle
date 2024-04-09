@@ -38,5 +38,27 @@ namespace BrunoTheBot.API.Prompts
                 $" Return a JSON object with the key 'NewContent'," +
                 $" containing the following structure: {json}";
         }
+
+        public static string GetNewQuestion(string text, int questionsAmount = 5)
+        {
+            string output = "";
+
+            string json =  $@"
+            {{
+                ""Question"": ""Write the question here."",
+                ""Answer"": ""Here is the right answer."",
+                ""Option1"": ""Here is a wrong answer."",
+                ""Option2"": ""Here is a wrong answer."",
+                ""Option3"": ""Here is a wrong answer."",
+                ""Option4"": ""Here is a wrong answer."",
+                ""Hint"": ""Write a hint here.""
+            }}
+            ";
+
+            if (questionsAmount <= 1) output = $"Elaborate a question about {text} and fit it in the json structure: {json}";
+            if (questionsAmount > 1) output = $"Elaborate {questionsAmount} questions about {text} and fit it in the json structure: {json}";
+
+            return output; 
+        }
     }
 }

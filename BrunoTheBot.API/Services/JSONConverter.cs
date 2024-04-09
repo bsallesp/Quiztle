@@ -1,5 +1,8 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 namespace BrunoTheBot.API.Services
 {
@@ -66,7 +69,7 @@ namespace BrunoTheBot.API.Services
                     sectionsList.Add(new Section
                     {
                         Name = (string)section!
-                    }) ;
+                    });
                 }
 
 
@@ -94,6 +97,64 @@ namespace BrunoTheBot.API.Services
                 throw new Exception(errorMessage);
             }
         }
+
+        public static Question ConvertToQuestion(string input)
+        {
+            try
+            {
+                var questionResponse = ExtractChatGPTResponseFromJSON(input);
+                JObject sectionJSONObject = JObject.Parse(questionResponse);
+
+                Question newQuestion = new Question
+                {
+                    Name = (string)sectionJSONObject["Question"]! ?? throw new Exception("Question not found in JSON."),
+                    Answer = (string)sectionJSONObject["Answer"]! ?? throw new Exception("Answer not found in JSON."),
+                    Options = new List<Option>
+                    {
+                        new Option
+                        {
+                            Name = (string)sectionJSONObject["Option1"]! ?? throw new Exception("Option1 not found in JSON.")
+                        },
+                        new Option
+                        {
+                            Name = (string)sectionJSONObject["Option2"]! ?? throw new Exception("Option2 not found in JSON.")
+                        },
+                        new Option
+                        {
+                            Name = (string)sectionJSONObject["Option3"]! ?? throw new Exception("Option3 not found in JSON.")
+                        },
+                        new Option
+                        {
+                            Name = (string)sectionJSONObject["Option4"]! ?? throw new Exception("Option4 not found in JSON.")
+                        }
+                    },
+
+                    Hint = (string)sectionJSONObject["Hint"]! ?? throw new Exception("Hint not found in JSON.")
+                };
+
+                return newQuestion;
+            }
+
+
+            catch (Exception ex)
+            {
+                // Captura e retorna informações detalhadas da exceção
+                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+
+                // Verifica se a exceção possui uma causa (InnerException)
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                }
+
+                // Adiciona outras propriedades da exceção, se necessário
+                errorMessage += $" StackTrace: {ex.StackTrace}";
+
+                // Lança uma nova exceção com a mensagem detalhada
+                throw new Exception(errorMessage);
+            }
+        }
+
 
         public static string ConvertToContent(string input, string key)
         {

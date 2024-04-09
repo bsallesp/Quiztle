@@ -1,12 +1,11 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMControllers;
-using BrunoTheBot.API.Controllers.StaticsStatusCodes;
-using BrunoTheBot.API.Prompts;
+﻿using BrunoTheBot.API.Prompts;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.FromLLMToDBControllers
+namespace BrunoTheBot.API.Controllers.FromLLMControllers
 {
     public class FromLLMToTopicClasses(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
     {

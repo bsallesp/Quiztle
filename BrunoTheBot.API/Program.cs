@@ -1,6 +1,5 @@
 using BrunoTheBot.API;
 using BrunoTheBot.API.Controllers.FromLLMControllers;
-using BrunoTheBot.API.Controllers.FromLLMToDBControllers;
 using BrunoTheBot.API.Controllers.HeadControllers.Create;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
@@ -17,6 +16,8 @@ builder.Services.AddScoped<FromLLMToLogController>();
 builder.Services.AddScoped<CreateSchoolCourse>();
 builder.Services.AddTransient<FromLLMToTopicClasses>();
 builder.Services.AddTransient<FromLLMToContent>();
+builder.Services.AddTransient<FromLLMToQuestions>();
+
 builder.Services.AddControllers();
 
 // Configuração CORS

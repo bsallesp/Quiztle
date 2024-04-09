@@ -6,6 +6,5 @@ namespace BrunoTheBot.CoreBusiness.APIEntities
     {
         public string Status { get; set; } = "";
         public List<TopicClass> TopicClassesAquired { get; set; } = [];
-
     }
 }

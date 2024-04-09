@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240408174925_AddQuestionInSections")]
+    partial class AddQuestionInSections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,6 +116,26 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.ToTable("TopicClasses");
                 });
 
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Answers");
+                });
+
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
                 {
                     b.Property<int>("Id")
@@ -146,8 +169,8 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Answer")
-                        .HasColumnType("text");
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -163,6 +186,8 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AnswerId");
 
                     b.HasIndex("SectionId");
 
@@ -224,9 +249,17 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Answer", "Answer")
+                        .WithMany()
+                        .HasForeignKey("AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
+
+                    b.Navigation("Answer");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.School", b =>

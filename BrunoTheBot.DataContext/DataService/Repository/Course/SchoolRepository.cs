@@ -28,26 +28,44 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Course
             }
         }
 
-        public async Task<School?> GetSchoolByIdAsync(int id, bool showTopics = false, bool showSubTopics = false)
+        public async Task<School?> GetSchoolByIdAsync(int id, bool showTopics = false, bool showSections = false, bool showQuestions = false)
         {
             EnsureSchoolsNotNull();
 
             var query = _context.Schools!.AsQueryable();
 
-            if (showTopics && showSubTopics)
+            query = query.Include(s => s.Topics);
+
+            if (showTopics)
+            {
+                if (showSections)
+                {
+                    query = query.Include(s => s.Topics)
+                                 .ThenInclude(t => t.Sections);
+                }
+                else
+                {
+                    query = query.Include(s => s.Topics);
+                }
+            }
+
+            if (showSections)
             {
                 query = query.Include(s => s.Topics)
                              .ThenInclude(t => t.Sections)
-                             .ThenInclude(c => c.Content); 
+                             .ThenInclude(c => c.Content);
             }
-            else if (showTopics)
+
+            if (showQuestions)
             {
-                query = query.Include(s => s.Topics);
+                query = query.Include(s => s.Topics)
+                             .ThenInclude(t => t.Sections)
+                             .ThenInclude(q => q.Questions)
+                             .ThenInclude(o => o.Options);
             }
 
             return await query.FirstOrDefaultAsync(s => s.Id == id);
         }
-
 
         public async Task<IQueryable<School>> GetAllSchoolsAsync()
         {

@@ -1,5 +1,4 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMControllers;
-using BrunoTheBot.API.Prompts;
+﻿using BrunoTheBot.API.Prompts;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
@@ -8,28 +7,34 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.FromLLMControllers
 {
-    public class FromLLMToContent(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
+    public class FromLLMToQuestions(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<SchoolAPIResponse>> GetFullContentFromLLM(School school)
+        public async Task<ActionResult<SchoolAPIResponse>> GetFullNewQuestionsGroupFromLLM(School school, int questionsPerSection = 1)
         {
             try
             {
-                foreach (var topic in school.Topics)
+                if (school == null || school.Topics.Count <= 0) return new SchoolAPIResponse
+                {
+                    Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                    School = new ()
+                };
+
+                foreach (var topic in school.Topics) 
                 {
                     foreach (var section in topic.Sections)
                     {
-                        var prompt = LLMPrompts.GetNewContentFromSection(school.Name, topic.Name, section.Name);
+                        var prompt = LLMPrompts.GetNewQuestion(section.Content.Text!, questionsPerSection);
                         var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
-                        var registerName = school.Name + topic.Name + section.Name;
-                        await _fromLLMToLogController.SaveLog(registerName, responseLLM);
-                        var newContent = JSONConverter.ConvertToContent(responseLLM, "NewContent");
-                        if (string.IsNullOrEmpty(newContent)) throw new Exception("The FromLLMToContent amount is zero or null");
+                        await _fromLLMToLogController.SaveLog(nameof(GetFullNewQuestionsGroupFromLLM), responseLLM);
+                        var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
 
-                        section.Content.Text = newContent;
-                        Console.WriteLine(newContent);
+                        Console.WriteLine(newQuestion.Name);
+                        Console.WriteLine(newQuestion.Answer);
+
+                        section.Questions.Add(newQuestion);
                     }
                 }
 
@@ -39,7 +44,8 @@ namespace BrunoTheBot.API.Controllers.FromLLMControllers
                     School = school
                 };
 
-                return schoolAPIResponse ?? throw new Exception("schoolAPIResponse show some error: ");
+                return schoolAPIResponse;
+
             }
             catch (Exception ex)
             {
