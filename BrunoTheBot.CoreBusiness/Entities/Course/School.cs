@@ -1,10 +1,19 @@
-﻿namespace BrunoTheBot.CoreBusiness.Entities.Course
+﻿using System.Text.Json.Serialization;
+
+namespace BrunoTheBot.CoreBusiness.Entities.Course
 {
     public class School
     {
+        [JsonPropertyName("Id")]
         public int Id { get; set; }
+
+        [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
+
+        [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
-        public List<TopicClass> Topics { get; set; } = [];
+
+        [JsonPropertyName("Topics")]
+        public List<TopicClass> Topics { get; set; } = new List<TopicClass>();
     }
 }

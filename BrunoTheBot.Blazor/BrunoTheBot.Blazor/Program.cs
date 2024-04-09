@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.DataContext;
-using BrunoTheBot.APIs;
-using BrunoTheBot.Blazor.APIServices;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
+using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
+using BrunoTheBot.Blazor.APIServices;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -19,13 +19,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddTransient<SchoolRepository>();
-builder.Services.AddTransient<HuggingFaceAPI>();
-builder.Services.AddTransient<DeepSeekAPI>();
-builder.Services.AddTransient<AILogService>();
-builder.Services.AddTransient<ChatGPTAPIService>();
-
+builder.Services.AddScoped<SchoolRepository>();
+builder.Services.AddTransient<GetAllSchools>();
 builder.Services.AddScoped<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddScoped<GetAllSchoolsService>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>

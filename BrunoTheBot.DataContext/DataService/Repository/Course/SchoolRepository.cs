@@ -67,11 +67,11 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Course
             return await query.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<IQueryable<School>> GetAllSchoolsAsync()
+        public async Task<List<School>> GetAllSchoolsAsync()
         {
             EnsureSchoolsNotNull();
             var schools = await _context.Schools!.ToListAsync();
-            return schools.AsQueryable();
+            return [.. schools.AsQueryable()];
         }
 
         public async Task UpdateSchoolAsync(School school)

@@ -2,60 +2,44 @@
 @page "/API"
 
 @using System.Text.Json
-@using BrunoTheBot.CoreBusiness
+@using BrunoTheBot.CoreBusiness.Entities.Course
 @using BrunoTheBot.CoreBusiness.Log
 @using CoreBusiness.Entities
 @using Newtonsoft.Json.Linq
+@using BrunoTheBot.CoreBusiness.APIEntities
 
-
-@inject AILogService AILogService
-@inject ChatGPTAPIService ChatGPTAPIService
+@inject GetAllSchoolsService GetAllSchoolsService
 
 <PageTitle>Home</PageTitle>
 
-<textarea type="text" size="50000" style="width: 600px; height: 30vh;" @bind=inputAPI1 />
-<button @onclick="MakeChatGPTAPIRequest">Get</button>
+<h4>
+    Courses:
+    <pre>
+        @foreach (var school in Schools)
+        {
+            @school.Name;
+        <hr />
+        }
+    </pre>
+</h4>
 
-<h4>
-    Content:
-    <pre>
-        @contentGPT
-    </pre>
-</h4>
-<h4>
-    API Result:
-    <pre>
-        @resultAPI
-    </pre>
-</h4>
 
 @code {
-    private string inputAPI1 = "";
-    private string contentGPT = "no results yet";
-    private string resultAPI = "no results yet.";
-    private IEnumerable<AILog>? logs;
+
+    private List<School> Schools = [];
+    private SchoolsAPIResponse response = new();
 
     protected override async Task OnInitializedAsync()
     {
-        logs = await AILogService.GetAILogsAsync();
-    }
+        response = await GetAllSchoolsService.ExecuteAsync();
 
-    private async Task MakeChatGPTAPIRequest()
-    {
-        Console.WriteLine("Retrieving ChatGPT API...");
-        Console.WriteLine(resultAPI);
+        var schoolsList = response.Schools!.ToList();
 
-        resultAPI = "Retrieving ChatGPT API...";
-        resultAPI = await ChatGPTAPIService.GetSchoolResearch(inputAPI1);
-        JObject jsonObject = JObject.Parse(resultAPI);
-#pragma warning disable
-        contentGPT = (string)jsonObject["choices"][0]["message"]["content"];
-#pragma warning restore CS8600
-
-        await AILogService.CreateAILogAsync(new AILog
-            {
-                JSON = resultAPI
-            });
+        foreach (var school in schoolsList)
+        {
+            Schools.Add(school);
+            Console.WriteLine(school.Name);
+        }
         StateHasChanged();
     }
 }

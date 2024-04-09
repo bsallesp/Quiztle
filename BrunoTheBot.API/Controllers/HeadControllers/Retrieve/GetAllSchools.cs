@@ -11,7 +11,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
     {
         private readonly SchoolRepository _schoolDb = schoolDb;
 
-        [HttpPost("GetAllSchools")]
+        [HttpGet("GetAllSchools")]
         public async Task<SchoolsAPIResponse> ExecuteAsync()
         {
             _ = new SchoolsAPIResponse();
