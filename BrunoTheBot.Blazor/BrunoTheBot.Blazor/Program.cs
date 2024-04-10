@@ -5,6 +5,7 @@ using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
 using BrunoTheBot.Blazor.APIServices;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -16,6 +17,12 @@ var configuration = new ConfigurationBuilder()
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthenticationCore();
+builder.Services.AddAuthorizationCore();
+
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
 builder.Services.AddHttpClient();
 

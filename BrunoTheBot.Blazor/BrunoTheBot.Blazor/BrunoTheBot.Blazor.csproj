@@ -11,12 +11,12 @@
     <ProjectReference Include="..\..\BrunoTheBot.CoreBusiness\BrunoTheBot.CoreBusiness.csproj" />
     <ProjectReference Include="..\..\BrunoTheBot.DataContext\BrunoTheBot.DataContext.csproj" />
     <ProjectReference Include="..\BrunoTheBot.Blazor.Client\BrunoTheBot.Blazor.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
     <PackageReference Include="System.Text.Json" Version="8.0.3" />
   </ItemGroup>
 
