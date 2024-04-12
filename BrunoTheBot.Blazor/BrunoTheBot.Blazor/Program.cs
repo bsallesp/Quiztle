@@ -18,12 +18,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddAuthenticationCore();
-builder.Services.AddAuthorizationCore();
-
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
-
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<SchoolRepository>();

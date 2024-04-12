@@ -5,25 +5,12 @@
 @using BrunoTheBot.CoreBusiness.Entities.Course
 @using BrunoTheBot.CoreBusiness.Log
 @using CoreBusiness.Entities
-@using Microsoft.AspNetCore.Components.Authorization
 @using Newtonsoft.Json.Linq
 @using BrunoTheBot.CoreBusiness.APIEntities
 
 @inject GetAllSchoolsService GetAllSchoolsService
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Home</PageTitle>
-
-<AuthorizeView>
-    <Authorized>
-        <p>Hello, @context.User.Identity?.Name!</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>You're not authorized.</p>
-    </NotAuthorized>
-</AuthorizeView>
-
-<button onclick="AuthenticateIt">AUTHENTICATE</button>
 
 <h4>
     Courses:
@@ -41,11 +28,7 @@
     private List<School> Schools = [];
     private SchoolsAPIResponse response = new();
 
-    private async Task AuthenticateIt()
-    {
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-    }
 
     protected override async Task OnInitializedAsync()
     {

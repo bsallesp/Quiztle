@@ -1,16 +1,12 @@
 using BrunoTheBot.Blazor.APIServices;
 using BrunoTheBot.DataContext;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<GetAllSchoolsService>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
