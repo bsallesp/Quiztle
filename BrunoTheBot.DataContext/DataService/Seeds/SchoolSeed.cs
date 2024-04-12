@@ -3,7 +3,7 @@ using BrunoTheBot.DataContext;
 
 namespace BrunoTheBot.DataContext
 {
-    public class SchoolSeed
+    public class BookSeed
     {
         private string RandomOne(string[] list)
         {
@@ -11,31 +11,31 @@ namespace BrunoTheBot.DataContext
             return list[idx];
         }
 
-        private School MakeSchool(List<TopicClass> topics)
+        private Book MakeBook(List<Chapter> chapters)
         {
-            var school = new School
+            var book = new Book
             {
                 Name = RandomOne(_names),
                 Created = DateTime.Now,
-                Topics = topics
+                Chapters = chapters
             };
-            return school;
+            return book;
         }
 
-        public async Task SeedDatabaseWithSchoolCountAsync(PostgreBrunoTheBotContext context, int totalCount, List<TopicClass> topics)
+        public async Task SeedDatabaseWithBookCountAsync(PostgreBrunoTheBotContext context, int totalCount, List<Chapter> chapters)
         {
             var count = 0;
             var currentCycle = 0;
             while (count < totalCount)
             {
-                var list = new List<School>();
+                var list = new List<Book>();
                 while (currentCycle++ < 100 && count++ < totalCount)
                 {
-                    list.Add(MakeSchool(topics));
+                    list.Add(MakeBook(chapters));
                 }
                 if (list.Count > 0)
                 {
-                    context.Schools?.AddRange(list);
+                    context.Books?.AddRange(list);
                     await context.SaveChangesAsync();
                 }
                 currentCycle = 0;
@@ -44,9 +44,9 @@ namespace BrunoTheBot.DataContext
 
         private readonly string[] _names = new[]
         {
-            "School 1",
-            "School 2",
-            "School 3",
+            "Book 1",
+            "Book 2",
+            "Book 3",
         };
     }
 }

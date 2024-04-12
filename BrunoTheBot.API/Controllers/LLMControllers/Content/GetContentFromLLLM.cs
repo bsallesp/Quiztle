@@ -1,29 +1,28 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMControllers;
-using BrunoTheBot.API.Prompts;
+﻿using BrunoTheBot.API.Prompts;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.FromLLMControllers
+namespace BrunoTheBot.API.Controllers.LLMControllers
 {
-    public class FromLLMToContent(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
+    public class GetContentFromLLLM(IChatGPTRequest chatGPTAPI, LogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
-        private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
+        private readonly LogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<SchoolAPIResponse>> GetFullContentFromLLM(School school)
+        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(Book book)
         {
             try
             {
-                foreach (var topic in school.Topics)
+                foreach (var chapter in book.Chapters)
                 {
-                    foreach (var section in topic.Sections)
+                    foreach (var section in chapter.Sections)
                     {
-                        var prompt = LLMPrompts.GetNewContentFromSection(school.Name, topic.Name, section.Name);
+                        var prompt = LLMPrompts.GetNewContentFromSection(book.Name, chapter.Name, section.Name);
                         var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
-                        var registerName = school.Name + topic.Name + section.Name;
+                        var registerName = book.Name + chapter.Name + section.Name;
                         await _fromLLMToLogController.SaveLog(registerName, responseLLM);
                         var newContent = JSONConverter.ConvertToContent(responseLLM, "NewContent");
                         if (string.IsNullOrEmpty(newContent)) throw new Exception("The FromLLMToContent amount is zero or null");
@@ -33,13 +32,13 @@ namespace BrunoTheBot.API.Controllers.FromLLMControllers
                     }
                 }
 
-                SchoolAPIResponse schoolAPIResponse = new()
+                BookAPIResponse bookAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = school
+                    Book = book
                 };
 
-                return schoolAPIResponse ?? throw new Exception("schoolAPIResponse show some error: ");
+                return bookAPIResponse ?? throw new Exception("bookAPIResponse show some error: ");
             }
             catch (Exception ex)
             {

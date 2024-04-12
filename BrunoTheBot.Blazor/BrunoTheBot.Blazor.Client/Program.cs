@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 
-builder.Services.AddScoped<GetAllSchoolsService>();
+builder.Services.AddScoped<GetAllBooksService>();
+builder.Services.AddScoped<RetrieveBookByIdService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

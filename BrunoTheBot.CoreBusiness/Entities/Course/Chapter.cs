@@ -2,7 +2,7 @@
 
 namespace BrunoTheBot.CoreBusiness.Entities.Course
 {
-    public class TopicClass
+    public class Chapter
     {
         [JsonPropertyName("Id")]
         public int Id { get; set; }

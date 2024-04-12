@@ -1,6 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
-using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,26 +7,26 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RetrieveCompleteSchoolCourseById(SchoolRepository schoolDb) : ControllerBase
+    public class GetAllBooks(BookRepository bookDb) : ControllerBase
     {
-        private readonly SchoolRepository _schoolDb = schoolDb;
+        private readonly BookRepository _bookDb = bookDb;
 
-
-        [HttpPost("RetrieveSchoolCourseById")]
-        public async Task<ActionResult<SchoolAPIResponse>> ExecuteAsync([FromBody] int schoolId)
+        [HttpGet("GetAllBooks")]
+        public async Task<BooksAPIResponse> ExecuteAsync()
         {
-            SchoolAPIResponse schoolAPIResponse = new SchoolAPIResponse();
+            _ = new BooksAPIResponse();
 
             try
             {
-                schoolAPIResponse = new SchoolAPIResponse {
+                BooksAPIResponse booksAPIResponse = new()
+                {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = await _schoolDb.GetSchoolByIdAsync(schoolId, true, true, true) ?? new School()
+                    Books = await _bookDb.GetAllBooksAsync()
                 };
 
-                return schoolAPIResponse;
+                return booksAPIResponse;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Captura e retorna informações detalhadas da exceção
                 string errorMessage = $"Ocorreu uma exceção: {ex.Message}";

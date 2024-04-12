@@ -1,32 +1,41 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Course;
-using BrunoTheBot.DataContext.Migrations;
 
 namespace BrunoTheBot.API.Prompts
 {
     public static class LLMPrompts
     {
-        public static string GetNewTopicsClassesFromSchoolPrompt(string school, int topicClassAmount = 10)
-        {
-            return $"\"Let's devise a focused study plan to comprehensively learn about {school}." +
-                $" Return a JSON with the key 'NewTopicClasses'" +
-                $" containing an array of the {topicClassAmount} most crucial components.";
-        }
-
-        public static string GetNewSectionsFromTopicClasses(string school, string topicClass, int sectionsAmount = 10)
+        public static string GetNewChaptersFromBookPrompt(string book, int chaptersAmount = 10)
         {
             string json = $@"
             {{
-                ""NewSections"": [ ""Question 1"", ""Question 2"", ... ]
+                ""NewChapters"": [ ""Chapter 1"", ""Chapter 2"", ... ]
             }}
             ";
 
-            return $"I want to learn about charpter {topicClass}, of {school} Course, but I don't know even to ask a question about this." +
-                       $" Please, generate the most smart and intuitive questions about {topicClass} of {school}." +
-                       $" Generate the amount of {sectionsAmount} questions." +
-                       $" The output JSON structure musto to be: {json}";
+            return $"We're writing a book titled '{book}'." +
+                $" The structure is: a book has many chapters that have many sections." +
+                $" Your mission now is to write {chaptersAmount} chapters about the book '{book}'." +
+                $" Please return a JSON with the key 'NewChapters' in this format: {json}," +
+                $" containing a list of the selected chapters.";
         }
 
-        public static string GetNewContentFromSection(string schoolName, string topicClass, string section)
+        public static string GetNewSectionsFromChapters(Book book, int sectionsAmount = 10)
+        {
+            string json = $@"
+            {{
+                ""NewSections"": [ ""Section 1"", ""Section 2"", ... ]
+            }}
+            ";
+
+            return $"We're writing a book titled '{book.Name}'." +
+                $" The structure is: a book has many chapters that have many sections." +
+                $" Your mission now is to write {sectionsAmount} sections about '{book.Chapters[0].Name}', which is a chapter of the book '{book.Name}'." +
+                $" Please provide smart and intuitive sections about '{book.Chapters[0].Name}' of '{book.Name}'." +
+                $" Please return a JSON with the key 'NewSections' in this format: {json},";
+        }
+
+
+        public static string GetNewContentFromSection(string bookName, string chapter, string section)
         {
             string json = $@"
             {{
@@ -34,9 +43,13 @@ namespace BrunoTheBot.API.Prompts
             }}
             ";
 
-            return $"I am studing about {schoolName}. Now I am the {topicClass} charpter. Can you answer this question? {section}" +
-                $" Return a JSON object with the key 'NewContent'," +
-                $" containing the following structure: {json}";
+            return $"We're writing a book titled '{bookName}'." +
+                $" The structure is: a book has many chapters that have many sections that have a content." +
+                $" Your mission now is to write a content about '{section}'," +
+                $" which is a section of the chapter {chapter}," +
+                $" which is a chapter of the '{bookName}'." +
+                $" Please provide smart and intuitive content." +
+                $" Please return a JSON with the key 'NewContent' in this format: {json},";
         }
 
         public static string GetNewQuestion(string text, int questionsAmount = 5)

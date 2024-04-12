@@ -1,4 +1,4 @@
-﻿using BrunoTheBot.API.Controllers.FromLLMControllers;
+﻿using BrunoTheBot.API.Controllers.LLMControllers;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
@@ -9,20 +9,20 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateQuestions(SchoolRepository schoolRepository, FromLLMToQuestions fromLLMToQuestions) : ControllerBase
+    public class CreateQuestions(BookRepository bookRepository, GetQuestionsFromLLM fromLLMToQuestions) : ControllerBase
     {
-        private readonly SchoolRepository _schoolRepository = schoolRepository;
-        private readonly FromLLMToQuestions _fromLLMToQuestions = fromLLMToQuestions;
+        private readonly BookRepository _bookRepository = bookRepository;
+        private readonly GetQuestionsFromLLM _fromLLMToQuestions = fromLLMToQuestions;
 
         [HttpPost("CreateQuestions")]
-        public async Task<ActionResult<SchoolAPIResponse>> ExecuteAsync([FromBody] School school)
+        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] Book book)
         {
             try
             {
-                var schoolAPIResponse = await _fromLLMToQuestions.GetFullNewQuestionsGroupFromLLM(school, 1);
-                if (schoolAPIResponse.Value!.Status != CustomStatusCodes.SuccessStatus) throw new Exception(schoolAPIResponse.Value!.Status);
+                var bookAPIResponse = await _fromLLMToQuestions.GetFullNewQuestionsGroupFromLLM(book, 1);
+                if (bookAPIResponse.Value!.Status != CustomStatusCodes.SuccessStatus) throw new Exception(bookAPIResponse.Value!.Status);
 
-                await _schoolRepository.UpdateSchoolAsync(school);
+                await _bookRepository.UpdateBookAsync(book);
             }
 
             catch (Exception ex)
@@ -43,7 +43,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
                 throw new Exception(errorMessage);
             }
             
-            return new SchoolAPIResponse();
+            return new BookAPIResponse();
         }
     }
 }

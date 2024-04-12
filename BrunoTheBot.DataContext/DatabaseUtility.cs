@@ -16,13 +16,13 @@ namespace BrunoTheBot.DataContext
 
             if (await context.Database.EnsureCreatedAsync())
             {
-                var schoolSeed = new SchoolSeed();
+                var bookSeed = new BookSeed();
                 var optionSeed = new OptionSeed();
                 var questionSeed = new QuestionSeed();
-                var topicSeed = new TopicSeed();
+                var chapterSeed = new ChapterSeed();
 
-                await schoolSeed.SeedDatabaseWithSchoolCountAsync(context, count, topicSeed.GetTopicsAsync(50).Result);
-                await topicSeed.SeedDatabaseWithTopicCountAsync(context, count);
+                await bookSeed.SeedDatabaseWithBookCountAsync(context, count, chapterSeed.GetChapterAsync(50).Result);
+                await chapterSeed.SeedDatabaseWithChapterCountAsync(context, count);
                 await questionSeed.SeedDatabaseWithQuestionCountAsync(context, count);
                 await optionSeed.SeedDatabaseWithOptionsCountAsync(context, count);
             }

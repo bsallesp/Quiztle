@@ -23,4 +23,8 @@
     <ProjectReference Include="..\BrunoTheBot.DataContext\BrunoTheBot.DataContext.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\LLMControllers\Book\" />
+  </ItemGroup>
+
 </Project>

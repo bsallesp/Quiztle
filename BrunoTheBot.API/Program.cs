@@ -1,5 +1,5 @@
 using BrunoTheBot.API;
-using BrunoTheBot.API.Controllers.FromLLMControllers;
+using BrunoTheBot.API.Controllers.LLMControllers;
 using BrunoTheBot.API.Controllers.HeadControllers.Create;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
@@ -11,12 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Adiciona serviços HTTP Client e Controllers
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddScoped<AILogRepository>();
-builder.Services.AddScoped<SchoolRepository>();
-builder.Services.AddScoped<FromLLMToLogController>();
-builder.Services.AddScoped<CreateSchoolCourse>();
-builder.Services.AddTransient<FromLLMToTopicClasses>();
-builder.Services.AddTransient<FromLLMToContent>();
-builder.Services.AddTransient<FromLLMToQuestions>();
+builder.Services.AddScoped<BookRepository>();
+builder.Services.AddScoped<LogController>();
+builder.Services.AddScoped<CreateBook>();
+builder.Services.AddTransient<GetChaptersFromLLM>();
+builder.Services.AddTransient<GetContentFromLLLM>();
+builder.Services.AddTransient<GetQuestionsFromLLM>();
+builder.Services.AddTransient<GetAllBookSectionsFromLLM>();
 
 builder.Services.AddControllers();
 

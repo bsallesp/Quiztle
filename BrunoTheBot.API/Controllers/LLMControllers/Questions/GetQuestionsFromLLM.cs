@@ -5,26 +5,26 @@ using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.FromLLMControllers
+namespace BrunoTheBot.API.Controllers.LLMControllers
 {
-    public class FromLLMToQuestions(IChatGPTRequest chatGPTAPI, FromLLMToLogController fromLLMToLogController) : ControllerBase
+    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI, LogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
-        private readonly FromLLMToLogController _fromLLMToLogController = fromLLMToLogController;
+        private readonly LogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<SchoolAPIResponse>> GetFullNewQuestionsGroupFromLLM(School school, int questionsPerSection = 1)
+        public async Task<ActionResult<BookAPIResponse>> GetFullNewQuestionsGroupFromLLM(Book book, int questionsPerSection = 1)
         {
             try
             {
-                if (school == null || school.Topics.Count <= 0) return new SchoolAPIResponse
+                if (book == null || book.Chapters.Count <= 0) return new BookAPIResponse
                 {
                     Status = CustomStatusCodes.EmptyObjectErrorStatus,
-                    School = new ()
+                    Book = new()
                 };
 
-                foreach (var topic in school.Topics) 
+                foreach (var chapter in book.Chapters)
                 {
-                    foreach (var section in topic.Sections)
+                    foreach (var section in chapter.Sections)
                     {
                         var prompt = LLMPrompts.GetNewQuestion(section.Content.Text!, questionsPerSection);
                         var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
@@ -38,13 +38,13 @@ namespace BrunoTheBot.API.Controllers.FromLLMControllers
                     }
                 }
 
-                SchoolAPIResponse schoolAPIResponse = new()
+                BookAPIResponse bookAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = school
+                    Book = book
                 };
 
-                return schoolAPIResponse;
+                return bookAPIResponse;
 
             }
             catch (Exception ex)

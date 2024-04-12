@@ -2,10 +2,9 @@
 
 namespace BrunoTheBot.CoreBusiness.APIEntities
 {
-    public class SchoolAPIResponse
+    public class ChapterAPIResponse
     {
         public string Status { get; set; } = "";
-        public School School { get; set; } = new();
-
+        public List<Chapter> ChaptersAquired { get; set; } = [];
     }
 }

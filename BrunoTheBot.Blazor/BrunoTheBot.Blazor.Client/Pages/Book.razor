@@ -1,0 +1,32 @@
+﻿@page "/Book/{bookId}"
+@using BrunoTheBot.CoreBusiness.APIEntities
+@inject RetrieveBookByIdService RetrieveBookByIdService
+
+@if (bookAPIResponse != null && bookAPIResponse.Book != null)
+{
+    <h2>@bookAPIResponse.Book.Name</h2>
+
+    @foreach (var chapter in bookAPIResponse.Book.Chapters)
+    {
+        <h5>@chapter.Name</h5>
+    }
+}
+
+@code {
+    private BookAPIResponse bookAPIResponse = new();
+
+    [Parameter]
+    public string BookId { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(BookId, out int bookId))
+        {
+            // Trate o caso em que o parâmetro bookId não é um número inteiro válido
+            // Você pode exibir uma mensagem de erro ou redirecionar para uma página de erro
+            return;
+        }
+
+        bookAPIResponse = await RetrieveBookByIdService.ExecuteAsync(bookId);
+    }
+}

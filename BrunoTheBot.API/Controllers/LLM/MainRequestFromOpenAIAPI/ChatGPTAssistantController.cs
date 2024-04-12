@@ -10,7 +10,7 @@
 //    [ApiController]
 //    public class ChatGPTAssistantController : ControllerBase
 //    {
-//        public SchoolRepository SchoolRepository { get; set; }
+//        public BookRepository BookRepository { get; set; }
 //        public readonly OpenAIAPI api = new OpenAIAPI("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");
 //        public OpenAIModels defaultModel = OpenAIModels.GPT4_Turbo;
 
@@ -35,8 +35,8 @@
 //                Ensure that the ""authors"" property is structured as an array (JSON array) containing objects representing authors. Here's an example of how the corrected JSON structure should look:
 
 //                {
-//                  ""name"": ""School Name"",
-//                  ""topics"": [
+//                  ""name"": ""Book Name"",
+//                  ""chapters"": [
 //                    {
 //                      ""name"": ""class name"",
 //                      ""places"": [
@@ -60,7 +60,7 @@
 
 //                The resulting JSON should be able to be serialized using JsonConvert.DeserializeObject.
 
-//                The School entity will be the only input, and you should conduct thorough and academically accurate research on the content so that we can develop a concise and precise lesson and learning plan.
+//                The Book entity will be the only input, and you should conduct thorough and academically accurate research on the content so that we can develop a concise and precise lesson and learning plan.
 
 //                 "),
 //                new ChatMessage(ChatMessageRole.User, input)
@@ -77,8 +77,8 @@
 //            }
 //            */
 
-//            FromJSONToSchool getSchool = new FromJSONToSchool();
-//            await SchoolRepository.CreateSchoolAsync(getSchool.GetSchoolDetailsFromLLM(results.Choices[0].ToString()));
+//            FromJSONToBook getBook = new FromJSONToBook();
+//            await BookRepository.CreateBookAsync(getBook.GetBookDetailsFromLLM(results.Choices[0].ToString()));
 
 //            return results.Choices[0].ToString();
 //        }

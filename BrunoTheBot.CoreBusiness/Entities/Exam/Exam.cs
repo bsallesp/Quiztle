@@ -1,8 +1,8 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
-namespace BrunoTheBot.CoreBusiness.Entities.Test
+namespace BrunoTheBot.CoreBusiness.Entities.Exam
 {
-    public class Test
+    public class Exam
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";

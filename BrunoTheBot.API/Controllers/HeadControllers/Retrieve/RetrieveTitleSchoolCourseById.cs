@@ -8,25 +8,25 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RetrieveTitleSchoolCourseById(SchoolRepository schoolDb) : ControllerBase
+    public class RetrieveTitleBookCourseById(BookRepository bookDb) : ControllerBase
     {
-        private readonly SchoolRepository _schoolDb = schoolDb;
+        private readonly BookRepository _bookDb = bookDb;
 
 
-        [HttpPost("RetrieveOnlySchoolCourseById")]
-        public async Task<ActionResult<SchoolAPIResponse>> ExecuteAsync([FromBody] int schoolId)
+        [HttpPost("RetrieveOnlyBookCourseById")]
+        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] int bookId)
         {
-            _ = new SchoolAPIResponse();
+            _ = new BookAPIResponse();
 
             try
             {
-                SchoolAPIResponse schoolAPIResponse = new SchoolAPIResponse
+                BookAPIResponse bookAPIResponse = new BookAPIResponse
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    School = await _schoolDb.GetSchoolByIdAsync(schoolId) ?? new School()
+                    Book = await _bookDb.GetBookByIdAsync(bookId) ?? new Book()
                 };
 
-                return schoolAPIResponse;
+                return bookAPIResponse;
             }
             catch (Exception ex)
             {

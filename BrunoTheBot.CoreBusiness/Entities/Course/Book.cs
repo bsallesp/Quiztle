@@ -2,7 +2,7 @@
 
 namespace BrunoTheBot.CoreBusiness.Entities.Course
 {
-    public class School
+    public class Book
     {
         [JsonPropertyName("Id")]
         public int Id { get; set; }
@@ -13,7 +13,7 @@ namespace BrunoTheBot.CoreBusiness.Entities.Course
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
-        [JsonPropertyName("Topics")]
-        public List<TopicClass> Topics { get; set; } = new List<TopicClass>();
+        [JsonPropertyName("Chapters")]
+        public List<Chapter> Chapters { get; set; } = [];
     }
 }

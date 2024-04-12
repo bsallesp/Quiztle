@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSectionTableEntity : Migration
+    public partial class AllNewAgain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,7 +28,7 @@ namespace BrunoTheBot.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answers",
+                name: "Books",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -38,7 +38,7 @@ namespace BrunoTheBot.DataContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => x.Id);
+                    table.PrimaryKey("PK_Books", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,66 +55,23 @@ namespace BrunoTheBot.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schools",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Schools", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TopicClasses",
+                name: "Chapters",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SchoolId = table.Column<int>(type: "integer", nullable: true)
+                    BookId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TopicClasses", x => x.Id);
+                    table.PrimaryKey("PK_Chapters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TopicClasses_Schools_SchoolId",
-                        column: x => x.SchoolId,
-                        principalTable: "Schools",
+                        name: "FK_Chapters_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Questions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AnswerId = table.Column<int>(type: "integer", nullable: false),
-                    TopicId = table.Column<int>(type: "integer", nullable: false),
-                    Hint = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Questions_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Questions_TopicClasses_TopicId",
-                        column: x => x.TopicId,
-                        principalTable: "TopicClasses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,21 +83,43 @@ namespace BrunoTheBot.DataContext.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ContentId = table.Column<int>(type: "integer", nullable: false),
-                    TopicClassId = table.Column<int>(type: "integer", nullable: true)
+                    ChapterId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sections_Chapters_ChapterId",
+                        column: x => x.ChapterId,
+                        principalTable: "Chapters",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Sections_Contents_ContentId",
                         column: x => x.ContentId,
                         principalTable: "Contents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Answer = table.Column<string>(type: "text", nullable: true),
+                    Hint = table.Column<string>(type: "text", nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SectionId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sections_TopicClasses_TopicClassId",
-                        column: x => x.TopicClassId,
-                        principalTable: "TopicClasses",
+                        name: "FK_Questions_Sections_SectionId",
+                        column: x => x.SectionId,
+                        principalTable: "Sections",
                         principalColumn: "Id");
                 });
 
@@ -165,34 +144,29 @@ namespace BrunoTheBot.DataContext.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chapters_BookId",
+                table: "Chapters",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Options_QuestionId",
                 table: "Options",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_AnswerId",
+                name: "IX_Questions_SectionId",
                 table: "Questions",
-                column: "AnswerId");
+                column: "SectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_TopicId",
-                table: "Questions",
-                column: "TopicId");
+                name: "IX_Sections_ChapterId",
+                table: "Sections",
+                column: "ChapterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sections_ContentId",
                 table: "Sections",
                 column: "ContentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Sections_TopicClassId",
-                table: "Sections",
-                column: "TopicClassId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TopicClasses_SchoolId",
-                table: "TopicClasses",
-                column: "SchoolId");
         }
 
         /// <inheritdoc />
@@ -205,22 +179,19 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "Options");
 
             migrationBuilder.DropTable(
+                name: "Questions");
+
+            migrationBuilder.DropTable(
                 name: "Sections");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "Chapters");
 
             migrationBuilder.DropTable(
                 name: "Contents");
 
             migrationBuilder.DropTable(
-                name: "Answers");
-
-            migrationBuilder.DropTable(
-                name: "TopicClasses");
-
-            migrationBuilder.DropTable(
-                name: "Schools");
+                name: "Books");
         }
     }
 }

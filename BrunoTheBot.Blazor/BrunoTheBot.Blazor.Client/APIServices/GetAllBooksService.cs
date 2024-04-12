@@ -6,32 +6,32 @@ using System.Text.Json;
 
 namespace BrunoTheBot.Blazor.APIServices
 {
-    public class GetAllSchoolsService
+    public class GetAllBooksService
     {
         private readonly HttpClient _httpClient;
 
-        public GetAllSchoolsService(HttpClient httpClient)
+        public GetAllBooksService(HttpClient httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _httpClient.BaseAddress = new Uri("http://localhost:5044");
         }
 
-        public async Task<SchoolsAPIResponse> ExecuteAsync()
+        public async Task<BooksAPIResponse> ExecuteAsync()
         {
             try
             {
-                var stringResponse = await _httpClient.GetStringAsync("api/GetAllSchools/GetAllSchools");
+                var stringResponse = await _httpClient.GetStringAsync("api/GetAllBooks/GetAllBooks");
 
-                SchoolsAPIResponse schoolsAPIResponse = JsonSerializer.Deserialize<SchoolsAPIResponse>(stringResponse)!;
+                BooksAPIResponse booksAPIResponse = JsonSerializer.Deserialize<BooksAPIResponse>(stringResponse)!;
 
-                return schoolsAPIResponse;
+                return booksAPIResponse;
             }
             catch
             {
-                return new SchoolsAPIResponse
+                return new BooksAPIResponse
                 {
                     Status = CustomStatusCodes.ErrorStatus,
-                    Schools = null
+                    Books = null
                 };
             }
         }

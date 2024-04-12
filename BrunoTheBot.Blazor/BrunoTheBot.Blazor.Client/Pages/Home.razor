@@ -8,39 +8,40 @@
 @using Newtonsoft.Json.Linq
 @using BrunoTheBot.CoreBusiness.APIEntities
 
-@inject GetAllSchoolsService GetAllSchoolsService
+@inject GetAllBooksService GetAllBooksService
 
 <PageTitle>Home</PageTitle>
 
 <h4>
-    Courses:
-    <pre>
-        @foreach (var school in Schools)
+@*     Courses:
+        @foreach (var book in Books)
         {
-            @school.Name; <br />
-        }
-    </pre>
-</h4>
+            @book.Name;
+        <br />
 
+        foreach (var chapters in book.Chapters)
+        {
+            @chapters.Name.ToString();
+        }
+    } *@
+</h4>
 
 @code {
 
-    private List<School> Schools = [];
-    private SchoolsAPIResponse response = new();
+    // private List<Book> Books = [];
+    // private BooksAPIResponse response = new();
 
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     response = await GetAllBooksService.ExecuteAsync();
 
+    //     var booksList = response.Books!.ToList();
 
-    protected override async Task OnInitializedAsync()
-    {
-        response = await GetAllSchoolsService.ExecuteAsync();
-
-        var schoolsList = response.Schools!.ToList();
-
-        foreach (var school in schoolsList)
-        {
-            Schools.Add(school);
-            Console.WriteLine(school.Name);
-        }
-        StateHasChanged();
-    }
+    //     foreach (var book in booksList)
+    //     {
+    //         Books.Add(book);
+    //         Console.WriteLine(book.Name);
+    //     }
+    //     StateHasChanged();
+    // }
 }

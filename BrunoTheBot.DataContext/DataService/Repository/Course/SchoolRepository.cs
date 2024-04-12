@@ -3,100 +3,102 @@ using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.DataContext.DataService.Repository.Course
 {
-    public class SchoolRepository
+    public class BookRepository
     {
         private readonly PostgreBrunoTheBotContext _context;
 
-        public SchoolRepository(PostgreBrunoTheBotContext context)
+        public BookRepository(PostgreBrunoTheBotContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task CreateSchoolAsync(School school)
+        public async Task CreateBookAsync(Book book)
         {
             try
             {
-                EnsureSchoolsNotNull();
-                _context.Schools!.Add(school);
+                EnsureBooksNotNull();
+                _context.Books!.Add(book);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the school:");
+                Console.WriteLine("An exception occurred while creating the book:");
                 Console.WriteLine(ex.ToString());
                 throw;
             }
         }
 
-        public async Task<School?> GetSchoolByIdAsync(int id, bool showTopics = false, bool showSections = false, bool showQuestions = false)
+        public async Task<Book?> GetBookByIdAsync(int id, bool showChapters = false, bool showSections = false, bool showQuestions = false)
         {
-            EnsureSchoolsNotNull();
+            EnsureBooksNotNull();
 
-            var query = _context.Schools!.AsQueryable();
+            var query = _context.Books!.AsQueryable();
 
-            query = query.Include(s => s.Topics);
+            query = query.Include(s => s.Chapters);
 
-            if (showTopics)
+            if (showChapters)
             {
                 if (showSections)
                 {
-                    query = query.Include(s => s.Topics)
+                    query = query.Include(s => s.Chapters)
                                  .ThenInclude(t => t.Sections);
                 }
                 else
                 {
-                    query = query.Include(s => s.Topics);
+                    query = query.Include(s => s.Chapters);
                 }
             }
 
             if (showSections)
             {
-                query = query.Include(s => s.Topics)
+                query = query.Include(s => s.Chapters)
                              .ThenInclude(t => t.Sections)
                              .ThenInclude(c => c.Content);
             }
 
             if (showQuestions)
             {
-                query = query.Include(s => s.Topics)
+                query = query.Include(s => s.Chapters)
                              .ThenInclude(t => t.Sections)
                              .ThenInclude(q => q.Questions)
                              .ThenInclude(o => o.Options);
             }
 
-            return await query.FirstOrDefaultAsync(s => s.Id == id);
+            Book book = await query.FirstOrDefaultAsync(s => s.Id == id) ?? new Book();
+
+            return book;
         }
 
-        public async Task<List<School>> GetAllSchoolsAsync()
+        public async Task<List<Book>> GetAllBooksAsync()
         {
-            EnsureSchoolsNotNull();
-            var schools = await _context.Schools!.ToListAsync();
-            return [.. schools.AsQueryable()];
+            EnsureBooksNotNull();
+            var books = await _context.Books!.ToListAsync();
+            return [.. books.AsQueryable()];
         }
 
-        public async Task UpdateSchoolAsync(School school)
+        public async Task UpdateBookAsync(Book book)
         {
-            EnsureSchoolsNotNull();
-            _context.Entry(school).State = EntityState.Modified;
+            EnsureBooksNotNull();
+            _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteSchoolAsync(int id)
+        public async Task DeleteBookAsync(int id)
         {
-            EnsureSchoolsNotNull();
-            var school = await _context.Schools!.FindAsync(id);
-            if (school != null)
+            EnsureBooksNotNull();
+            var book = await _context.Books!.FindAsync(id);
+            if (book != null)
             {
-                _context.Schools.Remove(school);
+                _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void EnsureSchoolsNotNull()
+        private void EnsureBooksNotNull()
         {
-            if (_context.Schools == null)
+            if (_context.Books == null)
             {
-                throw new InvalidOperationException("The Schools DbSet is null. Make sure it is properly initialized.");
+                throw new InvalidOperationException("The Books DbSet is null. Make sure it is properly initialized.");
             }
         }
     }

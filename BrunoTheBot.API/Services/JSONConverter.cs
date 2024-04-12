@@ -8,30 +8,30 @@ namespace BrunoTheBot.API.Services
 {
     public static class JSONConverter
     {
-        public static List<TopicClass> ConvertToTopicClasses(string input, string key)
+        public static List<Chapter> ConvertToChapters(string input, string key)
         {
             try
             {
                 var content = ExtractChatGPTResponseFromJSON(input);
                 JObject contentData = JObject.Parse(content);
-                var topicClassesArray = (JArray)contentData[key]! ?? throw new Exception("TopicClasses not found in JSON.");
+                var chaptersArray = (JArray)contentData[key]! ?? throw new Exception("Chapters not found in JSON.");
 
-                List<TopicClass> _topicClassesList = new(topicClassesArray.Count);
+                List<Chapter> _chaptersList = new(chaptersArray.Count);
 
-                foreach (var item in topicClassesArray)
+                foreach (var item in chaptersArray)
                 {
-                    var topicClass = new TopicClass
+                    var chapter = new Chapter
                     {
                         Name = item.ToString()
                     };
-                    _topicClassesList.Add(topicClass);
+                    _chaptersList.Add(chapter);
 
                     Console.WriteLine("Adding " + item.ToString());
                 }
 
-                if (_topicClassesList.Count == 0 || _topicClassesList == null) throw new Exception();
+                if (_chaptersList.Count == 0 || _chaptersList == null) throw new Exception();
 
-                return _topicClassesList;
+                return _chaptersList;
             }
 
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace BrunoTheBot.API.Services
                 var sectionResponse = ExtractChatGPTResponseFromJSON(input);
                 JObject sectionJSONObject = JObject.Parse(sectionResponse);
 
-                var sectionsArray = (JArray)sectionJSONObject[key]! ?? throw new Exception("TopicClasses not found in JSON.");
+                var sectionsArray = (JArray)sectionJSONObject[key]! ?? throw new Exception("Chapters not found in JSON.");
 
                 List<Section> sectionsList = new List<Section>(sectionsArray.Count);
 

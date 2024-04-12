@@ -17,14 +17,14 @@ namespace BrunoTheBot.DataContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //COURSE
-            modelBuilder.Entity<Content>();
-            modelBuilder.Entity<School>();
-            modelBuilder.Entity<TopicClass>();
+            modelBuilder.Entity<Book>();
+            modelBuilder.Entity<Chapter>();
             modelBuilder.Entity<Section>();
+            modelBuilder.Entity<Content>();
 
             //QUIZ
-            modelBuilder.Entity<Option>();
             modelBuilder.Entity<Question>();
+            modelBuilder.Entity<Option>();
 
             //AILOG
             modelBuilder.Entity<AILog>();
@@ -32,8 +32,8 @@ namespace BrunoTheBot.DataContext
 
         //COURSE
         public DbSet<Content>? Contents { get; set; }
-        public DbSet<School>? Schools { get; set; }
-        public DbSet<TopicClass>? TopicClasses { get; set; }
+        public DbSet<Book>? Books { get; set; }
+        public DbSet<Chapter>? Chapters { get; set; }
         public DbSet<Section>? Sections { get; set; }
 
         //QUIZ

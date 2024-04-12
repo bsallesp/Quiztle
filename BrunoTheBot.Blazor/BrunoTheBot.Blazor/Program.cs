@@ -5,7 +5,6 @@ using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
 using BrunoTheBot.Blazor.APIServices;
-using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -20,10 +19,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddScoped<SchoolRepository>();
-builder.Services.AddTransient<GetAllSchools>();
+builder.Services.AddScoped<BookRepository>();
+builder.Services.AddTransient<GetAllBooks>();
 builder.Services.AddScoped<IChatGPTRequest, ChatGPTRequest>();
-builder.Services.AddScoped<GetAllSchoolsService>();
+builder.Services.AddScoped<GetAllBooksService>();
+builder.Services.AddScoped<RetrieveBookByIdService>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>

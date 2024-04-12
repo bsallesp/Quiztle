@@ -12,144 +12,144 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    [Migration("20240408174925_AddQuestionInSections")]
-    partial class AddQuestionInSections
+    [Migration("20240412143124_AllNewAgain")]
+    partial class AllNewAgain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Book", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Chapter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Chapters");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "Chapters");
+                });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Content", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Text")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Contents");
-                });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.School", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Schools");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Content");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Section", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ChapterId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ContentId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("TopicClassId")
-                        .HasColumnType("integer");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
 
                     b.HasIndex("ContentId");
 
-                    b.HasIndex("TopicClassId");
-
                     b.ToTable("Sections");
-                });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("SchoolId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SchoolId");
-
-                    b.ToTable("TopicClasses");
-                });
-
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Answers");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Sections");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
 
                     b.Property<int?>("QuestionId")
                         .HasColumnType("integer");
@@ -159,85 +159,96 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Options");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "Options");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Answer")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Answer");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<string>("Hint")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Hint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
 
                     b.Property<int?>("SectionId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnswerId");
-
                     b.HasIndex("SectionId");
 
                     b.ToTable("Questions");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "Questions");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Log.AILog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<string>("JSON")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "JSON");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("AILogs");
                 });
 
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Chapter", b =>
+                {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Book", null)
+                        .WithMany("Chapters")
+                        .HasForeignKey("BookId");
+                });
+
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Section", b =>
                 {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Chapter", null)
+                        .WithMany("Sections")
+                        .HasForeignKey("ChapterId");
+
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Content", "Content")
                         .WithMany()
                         .HasForeignKey("ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", null)
-                        .WithMany("Sections")
-                        .HasForeignKey("TopicClassId");
-
                     b.Navigation("Content");
-                });
-
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
-                {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.School", null)
-                        .WithMany("Topics")
-                        .HasForeignKey("SchoolId");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
@@ -249,32 +260,24 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
-
-                    b.Navigation("Answer");
                 });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.School", b =>
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Book", b =>
                 {
-                    b.Navigation("Topics");
+                    b.Navigation("Chapters");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Chapter", b =>
+                {
+                    b.Navigation("Sections");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Section", b =>
                 {
                     b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.TopicClass", b =>
-                {
-                    b.Navigation("Sections");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>

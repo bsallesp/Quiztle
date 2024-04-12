@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.APIEntities
 {
-    public class SchoolsAPIResponse
+    public class BooksAPIResponse
     {
         [JsonPropertyName("Status")]
         public string Status { get; set; } = "";
-        [JsonPropertyName("Schools")]
-        public List<School>? Schools { get; set; }
+        [JsonPropertyName("Books")]
+        public List<Book>? Books { get; set; }
     }
 }
