@@ -4,11 +4,18 @@
 
 @if (bookAPIResponse != null && bookAPIResponse.Book != null)
 {
-    <h2>@bookAPIResponse.Book.Name</h2>
+    <h1>@bookAPIResponse.Book.Name</h1>
 
     @foreach (var chapter in bookAPIResponse.Book.Chapters)
     {
-        <h5>@chapter.Name</h5>
+        <h2>@chapter.Name</h2>
+        foreach (var sectionObj in chapter.Sections)
+        {
+            <p>
+                @sectionObj.Name
+                @sectionObj.Content.Text
+            </p>
+        }
     }
 }
 

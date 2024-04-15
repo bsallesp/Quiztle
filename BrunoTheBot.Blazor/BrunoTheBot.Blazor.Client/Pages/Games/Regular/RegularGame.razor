@@ -3,28 +3,48 @@
 
 @inject GetAllQuestionsFromBookService GetAllQuestionsFromBookService
 
-<h3>RegularGame</h3>
+<h1>Test your knowledge</h1>
+<h2>
+    @bookAPIResponse.Book.Name
+</h2>
 
 @if (bookAPIResponse != null && bookAPIResponse.Book != null)
 {
     foreach (var chapter in bookAPIResponse.Book.Chapters)
     {
-        <h4>@chapter.Name</h4>
-        @foreach (var sec in chapter.Sections)
+        @foreach (var sectionObj in chapter.Sections)
         {
-            <h5>@sec.Name</h5>
-            @sec.Content.Text
 
-            @* @foreach (var question in sec.Questions)
+            @foreach (var question in sectionObj.Questions)
             {
-                <p>@question.Name</p>
-            } *@
+                <div class="container m-4 p-4 b-4" style="background-color: aliceblue;">
+
+                    <h5>
+                        <b>
+                            @question.Name
+
+                        </b>
+                    </h5>
+                    <hr />
+
+                    <p>
+                        @question.Answer
+
+                    </p>
+                    <hr />
+                    <p>
+                        @foreach (var option in question.Options)
+                        {
+                            @option.Name
+                            <hr />
+                        }
+                    </p>
+
+                </div>
+            }
         }
     }
 }
-
-
-@* @bookAPIResponse.Book.Chapters[0].Sections[0].Questions[0].Answer *@
 
 @code {
     [Parameter]
