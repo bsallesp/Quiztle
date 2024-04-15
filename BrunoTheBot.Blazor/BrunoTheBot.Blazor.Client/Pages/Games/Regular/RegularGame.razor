@@ -14,7 +14,6 @@
     {
         @foreach (var sectionObj in chapter.Sections)
         {
-
             @foreach (var question in sectionObj.Questions)
             {
                 <div class="container m-4 p-4 b-4" style="background-color: aliceblue;">
@@ -26,20 +25,13 @@
                         </b>
                     </h5>
                     <hr />
-
                     <p>
-                        @question.Answer
-
-                    </p>
-                    <hr />
-                    <p>
-                        @foreach (var option in question.Options)
+                        @foreach (var optionsList in question.GetShuffledAnswerAndOptions())
                         {
-                            @option.Name
+                            @optionsList
                             <hr />
                         }
                     </p>
-
                 </div>
             }
         }
@@ -50,6 +42,8 @@
     [Parameter]
     public string bookId { get; set; } = "";
     BookAPIResponse bookAPIResponse = new BookAPIResponse();
+
+    private static Random rng = new Random();
 
     protected override async Task OnParametersSetAsync()
     {
