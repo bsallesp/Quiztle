@@ -2,7 +2,7 @@
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using System.Net.Http.Json;
 
-namespace BrunoTheBot.Blazor.APIServices
+namespace BrunoTheBot.Blazor.Client.APIServices
 {
     public class RetrieveBookByIdService
     {
@@ -10,8 +10,7 @@ namespace BrunoTheBot.Blazor.APIServices
 
         public RetrieveBookByIdService(HttpClient httpClient)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.BaseAddress = new Uri("http://localhost:5044/");
+            _httpClient = httpClient;
         }
 
         public async Task<BookAPIResponse> ExecuteAsync(int bookId)

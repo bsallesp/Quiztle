@@ -9,7 +9,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateBook(BookRepository bookDb,
+    public class CreateBookController(BookRepository bookDb,
         GetChaptersFromLLM chaptersFromLLM,
         GetAllBookSectionsFromLLM getSectionsFromLLM,
         GetContentFromLLLM fromLLMToContent,
@@ -22,7 +22,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
         private readonly GetContentFromLLLM _getContentFromLLM = fromLLMToContent;
         private readonly GetQuestionsFromLLM _getQuestionsFromLLM = fromLLMToQuestions;
 
-        [HttpPost("CreateBook")]
+        [HttpPost("CreateBookController")]
         public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
         {
             try

@@ -18,7 +18,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
         }
 
         [HttpGet("{bookId}")]
-        public async Task<ActionResult<BookAPIResponse>> RetrieveBookByIdAsync(int bookId)
+        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(int bookId)
         {
             try
             {

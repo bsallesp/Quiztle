@@ -12,36 +12,35 @@
 
 <PageTitle>Home</PageTitle>
 
-<h4>
-@*     Courses:
-        @foreach (var book in Books)
-        {
-            @book.Name;
-        <br />
+<div class="display-1">
+    Courses:
+</div>
 
-        foreach (var chapters in book.Chapters)
-        {
-            @chapters.Name.ToString();
-        }
-    } *@
-</h4>
+<div class="book-list">
+    @foreach (var book in Books)
+    {
+        <div class="book-item p-2">
+            <h5><a href="book/@book.Id">@book.Name</a></h5>
+            <a class="play-game-link" href="/Games/Regular/@book.Id">Play game</a>
+        </div>
+    }
+</div>
 
 @code {
 
-    // private List<Book> Books = [];
-    // private BooksAPIResponse response = new();
+    private List<Book> Books = [];
+    private BooksAPIResponse booksAPIResponse = new();
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     response = await GetAllBooksService.ExecuteAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        booksAPIResponse = await GetAllBooksService.ExecuteAsync();
 
-    //     var booksList = response.Books!.ToList();
+        var booksList = booksAPIResponse.Books!.ToList();
 
-    //     foreach (var book in booksList)
-    //     {
-    //         Books.Add(book);
-    //         Console.WriteLine(book.Name);
-    //     }
-    //     StateHasChanged();
-    // }
+        foreach (var book in booksList)
+        {
+            Books.Add(book);
+            Console.WriteLine(book.Name);
+        }
+    }
 }

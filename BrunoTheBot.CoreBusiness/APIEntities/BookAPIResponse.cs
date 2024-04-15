@@ -1,11 +1,14 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Course;
+﻿using System.Text.Json.Serialization;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 
 namespace BrunoTheBot.CoreBusiness.APIEntities
 {
     public class BookAPIResponse
     {
+        [JsonPropertyName("Status")]
         public string Status { get; set; } = "";
-        public Book Book { get; set; } = new();
 
+        [JsonPropertyName("Book")]
+        public Book Book { get; set; } = new();
     }
 }

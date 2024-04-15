@@ -1,9 +1,56 @@
-﻿@page "/Games/Regular"
+﻿@page "/Games/Regular/{bookId}"
+@page "/Games/Regular/"
 
-
+@inject GetAllQuestionsFromBookService GetAllQuestionsFromBookService
 
 <h3>RegularGame</h3>
 
-@code {
+@if (bookAPIResponse != null && bookAPIResponse.Book != null)
+{
+    foreach (var chapter in bookAPIResponse.Book.Chapters)
+    {
+        <h4>@chapter.Name</h4>
+        @foreach (var sec in chapter.Sections)
+        {
+            <h5>@sec.Name</h5>
+            @sec.Content.Text
 
+            @* @foreach (var question in sec.Questions)
+            {
+                <p>@question.Name</p>
+            } *@
+        }
+    }
+}
+
+
+@* @bookAPIResponse.Book.Chapters[0].Sections[0].Questions[0].Answer *@
+
+@code {
+    [Parameter]
+    public string bookId { get; set; } = "";
+    BookAPIResponse bookAPIResponse = new BookAPIResponse();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            int bookIdInt;
+            if (int.TryParse(bookId, out bookIdInt))
+            {
+                bookAPIResponse = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdInt);
+                Console.WriteLine(bookAPIResponse.Book.Chapters[0].Sections[0].Content.Text);
+            }
+            else
+            {
+                Console.WriteLine("Erro: O ID do livro fornecido não é um número válido.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao executar GetAllQuestionsFromBookService: {ex.Message}");
+        }
+
+        await base.OnParametersSetAsync();
+    }
 }

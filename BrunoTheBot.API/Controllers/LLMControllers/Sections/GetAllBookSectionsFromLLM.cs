@@ -4,6 +4,7 @@ using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace BrunoTheBot.API.Controllers.LLMControllers
 {
@@ -18,6 +19,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
             {
                 var prompt = "";
                 var newBook = new Book();
+                newBook.Name = book.Name;
 
                 foreach (var chapter in book.Chapters)
                 {

@@ -9,12 +9,12 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateQuestions(BookRepository bookRepository, GetQuestionsFromLLM fromLLMToQuestions) : ControllerBase
+    public class CreateQuestionsController(BookRepository bookRepository, GetQuestionsFromLLM fromLLMToQuestions) : ControllerBase
     {
         private readonly BookRepository _bookRepository = bookRepository;
         private readonly GetQuestionsFromLLM _fromLLMToQuestions = fromLLMToQuestions;
 
-        [HttpPost("CreateQuestions")]
+        [HttpPost("CreateQuestionsController")]
         public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] Book book)
         {
             try
