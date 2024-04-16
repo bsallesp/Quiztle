@@ -1,5 +1,6 @@
 ﻿@page "/Games/Regular/{bookId}"
 @page "/Games/Regular/"
+@using BrunoTheBot.Blazor.Client.Pages.Games.Components
 
 @inject GetAllQuestionsFromBookService GetAllQuestionsFromBookService
 
@@ -16,23 +17,10 @@
         {
             @foreach (var question in sectionObj.Questions)
             {
-                <div class="container m-4 p-4 b-4" style="background-color: aliceblue;">
+                var questionQuizShape = question.ToQuestionQuizShape();
+                questionQuizShape.ShuffleOptions();
 
-                    <h5>
-                        <b>
-                            @question.Name
-
-                        </b>
-                    </h5>
-                    <hr />
-                    <p>
-                        @foreach (var optionsList in question.GetShuffledAnswerAndOptions())
-                        {
-                            @optionsList
-                            <hr />
-                        }
-                    </p>
-                </div>
+                <QuestionComponent questionQuiz="@questionQuizShape"></QuestionComponent>
             }
         }
     }
@@ -42,6 +30,7 @@
     [Parameter]
     public string bookId { get; set; } = "";
     BookAPIResponse bookAPIResponse = new BookAPIResponse();
+    private List<string> shots = [];
 
     private static Random rng = new Random();
 

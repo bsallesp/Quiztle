@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO;
+using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
@@ -22,27 +23,22 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
-
         public List<string> GetShuffledAnswerAndOptions()
         {
             List<string> shuffledList = new List<string>();
 
-            // Adiciona a resposta à lista
             shuffledList.Add(Answer!);
 
-            // Adiciona todas as opções à lista
             foreach (var option in Options)
             {
                 shuffledList.Add(option.Name);
             }
 
-            // Embaralha a lista
             Shuffle(shuffledList);
 
             return shuffledList;
         }
 
-        // Método de embaralhamento
         private static void Shuffle<T>(List<T> list)
         {
             Random rng = new Random();
@@ -55,6 +51,26 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+
+        public QuestionQuiz ToQuestionQuizShape()
+        {
+            var questionShape = new QuestionQuiz
+            {
+                Id = this.Id,
+                Question = this.Name,
+                Options = new Dictionary<string, (bool, string)>()
+            };
+
+            questionShape.Options.Add("Answer", (true, this.Answer ?? ""));
+
+            int optionIndex = 1;
+            foreach (var option in this.Options)
+            {
+                questionShape.Options.Add("Option_" + optionIndex++, (false, option.Name ?? ""));
+            }
+
+            return questionShape;
         }
     }
 }
