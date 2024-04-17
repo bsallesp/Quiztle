@@ -1,10 +1,10 @@
 ﻿namespace BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 {
-    public class QuestionQuiz
+    public class QuestionQuizDTO
     {
         public int Id { get; set; }
         public string Question { get; set; } = "";
-        public Dictionary<string, (bool, string)> Options { get; set; } = new Dictionary<string, (bool, string)>();
+        public Dictionary<string, (bool, string)> Options { get; set; } = [];
 
         // Método para embaralhar as opções
         public void ShuffleOptions()

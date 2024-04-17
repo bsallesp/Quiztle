@@ -53,9 +53,9 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
             }
         }
 
-        public QuestionQuiz ToQuestionQuizShape()
+        public QuestionQuizDTO ToQuestionQuizShape()
         {
-            var questionShape = new QuestionQuiz
+            var questionShape = new QuestionQuizDTO
             {
                 Id = this.Id,
                 Question = this.Name,

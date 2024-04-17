@@ -19,6 +19,7 @@
             {
                 var questionQuizShape = question.ToQuestionQuizShape();
                 questionQuizShape.ShuffleOptions();
+                questionQuizShape.SetAllOptionsFalse();
 
                 <QuestionComponent questionQuiz="@questionQuizShape"></QuestionComponent>
             }
