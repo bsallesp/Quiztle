@@ -5,6 +5,7 @@ using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
 using BrunoTheBot.Blazor.Client.APIServices;
+using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -30,7 +31,7 @@ builder.Services.AddTransient<GetAllBooks>();
 builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
-builder.Services.AddTransient<GetAllQuestionsFromBookService>();
+builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 
 #region snippet1
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>

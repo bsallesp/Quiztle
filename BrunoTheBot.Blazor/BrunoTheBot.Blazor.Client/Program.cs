@@ -1,4 +1,5 @@
 using BrunoTheBot.Blazor.Client.APIServices;
+using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -9,7 +10,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
-builder.Services.AddTransient<GetAllQuestionsFromBookService>();
+builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

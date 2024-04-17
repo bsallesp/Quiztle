@@ -1,0 +1,31 @@
+﻿/* Adicione seu estilo personalizado aqui */
+.finish-button {
+    font-size: 2rem; /* Tamanho inicial do ícone */
+    border: 2px solid transparent; /* Bordas iniciais transparentes */
+    transition: border-color 0.3s ease; /* Transição suave para a animação */
+}
+.finish-button {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+
+/* Efeito de brilho */
+@keyframes brilho {
+    0% {
+        border-color: transparent;
+    }
+    /* Começa com a borda transparente */
+    50% {
+        border-color: yellow;
+    }
+    /* Brilha com a cor amarela no meio da animação */
+    100% {
+        border-color: transparent;
+    }
+    /* Termina com a borda transparente novamente */
+}
+
+.brilho {
+    animation: brilho 1s infinite; /* Animação de brilho */
+}

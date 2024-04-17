@@ -3,7 +3,7 @@
     public class ResponseSheet
     {
         public int Id { get; set; }
-        public List<QuestionQuizDTO> QuestionsQuiz { get; set; } = new List<QuestionQuizDTO>();
+        public List<QuestionGameDTO> QuestionsQuiz { get; set; } = new List<QuestionGameDTO>();
         public int Hits { get; set; }
 
         public ResponseSheet()

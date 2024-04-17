@@ -1,6 +1,6 @@
 ﻿namespace BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 {
-    public class QuestionQuizDTO
+    public class QuestionGameDTO
     {
         public int Id { get; set; }
         public string Question { get; set; } = "";
