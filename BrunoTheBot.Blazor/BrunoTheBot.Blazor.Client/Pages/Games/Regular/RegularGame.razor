@@ -1,6 +1,7 @@
 ﻿@page "/Games/Regular/{bookId}"
 @page "/Games/Regular/"
 @using BrunoTheBot.Blazor.Client.APIServices.RegularGame
+@using BrunoTheBot.CoreBusiness.Entities.Exam
 @using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 @using BrunoTheBot.Blazor.Client.Pages.Games.Components
 
@@ -11,32 +12,45 @@
 
 <h1>Test your knowledge</h1>
 
-@foreach (var question in questions)
+@regularExam.TotalQuestionsWithTrueAnswer()
+
+@foreach (var q in regularExam.Questions)
 {
-    <QuestionComponent questionQuiz="question"></QuestionComponent>
+    <div class="container mb-4 mt-4 p-4 b-4" style="background-color: aliceblue;">
+        <h5>
+            <b>
+                @q.Question
+            </b>
+        </h5>
+
+        @foreach (var option in q.Options)
+        {
+            <div @onclick="@(() => {
+                q.SetAllOptionsFalse();
+                q.SetOptionTrue(option.Key.ToString());
+            })" style="background-color: @(option.Value.Item1 ? "lightgreen" : "white")">
+                <div>
+                    @option.Value.Item2
+                </div>
+            </div>
+            <hr />
+        }
+    </div>
 }
 
 @code {
     [Parameter]
     public string bookId { get; set; } = "";
-    private List<string> shots = [];
-    List<QuestionGameDTO> questions = new();
-
-    private static Random rng = new Random();
+    RegularExam regularExam = new();
+    QuestionComponent questionComponent = new();
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
             int bookIdInt;
-            if (int.TryParse(bookId, out bookIdInt))
-            {
-                questions = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdInt);
-            }
-            else
-            {
-                Nav.NavigateTo("", true);
-            }
+            if (int.TryParse(bookId, out bookIdInt)) regularExam.Questions = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdInt);
+            else Nav.NavigateTo("", true);
         }
         catch (Exception ex)
         {
@@ -47,11 +61,9 @@
             throw new Exception("An error occurred while processing the book. See inner exception for details.", ex);
         }
 
-
         await base.OnParametersSetAsync();
     }
 }
-
 
 <script>
     // Função para adicionar classe de brilho aleatoriamente

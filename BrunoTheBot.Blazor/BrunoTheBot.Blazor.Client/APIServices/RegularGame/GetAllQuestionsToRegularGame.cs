@@ -1,8 +1,5 @@
-﻿using BrunoTheBot.Blazor.Client.Pages.Games.Components;
-using BrunoTheBot.CoreBusiness.APIEntities;
+﻿using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
-using BrunoTheBot.CoreBusiness.Entities.Course;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO;
 using System.Text.Json;
 
