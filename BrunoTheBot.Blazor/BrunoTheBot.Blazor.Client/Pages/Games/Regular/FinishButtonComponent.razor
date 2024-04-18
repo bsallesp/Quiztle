@@ -1,5 +1,14 @@
-﻿﻿<div class="finish-button p-3" style="text-align: right;">
-    <a href="/home" target="_blank" class="btn btn-success finish-button" id="finish-button">
+﻿<div class="finish-button p-3" style="text-align: right;">
+    <a href="/home" target="_blank"
+       class="btn btn-success finish-button @(Active ? "disabled" : "")"
+       id="finish-button">
         FINISH
     </a>
 </div>
+
+@code {
+    [Parameter]
+    public bool Active { get; set; }
+    [Parameter]
+    public int MissingQuestions { get; set; }
+}

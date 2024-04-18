@@ -8,11 +8,20 @@
 @inject NavigationManager Nav
 @inject GetAllQuestionsToRegularGame GetAllQuestionsFromBookService
 
-<FinishButtonComponent></FinishButtonComponent>
+<p>
+    count: @regularExam.Questions.Count
+</p>
+<p>
+    answered: @regularExam.TotalQuestionsAnswered()
+</p>
+
+
+<FinishButtonComponent
+    MissingQuestions=0
+    Active="@(regularExam.AllQuestionsAnsweredy() ? true : false)">
+</FinishButtonComponent>
 
 <h1>Test your knowledge</h1>
-
-@regularExam.TotalQuestionsWithTrueAnswer()
 
 @foreach (var q in regularExam.Questions)
 {
@@ -54,10 +63,7 @@
         }
         catch (Exception ex)
         {
-            // Registre a exceção para fins de depuração
             Console.WriteLine($"An error occurred: {ex}");
-
-            // Lança uma nova exceção com uma mensagem mais informativa
             throw new Exception("An error occurred while processing the book. See inner exception for details.", ex);
         }
 
@@ -66,18 +72,15 @@
 }
 
 <script>
-    // Função para adicionar classe de brilho aleatoriamente
     function adicionarBrilho() {
-        var whatsappIcon = document.querySelector('#whatsapp'); // Seleciona o ícone do WhatsApp
-        var brilho = Math.random() >= 0.5; // Determina aleatoriamente se o brilho será aplicado
+        var whatsappIcon = document.querySelector('#whatsapp');
+        var brilho = Math.random() >= 0.5;
 
         if (brilho) {
-            whatsappIcon.classList.add('brilho'); // Adiciona a classe de brilho
+            whatsappIcon.classList.add('brilho');
         } else {
-            whatsappIcon.classList.remove('brilho'); // Remove a classe de brilho
+            whatsappIcon.classList.remove('brilho')
         }
     }
-
-    // Chama a função para adicionar brilho após um intervalo de tempo aleatório entre 3 e 6 segundos
     setInterval(adicionarBrilho, Math.random() * (6000 - 3000) + 3000);
 </script>
