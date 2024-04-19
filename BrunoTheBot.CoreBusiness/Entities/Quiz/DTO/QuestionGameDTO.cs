@@ -44,7 +44,6 @@
             foreach (var key in Options.Keys.ToList())
             {
                 Options[key] = (false, Options[key].Item2);
-                Console.WriteLine("passei aqui");
             }
         }
         public void SetOptionTrue(string optionKey)
@@ -57,7 +56,6 @@
             {
                 throw new ArgumentException("Chave de opção inválida.");
             }
-            Console.WriteLine("passei aqui");
         }
     }
 }

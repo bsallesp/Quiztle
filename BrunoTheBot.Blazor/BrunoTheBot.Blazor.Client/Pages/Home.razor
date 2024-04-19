@@ -12,6 +12,12 @@
 
 <PageTitle>Home</PageTitle>
 
+@CheckRenderSide.GetOSDescription()
+<hr />
+@CheckRenderSide.GetOS()
+
+
+
 <div class="display-1">
     Courses:
 </div>
@@ -33,6 +39,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("teste123123");
+
         booksAPIResponse = await GetAllBooksService.ExecuteAsync();
 
         var booksList = booksAPIResponse.Books!.ToList();

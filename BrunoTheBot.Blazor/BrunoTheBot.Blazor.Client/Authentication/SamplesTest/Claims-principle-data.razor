@@ -1,0 +1,61 @@
+﻿@page "/claims-principle-data"
+@using System.Security.Claims
+@using BrunoTheBot.Blazor.Client.Authentication.Core
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h1>ClaimsPrincipal Data</h1>
+
+<button @onclick="GetClaimsPrincipalData">Get ClaimsPrincipal Data</button>
+
+<button @onclick="Logout">LOGOUT</button>
+
+<p>@authMessage</p>
+
+@if (claims.Count() > 0)
+{
+    <ul>
+        @foreach (var claim in claims)
+        {
+            <li>@claim.Type: @claim.Value</li>
+        }
+    </ul>
+}
+
+<p>@surname</p>
+
+@code {
+    private string? authMessage;
+    private string? surname;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            authMessage = $"{user.Identity.Name} is authenticated.";
+            claims = user.Claims;
+            surname = user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value;
+        }
+        else
+        {
+            authMessage = "The user is NOT authenticated.";
+        }
+    }
+
+    private void Logout()
+    {
+        // Obter o provedor de estado de autenticação
+        var authenticationStateProvider = AuthenticationStateProvider as DefaultAuthenticationStateProvider;
+
+        // Verificar se o provedor é do tipo esperado
+        if (authenticationStateProvider != null)
+        {
+            // Chamar o método LogoutAsync
+            authenticationStateProvider.LogoutAsync();
+        }
+    }
+}

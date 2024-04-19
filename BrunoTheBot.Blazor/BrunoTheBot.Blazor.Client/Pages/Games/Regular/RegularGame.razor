@@ -5,6 +5,8 @@
 @using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 @using BrunoTheBot.Blazor.Client.Pages.Games.Components
 
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Nav
 @inject GetAllQuestionsToRegularGame GetAllQuestionsFromBookService
 
@@ -68,6 +70,24 @@
         }
 
         await base.OnParametersSetAsync();
+    }
+
+    private bool isAuthenticated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Obter o estado de autenticação
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        // Verificar se o usuário está autenticado
+        isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+        Console.WriteLine("passou aqui");
+
+        // Redirecionar para a página de login se o usuário não estiver autenticado
+        if (!isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/pagina-de-login", true);
+        }
     }
 }
 

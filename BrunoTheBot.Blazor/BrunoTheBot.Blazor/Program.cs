@@ -6,6 +6,9 @@ using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
 using BrunoTheBot.Blazor.Client.APIServices;
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
+using BrunoTheBot.Blazor.Client.Authentication.Core;
+using Microsoft.AspNetCore.Components.Authorization;
+using BrunoTheBot.Blazor.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -32,6 +35,13 @@ builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
+builder.Services.AddTransient<CheckRenderSide>();
+
+builder.Services.AddScoped<DefaultAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp
+    => sp.GetRequiredService<DefaultAuthenticationStateProvider>());
+builder.Services.AddAuthorizationCore();
+builder.Services.AddCascadingAuthenticationState();
 
 #region snippet1
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
