@@ -39,8 +39,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("teste123123");
-
         booksAPIResponse = await GetAllBooksService.ExecuteAsync();
 
         var booksList = booksAPIResponse.Books!.ToList();

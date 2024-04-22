@@ -25,28 +25,19 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddSingleton(sp => new HttpClient
-{
-    BaseAddress = new Uri("https://localhost:7204/") // Ou "http://localhost:5044/"
-});
-
+string localAPIURLString = builder.Configuration["localAPIURL"] ?? throw new Exception("Connection string not found.");
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7204/")
+        BaseAddress = new Uri(localAPIURLString ?? "https://localhost:7204/")
     });
 
-
 #region snippet1
+string localDbConnection = builder.Configuration["ConnectionString"] ?? throw new Exception("Connection string not found.");
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
-    string connectionString = ConnectionStrings.DevelopmentConnectionString;
-
-    var env = builder.HostEnvironment;
-    if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
-
-    Console.WriteLine(connectionString);
-    opt.UseNpgsql(connectionString);
+    Console.WriteLine(localDbConnection);
+    opt.UseNpgsql(localDbConnection);
 });
 #endregion
 

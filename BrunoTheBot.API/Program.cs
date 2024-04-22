@@ -21,7 +21,6 @@ builder.Services.AddTransient<GetAllBookSectionsFromLLM>();
 
 builder.Services.AddControllers();
 
-// Configuração CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAnyOrigin",
@@ -30,25 +29,21 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 
-// Configuração do DbContext
+
+string connectionString = builder.Configuration["ConnectionString"] ?? throw new Exception("Connection string not found.");
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
-    string connectionString = ConnectionStrings.DevelopmentConnectionString;
-    var env = builder.Environment;
-    if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
+    Console.WriteLine(connectionString);
     opt.UseNpgsql(connectionString);
 });
 
-// Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Habilita CORS
 app.UseCors("AllowAnyOrigin");
 
-// Configurações adicionais do ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -58,7 +53,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-// Mapeia os controllers
 app.MapControllers();
 
 app.Run();

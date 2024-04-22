@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.DataContext;
-using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
@@ -8,6 +7,7 @@ using BrunoTheBot.Blazor.Client.APIServices;
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.Blazor.Client.Authentication.Core;
 using Microsoft.AspNetCore.Components.Authorization;
+using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +16,6 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
     .Build();
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
@@ -26,7 +25,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7204/")
+        BaseAddress = new Uri(builder.Configuration["APIDotnetURL"] ?? "https://localhost:7204/")
     });
 
 builder.Services.AddTransient<BookRepository>();
@@ -43,18 +42,12 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-#region snippet1
+string connectionString = builder.Configuration["ConnectionString"] ?? throw new Exception("Connection string not found.");
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
-    string connectionString = ConnectionStrings.DevelopmentConnectionString;
-
-    var env = builder.Environment;
-    if (env.IsProduction()) connectionString = ConnectionStrings.ProductionConnectionString;
-
     Console.WriteLine(connectionString);
     opt.UseNpgsql(connectionString);
 });
-#endregion
 
 var app = builder.Build();
 
@@ -62,7 +55,6 @@ await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().
 var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<PostgreBrunoTheBotContext>>();
 await DatabaseUtility.EnsureDbCreatedAndSeedWithCountOfAsync(options, 500);
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -70,7 +62,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

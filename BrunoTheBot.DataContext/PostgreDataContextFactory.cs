@@ -9,7 +9,7 @@ namespace BrunoTheBot.DataContext
         {
             var optionsBuilder = new DbContextOptionsBuilder<PostgreBrunoTheBotContext>();
 
-            string connectionString = ConnectionStrings.DevelopmentConnectionString;
+            string connectionString = "Host=localhost;Database=BrunoTheBotDB;Username=brunothebot;Password=@pyramid2050!";
 
             optionsBuilder.UseNpgsql(connectionString);
 
