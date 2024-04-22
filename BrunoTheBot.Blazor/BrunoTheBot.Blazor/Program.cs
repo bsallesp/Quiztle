@@ -25,7 +25,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["APIDotnetURL"] ?? "https://localhost:7204/")
+        BaseAddress = new Uri(builder.Configuration["APIDotnetURL"])
     });
 
 builder.Services.AddTransient<BookRepository>();
@@ -42,10 +42,9 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-string connectionString = builder.Configuration["ConnectionString"] ?? throw new Exception("Connection string not found.");
+string connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
-    Console.WriteLine(connectionString);
     opt.UseNpgsql(connectionString);
 });
 
