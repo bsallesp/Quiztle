@@ -1,0 +1,30 @@
+﻿services:
+  brunothebotapi:
+    image: brunosallesdev/brunothebotapi:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_URLS: "http://0.0.0.0:8080"
+      API_URL: "http://brunothebotapi"
+      POSTGRES_CONNECTION_STRING: "Host=postgres;Database=BrunoTheBotDB;Username=postgre;Password=@pyramid2050!"
+
+  blazor:
+    image: brunosallesdev/brunothebotblazor:latest
+    ports:
+      - "5001:8080"
+    depends_on:
+      - brunothebotapi
+      - postgres
+    environment:
+      API_URL: "http://brunothebotapi"
+      POSTGRES_CONNECTION_STRING: "Host=postgres;Database=BrunoTheBotDB;Username=postgre;Password=@pyramid2050!"
+
+  postgres:
+    image: brunosallesdev/postgres:12.4
+    environment:
+      POSTGRES_PASSWORD: pyramid50
+    ports:
+      - "5432:5432"
+ 

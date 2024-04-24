@@ -13,18 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrunoTheBot.DataContext", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrunoTheBot.API", "BrunoTheBot.API\BrunoTheBot.API.csproj", "{2BD75923-4599-4AE9-94B5-9F15848DD7BC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JSONs", "JSONs", "{AC4A71A1-CFF3-4E74-B909-1F3AC1A68DE5}"
-	ProjectSection(SolutionItems) = preProject
-		123.json = 123.json
-		Postgres.MD = Postgres.MD
-		PROMPTS.MD = PROMPTS.MD
-		temp.json = temp.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4E298CC4-E583-4D4F-A268-3CE9AA87C31D}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrunoTheBot._Generals", "BrunoTheBot._Generals\BrunoTheBot._Generals.csproj", "{6D0FE485-927A-40AF-8124-EF6AAE4752B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +41,10 @@ Global
 		{2BD75923-4599-4AE9-94B5-9F15848DD7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BD75923-4599-4AE9-94B5-9F15848DD7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BD75923-4599-4AE9-94B5-9F15848DD7BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D0FE485-927A-40AF-8124-EF6AAE4752B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D0FE485-927A-40AF-8124-EF6AAE4752B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D0FE485-927A-40AF-8124-EF6AAE4752B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D0FE485-927A-40AF-8124-EF6AAE4752B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

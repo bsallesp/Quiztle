@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BrunoTheBot._Generals": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

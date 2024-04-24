@@ -5,6 +5,7 @@ using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.DataContext.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +30,12 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod());
 });
 
+string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
+if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
+if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections");
 
-string connectionString = builder.Configuration["ConnectionString"] ?? throw new Exception("Connection string not found.");
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
-    Console.WriteLine(connectionString);
     opt.UseNpgsql(connectionString);
 });
 
@@ -50,9 +52,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHsts();
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+

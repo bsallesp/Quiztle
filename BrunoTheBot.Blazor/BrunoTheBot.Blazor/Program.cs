@@ -9,6 +9,7 @@ using BrunoTheBot.Blazor.Client.Authentication.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -22,11 +23,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddScoped(sp =>
-    new HttpClient
-    {
-        BaseAddress = new Uri(builder.Configuration["APIDotnetURL"])
-    });
+var apiBaseUrl = Environment.GetEnvironmentVariable("API_URL");
+if (string.IsNullOrEmpty(apiBaseUrl)) apiBaseUrl = builder.Configuration["APIDotnetURL"];
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl!) });
 
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooks>();
@@ -42,7 +41,10 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-string connectionString = builder.Configuration["ConnectionString"];
+string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
+if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
+if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections");
+
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
     opt.UseNpgsql(connectionString);

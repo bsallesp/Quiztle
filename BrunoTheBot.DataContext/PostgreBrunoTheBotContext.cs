@@ -17,10 +17,8 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Chapter>();
             modelBuilder.Entity<Section>();
             modelBuilder.Entity<Content>();
-
             modelBuilder.Entity<Question>();
             modelBuilder.Entity<Option>();
-
             modelBuilder.Entity<AILog>();
         }
 
@@ -28,10 +26,8 @@ namespace BrunoTheBot.DataContext
         public DbSet<Book>? Books { get; set; }
         public DbSet<Chapter>? Chapters { get; set; }
         public DbSet<Section>? Sections { get; set; }
-
         public DbSet<Option>? Options { get; set; }
         public DbSet<Question>? Questions { get; set; }
-
         public DbSet<AILog>? AILogs { get; set; }
     }
 }

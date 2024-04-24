@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	 <ContainerPort Include="5001" Type="tcp" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
