@@ -16,8 +16,6 @@
 <hr />
 @CheckRenderSide.GetOS()
 
-
-
 <div class="display-1">
     Courses:
 </div>
@@ -39,14 +37,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        booksAPIResponse = await GetAllBooksService.ExecuteAsync();
-
-        var booksList = booksAPIResponse.Books!.ToList();
-
-        foreach (var book in booksList)
+        try
         {
-            Books.Add(book);
-            Console.WriteLine(book.Name);
+            var booksAPIResponse = await GetAllBooksService.ExecuteAsync();
+
+            if (booksAPIResponse.Books != null)
+            {
+                var booksList = booksAPIResponse.Books.ToList();
+
+                foreach (var book in booksList)
+                {
+                    Books.Add(book);
+                    Console.WriteLine($"Added book: {book.Name}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No books found in the API response.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }
 }

@@ -1,0 +1,51 @@
+﻿@page "/CreateBook"
+@using BrunoTheBot.CoreBusiness.APIEntities
+@using BrunoTheBot.Blazor.Client.APIServices
+@using System.Collections.Generic
+@using BrunoTheBot.CoreBusiness.CodeEntities
+
+@inject CreateBookService CreateBookService
+
+<h3>Create Book</h3>
+
+<div class="input-group mb-3">
+    <input @bind="bookName" type="text" class="form-control" placeholder="Book Name" />
+    <div class="input-group-append">
+        <button @onclick="CreateBook" class="btn btn-primary" type="button">Create</button>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert @feedbackCssClass" role="alert">
+        @feedbackMessage
+    </div>
+}
+
+@code {
+    private string bookName = "";
+
+    private string feedbackMessage = "";
+    private string feedbackCssClass = "";
+
+    private async Task CreateBook()
+    {
+        var response = await CreateBookService.ExecuteAsync(bookName);
+
+        if (response.Status == CustomStatusCodes.SuccessStatus)
+        {
+            feedbackMessage = "Book created successfully!";
+            feedbackCssClass = "alert-success";
+        }
+        else if (response.Status == CustomStatusCodes.ErrorStatus)
+        {
+            feedbackMessage = "An error occurred while creating the book.";
+            feedbackCssClass = "alert-danger";
+        }
+        else if (response.Status == CustomStatusCodes.EmptyObjectErrorStatus)
+        {
+            feedbackMessage = "Response received, but no book data returned.";
+            feedbackCssClass = "alert-warning";
+        }
+    }
+}

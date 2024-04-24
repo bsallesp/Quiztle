@@ -23,9 +23,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 
+#region apiBaseUrl
 var apiBaseUrl = Environment.GetEnvironmentVariable("API_URL");
-if (string.IsNullOrEmpty(apiBaseUrl)) apiBaseUrl = builder.Configuration["APIDotnetURL"];
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl!) });
+if (string.IsNullOrEmpty(apiBaseUrl)) apiBaseUrl = builder.Configuration["localAPIURL"];
+if (string.IsNullOrEmpty(apiBaseUrl)) throw new Exception();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
+#endregion
 
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooks>();
@@ -34,6 +37,7 @@ builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
+builder.Services.AddTransient<CreateBookService>();
 
 builder.Services.AddScoped<DefaultAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp
@@ -41,9 +45,11 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
-if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
-if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections");
+#region connectionString
+var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
+if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["ConnectionString"]!;
+if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+#endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

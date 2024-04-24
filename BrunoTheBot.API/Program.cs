@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddScoped<AILogRepository>();
 builder.Services.AddScoped<BookRepository>();
-builder.Services.AddScoped<LogController>();
+builder.Services.AddScoped<AILogController>();
 builder.Services.AddScoped<CreateBookController>();
 builder.Services.AddTransient<GetChaptersFromLLM>();
 builder.Services.AddTransient<GetContentFromLLLM>();
@@ -32,7 +32,7 @@ builder.Services.AddCors(options =>
 
 string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
 if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
-if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections");
+if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections at webcoreapi.");
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {
