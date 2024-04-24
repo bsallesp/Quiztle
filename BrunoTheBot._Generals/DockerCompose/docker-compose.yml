@@ -7,8 +7,8 @@
       - postgres
     environment:
       ASPNETCORE_URLS: "http://0.0.0.0:8080"
-      API_URL: "http://brunothebotapi"
-      POSTGRES_CONNECTION_STRING: "Host=postgres;Database=BrunoTheBotDB;Username=postgre;Password=@pyramid2050!"
+      API_URL: ${API_URL}
+      POSTGRES_CONNECTION_STRING: ${POSTGRES_CONNECTION_STRING}
 
   blazor:
     image: brunosallesdev/brunothebotblazor:latest
@@ -18,8 +18,8 @@
       - brunothebotapi
       - postgres
     environment:
-      API_URL: "http://brunothebotapi"
-      POSTGRES_CONNECTION_STRING: "Host=postgres;Database=BrunoTheBotDB;Username=postgre;Password=@pyramid2050!"
+      API_URL: ${API_URL}
+      POSTGRES_CONNECTION_STRING: ${POSTGRES_CONNECTION_STRING}
 
   postgres:
     image: brunosallesdev/postgres:12.4
@@ -27,4 +27,3 @@
       POSTGRES_PASSWORD: pyramid50
     ports:
       - "5432:5432"
- 
