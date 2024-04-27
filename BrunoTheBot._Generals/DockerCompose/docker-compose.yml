@@ -1,29 +1,44 @@
-﻿services:
-  brunothebotapi:
+services:
+  brunothebot-api:
+    ports:
+    - "50401:8080"
+    - "50402:443"
     image: brunosallesdev/brunothebotapi:latest
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-    environment:
-      ASPNETCORE_URLS: "http://0.0.0.0:8080"
-      API_URL: ${API_URL}
-      POSTGRES_CONNECTION_STRING: ${POSTGRES_CONNECTION_STRING}
+    container_name: brunothebot-api
+    networks:
+      - brunothebot-network
 
-  blazor:
+  brunothebot-blazor:
+    ports:
+    - "50403:8080"
+    - "50404:443"
     image: brunosallesdev/brunothebotblazor:latest
-    ports:
-      - "5001:8080"
-    depends_on:
-      - brunothebotapi
-      - postgres
-    environment:
-      API_URL: ${API_URL}
-      POSTGRES_CONNECTION_STRING: ${POSTGRES_CONNECTION_STRING}
+    container_name: brunothebot-blazor
+    networks:
+      - brunothebot-network  
 
-  postgres:
-    image: brunosallesdev/postgres:12.4
+  brunothebot-postgres:
+    image: postgres:latest
+    container_name: brunothebot-postgres
     environment:
-      POSTGRES_PASSWORD: pyramid50
+       POSTGRES_PASSWORD: "@pyramid2050!"
+       POSTGRES_USER: brunothebotuser
+       POSTGRES_DB: BrunoTheBotDB
+    networks:
+      - brunothebot-network
+
+  nginx:
+    image: brunosallesdev/powerdash-nginx:latest
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    container_name: nginx
+    networks:
+      - thelaserspace-network
+      - brunothebot-network
+
+networks:
+  thelaserspace-network:
+    name: thelaserspace-network
+  brunothebot-network:
+    name: brunothebot-network

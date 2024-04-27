@@ -9,7 +9,6 @@ using BrunoTheBot.Blazor.Client.Authentication.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -58,9 +57,9 @@ builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 
 var app = builder.Build();
 
-await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
-var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<PostgreBrunoTheBotContext>>();
-await DatabaseUtility.EnsureDbCreatedAndSeedWithCountOfAsync(options, 500);
+//await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+//var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<PostgreBrunoTheBotContext>>();
+//await DatabaseUtility.EnsureDbCreatedAndSeedWithCountOfAsync(options, 500);
 
 if (app.Environment.IsDevelopment())
 {

@@ -10,11 +10,20 @@
 
 @inject GetAllBooksService GetAllBooksService
 
+@inject IConfiguration Configuration
+
 <PageTitle>Home</PageTitle>
 
 @CheckRenderSide.GetOSDescription()
 <hr />
 @CheckRenderSide.GetOS()
+
+<h5>
+    @urlAPI
+</h5>
+<h5>
+    @connString
+</h5>
 
 <div class="display-1">
     Courses:
@@ -34,6 +43,9 @@
 
     private List<Book> Books = [];
     private BooksAPIResponse booksAPIResponse = new();
+
+    private string connString = "";
+    private string urlAPI = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,5 +72,17 @@
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
+
+        try
+        {
+            urlAPI = Configuration["localAPIURL"] ?? "localAPIURL NOT FOUND";
+
+            connString = Configuration["ConnectionString"] ?? "ConnectionString NOT FOUND";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+
     }
 }

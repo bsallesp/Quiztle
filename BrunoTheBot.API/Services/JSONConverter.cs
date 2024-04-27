@@ -55,11 +55,11 @@ namespace BrunoTheBot.API.Services
 
         public static List<Section> ConvertToSections(string input, string key)
         {
+            var sectionResponse = ExtractChatGPTResponseFromJSON(input);
+            JObject sectionJSONObject = JObject.Parse(sectionResponse);
+
             try
             {
-                var sectionResponse = ExtractChatGPTResponseFromJSON(input);
-                JObject sectionJSONObject = JObject.Parse(sectionResponse);
-
                 var sectionsArray = (JArray)sectionJSONObject[key]! ?? throw new Exception("Chapters not found in JSON.");
 
                 List<Section> sectionsList = new List<Section>(sectionsArray.Count);
@@ -81,19 +81,21 @@ namespace BrunoTheBot.API.Services
 
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
-                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+                string errorMessage = $"Failed during converting: {ex.Message}\n\n" +
 
-                // Verifica se a exceção possui uma causa (InnerException)
+                "Content that failed to convert:\n" +
+                $"{input}\n\n" +
+
+                "JSON that failed to convert:\n" +
+                $"{sectionJSONObject.ToString()}\n\n";
+
                 if (ex.InnerException != null)
                 {
                     errorMessage += $" InnerException: {ex.InnerException.Message}";
                 }
 
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $" StackTrace: {ex.StackTrace}";
 
-                // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
         }

@@ -8,7 +8,28 @@ namespace BrunoTheBot.DataContext
     public class PostgreBrunoTheBotContext : DbContext
     {
         public PostgreBrunoTheBotContext(DbContextOptions<PostgreBrunoTheBotContext> options) : base(options)
-        {            
+        {
+            try
+            {
+                Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                // Captura e retorna informações detalhadas da exceção
+                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+
+                // Verifica se a exceção possui uma causa (InnerException)
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                }
+
+                // Adiciona outras propriedades da exceção, se necessário
+                errorMessage += $" StackTrace: {ex.StackTrace}";
+
+                // Lança uma nova exceção com a mensagem detalhada
+                throw new Exception(errorMessage);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
