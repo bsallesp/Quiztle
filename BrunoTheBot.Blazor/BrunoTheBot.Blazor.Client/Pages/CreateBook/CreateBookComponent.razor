@@ -30,22 +30,8 @@
 
     private async Task CreateBook()
     {
-        var response = await CreateBookService.ExecuteAsync(bookName);
+        Console.WriteLine("Getting book in for " + bookName);
 
-        if (response.Status == CustomStatusCodes.SuccessStatus)
-        {
-            feedbackMessage = "Book created successfully!";
-            feedbackCssClass = "alert-success";
-        }
-        else if (response.Status == CustomStatusCodes.ErrorStatus)
-        {
-            feedbackMessage = "An error occurred while creating the book.";
-            feedbackCssClass = "alert-danger";
-        }
-        else if (response.Status == CustomStatusCodes.EmptyObjectErrorStatus)
-        {
-            feedbackMessage = "Response received, but no book data returned.";
-            feedbackCssClass = "alert-warning";
-        }
+        feedbackMessage = await CreateBookService.ExecuteAsync(bookName);
     }
 }

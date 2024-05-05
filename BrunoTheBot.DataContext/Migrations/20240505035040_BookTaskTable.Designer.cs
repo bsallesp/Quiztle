@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    [Migration("20240412143124_AllNewAgain")]
-    partial class AllNewAgain
+    [Migration("20240505035040_BookTaskTable")]
+    partial class BookTaskTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,6 +201,31 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "Questions");
                 });
 
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Tasks.BookTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookTasks");
+                });
+
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Log.AILog", b =>
                 {
                     b.Property<int>("Id")
@@ -227,6 +252,34 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AILogs");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PhoneNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Chapter", b =>
@@ -263,6 +316,15 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Tasks.BookTask", b =>
+                {
+                    b.HasOne("BrunoTheBot.CoreBusiness.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Course.Book", b =>

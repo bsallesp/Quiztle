@@ -2,6 +2,7 @@
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Log;
+using BrunoTheBot.CoreBusiness.Entities.Tasks;
 
 namespace BrunoTheBot.DataContext
 {
@@ -15,19 +16,12 @@ namespace BrunoTheBot.DataContext
             }
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
                 string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
-
-                // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)
                 {
                     errorMessage += $" InnerException: {ex.InnerException.Message}";
                 }
-
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $" StackTrace: {ex.StackTrace}";
-
-                // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
         }
@@ -41,6 +35,7 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Question>();
             modelBuilder.Entity<Option>();
             modelBuilder.Entity<AILog>();
+            modelBuilder.Entity<BookTask>();
         }
 
         public DbSet<Content>? Contents { get; set; }
@@ -50,5 +45,6 @@ namespace BrunoTheBot.DataContext
         public DbSet<Option>? Options { get; set; }
         public DbSet<Question>? Questions { get; set; }
         public DbSet<AILog>? AILogs { get; set; }
+        public DbSet<BookTask>? BookTasks { get; set; }
     }
 }

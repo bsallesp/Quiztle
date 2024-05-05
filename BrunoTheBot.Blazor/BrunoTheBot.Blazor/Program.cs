@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.DataContext;
 using BrunoTheBot.API;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
-using BrunoTheBot.API.Controllers.HeadControllers.Retrieve;
 using BrunoTheBot.Blazor.Client.APIServices;
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.Blazor.Client.Authentication.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
+using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -30,7 +30,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseU
 #endregion
 
 builder.Services.AddTransient<BookRepository>();
-builder.Services.AddTransient<GetAllBooks>();
+builder.Services.AddTransient<GetAllBooksController>();
 builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();

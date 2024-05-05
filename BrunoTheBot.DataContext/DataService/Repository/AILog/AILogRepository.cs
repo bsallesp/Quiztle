@@ -22,9 +22,7 @@ namespace BrunoTheBot.DataContext.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the answer:");
-                Console.WriteLine(ex.ToString());
-                throw;
+                throw new Exception("An exception occurred while creating the answer.", ex);
             }
         }
 
@@ -37,14 +35,30 @@ namespace BrunoTheBot.DataContext.Repositories
                     throw new InvalidOperationException("The AILogs DbSet is null. Make sure it is properly initialized.");
                 }
 
-                var result = await _context.AILogs.FirstOrDefaultAsync(x => x.Id == id);
-                return result;
+                return await _context.AILogs.FirstOrDefaultAsync(x => x.Id == id);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while retrieving the AILog by ID:");
-                Console.WriteLine(ex.ToString());
-                throw;
+                string errorMessage = $"An exception occurred: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                }
+                errorMessage += $" StackTrace: {ex.StackTrace}";
+                throw new Exception(errorMessage);
+            }
+        }
+
+        public async Task<List<AILog>> GetAllAILogsAsync()
+        {
+            try
+            {
+                EnsureAILogNotNull();
+                return await _context.AILogs!.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An exception occurred while retrieving all AILogs.", ex);
             }
         }
 

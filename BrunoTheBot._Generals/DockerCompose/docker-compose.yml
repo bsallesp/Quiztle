@@ -1,8 +1,29 @@
 services:
+  nginx:
+    image: brunosallesdev/nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx-conf-d-volume:/etc/nginx/conf.d
+    networks:
+      - brunothebot-network
+      - thelaserspace-network
+
+  thelaserspace:
+    image: brunosallesdev/thelaserspace2024:latest
+    ports:
+      - "50440:8080"
+      - "50441:443"
+    container_name: thelaserspace
+    networks:
+      - thelaserspace-network
+
   brunothebot-api:
     ports:
-    - "50401:8080"
-    - "50402:443"
+      - "50401:8080"
+      - "50402:443"
     image: brunosallesdev/brunothebotapi:latest
     container_name: brunothebot-api
     networks:
@@ -10,15 +31,17 @@ services:
 
   brunothebot-blazor:
     ports:
-    - "50403:8080"
-    - "50404:443"
+      - "50403:8080"
+      - "50404:443"
     image: brunosallesdev/brunothebotblazor:latest
     container_name: brunothebot-blazor
     networks:
       - brunothebot-network  
 
   brunothebot-postgres:
-    image: postgres:latest
+    image: brunosallesdev/brunothebot-postgres:latest
+    ports:
+      - "5432:5432"
     container_name: brunothebot-postgres
     environment:
        POSTGRES_PASSWORD: "@pyramid2050!"
@@ -27,18 +50,46 @@ services:
     networks:
       - brunothebot-network
 
-  nginx:
-    image: brunosallesdev/powerdash-nginx:latest
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
     ports:
-      - "80:80"
-      - "443:443"
-    container_name: nginx
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
     networks:
-      - thelaserspace-network
       - brunothebot-network
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    networks:
+      - brunothebot-network
+
+  webmin:
+    image: johanp/webmin
+    container_name: webmin
+    ports:
+      - "10000:10000"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    networks:
+      - brunothebot-network
+
+volumes:
+  nginx-conf-d-volume:
+  portainer_data:
+
 networks:
-  thelaserspace-network:
-    name: thelaserspace-network
   brunothebot-network:
     name: brunothebot-network
+  thelaserspace-network:
+    name: thelaserspace-network

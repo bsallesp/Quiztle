@@ -4,7 +4,7 @@ using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
+namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 {
     [Route("api/[controller]")]
     [ApiController]

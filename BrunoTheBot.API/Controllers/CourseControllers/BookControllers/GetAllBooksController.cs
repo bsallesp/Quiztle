@@ -3,15 +3,15 @@ using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.HeadControllers.Retrieve
+namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetAllBooks(BookRepository bookDb) : ControllerBase
+    public class GetAllBooksController(BookRepository bookDb) : ControllerBase
     {
         private readonly BookRepository _bookDb = bookDb;
 
-        [HttpGet("GetAllBooks")]
+        [HttpGet("GetAllBooksController")]
         public async Task<BooksAPIResponse> ExecuteAsync()
         {
             _ = new BooksAPIResponse();

@@ -17,7 +17,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
         {
             try
             {
-                var stringResponse = await _httpClient.GetStringAsync("api/GetAllBooks/GetAllBooks");
+                var stringResponse = await _httpClient.GetStringAsync("api/GetAllBooks/GetAllBooksController");
 
                 BooksAPIResponse booksAPIResponse = JsonSerializer.Deserialize<BooksAPIResponse>(stringResponse)!;
 

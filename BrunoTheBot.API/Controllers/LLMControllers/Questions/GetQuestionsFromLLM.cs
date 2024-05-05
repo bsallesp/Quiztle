@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.LLMControllers
 {
-    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI, AILogController fromLLMToLogController) : ControllerBase
+    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI, SaveAILogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
-        private readonly AILogController _fromLLMToLogController = fromLLMToLogController;
+        private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
         public async Task<ActionResult<BookAPIResponse>> GetFullNewQuestionsGroupFromLLM(Book book, int questionsPerSection = 1)
         {
@@ -28,7 +28,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                     {
                         var prompt = LLMPrompts.GetNewQuestion(section.Content.Text!, questionsPerSection);
                         var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
-                        await _fromLLMToLogController.SaveLog(nameof(GetFullNewQuestionsGroupFromLLM), responseLLM);
+                        await _fromLLMToLogController.ExecuteAsync(nameof(GetFullNewQuestionsGroupFromLLM), responseLLM);
                         var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
 
                         Console.WriteLine(newQuestion.Name);

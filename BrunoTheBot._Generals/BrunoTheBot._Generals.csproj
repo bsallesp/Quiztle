@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="backup-postgres\" />
     <Folder Include="Postgresql\" />
   </ItemGroup>
 </Project>

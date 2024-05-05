@@ -5,25 +5,33 @@ using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 
-namespace BrunoTheBot.API.Controllers.HeadControllers.Create
+namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateBookController(BookRepository bookDb,
-        GetChaptersFromLLM chaptersFromLLM,
-        GetAllBookSectionsFromLLM getSectionsFromLLM,
-        GetContentFromLLLM fromLLMToContent,
-        GetQuestionsFromLLM fromLLMToQuestions
-        ) : ControllerBase
+    public class CreateBookController : ControllerBase
     {
-        private readonly BookRepository _bookDb = bookDb;
-        private readonly GetChaptersFromLLM _getChaptersFromLLM = chaptersFromLLM;
-        private readonly GetAllBookSectionsFromLLM _getAllBookSectionsFromLLM = getSectionsFromLLM;
-        private readonly GetContentFromLLLM _getContentFromLLM = fromLLMToContent;
-        private readonly GetQuestionsFromLLM _getQuestionsFromLLM = fromLLMToQuestions;
+        private readonly BookRepository _bookDb;
+        private readonly GetChaptersFromLLM _getChaptersFromLLM;
+        private readonly GetAllBookSectionsFromLLM _getAllBookSectionsFromLLM;
+        private readonly GetContentFromLLLM _getContentFromLLM;
+        private readonly GetQuestionsFromLLM _getQuestionsFromLLM;
 
-        [HttpPost("CreateBookController")]
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
+        public CreateBookController(BookRepository bookDb,
+            GetChaptersFromLLM chaptersFromLLM,
+            GetAllBookSectionsFromLLM getSectionsFromLLM,
+            GetContentFromLLLM fromLLMToContent,
+            GetQuestionsFromLLM fromLLMToQuestions)
+        {
+            _bookDb = bookDb;
+            _getChaptersFromLLM = chaptersFromLLM;
+            _getAllBookSectionsFromLLM = getSectionsFromLLM;
+            _getContentFromLLM = fromLLMToContent;
+            _getQuestionsFromLLM = fromLLMToQuestions;
+        }
+
+        [HttpGet("CreateBookController/{bookName}/{chaptersAmount}/{sectionsAmount}")]
+        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
         {
             try
             {
@@ -57,7 +65,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
             catch (Exception ex)
             {
                 // Captura e retorna informações detalhadas da exceção
-                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+                string errorMessage = $"Ocorreu uma exceção no CreateBookController: {ex.Message}";
 
                 // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)

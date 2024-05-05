@@ -5,7 +5,7 @@ using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrunoTheBot.API.Controllers.HeadControllers.Create
+namespace BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -42,7 +42,7 @@ namespace BrunoTheBot.API.Controllers.HeadControllers.Create
                 // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
-            
+
             return new BookAPIResponse();
         }
     }

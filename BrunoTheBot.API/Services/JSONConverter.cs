@@ -192,28 +192,48 @@ namespace BrunoTheBot.API.Services
         {
             try
             {
+                // Verifica se o JSON de entrada está vazio
+                if (string.IsNullOrEmpty(input))
+                {
+                    throw new ArgumentException("O JSON de entrada está vazio ou nulo.");
+                }
+
+                // Analisa o JSON de entrada
                 JObject jsonObject = JObject.Parse(input);
 
-#pragma warning disable CS8600
-                string content = (string)jsonObject["choices"]![0]!["message"]!["content"] ?? throw new Exception();
-#pragma warning restore CS8600
+                // Verifica se o JSON contém a chave "choices" e se tem pelo menos um item no array
+                if (jsonObject["choices"] == null || !jsonObject["choices"].Any())
+                {
+                    throw new ArgumentException("O JSON de entrada não contém a chave 'choices' ou está vazio.");
+                }
+
+                // Obtém o conteúdo da primeira mensagem no primeiro item do array "choices"
+                string content = (string)jsonObject["choices"][0]?["message"]?["content"];
+
+                // Verifica se o conteúdo é nulo ou vazio
+                if (string.IsNullOrEmpty(content))
+                {
+                    throw new ArgumentException("O conteúdo da mensagem no JSON de entrada está vazio ou nulo.");
+                }
 
                 return content;
             }
-
             catch (Exception ex)
             {
                 // Captura e retorna informações detalhadas da exceção
-                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
+                string errorMessage = $"Ocorreu uma exceção ao extrair resposta do ChatGPT JSON: {ex.Message}";
+
+                // Adiciona o JSON de entrada à mensagem de erro
+                errorMessage += $"\nJSON de entrada: {input}";
 
                 // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)
                 {
-                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                    errorMessage += $"\nInnerException: {ex.InnerException.Message}";
                 }
 
                 // Adiciona outras propriedades da exceção, se necessário
-                errorMessage += $" StackTrace: {ex.StackTrace}";
+                errorMessage += $"\nStackTrace: {ex.StackTrace}";
 
                 // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
