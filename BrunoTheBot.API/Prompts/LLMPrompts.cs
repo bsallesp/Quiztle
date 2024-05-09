@@ -44,8 +44,8 @@ namespace BrunoTheBot.API.Prompts
             ";
 
             return $"We're writing a book titled '{bookName}'." +
-                $" The structure is: a book has many chapters that have many sections that have a content." +
-                $" Your mission now is to write a content about '{section}'," +
+                $" The structure is: a book has many chapters that have many sections that have a body." +
+                $" Your mission now is to write a body about '{section}'," +
                 $" which is a section of the chapter {chapter}," +
                 $" which is a chapter of the '{bookName}'." +
                 $" Please provide smart and intuitive content." +

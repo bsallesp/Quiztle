@@ -4,7 +4,7 @@
 @using System.Collections.Generic
 @using BrunoTheBot.CoreBusiness.CodeEntities
 
-@inject CreateBookService CreateBookService
+@inject CreateBookTaskService CreateBookService
 
 <h3>Create Book</h3>
 
@@ -17,21 +17,19 @@
 
 @if (!string.IsNullOrEmpty(feedbackMessage))
 {
-    <div class="alert @feedbackCssClass" role="alert">
+    <div class="alert" role="alert">
         @feedbackMessage
     </div>
 }
 
 @code {
-    private string bookName = "";
-
+    private string bookName = "MIT Computer Science Full Course";
     private string feedbackMessage = "";
-    private string feedbackCssClass = "";
 
     private async Task CreateBook()
     {
-        Console.WriteLine("Getting book in for " + bookName);
-
-        feedbackMessage = await CreateBookService.ExecuteAsync(bookName);
+        if (await CreateBookService.ExecuteAsync(bookName)) feedbackMessage = "New book on course.";
+        else feedbackMessage = "An error ocurred.";
+        bookName = "";
     }
 }

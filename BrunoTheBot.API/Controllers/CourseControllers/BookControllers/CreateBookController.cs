@@ -31,14 +31,14 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
         }
 
         [HttpGet("CreateBookController/{bookName}/{chaptersAmount}/{sectionsAmount}")]
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
         {
             try
             {
                 var chaptersAPIResponse = await _getChaptersFromLLM.ExecuteAsync(bookName, chaptersAmount);
 
                 if (chaptersAPIResponse.Value?.Status != CustomStatusCodes.SuccessStatus) throw new Exception(chaptersAPIResponse.Value?.Status);
-                var newChapters = chaptersAPIResponse.Value?.ChaptersAquired;
+                var newChapters = chaptersAPIResponse.Value?.Data;
 
                 Book newBook = new()
                 {
@@ -48,15 +48,15 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 
                 var sectionsAPIResponse = await _getAllBookSectionsFromLLM.ExecuteAsync(newBook, sectionsAmount);
                 if (sectionsAPIResponse.Value?.Status != CustomStatusCodes.SuccessStatus) throw new Exception(sectionsAPIResponse.Value?.Status);
-                newBook = sectionsAPIResponse.Value!.Book;
+                newBook = sectionsAPIResponse.Value!.Data;
 
                 var contentAPIResponse = await _getContentFromLLM.ExecuteAsync(newBook);
                 if (contentAPIResponse.Value?.Status != CustomStatusCodes.SuccessStatus) throw new Exception(contentAPIResponse.Value?.Status);
-                newBook = contentAPIResponse.Value.Book;
+                newBook = contentAPIResponse.Value.Data;
 
                 var questionsContentAPIResponse = await _getQuestionsFromLLM.GetFullNewQuestionsGroupFromLLM(newBook, 1);
                 if (questionsContentAPIResponse.Value!.Status == CustomStatusCodes.ErrorStatus) throw new Exception();
-                newBook = questionsContentAPIResponse.Value.Book;
+                newBook = questionsContentAPIResponse.Value.Data;
 
                 await _bookDb.CreateBookAsync(newBook);
 

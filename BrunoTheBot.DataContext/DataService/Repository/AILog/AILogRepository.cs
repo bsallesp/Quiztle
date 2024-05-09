@@ -26,7 +26,7 @@ namespace BrunoTheBot.DataContext.Repositories
             }
         }
 
-        public async Task<AILog?> GetAILogByIdAsync(int id)
+        public async Task<AILog?> GetAILogByIdAsync(Guid id)
         {
             try
             {

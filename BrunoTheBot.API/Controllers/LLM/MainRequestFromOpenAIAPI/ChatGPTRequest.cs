@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using BrunoTheBot.CoreBusiness.Log;
+using BrunoTheBot.DataContext.Repositories;
+using System.Text;
 using System.Text.Json;
 
 namespace BrunoTheBot.API
@@ -7,11 +9,13 @@ namespace BrunoTheBot.API
     {
         private readonly HttpClient _client;
         private readonly string _apiKey;
+        private readonly AILogRepository _logRepository;
 
-        public ChatGPTRequest(HttpClient client)
+        public ChatGPTRequest(HttpClient client, AILogRepository aILogRepository)
         {
             _client = client;
             _apiKey = "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";
+            _logRepository = aILogRepository;
         }
 
         public async Task<string> ChatWithGPT(string input, string systemProfile = "")
@@ -37,6 +41,14 @@ namespace BrunoTheBot.API
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
                 if (!_client.DefaultRequestHeaders.Any()) _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
+
+                await _logRepository.CreateAILogAsync(new AILog
+                {
+                    JSON = content.ToString() ?? "The content is null",
+                    Name = "ChapGPTRequest"
+
+                }); 
+
                 var response = await _client.PostAsync("https://api.openai.com/v1/chat/completions", content);
 
                 if (response.IsSuccessStatusCode)

@@ -39,7 +39,7 @@ services:
       - brunothebot-network  
 
   brunothebot-postgres:
-    image: brunosallesdev/brunothebot-postgres:latest
+    image: postgres:latest
     ports:
       - "5432:5432"
     container_name: brunothebot-postgres
@@ -49,6 +49,8 @@ services:
        POSTGRES_DB: BrunoTheBotDB
     networks:
       - brunothebot-network
+    volumes:
+      - brunothebot-postgres-data:/var/lib/postgresql/data
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -67,26 +69,38 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_EMAIL: brunosallesdev@gmail.com
       PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
     ports:
       - "5050:80"
     networks:
       - brunothebot-network
-
-  webmin:
-    image: johanp/webmin
-    container_name: webmin
-    ports:
-      - "10000:10000"
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - ./servers.json:/pgadmin4/servers.json
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
     networks:
       - brunothebot-network
+
+  # webmin:
+  #   image: johanp/webmin
+  #   container_name: webmin
+  #   ports:
+  #     - "10000:10000"
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #   networks:
+  #     - brunothebot-network
 
 volumes:
   nginx-conf-d-volume:
   portainer_data:
+  brunothebot-postgres-data:
 
 networks:
   brunothebot-network:

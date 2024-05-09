@@ -28,14 +28,13 @@ namespace BrunoTheBot.API.BackgroundTasks
             using (var scope = _scopeFactory.CreateScope())
             {
                 var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
-
                 try
                 {
-                    await _tryToMoveBookTaskToProduction.ExecuteAsync();
+                    var result = await _tryToMoveBookTaskToProduction.ExecuteAsync();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("An exception occurred while creating the BookTask:");
+                    Console.WriteLine("An exception occurred while checkin tht queue: ");
                     Console.WriteLine(ex.ToString());
                 }
             }

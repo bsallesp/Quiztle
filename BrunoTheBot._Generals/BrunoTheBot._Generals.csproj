@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="backup-postgres\" />
+    <Folder Include="DockerCompose\db\" />
     <Folder Include="Postgresql\" />
   </ItemGroup>
 </Project>

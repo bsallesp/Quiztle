@@ -12,7 +12,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(Book book)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book)
         {
             try
             {
@@ -32,10 +32,10 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                     }
                 }
 
-                BookAPIResponse bookAPIResponse = new()
+                APIResponse<Book> bookAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Book = book
+                    Data = book
                 };
 
                 return bookAPIResponse ?? throw new Exception("bookAPIResponse show some error: ");

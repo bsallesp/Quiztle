@@ -1,5 +1,6 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,18 +13,29 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
         private readonly BookRepository _bookDb = bookDb;
 
         [HttpGet("GetAllBooksController")]
-        public async Task<BooksAPIResponse> ExecuteAsync()
+        public async Task<APIResponse<List<Book>>> ExecuteAsync()
         {
-            _ = new BooksAPIResponse();
+            _ = new APIResponse<List<Book>>
+            {
+                Data = new List<Book>(),
+            };
 
             try
             {
-                BooksAPIResponse booksAPIResponse = new()
+                var result = await _bookDb.GetAllBooksAsync();
+
+                if (result == null) return new APIResponse<List<Book>>
                 {
-                    Status = CustomStatusCodes.SuccessStatus,
-                    Books = await _bookDb.GetAllBooksAsync()
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Book>(),
+                    Message = "Error at getting books: "
                 };
 
+                APIResponse<List<Book>> booksAPIResponse = new()
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = result
+                };
                 return booksAPIResponse;
             }
             catch (Exception ex)

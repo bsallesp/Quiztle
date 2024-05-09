@@ -45,7 +45,6 @@ builder.Services.AddCors(options =>
 string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
 if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
 if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections at webcoreapi.");
-Console.WriteLine(connectionString);
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

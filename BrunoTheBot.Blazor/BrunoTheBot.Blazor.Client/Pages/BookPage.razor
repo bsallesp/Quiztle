@@ -1,12 +1,13 @@
 ﻿@page "/Book/{bookId}"
 @using BrunoTheBot.CoreBusiness.APIEntities
+@using BrunoTheBot.CoreBusiness.Entities.Course
 @inject RetrieveBookByIdService RetrieveBookByIdService
 
-@if (bookAPIResponse != null && bookAPIResponse.Book != null)
+@if (bookAPIResponse != null && bookAPIResponse.Data != null)
 {
-    <h1>@bookAPIResponse.Book.Name</h1>
+    <h1>@bookAPIResponse.Data.Name</h1>
 
-    @foreach (var chapter in bookAPIResponse.Book.Chapters)
+    @foreach (var chapter in bookAPIResponse.Data.Chapters)
     {
         <h2>@chapter.Name</h2>
         foreach (var sectionObj in chapter.Sections)
@@ -20,7 +21,10 @@
 }
 
 @code {
-    private BookAPIResponse bookAPIResponse = new();
+    private APIResponse<Book> bookAPIResponse = new APIResponse<Book>
+        {
+            Data = new Book()
+        };
 
     [Parameter]
     public string BookId { get; set; } = "";

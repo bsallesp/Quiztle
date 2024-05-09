@@ -14,16 +14,16 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 
 
         [HttpPost("RetrieveOnlyBookCourseById")]
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] int bookId)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync([FromBody] Guid bookId)
         {
-            _ = new BookAPIResponse();
+            _ = new APIResponse<Book> {Data = new Book()};
 
             try
             {
-                BookAPIResponse bookAPIResponse = new BookAPIResponse
+                APIResponse<Book> bookAPIResponse = new APIResponse<Book>
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Book = await _bookDb.GetBookByIdAsync(bookId) ?? new Book()
+                    Data = await _bookDb.GetBookByIdAsync(bookId) ?? new Book()
                 };
 
                 return bookAPIResponse;

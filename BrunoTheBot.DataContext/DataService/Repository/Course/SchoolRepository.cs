@@ -28,7 +28,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Course
             }
         }
 
-        public async Task<Book?> GetBookByIdAsync(int id, bool showChapters = false, bool showSections = false, bool showQuestions = false)
+        public async Task<Book?> GetBookByIdAsync(Guid id, bool showChapters = false, bool showSections = false, bool showQuestions = false)
         {
             EnsureBooksNotNull();
 

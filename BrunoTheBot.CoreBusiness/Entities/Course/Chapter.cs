@@ -1,11 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Course
 {
     public class Chapter
     {
         [JsonPropertyName("Id")]
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
