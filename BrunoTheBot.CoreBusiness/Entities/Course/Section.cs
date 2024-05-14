@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Course
@@ -6,7 +7,8 @@ namespace BrunoTheBot.CoreBusiness.Entities.Course
     public class Section
     {
         [JsonPropertyName("Id")]
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";

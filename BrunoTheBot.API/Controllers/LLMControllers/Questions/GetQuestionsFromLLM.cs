@@ -12,14 +12,14 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<BookAPIResponse>> GetFullNewQuestionsGroupFromLLM(Book book, int questionsPerSection = 1)
+        public async Task<ActionResult<APIResponse<Book>>> GetFullNewQuestionsGroupFromLLM(Book book, int questionsPerSection = 1)
         {
             try
             {
-                if (book == null || book.Chapters.Count <= 0) return new BookAPIResponse
+                if (book == null || book.Chapters.Count <= 0) return new APIResponse<Book>
                 {
                     Status = CustomStatusCodes.EmptyObjectErrorStatus,
-                    Book = new()
+                    Data = new()
                 };
 
                 foreach (var chapter in book.Chapters)
@@ -38,10 +38,10 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                     }
                 }
 
-                BookAPIResponse bookAPIResponse = new()
+                APIResponse<Book> bookAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Book = book
+                    Data = book
                 };
 
                 return bookAPIResponse;

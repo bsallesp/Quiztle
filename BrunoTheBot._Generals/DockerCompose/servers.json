@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "brunothebot-postgres",
+      "Group": "Servers",
+      "Host": "brunothebot-postgres",
+      "Port": 5432,
+      "MaintenanceDB": "BrunoTheBotDB",
+      "Username": "brunothebotuser",
+      "Password": "@pyramid2050!",
+      "SSLMode": "prefer",
+      "PassFile": "/pgadmin4/.pgpass"
+    }
+  }
+}

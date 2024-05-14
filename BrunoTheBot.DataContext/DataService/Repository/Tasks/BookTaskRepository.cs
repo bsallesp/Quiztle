@@ -1,6 +1,9 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Tasks;
+﻿using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.CoreBusiness.Entities.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
 {
@@ -46,7 +49,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
             }
         }
 
-        public async Task<string> GetNextBookTaskFromQueue()
+        public async Task<APIResponse<BookTask>> GetNextBookTaskFromQueue()
         {
             try
             {
@@ -60,34 +63,83 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
                         .Where(bt => bt.Status == 0)
                         .FirstOrDefaultAsync();
 
-                    if (bookTask != null)
+                    if (bookTask == null) return new APIResponse<BookTask>
                     {
-                        _context.BookTasks!.Remove(bookTask);
+                        Status = CustomStatusCodes.ErrorStatus,
+                        Data = bookTask ?? new BookTask(),
+                        Message = "No tasks to execute."
+                    };
 
-                        await _context.SaveChangesAsync();
-
-                        // Commit the transaction
-                        await transaction.CommitAsync();
-
-                        return bookTask.Name!;
-                    }
-                    else
+                    if (bookTask.Name == "" || bookTask == null) return new APIResponse<BookTask>
                     {
-                        Console.WriteLine("NOT Found.");
-                        return "";
-                    }
+                        Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                        Data = new BookTask(),
+                        Message = "Book Task Name is empty or null: "
+                    };
+
+                    return new APIResponse<BookTask>
+                    {
+                        Status = CustomStatusCodes.SuccessStatus,
+                        Data = bookTask,
+                        Message = "New task caught: "
+                    };
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the BookTask:");
+                Console.WriteLine("An exception occurred while getting next task from queue:");
                 Console.WriteLine(ex.ToString());
 
-                return "";
+                return new APIResponse<BookTask>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new BookTask(),
+                    Message = ex.Data.ToString()
+                };
             }
             finally
             {
                 _semaphore.Release();
+            }
+        }
+
+        public async Task<APIResponse<BookTask>> FinishBookTask(Guid Id)
+        {
+            try
+            {
+                EnsureBooksNotNull();
+
+                var bookTask = await _context.BookTasks!
+                    .Where(bt => bt.Id == Id)
+                    .FirstOrDefaultAsync();
+
+                if (bookTask == null) return new APIResponse<BookTask>
+                {
+                    Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                    Data = bookTask ?? new BookTask(),
+                    Message = "No tasks found with Guid: " + Id
+                };
+
+                bookTask.Status = 2;
+                await _context.SaveChangesAsync();
+
+                return new APIResponse<BookTask>
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = bookTask,
+                    Message = "Book Task set to finished."
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occurred while finishing a bookTask:");
+
+                return new APIResponse<BookTask>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new BookTask(),
+                    Message = ex.Data.ToString()
+                };
             }
         }
 

@@ -1,0 +1,40 @@
+﻿@page "/CreateBook"
+@using BrunoTheBot.CoreBusiness.APIEntities
+@using BrunoTheBot.Blazor.Client.APIServices
+@using System.Collections.Generic
+@using BrunoTheBot.CoreBusiness.CodeEntities
+
+@inject CreateBookTaskService CreateBookService
+
+<h3>Create Book</h3>
+
+<div class="input-group mb-3">
+    <input @bind="bookName" @bind:event="oninput" type="text" class="form-control" placeholder="Book Name" />
+    <div class="input-group-append">
+        <button @onclick="CreateBook" class="btn btn-primary" type="button">Create</button>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert" role="alert">
+        @feedbackMessage
+    </div>
+}
+
+@code {
+    private string bookName = "Algorithms and Data Structures";
+    private string feedbackMessage = "";
+
+    private async Task CreateBook()
+    {
+        if (await CreateBookService.ExecuteAsync(bookName)) feedbackMessage = $"{bookName}: New book on course.";
+        else feedbackMessage = "An error ocurred.";
+        bookName = "";
+    }
+}
+
+
+@* var encodedBookName = encodeURIComponent(bookName);
+"https://localhost:7204/api/CreateBookTask/CreateBookTaskController/" + encodedBookName
+ *@

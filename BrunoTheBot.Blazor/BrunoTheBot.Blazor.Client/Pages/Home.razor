@@ -14,7 +14,10 @@
 
 <PageTitle>Home</PageTitle>
 
-@CheckRenderSide.GetOSDescription()
+<BrunoTheBot.Blazor.Client.Pages.CreateBook.CreateBookTaskComponent>
+</BrunoTheBot.Blazor.Client.Pages.CreateBook.CreateBookTaskComponent>
+
+@* @CheckRenderSide.GetOSDescription()
 <hr />
 @CheckRenderSide.GetOS()
 
@@ -23,11 +26,8 @@
 </h5>
 <h5>
     @connString
-</h5>
+</h5> *@
 
-<div class="display-1">
-    Courses:
-</div>
 
 <div class="book-list">
     @foreach (var book in Books)
@@ -42,7 +42,10 @@
 @code {
 
     private List<Book> Books = [];
-    private BooksAPIResponse booksAPIResponse = new();
+    private APIResponse<List<Book>> booksAPIResponse = new APIResponse<List<Book>>
+    {
+            Data = new List<Book>()
+    };
 
     private string connString = "";
     private string urlAPI = "";
@@ -53,9 +56,9 @@
         {
             var booksAPIResponse = await GetAllBooksService.ExecuteAsync();
 
-            if (booksAPIResponse.Books != null)
+            if (booksAPIResponse.Data != null)
             {
-                var booksList = booksAPIResponse.Books.ToList();
+                var booksList = booksAPIResponse.Data.ToList();
 
                 foreach (var book in booksList)
                 {

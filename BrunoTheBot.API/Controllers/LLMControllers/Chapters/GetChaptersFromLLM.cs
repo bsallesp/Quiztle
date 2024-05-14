@@ -2,6 +2,7 @@
 using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.LLMControllers
@@ -11,7 +12,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<ChapterAPIResponse>> ExecuteAsync(string book, int chapterAmount = 5)
+        public async Task<ActionResult<APIResponse<List<Chapter>>>> ExecuteAsync(string book, int chapterAmount = 5)
         {
             try
             {
@@ -21,10 +22,10 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                 var newChapters = JSONConverter.ConvertToChapters(responseLLM, "NewChapters");
                 if (newChapters.Count <= 0 || newChapters == null) throw new Exception("The ChaptersResponseAPILLM amount is zero or null");
 
-                ChapterAPIResponse chaptersResponseAPILLM = new()
+                APIResponse<List<Chapter>> chaptersResponseAPILLM = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    ChaptersAquired = newChapters
+                    Data = newChapters
                 };
 
                 return chaptersResponseAPILLM ?? throw new Exception("chaptersResponseAPILLM is null");

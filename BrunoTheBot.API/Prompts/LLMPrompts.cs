@@ -6,20 +6,20 @@ namespace BrunoTheBot.API.Prompts
     {
         public static string GetNewChaptersFromBookPrompt(string book, int chaptersAmount = 10)
         {
-            string json = $@"
-            {{
-                ""NewChapters"": [ ""Chapter 1"", ""Chapter 2"", ... ]
-            }}
-            ";
+            string jsonExample = @"
+    {
+        ""NewChapters"": [ ""Chapter 1"", ""Chapter 2"", ... ]
+    }";
 
-            return $"We're writing a book titled '{book}'." +
-                $" The structure is: a book has many chapters that have many sections." +
-                $" Your mission now is to write {chaptersAmount} chapters about the book '{book}'." +
-                $" Please return a JSON with the key 'NewChapters' in this format: {json}," +
-                $" containing a list of the selected chapters.";
+            return $"We aim for a professional approach to '{book}'. " +
+                   $"Please provide {chaptersAmount} chapters on '{book}', drawing inspiration from renowned academic sources " +
+                   $"and esteemed authors who have contributed to the rich legacy of {book}. " +
+                   $"Sort the chapters in ascending order. Provide only the text, omitting chapter numbers (e.g., 'Chapter 1', 'Chapter 2'). " +
+                   $"Please return a JSON object with the key 'NewChapters' in the following format: {jsonExample}, " +
+                   $"containing a list of the selected chapters.";
         }
 
-        public static string GetNewSectionsFromChapters(Book book, int sectionsAmount = 10)
+        public static string GetNewSectionsFromChapters(Book book, string chapterName, int sectionsAmount = 10)
         {
             string json = $@"
             {{
@@ -27,51 +27,60 @@ namespace BrunoTheBot.API.Prompts
             }}
             ";
 
-            return $"We're writing a book titled '{book.Name}'." +
-                $" The structure is: a book has many chapters that have many sections." +
-                $" Your mission now is to write {sectionsAmount} sections about '{book.Chapters[0].Name}', which is a chapter of the book '{book.Name}'." +
-                $" Please provide smart and intuitive sections about '{book.Chapters[0].Name}' of '{book.Name}'." +
-                $" Please return a JSON with the key 'NewSections' in this format: {json},";
+            return $"We are committed to a professional approach in exploring '{book.Name}'." +
+                    $" To comprehensively cover the concept of '{chapterName}', what are the key topics to include?" +
+                    $" Provide {sectionsAmount} insightful sections pertaining to '{book.Chapters[0].Name}' from '{book.Name}'." +
+                    $" Sort the sections in ascending order. Provide only the text, omitting section numbers (e.g., 'section 1', 'section 2'). " +
+                    $" Return a JSON with the key 'NewSections' in the following format: {json}, in a total of '{sectionsAmount}'.";
         }
-
 
         public static string GetNewContentFromSection(string bookName, string chapter, string section)
         {
             string json = $@"
-            {{
-                ""NewContent"": ""Here you answer the question in a didactic style, with details.""
-            }}
-            ";
+    {{
+        ""NewContent"": ""Provide a comprehensive explanation in a didactic style, covering all key concepts and details.""
+    }}
+    ";
 
-            return $"We're writing a book titled '{bookName}'." +
-                $" The structure is: a book has many chapters that have many sections that have a content." +
-                $" Your mission now is to write a content about '{section}'," +
-                $" which is a section of the chapter {chapter}," +
-                $" which is a chapter of the '{bookName}'." +
-                $" Please provide smart and intuitive content." +
-                $" Please return a JSON with the key 'NewContent' in this format: {json},";
+            return $"Provide a comprehensive explanation of '{section} - {chapter} - {bookName} - ," +
+                $" focusing on key concepts and details.\r\n" +
+                $" Avoid starting the text directly with the title to prevent repetitive beginnings." +
+                $" Instead, aim for a clear and engaging introduction to capture the reader's attention.\r\n" +
+                $" Include code snippets samples ONLY and ONLY if the topic pertains to programming.\r\n" +
+                $" Once code created, be sure it has within '#BEGINCODE#' and '#ENDCODE#' tags.\r\n" +
+                $" Consider integrating questions and answers to foster engagement throughout the content.\r\n" +
+                $" Verify that the content is clear, detailed, and educational.\r\n" +
+                $" If feasible, seek inspiration from top writers and universities on the subject.\r\n" +
+                $" Avoid introductory narratives and dive straight into concept explanation.\r\n" +
+                $" Return a JSON object with the key 'NewContent' formatted as follows: {json}.";
         }
 
         public static string GetNewQuestion(string text, int questionsAmount = 5)
         {
             string output = "";
 
-            string json =  $@"
+            string json = $@"
             {{
-                ""Question"": ""Write the question here."",
+                ""Question"": ""Write a captivating and creative question related to {text}."",
                 ""Answer"": ""Here is the right answer."",
-                ""Option1"": ""Here is a wrong answer."",
-                ""Option2"": ""Here is a wrong answer."",
-                ""Option3"": ""Here is a wrong answer."",
-                ""Option4"": ""Here is a wrong answer."",
-                ""Hint"": ""Write a hint here.""
+                ""Option1"": ""Here is a plausible but incorrect answer that may seem correct at first."",
+                ""Option2"": ""Here is another plausible but incorrect answer that may seem correct at first."",
+                ""Option3"": ""Here is a misleading answer that seems related but is ultimately incorrect."",
+                ""Option4"": ""Here is a deceptive answer that may lead the player astray."",
+                ""Hint"": ""Write a hint here that guides the player without giving away the answer.""
             }}
             ";
 
-            if (questionsAmount <= 1) output = $"Elaborate a question about {text} and fit it in the json structure: {json}";
-            if (questionsAmount > 1) output = $"Elaborate {questionsAmount} questions about {text} and fit it in the json structure: {json}";
+            if (questionsAmount <= 1)
+            {
+                output = $"Craft a captivating and creative question about {text} and fit it in the JSON structure: {json}";
+            }
+            else
+            {
+                output = $"Craft {questionsAmount} captivating and creative questions about {text} and fit them in the JSON structure: {json}";
+            }
 
-            return output; 
+            return output;
         }
     }
 }

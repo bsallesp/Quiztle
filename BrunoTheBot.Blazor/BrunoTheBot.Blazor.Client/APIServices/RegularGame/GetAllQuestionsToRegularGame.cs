@@ -1,5 +1,6 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO;
 using System.Text.Json;
 
@@ -14,18 +15,18 @@ namespace BrunoTheBot.Blazor.Client.APIServices.RegularGame
             _httpClient = httpClient;
         }
 
-        public async Task<List<QuestionGameDTO>> ExecuteAsync(int bookId)
+        public async Task<List<QuestionGameDTO>> ExecuteAsync(Guid bookId)
         {
             try
             {
                 List<QuestionGameDTO> questions = [];
                 var stringResponse = await _httpClient.GetStringAsync("/api/RetrieveBookById/" + bookId);
 
-                BookAPIResponse bookAPIResponse = JsonSerializer.Deserialize<BookAPIResponse>(stringResponse)!;
+                APIResponse<Book> bookAPIResponse = JsonSerializer.Deserialize<APIResponse<Book>>(stringResponse)!;
 
                 if (bookAPIResponse.Status != CustomStatusCodes.SuccessStatus) throw new Exception(bookAPIResponse.Status);
 
-                foreach (var chapter in bookAPIResponse.Book.Chapters)
+                foreach (var chapter in bookAPIResponse.Data.Chapters)
                 {
                     foreach (var sectionObj in chapter.Sections)
                     {

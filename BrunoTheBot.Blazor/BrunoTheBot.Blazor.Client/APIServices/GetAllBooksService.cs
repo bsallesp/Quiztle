@@ -1,5 +1,6 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Entities.Course;
 using System.Text.Json;
 
 namespace BrunoTheBot.Blazor.Client.APIServices
@@ -13,22 +14,21 @@ namespace BrunoTheBot.Blazor.Client.APIServices
             _httpClient = httpClient;
         }
 
-        public async Task<BooksAPIResponse> ExecuteAsync()
+        public async Task<APIResponse<List<Book>>> ExecuteAsync()
         {
             try
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/GetAllBooks/GetAllBooksController");
-
-                BooksAPIResponse booksAPIResponse = JsonSerializer.Deserialize<BooksAPIResponse>(stringResponse)!;
+                APIResponse<List<Book>> booksAPIResponse = JsonSerializer.Deserialize<APIResponse<List<Book>>>(stringResponse)!;
 
                 return booksAPIResponse;
             }
             catch
             {
-                return new BooksAPIResponse
+                return new APIResponse<List<Book>>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
-                    Books = null
+                    Data = new List<Book>()
                 };
             }
         }

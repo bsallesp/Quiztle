@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
+using BrunoTheBot.DataContext.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -29,6 +30,9 @@ if (string.IsNullOrEmpty(apiBaseUrl)) throw new Exception();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
 #endregion
 
+
+builder.Services.AddScoped<CodeExtraction>();
+
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooksController>();
 builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
@@ -36,7 +40,9 @@ builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
-builder.Services.AddTransient<CreateBookService>();
+builder.Services.AddTransient<CreateBookTaskService>();
+
+builder.Services.AddTransient<AILogRepository>();
 
 builder.Services.AddScoped<DefaultAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp

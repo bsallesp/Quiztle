@@ -10,10 +10,13 @@ using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 using BrunoTheBot.DataContext.DataService.Repository.Tasks;
 using BrunoTheBot.API.Controllers.Tasks.Engines;
 using BrunoTheBot.API.Controllers.Tasks;
+using BrunoTheBot.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
+
+builder.Services.AddTransient(typeof(LogService<>));
 
 builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();
@@ -45,7 +48,6 @@ builder.Services.AddCors(options =>
 string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
 if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
 if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections at webcoreapi.");
-Console.WriteLine(connectionString);
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

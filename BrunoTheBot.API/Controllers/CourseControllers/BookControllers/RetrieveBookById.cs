@@ -18,7 +18,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
         }
 
         [HttpGet("{bookId}")]
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(int bookId)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Guid bookId)
         {
             try
             {
@@ -26,19 +26,19 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
 
                 if (book == new Book() || book == null)
                 {
-                    var bookNotFoundAPIResponse = new BookAPIResponse
+                    var bookNotFoundAPIResponse = new APIResponse<Book>
                     {
                         Status = CustomStatusCodes.EmptyObjectErrorStatus,
-                        Book = new()
+                        Data = new()
                     };
 
                     return bookNotFoundAPIResponse;
                 }
 
-                var bookAPIResponse = new BookAPIResponse
+                var bookAPIResponse = new APIResponse<Book>
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Book = book
+                    Data = book
                 };
 
                 return bookAPIResponse;
@@ -47,10 +47,10 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
             {
                 // Registre a exceção e retorne uma resposta de erro adequada ao invés de lançá-la novamente
                 Console.WriteLine($"Erro ao recuperar o livro por ID: {ex.Message}");
-                return StatusCode(500, new BookAPIResponse
+                return StatusCode(500, new APIResponse<Book>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
-                    Book = new Book()
+                    Data = new Book()
                 });
             }
         }

@@ -1,6 +1,7 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Tasks;
 using BrunoTheBot.DataContext.DataService.Repository.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace BrunoTheBot.API.Controllers.Tasks
 {
@@ -16,21 +17,23 @@ namespace BrunoTheBot.API.Controllers.Tasks
         }
 
         [HttpGet("CreateBookTaskController/{bookName}/")]
-        public async Task<bool> ExecuteAsync(string bookName)
+        public async Task<ActionResult> ExecuteAsync(string bookName)
         {
             try
             {
+                bookName = HttpUtility.UrlDecode(bookName);
+
                 Console.WriteLine("Creating new BookTask now!!!");
                 var newBookTask = GetNewTempTask(bookName);
                 var result = await _bookTaskRepository.CreateBookTaskAsync(newBookTask);
-                
-                return true;
+
+                return Ok("New task in queue.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An exception occurred while creating the Book:");
                 Console.WriteLine(ex.ToString());
-                throw;
+                return StatusCode(500, "Internal server error occurred.");
             }
         }
 

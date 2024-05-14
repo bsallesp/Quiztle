@@ -15,7 +15,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers
         private readonly GetQuestionsFromLLM _fromLLMToQuestions = fromLLMToQuestions;
 
         [HttpPost("CreateQuestionsController")]
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync([FromBody] Book book)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync([FromBody] Book book)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers
                 throw new Exception(errorMessage);
             }
 
-            return new BookAPIResponse();
+            return new APIResponse<Book> { Data  = new Book() };
         }
     }
 }

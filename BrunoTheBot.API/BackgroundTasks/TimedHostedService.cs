@@ -18,7 +18,7 @@ namespace BrunoTheBot.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(DoWork!, null, TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(5000));
+                TimeSpan.FromMilliseconds(10000));
 
             return Task.CompletedTask;
         }
@@ -28,14 +28,13 @@ namespace BrunoTheBot.API.BackgroundTasks
             using (var scope = _scopeFactory.CreateScope())
             {
                 var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
-
                 try
                 {
-                    await _tryToMoveBookTaskToProduction.ExecuteAsync();
+                    var result = await _tryToMoveBookTaskToProduction.ExecuteAsync();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("An exception occurred while creating the BookTask:");
+                    Console.WriteLine("An exception occurred while checkin tht queue: ");
                     Console.WriteLine(ex.ToString());
                 }
             }

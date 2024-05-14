@@ -4,7 +4,6 @@ using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace BrunoTheBot.API.Controllers.LLMControllers
 {
@@ -13,7 +12,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<BookAPIResponse>> ExecuteAsync(Book book, int sectionsAmount = 5)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book, int sectionsAmount = 5)
         {
             try
             {
@@ -23,7 +22,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
 
                 foreach (var chapter in book.Chapters)
                 {
-                    prompt = LLMPrompts.GetNewSectionsFromChapters(book, sectionsAmount);
+                    prompt = LLMPrompts.GetNewSectionsFromChapters(book, chapter.Name, sectionsAmount);
                     var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt);
                     await _fromLLMToLogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                     var sections = JSONConverter.ConvertToSections(responseLLM, "NewSections");
@@ -31,10 +30,11 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                     newBook.Chapters.Add(chapter);
                 }
 
-                BookAPIResponse bookAPIResponse = new()
+                APIResponse<Book> bookAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Book = newBook
+                    Data = newBook,
+                    Message = ""
                 };
 
                 return bookAPIResponse ?? throw new Exception();
