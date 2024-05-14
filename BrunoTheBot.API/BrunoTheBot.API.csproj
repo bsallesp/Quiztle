@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\LLMControllers\Book\" />
-    <Folder Include="Services\Serilog\" />
   </ItemGroup>
 
 </Project>

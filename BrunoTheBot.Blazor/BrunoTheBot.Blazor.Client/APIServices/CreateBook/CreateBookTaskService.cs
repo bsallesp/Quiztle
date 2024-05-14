@@ -1,4 +1,6 @@
-﻿namespace BrunoTheBot.Blazor.Client.APIServices
+﻿using System.Net;
+
+namespace BrunoTheBot.Blazor.Client.APIServices
 {
     public class CreateBookTaskService
     {
@@ -13,13 +15,14 @@
         {
             try
             {
-                var endpoint = $"api/CreateBookTask/CreateBookTaskController/{bookName}/";
+                string encodedBookName = WebUtility.UrlEncode(bookName);
+                var endpoint = $"api/CreateBookTask/CreateBookTaskController/{encodedBookName}/";
                 Console.WriteLine(_httpClient.BaseAddress + endpoint);
                 var result = await _httpClient.GetAsync(endpoint);
 
                 if (result.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Livro criado com sucesso.");
+                    Console.WriteLine("Tarefa criada com sucesso.");
                     return true;
                 }
                 else
@@ -36,7 +39,3 @@
         }
     }
 }
-
-
-//https://localhost:7204/api/CreateBookTaskController/MIT%20Computer%20Science%20Full%20Course/
-//https://localhost:7204/api/CreateBookTask/CreateBookTaskController/{bookName}

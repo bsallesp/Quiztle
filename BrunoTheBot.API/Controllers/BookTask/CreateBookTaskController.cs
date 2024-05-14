@@ -1,6 +1,7 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Tasks;
 using BrunoTheBot.DataContext.DataService.Repository.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace BrunoTheBot.API.Controllers.Tasks
 {
@@ -20,6 +21,8 @@ namespace BrunoTheBot.API.Controllers.Tasks
         {
             try
             {
+                bookName = HttpUtility.UrlDecode(bookName);
+
                 Console.WriteLine("Creating new BookTask now!!!");
                 var newBookTask = GetNewTempTask(bookName);
                 var result = await _bookTaskRepository.CreateBookTaskAsync(newBookTask);

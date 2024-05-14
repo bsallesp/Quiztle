@@ -18,7 +18,7 @@ namespace BrunoTheBot.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(DoWork!, null, TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(5000));
+                TimeSpan.FromMilliseconds(10000));
 
             return Task.CompletedTask;
         }

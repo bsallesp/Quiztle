@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+builder.Services.AddScoped<CodeExtraction>();
+
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();

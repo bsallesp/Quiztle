@@ -15,7 +15,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices.RegularGame
             _httpClient = httpClient;
         }
 
-        public async Task<List<QuestionGameDTO>> ExecuteAsync(int bookId)
+        public async Task<List<QuestionGameDTO>> ExecuteAsync(Guid bookId)
         {
             try
             {

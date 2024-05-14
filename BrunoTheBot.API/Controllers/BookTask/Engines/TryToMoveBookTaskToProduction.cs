@@ -35,6 +35,11 @@ namespace BrunoTheBot.API.Controllers.Tasks.Engines
                             Message = GetNextBookTaskFromQueueResult.Status
                         };
 
+                    Console.WriteLine(GetNextBookTaskFromQueueResult.Status.ToString());
+                    Console.WriteLine(GetNextBookTaskFromQueueResult.Data.Name);
+                    Console.WriteLine(GetNextBookTaskFromQueueResult.Data.Id);
+                    Console.WriteLine(GetNextBookTaskFromQueueResult.Data.Created);
+
                     var createBookControllerResult = await createBookController.ExecuteAsync(GetNextBookTaskFromQueueResult.Data.Name!, 5, 5);
                     var finishTaskResult = await bookTaskRepository.FinishBookTask(createBookControllerResult.Value!.Data.Id);
 

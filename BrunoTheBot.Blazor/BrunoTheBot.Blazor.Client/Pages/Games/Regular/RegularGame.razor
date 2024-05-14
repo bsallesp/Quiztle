@@ -59,9 +59,15 @@
     {
         try
         {
-            int bookIdInt;
-            if (int.TryParse(bookId, out bookIdInt)) regularExam.Questions = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdInt);
-            else Nav.NavigateTo("", true);
+            Guid bookIdGuid;
+            if (Guid.TryParse(bookId, out bookIdGuid))
+            {
+                regularExam.Questions = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdGuid);
+            }
+            else
+            {
+                Nav.NavigateTo("", true);
+            }
         }
         catch (Exception ex)
         {

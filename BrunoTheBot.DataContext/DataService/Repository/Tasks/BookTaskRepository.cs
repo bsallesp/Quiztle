@@ -80,7 +80,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
                     return new APIResponse<BookTask>
                     {
                         Status = CustomStatusCodes.SuccessStatus,
-                        Data = new BookTask(),
+                        Data = bookTask,
                         Message = "New task caught: "
                     };
                 }

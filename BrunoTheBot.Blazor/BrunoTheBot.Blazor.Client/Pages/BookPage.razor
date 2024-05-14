@@ -2,6 +2,7 @@
 @using BrunoTheBot.CoreBusiness.APIEntities
 @using BrunoTheBot.CoreBusiness.Entities.Course
 @inject RetrieveBookByIdService RetrieveBookByIdService
+@inject CodeExtraction CodeExtraction
 
 @if (bookAPIResponse != null && bookAPIResponse.Data != null)
 {
@@ -10,11 +11,21 @@
     @foreach (var chapter in bookAPIResponse.Data.Chapters)
     {
         <h2>@chapter.Name</h2>
-        foreach (var sectionObj in chapter.Sections)
+        @foreach (var sectionObj in chapter.Sections)
         {
+            <b>@sectionObj.Name</b>
             <p>
-                @sectionObj.Name
-                @sectionObj.Content.Text
+                @foreach (var item in CodeExtraction.ExtractCode(sectionObj.Content.Text!))
+                {
+                    @if (item.Key == "text")
+                    {
+                        <span>@item.Value</span>
+                    }
+                    else if (item.Key == "code")
+                    {
+                        <pre><code>@item.Value</code></pre>
+                    }
+                }
             </p>
         }
     }
@@ -31,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!int.TryParse(BookId, out int bookId))
+        if (!Guid.TryParse(BookId, out Guid bookId))
         {
             return;
         }

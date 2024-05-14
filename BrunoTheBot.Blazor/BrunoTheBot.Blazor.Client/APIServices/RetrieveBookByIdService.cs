@@ -14,7 +14,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
             _httpClient = httpClient;
         }
 
-        public async Task<APIResponse<Book>> ExecuteAsync(int bookId)
+        public async Task<APIResponse<Book>> ExecuteAsync(Guid bookId)
         {
             try
             {

@@ -30,6 +30,9 @@ if (string.IsNullOrEmpty(apiBaseUrl)) throw new Exception();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
 #endregion
 
+
+builder.Services.AddScoped<CodeExtraction>();
+
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<GetAllBooksController>();
 builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
