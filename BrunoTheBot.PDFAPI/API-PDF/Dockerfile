@@ -1,9 +1,10 @@
 # Usar uma imagem base do Python
 FROM python:3.8-slim
 
-# Instalar dependências do sistema, incluindo Poppler
+# Instalar dependências do sistema, incluindo Poppler e Tesseract
 RUN apt-get update && apt-get install -y \
     poppler-utils \
+    tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
 # Definir o diretório de trabalho no contêiner

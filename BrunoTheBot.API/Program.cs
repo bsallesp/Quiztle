@@ -49,7 +49,11 @@ builder.Services.AddCors(options =>
 var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
 if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["PDF_API_URL"];
 if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get PDF_API_URL at webassembly");
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(pdfApiUrl) });
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(pdfApiUrl),
+    Timeout = Timeout.InfiniteTimeSpan
+});
 #endregion
 
 string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
