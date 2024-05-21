@@ -1,8 +1,6 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Tasks;
-using BrunoTheBot.DataContext.DataService.Repository.Tasks;
-using BrunoTheBot.API.Controllers.PDFApi.Engines;
-using Microsoft.AspNetCore.Mvc;
-using System.Web;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
@@ -10,24 +8,32 @@ namespace BrunoTheBot.API.Controllers.PDFApi
     [ApiController]
     public class PDFToJsonController : ControllerBase
     {
-        private readonly PDFToTextService _pdfToTextService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public PDFToJsonController(PDFToTextService pdfToTextService)
+        public PDFToJsonController(IHttpClientFactory httpClientFactory)
         {
-            _pdfToTextService = pdfToTextService;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExecuteAsync(IFormFile file)
+        public async Task<IActionResult> ExecuteAsync([FromBody] string filePath)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("File not found");
+            if (string.IsNullOrEmpty(filePath))
+                return BadRequest("File path not provided");
+
+            var client = _httpClientFactory.CreateClient();
 
             try
             {
-                var text = await _pdfToTextService.ExecuteAsync(file);
-                Console.WriteLine(text);
-                return Ok(text);
+                var content = new MultipartFormDataContent();
+                content.Add(new StringContent(filePath), "file_path");
+                content.Add(new StringContent("1"), "partial_output_rate"); // example rate
+
+                var response = await client.PostAsync("http://localhost:5090/extract-text", content);
+                response.EnsureSuccessStatusCode();
+
+                var result = await response.Content.ReadAsStringAsync();
+                return Ok(result);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import time
 import psutil
@@ -14,12 +12,12 @@ from PIL import Image
 
 app = Flask(__name__)
 
-# Configura o logging
+# Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 def get_memory_usage():
     process = psutil.Process(os.getpid())
-    return process.memory_info().rss  # Retorna o uso de memória em bytes
+    return process.memory_info().rss  # Returns memory usage in bytes
 
 def extract_text_from_pdf(pdf_path, partial_output_rate):
     logging.debug("Converting PDF to images...")
@@ -53,7 +51,7 @@ def extract_text():
         end_time = time.time()
         end_memory = get_memory_usage()
         time_taken = end_time - start_time
-        memory_used = (end_memory - start_memory) / (1024 * 1024)  # Convertido para MB
+        memory_used = (end_memory - start_memory) / (1024 * 1024)  # Convert to MB
 
         output_dir = os.getenv('OUTPUT_FILES', '/bucket/output')
         output_filename = f"{user_uuid}.json"
@@ -78,4 +76,4 @@ def extract_text():
         return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

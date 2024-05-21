@@ -11,15 +11,12 @@ using BrunoTheBot.DataContext.DataService.Repository.Tasks;
 using BrunoTheBot.API.Controllers.Tasks.Engines;
 using BrunoTheBot.API.Controllers.Tasks;
 using BrunoTheBot.API.Services;
-using BrunoTheBot.API.Controllers.PDFApi.Engines;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 
 builder.Services.AddTransient(typeof(LogService<>));
-
-builder.Services.AddScoped<PDFToTextService>();
 
 builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();

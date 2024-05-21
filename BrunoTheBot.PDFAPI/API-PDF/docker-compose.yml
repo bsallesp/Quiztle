@@ -3,7 +3,7 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "5090:5000"
     volumes:
       - app_volume:/app
       - /c/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.PDFAPI/API-PDF/bucket/pdf-files:/bucket/pdf-files

@@ -1,6 +1,11 @@
 # Usar uma imagem base do Python
 FROM python:3.8-slim
 
+# Instalar dependências do sistema, incluindo Poppler
+RUN apt-get update && apt-get install -y \
+    poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+
 # Definir o diretório de trabalho no contêiner
 WORKDIR /app
 
