@@ -5,7 +5,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
-      - /bucket/output:/bucket/output
+      - app_volume:/app
+      - /c/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.PDFAPI/API-PDF/bucket/pdf-files:/bucket/pdf-files
+      - /c/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.PDFAPI/API-PDF/bucket/output:/bucket/output
     environment:
       OUTPUT_FILES: '/bucket/output'
+volumes:
+  app_volume:
+  pdf_input_volume:
+  output_volume:

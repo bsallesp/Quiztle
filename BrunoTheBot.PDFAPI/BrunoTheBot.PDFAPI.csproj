@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="API-PDF\bucket\output\" />
-    <Folder Include="API-PDF\flask-test\" />
   </ItemGroup>
 
 </Project>
