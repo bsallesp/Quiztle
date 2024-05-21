@@ -18,7 +18,7 @@ namespace BrunoTheBot.API
             _logRepository = aILogRepository;
         }
 
-        public async Task<string> ChatWithGPT(string input, string systemProfile = "")
+        public async Task<string> ExecuteAsync(string input, string systemProfile = "")
         {
             try
             {

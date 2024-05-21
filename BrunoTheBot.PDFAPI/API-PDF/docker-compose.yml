@@ -1,16 +1,19 @@
-version: '3.8'
+version: '3.9'
+
 services:
   web:
     build: .
     ports:
       - "5090:5000"
     volumes:
-      - app_volume:/app
+      # - app_volume:/app
       - /c/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.PDFAPI/API-PDF/bucket/pdf-files:/bucket/pdf-files
       - /c/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.PDFAPI/API-PDF/bucket/output:/bucket/output
     environment:
       OUTPUT_FILES: '/bucket/output'
+      PARTIAL_OUTPUT_RATE: '1'
+
 volumes:
-  app_volume:
+  # app_volume:
   pdf_input_volume:
   output_volume:

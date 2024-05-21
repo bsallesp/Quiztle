@@ -96,15 +96,6 @@ services:
   #   networks:
   #     - brunothebot-network
 
-  pdf-api:
-    image: brunosallesdev/pdf-api
-    container_name: pdf-api
-    restart: always
-    ports:
-      - 8080:8080
-    networks:
-      - brunothebot-network
-
   # webmin:
   #   image: johanp/webmin
   #   container_name: webmin

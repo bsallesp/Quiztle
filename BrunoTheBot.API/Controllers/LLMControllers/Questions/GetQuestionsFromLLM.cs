@@ -27,7 +27,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                     foreach (var section in chapter.Sections)
                     {
                         var prompt = LLMPrompts.GetNewQuestion(section.Content.Text!, questionsPerSection);
-                        var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt) ?? throw new Exception();
+                        var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
                         await _fromLLMToLogController.ExecuteAsync(nameof(GetFullNewQuestionsGroupFromLLM), responseLLM);
                         var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
 

@@ -9,11 +9,17 @@ from werkzeug.exceptions import BadRequest
 from pdf2image import convert_from_path
 import pytesseract
 from PIL import Image
+import re
 
 app = Flask(__name__)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
+
+def clean_text(text):
+    # Substitui múltiplos '\n' e espaços em branco por um único espaço
+    cleaned_text = re.sub(r'\s+', ' ', text).strip()
+    return cleaned_text
 
 def get_memory_usage():
     process = psutil.Process(os.getpid())
@@ -31,7 +37,8 @@ def extract_text_from_pdf(pdf_path, partial_output_rate):
             extracted_text += text + "\n\n"
             logging.debug(f"Page {index + 1} processed.")
 
-    return extracted_text
+    # Limpa o texto antes de retornar
+    return clean_text(extracted_text)
 
 @app.route('/extract-text', methods=['POST'])
 def extract_text():
@@ -46,6 +53,9 @@ def extract_text():
         if not file_path or not os.path.exists(file_path):
             raise BadRequest("No valid file path provided or file does not exist.")
 
+        # Extração do nome original do arquivo a partir do caminho do arquivo
+        original_filename = os.path.basename(file_path)
+
         extracted_text = extract_text_from_pdf(file_path, partial_output_rate)
 
         end_time = time.time()
@@ -58,6 +68,7 @@ def extract_text():
         output_filepath = os.path.join(output_dir, output_filename)
 
         result = {
+            "original_filename": original_filename,  # Inclui o nome do arquivo original no resultado
             "extracted_text": extracted_text,
             "time_taken": f"{time_taken:.2f} seconds",
             "memory_used": f"{memory_used:.2f} MB"

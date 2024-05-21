@@ -23,7 +23,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                 foreach (var chapter in book.Chapters)
                 {
                     prompt = LLMPrompts.GetNewSectionsFromChapters(book, chapter.Name, sectionsAmount);
-                    var responseLLM = await _chatGPTRequest.ChatWithGPT(prompt);
+                    var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt);
                     await _fromLLMToLogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                     var sections = JSONConverter.ConvertToSections(responseLLM, "NewSections");
                     chapter.Sections.AddRange(sections);

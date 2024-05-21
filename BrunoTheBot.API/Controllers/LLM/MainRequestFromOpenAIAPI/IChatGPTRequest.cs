@@ -2,6 +2,6 @@
 {
     public interface IChatGPTRequest
     {
-        Task<string> ChatWithGPT(string input, string systemProfile = "");
+        Task<string> ExecuteAsync(string input, string systemProfile = "");
     }
 }
