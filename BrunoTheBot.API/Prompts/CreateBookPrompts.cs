@@ -55,7 +55,7 @@ namespace BrunoTheBot.API.Prompts
                 $" Return a JSON object with the key 'NewContent' formatted as follows: {json}.";
         }
 
-        public static string GetNewQuestion(string text, int questionsAmount = 5)
+        public static string GetNewQuestionFromLLMBook(string text, int questionsAmount = 5)
         {
             string output = "";
 
