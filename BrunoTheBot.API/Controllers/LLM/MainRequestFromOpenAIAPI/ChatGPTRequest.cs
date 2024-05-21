@@ -1,7 +1,11 @@
 ﻿using BrunoTheBot.CoreBusiness.Log;
 using BrunoTheBot.DataContext.Repositories;
+using System;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BrunoTheBot.API
 {
@@ -10,12 +14,14 @@ namespace BrunoTheBot.API
         private readonly HttpClient _client;
         private readonly string _apiKey;
         private readonly AILogRepository _logRepository;
+        private string _sessionId; // Adicionado para gerenciar a sessão
 
-        public ChatGPTRequest(HttpClient client, AILogRepository aILogRepository)
+        public ChatGPTRequest(HttpClient client, AILogRepository aILogRepository, string sessionId = null)
         {
             _client = client;
             _apiKey = "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";
             _logRepository = aILogRepository;
+            _sessionId = sessionId ?? Guid.NewGuid().ToString(); // Gera um novo ID de sessão se não fornecido
         }
 
         public async Task<string> ExecuteAsync(string input, string systemProfile = "")
@@ -28,26 +34,26 @@ namespace BrunoTheBot.API
                 var requestData = new
                 {
                     model = "gpt-3.5-turbo-0125",
-                    //model = "gpt-4 Turbo",
+                    session_id = _sessionId, // Inclui session_id na solicitação
                     response_format = new { type = "json_object" },
                     messages = new object[]
                     {
-                    new { role = "system", content = systemProfile },
-                    new { role = "user", content = input }
+                        new { role = "system", content = systemProfile },
+                        new { role = "user", content = input }
                     }
                 };
 
                 var jsonRequest = JsonSerializer.Serialize(requestData);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-                if (!_client.DefaultRequestHeaders.Any()) _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
+                if (!_client.DefaultRequestHeaders.Any())
+                    _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
 
                 await _logRepository.CreateAILogAsync(new AILog
                 {
-                    JSON = content.ToString() ?? "The content is null",
+                    JSON = jsonRequest,
                     Name = "ChapGPTRequest"
-
-                }); 
+                });
 
                 var response = await _client.PostAsync("https://api.openai.com/v1/chat/completions", content);
 
@@ -58,7 +64,6 @@ namespace BrunoTheBot.API
                 }
                 else
                 {
-                    // Constrói uma mensagem de erro com mais detalhes
                     string errorMessage = $"Erro ao fazer a solicitação para a API ChatGPT. Código de status: {response.StatusCode}. ";
                     errorMessage += $"Motivo: {response.ReasonPhrase}. Conteúdo da resposta: {await response.Content.ReadAsStringAsync()}";
                     return errorMessage;
@@ -66,24 +71,14 @@ namespace BrunoTheBot.API
             }
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
                 string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
-
-                // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)
-                {
                     errorMessage += $" InnerException: {ex.InnerException.Message}";
-                }
-
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $" StackTrace: {ex.StackTrace}";
-
-                // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
         }
 
-        // Implementação do método Dispose para liberar recursos
         public void Dispose()
         {
             _client.Dispose();

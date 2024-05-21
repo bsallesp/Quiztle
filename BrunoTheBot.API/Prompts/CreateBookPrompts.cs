@@ -2,7 +2,7 @@
 
 namespace BrunoTheBot.API.Prompts
 {
-    public static class LLMPrompts
+    public static class CreateBookPrompts
     {
         public static string GetNewChaptersFromBookPrompt(string book, int chaptersAmount = 10)
         {

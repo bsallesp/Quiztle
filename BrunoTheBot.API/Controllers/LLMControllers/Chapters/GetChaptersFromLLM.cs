@@ -16,7 +16,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
         {
             try
             {
-                var prompt = LLMPrompts.GetNewChaptersFromBookPrompt(book, chapterAmount);
+                var prompt = CreateBookPrompts.GetNewChaptersFromBookPrompt(book, chapterAmount);
                 var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
                 await _fromLLMToLogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                 var newChapters = JSONConverter.ConvertToChapters(responseLLM, "NewChapters");
