@@ -11,12 +11,15 @@ using BrunoTheBot.DataContext.DataService.Repository.Tasks;
 using BrunoTheBot.API.Controllers.Tasks.Engines;
 using BrunoTheBot.API.Controllers.Tasks;
 using BrunoTheBot.API.Services;
+using BrunoTheBot.API.Controllers.PDFApi.Engines;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
 
 builder.Services.AddTransient(typeof(LogService<>));
+
+builder.Services.AddScoped<PDFToTextService>();
 
 builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();
@@ -44,6 +47,13 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader()
                           .AllowAnyMethod());
 });
+
+#region pdfApiUrl
+var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
+if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["PDF_API_URL"];
+if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get PDF_API_URL at webassembly");
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(pdfApiUrl) });
+#endregion
 
 string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
 if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;

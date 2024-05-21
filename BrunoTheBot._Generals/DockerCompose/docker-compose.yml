@@ -1,42 +1,42 @@
 services:
-  nginx:
-    image: brunosallesdev/nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - nginx-conf-d-volume:/etc/nginx/conf.d
-    networks:
-      - brunothebot-network
-      - thelaserspace-network
+  # nginx:
+  #   image: brunosallesdev/nginx:latest
+  #   container_name: nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - nginx-conf-d-volume:/etc/nginx/conf.d
+  #   networks:
+  #     - brunothebot-network
+  #     - thelaserspace-network
 
-  thelaserspace:
-    image: brunosallesdev/thelaserspace2024:latest
-    ports:
-      - "50440:8080"
-      - "50441:443"
-    container_name: thelaserspace
-    networks:
-      - thelaserspace-network
+  # thelaserspace:
+  #   image: brunosallesdev/thelaserspace2024:latest
+  #   ports:
+  #     - "50440:8080"
+  #     - "50441:443"
+  #   container_name: thelaserspace
+  #   networks:
+  #     - thelaserspace-network
 
-  brunothebot-api:
-    ports:
-      - "50401:8080"
-      - "50402:443"
-    image: brunosallesdev/brunothebotapi:latest
-    container_name: brunothebot-api
-    networks:
-      - brunothebot-network
+  # brunothebot-api:
+  #   ports:
+  #     - "50401:8080"
+  #     - "50402:443"
+  #   image: brunosallesdev/brunothebotapi:latest
+  #   container_name: brunothebot-api
+  #   networks:
+  #     - brunothebot-network
 
-  brunothebot-blazor:
-    ports:
-      - "50403:8080"
-      - "50404:443"
-    image: brunosallesdev/brunothebotblazor:latest
-    container_name: brunothebot-blazor
-    networks:
-      - brunothebot-network  
+  # brunothebot-blazor:
+  #   ports:
+  #     - "50403:8080"
+  #     - "50404:443"
+  #   image: brunosallesdev/brunothebotblazor:latest
+  #   container_name: brunothebot-blazor
+  #   networks:
+  #     - brunothebot-network  
 
   brunothebot-postgres:
     image: postgres:latest
@@ -52,38 +52,56 @@ services:
     volumes:
       - brunothebot-postgres-data:/var/lib/postgresql/data
 
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    restart: always
-    ports:
-      - "8000:8000"
-      - "9443:9443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    networks:
-      - brunothebot-network
+  # portainer:
+  #   image: portainer/portainer-ce:latest
+  #   container_name: portainer
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #     - "9443:9443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - portainer_data:/data
+  #   networks:
+  #     - brunothebot-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: brunosallesdev@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: root
-      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
-    ports:
-      - "5050:80"
-    networks:
-      - brunothebot-network
-    volumes:
-      - ./servers.json:/pgadmin4/servers.json
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: brunosallesdev@gmail.com
+  #     PGADMIN_DEFAULT_PASSWORD: root
+  #     PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+  #   ports:
+  #     - "5050:80"
+  #   networks:
+  #     - brunothebot-network
+  #   volumes:
+  #     - ./servers.json:/pgadmin4/servers.json
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8081:8080
+    networks:
+      - brunothebot-network
+
+  # quay:
+  #   container_name: quay
+  #   image: quay.io/codait/max-ocr
+  #   restart: always
+  #   ports:
+  #     - 5000:5000
+  #   networks:
+  #     - brunothebot-network
+
+  pdf-api:
+    image: brunosallesdev/pdf-api
+    container_name: pdf-api
+    restart: always
+    ports:
+      - 8080:8080
     networks:
       - brunothebot-network
 
