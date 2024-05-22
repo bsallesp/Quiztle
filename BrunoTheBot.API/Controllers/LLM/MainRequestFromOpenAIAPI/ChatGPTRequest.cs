@@ -14,14 +14,12 @@ namespace BrunoTheBot.API
         private readonly HttpClient _client;
         private readonly string _apiKey;
         private readonly AILogRepository _logRepository;
-        private string _sessionId; // Adicionado para gerenciar a sessão
 
-        public ChatGPTRequest(HttpClient client, AILogRepository aILogRepository, string sessionId = null)
+        public ChatGPTRequest(HttpClient client, AILogRepository aILogRepository)
         {
             _client = client;
             _apiKey = "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";
             _logRepository = aILogRepository;
-            _sessionId = sessionId ?? Guid.NewGuid().ToString(); // Gera um novo ID de sessão se não fornecido
         }
 
         public async Task<string> ExecuteAsync(string input, string systemProfile = "")
@@ -34,7 +32,6 @@ namespace BrunoTheBot.API
                 var requestData = new
                 {
                     model = "gpt-3.5-turbo-0125",
-                    session_id = _sessionId, // Inclui session_id na solicitação
                     response_format = new { type = "json_object" },
                     messages = new object[]
                     {

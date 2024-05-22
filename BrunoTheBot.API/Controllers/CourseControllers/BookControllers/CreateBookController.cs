@@ -31,7 +31,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
         }
 
         [HttpGet("CreateBookController/{bookName}/{chaptersAmount}/{sectionsAmount}")]
-        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(string bookName, int chaptersAmount = 5, int sectionsAmount = 5)
+        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(string bookName = "Neural NetWork", int chaptersAmount = 5, int sectionsAmount = 5)
         {
             try
             {
