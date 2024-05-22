@@ -3,6 +3,7 @@ using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Log;
 using BrunoTheBot.CoreBusiness.Entities.Tasks;
+using BrunoTheBot.CoreBusiness.Entities.PDFData;
 
 namespace BrunoTheBot.DataContext
 {
@@ -22,6 +23,9 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Option>();
             modelBuilder.Entity<AILog>();
             modelBuilder.Entity<BookTask>();
+            modelBuilder.Entity<PDFData>();
+            modelBuilder.Entity<PDFDataPages>();
+
         }
 
         public DbSet<Content>? Contents { get; set; }
@@ -32,5 +36,7 @@ namespace BrunoTheBot.DataContext
         public DbSet<Question>? Questions { get; set; }
         public DbSet<AILog>? AILogs { get; set; }
         public DbSet<BookTask>? BookTasks { get; set; }
+        public DbSet<PDFData>? PDFData { get; set; }
+        public DbSet<PDFDataPages>? PDFDataPages { get; set; }
     }
 }

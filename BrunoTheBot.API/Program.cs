@@ -12,6 +12,7 @@ using BrunoTheBot.API.Controllers.Tasks.Engines;
 using BrunoTheBot.API.Controllers.Tasks;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers;
+using BrunoTheBot.DataContext.Repositories.Quiz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddTransient<GetAllBookSectionsFromLLM>();
 builder.Services.AddTransient<AILogRepository>();
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<BookTaskRepository>();
+builder.Services.AddTransient<PDFDataRepository>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 
