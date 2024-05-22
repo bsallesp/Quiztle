@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  web:
+  pdf-api:
     build: .
     ports:
       - "5090:5000"

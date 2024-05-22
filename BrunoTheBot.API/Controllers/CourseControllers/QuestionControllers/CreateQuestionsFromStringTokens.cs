@@ -1,28 +1,29 @@
 ﻿using BrunoTheBot.API.Controllers.LLMControllers;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
-using BrunoTheBot.CoreBusiness.Entities.Course;
-using BrunoTheBot.DataContext.DataService.Repository.Course;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.DataContext.Repositories.Quiz;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateQuestionsController(BookRepository bookRepository, GetQuestionsFromLLM fromLLMToQuestions) : ControllerBase
+    public class CreateQuestionsFromStringTokens(QuestionRepository questionRepository, GetQuestionsFromLLMAndTokens getQuestionsFromLLMAndTokens) : ControllerBase
     {
-        private readonly BookRepository _bookRepository = bookRepository;
-        private readonly GetQuestionsFromLLM _fromLLMToQuestions = fromLLMToQuestions;
+        private readonly QuestionRepository _questionRepository = questionRepository;
+        private readonly GetQuestionsFromLLMAndTokens _getQuestionsFromLLMAndTokens = getQuestionsFromLLMAndTokens;
 
-        [HttpPost("CreateQuestionsController")]
-        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync([FromBody] Book book)
+        [HttpPost("CreateQuestionsFromStringTokens")]
+        public async Task<ActionResult<APIResponse<List<Question>>>> ExecuteAsync(string tokensStringPart)
         {
+
             try
             {
-                var bookAPIResponse = await _fromLLMToQuestions.GetFullNewQuestionsGroupFromLLM(book, 1);
-                if (bookAPIResponse.Value!.Status != CustomStatusCodes.SuccessStatus) throw new Exception(bookAPIResponse.Value!.Status);
+                var questions = await _getQuestionsFromLLMAndTokens.ExecuteAsync(tokensStringPart, 10);
+                if (questions.Value!.Status != CustomStatusCodes.SuccessStatus) throw new Exception(questions.Value!.Status);
 
-                await _bookRepository.UpdateBookAsync(book);
+                //await _questionRepository.UpdateBookAsync(book);
             }
 
             catch (Exception ex)
@@ -43,7 +44,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers
                 throw new Exception(errorMessage);
             }
 
-            return new APIResponse<Book> { Data  = new Book() };
+            return new APIResponse<List<Question>> { Data  = new List<Question>() };
         }
     }
 }

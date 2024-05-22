@@ -3,48 +3,39 @@ using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.LLMControllers
 {
-    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI, SaveAILogController fromLLMToLogController) : ControllerBase
+    public class GetQuestionsFromLLMAndTokens(IChatGPTRequest chatGPTAPI, SaveAILogController fromLLMToLogController) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
         private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
-        public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book, int questionsPerSection = 1)
+        public async Task<ActionResult<APIResponse<List<Question>>>> ExecuteAsync(string tokensStringPart, int questionsPerSection = 1)
         {
             try
             {
-                if (book == null || book.Chapters.Count <= 0) return new APIResponse<Book>
+                if (tokensStringPart == null || questionsPerSection <= 0) return new APIResponse<List<Question>>
                 {
                     Status = CustomStatusCodes.EmptyObjectErrorStatus,
-                    Data = new()
+                    Data = []
                 };
 
-                foreach (var chapter in book.Chapters)
-                {
-                    foreach (var section in chapter.Sections)
-                    {
-                        var prompt = CreateBookPrompts.GetNewQuestionFromLLMBook(section.Content.Text!, questionsPerSection);
-                        var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
-                        await _fromLLMToLogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
-                        var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
+                var prompt = CreateQuestionsTokensPrompts.GetQuestionsFromPartOfPDFString(tokensStringPart);
+                var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
+                await _fromLLMToLogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
 
-                        Console.WriteLine(newQuestion.Name);
-                        Console.WriteLine(newQuestion.Answer);
+                Console.WriteLine(responseLLM);
 
-                        section.Questions.Add(newQuestion);
-                    }
-                }
-
-                APIResponse<Book> bookAPIResponse = new()
+                APIResponse<List<Question>> questionsAPIResponse = new()
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Data = book
+                    Data = new List<Question>()
                 };
 
-                return bookAPIResponse;
+                return questionsAPIResponse;
 
             }
             catch (Exception ex)

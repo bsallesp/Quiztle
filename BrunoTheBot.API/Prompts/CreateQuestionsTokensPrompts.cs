@@ -2,9 +2,9 @@
 
 namespace BrunoTheBot.API.Prompts
 {
-    public static class CreateQuestionsPrompts
+    public static class CreateQuestionsTokensPrompts
     {
-        public static string GetQuestionsFromPDF(string text)
+        public static string GetQuestionsFromPartOfPDFString(string text, int questionsAmount = 5)
         {
             string output = "";
 
@@ -20,7 +20,7 @@ namespace BrunoTheBot.API.Prompts
             }}
             ";
 
-            output = $"Craft a captivating and creative question about {text} and fit it in the JSON structure: {json}." +
+            output = $"Craft {questionsAmount} captivating and creative questions about {text} and fit it in the JSON structure: {json}." +
                 $" Remember, it's just a part of entire book. I will sent more parts. Avoid repetitive questions.";
 
             return output;

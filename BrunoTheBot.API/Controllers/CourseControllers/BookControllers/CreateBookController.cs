@@ -54,7 +54,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
                 if (contentAPIResponse.Value?.Status != CustomStatusCodes.SuccessStatus) throw new Exception(contentAPIResponse.Value?.Status);
                 newBook = contentAPIResponse.Value.Data;
 
-                var questionsContentAPIResponse = await _getQuestionsFromLLM.GetFullNewQuestionsGroupFromLLM(newBook, 1);
+                var questionsContentAPIResponse = await _getQuestionsFromLLM.ExecuteAsync(newBook, 1);
                 if (questionsContentAPIResponse.Value!.Status == CustomStatusCodes.ErrorStatus) throw new Exception();
                 newBook = questionsContentAPIResponse.Value.Data;
 
