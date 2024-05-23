@@ -5,7 +5,7 @@
         public Guid Id { get; set; } = Guid.NewGuid();
         public int Page { get; set; }
         public string Content { get; set; } = "";
-        public string Title { get; set; } = "";
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 
     public enum PDFCategory

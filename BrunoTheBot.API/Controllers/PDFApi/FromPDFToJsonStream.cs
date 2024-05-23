@@ -38,6 +38,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             {
                 Id = generalUUID,
                 FileName = Path.GetFileName(filePath),
+                Created = DateTime.UtcNow
             };
 
             if (string.IsNullOrEmpty(filePath))
@@ -76,7 +77,8 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                         newPDFData.Pages.Add(new PDFDataPages
                         {
                             Content = text,
-                            Page = count
+                            Page = count,
+                            Created = DateTime.UtcNow
                         });
                     }
                 }

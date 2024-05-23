@@ -7,5 +7,6 @@
         public string FileName { get; set; } = "";
         public List<PDFDataPages> Pages { get; set; } = [];
         public string Description { get; set; } = "";
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }
