@@ -23,25 +23,35 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
             }
         }
 
-        //public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
-        //{
-        //    EnsureOptionsNotNull();
-        //    return await _context.PDFData!.FindAsync(id);
-        //}
-
-        public async Task<PDFData?> GetPDFDataByIdAsyncByPage(Guid id, int startPage = 1, int endPage = int.MaxValue)
+        public async Task<PDFData?> GetPDFDataByIdAsyncByPage(Guid id, int startPage = 0, int endPage = 0)
         {
-            if (startPage == 1 && endPage == int.MaxValue)
+            if (startPage == 0 && endPage == 0)
             {
+                // Se ambos startPage e endPage são 0, retorna todas as páginas
                 return await _context.PDFData!
-                    .Include(p => p.Pages.OrderBy(page => page.Page))  // Ordena as páginas
+                    .Include(p => p.Pages.OrderBy(page => page.Page))
                     .FirstOrDefaultAsync(pdf => pdf.Id == id);
             }
 
-            return await _context.PDFData!
-                .Include(p => p.Pages.Where(page => page.Page >= startPage && page.Page <= endPage)
-                                     .OrderBy(page => page.Page))  // Ordena as páginas dentro do intervalo especificado
+            // Ajusta startPage para ser no mínimo 1
+            int actualStartPage = Math.Max(1, startPage);
+
+            // Se endPage não é 0, utiliza-o; caso contrário, usa int.MaxValue para representar 'sem limite'
+            int actualEndPage = endPage == 0 ? int.MaxValue : endPage;
+
+            var pdfData = await _context.PDFData!
+                .Include(p => p.Pages)
                 .FirstOrDefaultAsync(pdf => pdf.Id == id);
+
+            if (pdfData == null) return null;
+
+            // Filtra e ordena as páginas na memória para garantir que não tentemos acessar páginas fora do alcance
+            pdfData.Pages = pdfData.Pages
+                .Where(page => page.Page >= actualStartPage && page.Page <= actualEndPage)
+                .OrderBy(page => page.Page)
+                .ToList();
+
+            return pdfData;
         }
 
 

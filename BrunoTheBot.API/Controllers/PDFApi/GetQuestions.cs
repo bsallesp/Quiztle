@@ -1,8 +1,5 @@
 ﻿using System.Text.Json;
-using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using BrunoTheBot.API.Prompts;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
@@ -25,34 +22,19 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         [HttpGet]
         public async Task<IActionResult> ExecuteAsync(Guid id, int startPage, int endPage)
         {
-            var pdfData = await _pDFDataRepository.GetPDFDataByIdAsyncByPage(id, startPage, endPage);
-            if (pdfData == null) throw new Exception("PDF data is null");
-
-            return Ok(pdfData);
-
-            //if (selectedPages.Count <= 0) throw new Exception("No selectedPages found");
-
-            //foreach (var item in selectedPages)
-            //{
-            //    Console.WriteLine(item);
-            //}
+            try
+            {
+                var pdfData = await _pDFDataRepository.GetPDFDataByIdAsyncByPage(id, startPage, endPage);
+                if (pdfData == null) return NotFound("PDF data is null");
 
 
 
-            //var prompt = QuestionsPrompts.GetQuestionsFromPages(pages, startPage, endPage, pages.Count);
-            //var jsonResult = await _chatGPTRequest.ExecuteAsync(prompt);
-
-            //Console.WriteLine(JsonSerializer.Serialize(jsonResult, new JsonSerializerOptions { WriteIndented = true }));
-
-            //try
-            //{
-            //    var questions = JsonSerializer.Deserialize<List<Question>>(jsonResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            //    return Ok(questions);
-            //}
-            //catch (JsonException ex)
-            //{
-            //    return BadRequest($"Error deserializing JSON: {ex.Message}");
-            //}
+                return Ok(pdfData);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"Error deserializing JSON: {ex.Message}");
+            }
         }
     }
 }
