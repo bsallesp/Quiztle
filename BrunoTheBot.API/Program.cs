@@ -13,23 +13,25 @@ using BrunoTheBot.API.Controllers.Tasks;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers;
 using BrunoTheBot.DataContext.Repositories.Quiz;
+using BrunoTheBot.API.Controllers.PDFApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddTransient<ChatGPTRequest>();
 
 builder.Services.AddTransient(typeof(LogService<>));
 
 builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();
 builder.Services.AddTransient<CreateBookTaskController>();
+builder.Services.AddTransient<GetQuestionsController>();
 
 builder.Services.AddTransient<CreateQuestionsFromBookController>();
 
 builder.Services.AddTransient<GetChaptersFromLLM>();
 builder.Services.AddTransient<GetContentFromLLLM>();
 
-builder.Services.AddTransient<GetQuestionsFromLLMAndTokens>();
 builder.Services.AddTransient<GetQuestionsFromLLM>();
 
 builder.Services.AddTransient<GetAllBookSectionsFromLLM>();
@@ -38,6 +40,7 @@ builder.Services.AddTransient<AILogRepository>();
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<BookTaskRepository>();
 builder.Services.AddTransient<PDFDataRepository>();
+builder.Services.AddTransient<QuestionRepository>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 

@@ -1,4 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.PDFData;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrunoTheBot.DataContext.Repositories.Quiz
 {
@@ -22,11 +23,41 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
             }
         }
 
+        //public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
+        //{
+        //    EnsureOptionsNotNull();
+        //    return await _context.PDFData!.FindAsync(id);
+        //}
+
+        public async Task<PDFData?> GetPDFDataByIdAsyncByPage(Guid id, int startPage = 1, int endPage = int.MaxValue)
+        {
+            if (startPage == 1 && endPage == int.MaxValue)
+            {
+                return await _context.PDFData!
+                    .Include(p => p.Pages.OrderBy(page => page.Page))  // Ordena as páginas
+                    .FirstOrDefaultAsync(pdf => pdf.Id == id);
+            }
+
+            return await _context.PDFData!
+                .Include(p => p.Pages.Where(page => page.Page >= startPage && page.Page <= endPage)
+                                     .OrderBy(page => page.Page))  // Ordena as páginas dentro do intervalo especificado
+                .FirstOrDefaultAsync(pdf => pdf.Id == id);
+        }
+
+
         public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
         {
-            EnsureOptionsNotNull();
-            return await _context.PDFData!.FindAsync(id);
+            return await _context.PDFData!
+                .Include(p => p.Pages)
+                .FirstOrDefaultAsync(pdf => pdf.Id == id);
         }
+
+        public async Task<List<PDFData>> GetAllPDFDataAsync()
+        {
+            EnsureOptionsNotNull();
+            return await _context.PDFData!.ToListAsync();
+        }
+
 
         private void EnsureOptionsNotNull()
         {
