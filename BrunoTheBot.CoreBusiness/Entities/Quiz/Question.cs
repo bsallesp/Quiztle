@@ -19,6 +19,8 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("Hint")]
         public string? Hint { get; set; } = "";
+        [JsonPropertyName("Resolution")]
+        public string? Resolution { get; set; } = "";
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;

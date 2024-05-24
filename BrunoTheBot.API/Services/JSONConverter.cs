@@ -182,7 +182,8 @@ namespace BrunoTheBot.API.Services
                             new Option { Name = (string)jsonData["Option3"]! },
                             new Option { Name = (string)jsonData["Option4"]! }
                         },
-                        Hint = (string)jsonData["Hint"]!
+                        Hint = (string)jsonData["Hint"]!,
+                        Resolution = (string)jsonData["Resolution"]!
                     };
                     finalQuestions.Add(newQuestion);
                 }
