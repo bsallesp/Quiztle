@@ -1,0 +1,48 @@
+﻿@page "/PDFDataManager"
+
+@using BrunoTheBot.CoreBusiness.Entities.PDFData
+@inject GetAllPDFDataService GetAllPDFDataService
+
+
+<h3>PDFDataManager</h3>
+
+<h5>
+    @foreach (var item in pdfDataAPIResponse.Data)
+    {
+        @item.Id
+        <hr />
+        @item.FileName
+        <hr />
+    }
+</h5>
+<h6>
+    @pdfDataAPIResponse.Data.Count
+</h6>
+<h6>
+    @pdfDataAPIResponse.Status
+</h6>
+<h6>
+    @pdfDataAPIResponse.Message
+</h6>
+
+@code {
+    APIResponse<List<PDFData>> pdfDataAPIResponse = new APIResponse<List<PDFData>>()
+        {
+            Data = new List<PDFData>()
+        };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            pdfDataAPIResponse = await GetAllPDFDataService.ExecuteAsync();
+            Console.WriteLine("SUCESS IN RAZOR!!!" + pdfDataAPIResponse.Data.Count);
+            if (pdfDataAPIResponse.Data == null) Console.WriteLine("No books found in the API response.");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+}

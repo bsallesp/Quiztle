@@ -9,19 +9,54 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
 
         public async Task CreatePDFDataAsync(PDFData pdfData)
         {
-            try
+            _context.PDFData!.Add(pdfData);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
+        {
+            return await _context.PDFData!
+                .Include(p => p.Pages)
+                .FirstOrDefaultAsync(pdf => pdf.Id == id);
+        }
+
+        public async Task UpdatePDFDataAsync(PDFData pdfData)
+        {
+            _context.PDFData!.Update(pdfData);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePDFDataAsync(Guid id)
+        {
+            var pdfData = await GetPDFDataByIdAsync(id);
+            if (pdfData != null)
             {
-                EnsureOptionsNotNull();
-                _context.PDFData!.Add(pdfData);
+                _context.PDFData!.Remove(pdfData);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An exception occurred while creating the pdfData:");
-                Console.WriteLine(ex.ToString());
-                throw;
-            }
         }
+
+        public async Task<List<PDFData>> GetAllPDFDataAsync()
+        {
+            return await _context.PDFData!.ToListAsync();
+        }
+
+
+        //public async Task CreatePDFDataAsync(PDFData pdfData)
+        //{
+        //    try
+        //    {
+        //        EnsureOptionsNotNull();
+        //        _context.PDFData!.Add(pdfData);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("An exception occurred while creating the pdfData:");
+        //        Console.WriteLine(ex.ToString());
+        //        throw;
+        //    }
+        //}
 
         public async Task<PDFData?> GetPDFDataByIdAsyncByPage(Guid id, int startPage = 0, int endPage = 0)
         {
@@ -54,19 +89,18 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
             };
         }
 
-        public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
-        {
-            return await _context.PDFData!
-                .Include(p => p.Pages)
-                .FirstOrDefaultAsync(pdf => pdf.Id == id);
-        }
+        //public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
+        //{
+        //    return await _context.PDFData!
+        //        .Include(p => p.Pages)
+        //        .FirstOrDefaultAsync(pdf => pdf.Id == id);
+        //}
 
-        public async Task<List<PDFData>> GetAllPDFDataAsync()
-        {
-            EnsureOptionsNotNull();
-            return await _context.PDFData!.ToListAsync();
-        }
-
+        //public async Task<List<PDFData>> GetAllPDFDataAsync()
+        //{
+        //    EnsureOptionsNotNull();
+        //    return await _context.PDFData!.ToListAsync();
+        //}
 
         private void EnsureOptionsNotNull()
         {

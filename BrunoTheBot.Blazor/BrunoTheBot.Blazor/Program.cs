@@ -10,6 +10,7 @@ using BrunoTheBot.Blazor.Components;
 using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 using BrunoTheBot.DataContext.Repositories;
+using BrunoTheBot.DataContext.Repositories.Quiz;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -34,13 +35,18 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseU
 builder.Services.AddScoped<CodeExtraction>();
 
 builder.Services.AddTransient<BookRepository>();
+builder.Services.AddTransient<PDFDataRepository>();
+
 builder.Services.AddTransient<GetAllBooksController>();
 builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
+
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
+builder.Services.AddTransient<GetAllPDFDataService>();
+builder.Services.AddTransient<CreateBookTaskService>();
+
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
-builder.Services.AddTransient<CreateBookTaskService>();
 
 builder.Services.AddTransient<AILogRepository>();
 

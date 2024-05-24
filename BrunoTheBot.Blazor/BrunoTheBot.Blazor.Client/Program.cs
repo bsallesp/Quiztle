@@ -4,6 +4,7 @@ using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.Blazor.Client.Authentication.Core;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.DataContext.Repositories;
+using BrunoTheBot.DataContext.Repositories.Quiz;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -12,7 +13,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddScoped<CodeExtraction>();
 
 builder.Services.AddTransient<BookRepository>();
+builder.Services.AddTransient<PDFDataRepository>();
+
 builder.Services.AddTransient<GetAllBooksService>();
+builder.Services.AddTransient<GetAllPDFDataService>();
+
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

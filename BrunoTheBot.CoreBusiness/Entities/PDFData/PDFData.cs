@@ -1,12 +1,20 @@
-﻿namespace BrunoTheBot.CoreBusiness.Entities.PDFData
+﻿using System.Text.Json.Serialization;
+
+namespace BrunoTheBot.CoreBusiness.Entities.PDFData
 {
     public class PDFData
     {
+        [JsonPropertyName("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
+        [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
+        [JsonPropertyName("FileName")]
         public string FileName { get; set; } = "";
-        public List<PDFDataPages> Pages { get; set; } = new List<PDFDataPages>();
+        [JsonPropertyName("Pages")]
+        public List<PDFDataPages> Pages { get; set; } = [];
+        [JsonPropertyName("Description")] 
         public string Description { get; set; } = "";
+        [JsonPropertyName("Created")] 
         public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }

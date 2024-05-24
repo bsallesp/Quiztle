@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrunoTheBot.API", "BrunoThe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrunoTheBot._Generals", "BrunoTheBot._Generals\BrunoTheBot._Generals.csproj", "{6D0FE485-927A-40AF-8124-EF6AAE4752B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrunoTheBot.PDFAPI", "BrunoTheBot.PDFAPI\BrunoTheBot.PDFAPI.csproj", "{82781ACA-853A-4CC8-B4F0-B6DEE3079DA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrunoTheBot.PDFAPI", "BrunoTheBot.PDFAPI\BrunoTheBot.PDFAPI.csproj", "{82781ACA-853A-4CC8-B4F0-B6DEE3079DA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
