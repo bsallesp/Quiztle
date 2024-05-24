@@ -9,14 +9,14 @@ namespace BrunoTheBot.API.Controllers.PDFApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetPDFDataFromStream : ControllerBase
+    public class CreatePDFDataFromStream : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly CreateQuestionsFromBookController _createQuestionController;
         private readonly AILogRepository _aILogRepository;
         private readonly PDFDataRepository _pDFDataRepository;
 
-        public GetPDFDataFromStream(
+        public CreatePDFDataFromStream(
             IHttpClientFactory httpClientFactory,
             CreateQuestionsFromBookController createQuestionsController,
             AILogRepository aILogRepository,

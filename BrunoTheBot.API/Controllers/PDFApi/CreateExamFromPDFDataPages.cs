@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.API.Controllers.LLMControllers;
-using System.Linq;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.DataContext.DataService.Repository.Quiz;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetQuestionsController : ControllerBase
+    public class CreateExamFromPDFDataPages : ControllerBase
     {
         private readonly PDFDataRepository _pDFDataRepository;
-        private readonly QuestionRepository _questionRepository;
+        private readonly ExamRepository _examRepository;
         private readonly GetQuestionsFromLLM _getQuestionsFromLLM;
 
-        public GetQuestionsController(PDFDataRepository pDFDataRepository, QuestionRepository questionRepository, GetQuestionsFromLLM getQuestionsFromLLM)
+        public CreateExamFromPDFDataPages(PDFDataRepository pDFDataRepository, ExamRepository examRepository, GetQuestionsFromLLM getQuestionsFromLLM)
         {
             _pDFDataRepository = pDFDataRepository;
-            _questionRepository = questionRepository;
+            _examRepository = examRepository;
             _getQuestionsFromLLM = getQuestionsFromLLM;
         }
 
@@ -35,8 +36,8 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 var result = await _getQuestionsFromLLM.ExecuteAsync(pagesConcat, 5);
                 if (result.Value == null) return NotFound("_getQuestionsFromLLM.ExecuteAsync nao retornou valores");
 
-                foreach (var item in result.Value.Data) await _questionRepository.CreateQuestionAsync(item);
-
+                Exam exam = new Exam { Questions = result.Value.Data };
+                await _examRepository.CreateExamAsync(exam);
                 return Ok(result.Value);
             }
             catch (Exception ex)

@@ -31,7 +31,7 @@
         {
             if (Options.TryGetValue(selectedOptionKey, out var option))
             {
-                return option.Item1; // Retorna true se for a resposta correta, false caso contrário
+                return option.Item1;
             }
             else
             {
