@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class Begin : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,6 +53,21 @@ namespace BrunoTheBot.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PDFData",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PDFData", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -84,6 +99,44 @@ namespace BrunoTheBot.DataContext.Migrations
                         name: "FK_Chapters_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PDFDataPages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Page = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PDFDataPages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PDFDataPages_PDFData_PDFDataId",
+                        column: x => x.PDFDataId,
+                        principalTable: "PDFData",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tests_PDFData_PDFDataId",
+                        column: x => x.PDFDataId,
+                        principalTable: "PDFData",
                         principalColumn: "Id");
                 });
 
@@ -142,8 +195,10 @@ namespace BrunoTheBot.DataContext.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Answer = table.Column<string>(type: "text", nullable: true),
                     Hint = table.Column<string>(type: "text", nullable: true),
+                    Resolution = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SectionId = table.Column<Guid>(type: "uuid", nullable: true)
+                    SectionId = table.Column<Guid>(type: "uuid", nullable: true),
+                    TestId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -152,6 +207,11 @@ namespace BrunoTheBot.DataContext.Migrations
                         name: "FK_Questions_Sections_SectionId",
                         column: x => x.SectionId,
                         principalTable: "Sections",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Questions_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
                         principalColumn: "Id");
                 });
 
@@ -191,9 +251,19 @@ namespace BrunoTheBot.DataContext.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PDFDataPages_PDFDataId",
+                table: "PDFDataPages",
+                column: "PDFDataId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Questions_SectionId",
                 table: "Questions",
                 column: "SectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_TestId",
+                table: "Questions",
+                column: "TestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sections_ChapterId",
@@ -204,6 +274,11 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "IX_Sections_ContentId",
                 table: "Sections",
                 column: "ContentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tests_PDFDataId",
+                table: "Tests",
+                column: "PDFDataId");
         }
 
         /// <inheritdoc />
@@ -219,6 +294,9 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "Options");
 
             migrationBuilder.DropTable(
+                name: "PDFDataPages");
+
+            migrationBuilder.DropTable(
                 name: "User");
 
             migrationBuilder.DropTable(
@@ -228,10 +306,16 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "Sections");
 
             migrationBuilder.DropTable(
+                name: "Tests");
+
+            migrationBuilder.DropTable(
                 name: "Chapters");
 
             migrationBuilder.DropTable(
                 name: "Contents");
+
+            migrationBuilder.DropTable(
+                name: "PDFData");
 
             migrationBuilder.DropTable(
                 name: "Books");

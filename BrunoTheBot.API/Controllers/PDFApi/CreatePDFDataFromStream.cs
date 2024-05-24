@@ -30,7 +30,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExecuteAsync([FromBody] string filePath = "bucket/pdf-files/gc.pdf")
+        public async Task<IActionResult> ExecuteAsync([FromBody] string filePath = "bucket/pdf-files/teste123.pdf", string name = "unnamed")
         {
             var generalUUID = Guid.NewGuid();
 
@@ -38,7 +38,8 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             {
                 Id = generalUUID,
                 FileName = Path.GetFileName(filePath),
-                Created = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Name = name
             };
 
             if (string.IsNullOrEmpty(filePath))

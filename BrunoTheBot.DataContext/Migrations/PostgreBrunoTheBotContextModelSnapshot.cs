@@ -129,22 +129,27 @@ namespace BrunoTheBot.DataContext.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Description");
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "FileName");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Name");
 
                     b.HasKey("Id");
 
@@ -155,40 +160,32 @@ namespace BrunoTheBot.DataContext.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "Content");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<Guid?>("PDFDataId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Page")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Page");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PDFDataId");
 
                     b.ToTable("PDFDataPages");
-                });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Exam", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Exams");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Pages");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
@@ -238,9 +235,6 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
-                    b.Property<Guid?>("ExamId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Hint")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Hint");
@@ -257,15 +251,39 @@ namespace BrunoTheBot.DataContext.Migrations
                     b.Property<Guid?>("SectionId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("TestId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamId");
-
                     b.HasIndex("SectionId");
+
+                    b.HasIndex("TestId");
 
                     b.ToTable("Questions");
 
                     b.HasAnnotation("Relational:JsonPropertyName", "Questions");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PDFDataId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PDFDataId");
+
+                    b.ToTable("Tests");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "Tests");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Tasks.BookTask", b =>
@@ -385,13 +403,20 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Exam", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("ExamId");
-
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
+
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("TestId");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>
+                {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.PDFData.PDFData", null)
+                        .WithMany("Tests")
+                        .HasForeignKey("PDFDataId");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Tasks.BookTask", b =>
@@ -421,16 +446,18 @@ namespace BrunoTheBot.DataContext.Migrations
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.PDFData.PDFData", b =>
                 {
                     b.Navigation("Pages");
-                });
 
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Exam", b =>
-                {
-                    b.Navigation("Questions");
+                    b.Navigation("Tests");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.Navigation("Options");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>
+                {
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,7 +26,7 @@ builder.Services.AddTransient(typeof(LogService<>));
 builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();
 builder.Services.AddTransient<CreateBookTaskController>();
-builder.Services.AddTransient<CreateExamFromPDFDataPages>();
+builder.Services.AddTransient<CreateTestFromPDFDataPages>();
 
 builder.Services.AddTransient<CreateQuestionsFromBookController>();
 
@@ -42,7 +42,7 @@ builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<BookTaskRepository>();
 builder.Services.AddTransient<PDFDataRepository>();
 builder.Services.AddTransient<QuestionRepository>();
-builder.Services.AddTransient<ExamRepository>();
+builder.Services.AddTransient<TestRepository>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 

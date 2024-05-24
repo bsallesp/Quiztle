@@ -8,16 +8,16 @@ namespace BrunoTheBot.API.Controllers.PDFApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateExamFromPDFDataPages : ControllerBase
+    public class CreateTestFromPDFDataPages : ControllerBase
     {
         private readonly PDFDataRepository _pDFDataRepository;
-        private readonly ExamRepository _examRepository;
+        private readonly TestRepository _testRepository;
         private readonly GetQuestionsFromLLM _getQuestionsFromLLM;
 
-        public CreateExamFromPDFDataPages(PDFDataRepository pDFDataRepository, ExamRepository examRepository, GetQuestionsFromLLM getQuestionsFromLLM)
+        public CreateTestFromPDFDataPages(PDFDataRepository pDFDataRepository, TestRepository testRepository, GetQuestionsFromLLM getQuestionsFromLLM)
         {
             _pDFDataRepository = pDFDataRepository;
-            _examRepository = examRepository;
+            _testRepository = testRepository;
             _getQuestionsFromLLM = getQuestionsFromLLM;
         }
 
@@ -36,8 +36,11 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 var result = await _getQuestionsFromLLM.ExecuteAsync(pagesConcat, 5);
                 if (result.Value == null) return NotFound("_getQuestionsFromLLM.ExecuteAsync nao retornou valores");
 
-                Exam exam = new Exam { Questions = result.Value.Data };
-                await _examRepository.CreateExamAsync(exam);
+                Test test = new Test {
+                    Questions = result.Value.Data,
+                    PDFDataId = id
+                };
+                await _testRepository.CreateTestAsync(test);
                 return Ok(result.Value);
             }
             catch (Exception ex)
