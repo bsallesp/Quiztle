@@ -27,16 +27,13 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
         {
             if (startPage == 0 && endPage == 0)
             {
-                // Se ambos startPage e endPage são 0, retorna todas as páginas
                 return await _context.PDFData!
                     .Include(p => p.Pages.OrderBy(page => page.Page))
                     .FirstOrDefaultAsync(pdf => pdf.Id == id);
             }
 
-            // Ajusta startPage para ser no mínimo 1
             int actualStartPage = Math.Max(1, startPage);
 
-            // Se endPage não é 0, utiliza-o; caso contrário, usa int.MaxValue para representar 'sem limite'
             int actualEndPage = endPage == 0 ? int.MaxValue : endPage;
 
             var pdfData = await _context.PDFData!
@@ -45,15 +42,17 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
 
             if (pdfData == null) return null;
 
-            // Filtra e ordena as páginas na memória para garantir que não tentemos acessar páginas fora do alcance
-            pdfData.Pages = pdfData.Pages
+            var filteredPages = pdfData.Pages
                 .Where(page => page.Page >= actualStartPage && page.Page <= actualEndPage)
                 .OrderBy(page => page.Page)
                 .ToList();
 
-            return pdfData;
+            return new PDFData
+            {
+                Id = pdfData.Id,
+                Pages = filteredPages
+            };
         }
-
 
         public async Task<PDFData?> GetPDFDataByIdAsync(Guid id)
         {

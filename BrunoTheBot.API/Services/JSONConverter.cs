@@ -137,7 +137,6 @@ namespace BrunoTheBot.API.Services
                 return newQuestion;
             }
 
-
             catch (Exception ex)
             {
                 // Captura e retorna informações detalhadas da exceção
@@ -154,6 +153,46 @@ namespace BrunoTheBot.API.Services
 
                 // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
+            }
+        }
+
+        public static List<Question> ConvertToQuestions(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                throw new ArgumentException("Input is null or whitespace.");
+
+            try
+            {
+                var content = ExtractChatGPTResponseFromJSON(input); 
+                JObject jsonObject = JObject.Parse(content);
+                JArray questionsJSONArray = (JArray)jsonObject["Questions"]!;
+                Console.WriteLine(questionsJSONArray.Count);
+
+                var finalQuestions = new List<Question>();
+                foreach (JObject jsonData in questionsJSONArray.Cast<JObject>())
+                {
+                    var newQuestion = new Question
+                    {
+                        Name = (string)jsonData["Question"]!,
+                        Answer = (string)jsonData["Answer"]!,
+                        Options = new List<Option>
+                        {
+                            new Option { Name = (string)jsonData["Option1"]! },
+                            new Option { Name = (string)jsonData["Option2"]! },
+                            new Option { Name = (string)jsonData["Option3"]! },
+                            new Option { Name = (string)jsonData["Option4"]! }
+                        },
+                        Hint = (string)jsonData["Hint"]!
+                    };
+                    finalQuestions.Add(newQuestion);
+                }
+
+                return finalQuestions;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ConvertToQuestions: An exception occurred: {ex.Message}");
+                return null;
             }
         }
 
@@ -188,29 +227,40 @@ namespace BrunoTheBot.API.Services
             }
         }
 
+        public static string ExtractChatGPTResponseFromJSONToQuestions(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                throw new ArgumentException("Input JSON is empty or null.");
+
+            JObject jsonObject = JObject.Parse(input);
+            var choices = jsonObject["choices"]?.FirstOrDefault();
+            if (choices == null)
+                throw new ArgumentException("No 'choices' found or 'choices' is empty in JSON.");
+
+            var content = (string)choices["message"]?["content"];
+            if (string.IsNullOrEmpty(content))
+                throw new ArgumentException("Message content is empty or null in JSON.");
+
+            return content;
+        }
+
+
         public static string ExtractChatGPTResponseFromJSON(string input)
         {
             try
             {
-                // Verifica se o JSON de entrada está vazio
                 if (string.IsNullOrEmpty(input))
                 {
                     throw new ArgumentException("O JSON de entrada está vazio ou nulo.");
                 }
 
-                // Analisa o JSON de entrada
                 JObject jsonObject = JObject.Parse(input);
-
-                // Verifica se o JSON contém a chave "choices" e se tem pelo menos um item no array
                 if (jsonObject["choices"] == null || !jsonObject["choices"].Any())
                 {
                     throw new ArgumentException("O JSON de entrada não contém a chave 'choices' ou está vazio.");
                 }
-
-                // Obtém o conteúdo da primeira mensagem no primeiro item do array "choices"
+                
                 string content = (string)jsonObject["choices"][0]?["message"]?["content"];
-
-                // Verifica se o conteúdo é nulo ou vazio
                 if (string.IsNullOrEmpty(content))
                 {
                     throw new ArgumentException("O conteúdo da mensagem no JSON de entrada está vazio ou nulo.");
@@ -220,22 +270,13 @@ namespace BrunoTheBot.API.Services
             }
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
                 string errorMessage = $"Ocorreu uma exceção ao extrair resposta do ChatGPT JSON: {ex.Message}";
-
-                // Adiciona o JSON de entrada à mensagem de erro
                 errorMessage += $"\nJSON de entrada: {input}";
-
-                // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)
                 {
                     errorMessage += $"\nInnerException: {ex.InnerException.Message}";
                 }
-
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $"\nStackTrace: {ex.StackTrace}";
-
-                // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
         }
