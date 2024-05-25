@@ -18,7 +18,6 @@ namespace BrunoTheBot.Blazor.Client.APIServices
             try
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/PDFData");
-                Console.WriteLine(stringResponse);
                 APIResponse<List<PDFData>> apiResponse = JsonConvert.DeserializeObject<APIResponse<List<PDFData>>>(stringResponse)!;
 
                 if (apiResponse == null || apiResponse.Data == null || apiResponse.Data.Count == 0)
@@ -31,8 +30,6 @@ namespace BrunoTheBot.Blazor.Client.APIServices
                     };
                 }
 
-                Console.WriteLine("SUCESS!! " + apiResponse.Data.Count);
-
                 return apiResponse;
             }
             catch (Exception ex)
@@ -41,7 +38,6 @@ namespace BrunoTheBot.Blazor.Client.APIServices
                 string detailedErrorMessage = $"Exception Message: {ex.Message}; " +
                                               $"Inner Exception: {innerExceptionMessage}; " +
                                               $"Stack Trace: {ex.StackTrace}";
-                Console.WriteLine(detailedErrorMessage);
 
                 return new APIResponse<List<PDFData>>
                 {

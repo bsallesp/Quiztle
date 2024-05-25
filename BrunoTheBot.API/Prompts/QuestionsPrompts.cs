@@ -12,8 +12,6 @@
                 {{
                     ""Question"": ""Write a captivating and creative question related to {text}."",
                     ""Answer"": ""Here is the right answer."",
-                    ""\n"",
-                    ""Answer"": ""Here is the right answer."",
                     ""Option1"": ""Here is a plausible but incorrect answer that may seem correct at first."",
                     ""Option2"": ""Here is another plausible but incorrect answer that may seem correct at first."",
                     ""Option3"": ""Here is a misleading answer that seems related but is ultimately incorrect."",

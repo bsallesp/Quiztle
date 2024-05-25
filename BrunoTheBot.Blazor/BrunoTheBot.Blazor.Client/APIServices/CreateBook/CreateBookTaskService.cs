@@ -17,24 +17,20 @@ namespace BrunoTheBot.Blazor.Client.APIServices
             {
                 string encodedBookName = WebUtility.UrlEncode(bookName);
                 var endpoint = $"api/CreateBookTask/CreateBookTaskController/{encodedBookName}/";
-                Console.WriteLine(_httpClient.BaseAddress + endpoint);
                 var result = await _httpClient.GetAsync(endpoint);
 
                 if (result.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Tarefa criada com sucesso.");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine($"Erro ao criar o livro: {result.StatusCode}");
-                    return false;
+                    throw new Exception($"CreateBookTaskService: Erro ao criar o livro: {result.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao executar solicitação HTTP: {ex.Message}");
-                return false;
+                throw new Exception($"CreateBookTaskService: Erro ao executar solicitação HTTP: {ex.Message}");
             }
         }
     }

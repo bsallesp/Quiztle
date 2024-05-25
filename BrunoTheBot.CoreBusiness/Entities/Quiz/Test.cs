@@ -7,6 +7,9 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Id")]
         public Guid Id { get; set; }
 
+        [JsonPropertyName("Name")]
+        public string Name { get; set; } = "";
+
         [JsonPropertyName("Questions")]
         public List<Question> Questions { get; set; } = [];
 

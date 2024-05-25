@@ -3,6 +3,7 @@ using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.API.Controllers.LLMControllers;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.DataContext.DataService.Repository.Quiz;
+using BrunoTheBot.API.Services;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
@@ -14,7 +15,9 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         private readonly TestRepository _testRepository;
         private readonly GetQuestionsFromLLM _getQuestionsFromLLM;
 
-        public CreateTestFromPDFDataPages(PDFDataRepository pDFDataRepository, TestRepository testRepository, GetQuestionsFromLLM getQuestionsFromLLM)
+        public CreateTestFromPDFDataPages(PDFDataRepository pDFDataRepository,
+            TestRepository testRepository,
+            GetQuestionsFromLLM getQuestionsFromLLM)
         {
             _pDFDataRepository = pDFDataRepository;
             _testRepository = testRepository;
@@ -22,7 +25,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExecuteAsync(Guid id, int startPage, int endPage)
+        public async Task<IActionResult> ExecuteAsync(Guid id, string name, int startPage, int endPage)
         {
             try
             {
@@ -33,15 +36,38 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 var pages = pdfData.Pages.Select(p => p.Content).ToList();
                 var pagesConcat = string.Join("\n", pages);
 
-                var result = await _getQuestionsFromLLM.ExecuteAsync(pagesConcat, 5);
-                if (result.Value == null) return NotFound("_getQuestionsFromLLM.ExecuteAsync nao retornou valores");
+                var dividedPages = OpenAITokenManager.SplitTextIntoTokenSafeParts(pagesConcat, 3000);
 
-                Test test = new Test {
-                    Questions = result.Value.Data,
+                List<Question> questions = [];
+                Test test = new Test
+                {
+                    Id = new Guid(),
+                    Name = name,
+                    Questions = [],
                     PDFDataId = id
                 };
+
                 await _testRepository.CreateTestAsync(test);
-                return Ok(result.Value);
+
+                foreach (var item in dividedPages)
+                {
+                    //Thread.Sleep(1000);
+
+                    try
+                    {
+                        var newQuestions = await _getQuestionsFromLLM.ExecuteAsync(item, 3);
+                        if (newQuestions.Value == null) continue;
+                        await _testRepository.AddQuestionsToTestAsync(test.Id, newQuestions.Value.Data);
+                        Console.WriteLine(test.Questions.Count);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                }
+
+                return Ok(test);
             }
             catch (Exception ex)
             {

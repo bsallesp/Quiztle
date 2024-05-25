@@ -11,13 +11,11 @@
     <h5>
         @foreach (var item in pdfDataAPIResponse.Data)
         {
-            @item.Name
+            <TestsPDFDataItemModule pdfData="item"></TestsPDFDataItemModule>
             <hr />
         }
     </h5>
-    
 }
-
 
 @code {
     APIResponse<List<PDFData>> pdfDataAPIResponse = new APIResponse<List<PDFData>>()
@@ -35,12 +33,11 @@
         try
         {
             pdfDataAPIResponse = await GetAllPDFDataService.ExecuteAsync();
-            Console.WriteLine("SUCESS IN RAZOR!!!" + pdfDataAPIResponse.Data.Count);
-            if (pdfDataAPIResponse.Data == null) Console.WriteLine("No books found in the API response.");
+            if (pdfDataAPIResponse.Data == null) throw new Exception("PDFDataManager.razor: No books found in the API response.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw new Exception($"PDFDataManager.razor: An error occurred: {ex.Message}");
         }
     }
 }

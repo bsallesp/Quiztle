@@ -27,7 +27,36 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             }
         }
 
-        public async Task<List<Test>> GetAllExamsAsync()
+        public async Task AddQuestionsToTestAsync(Guid testId, List<Question> questions)
+        {
+            EnsureTestNotNull();
+            var test = await _context.Tests!
+                .Include(t => t.Questions)
+                .FirstOrDefaultAsync(t => t.Id == testId);
+
+            if (test == null)
+            {
+                throw new KeyNotFoundException($"No test found with ID {testId}");
+            }
+
+            foreach (var question in questions)
+            {
+                test.Questions.Add(question);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Test>> GetAllTestsByPDFDataIdAsync(Guid PDFDataId)
+        {
+            EnsureTestNotNull();
+            var response = await _context.Tests!.Where(p => p.PDFDataId == PDFDataId)!
+                .Include(q => q.Questions)
+                .ToListAsync();
+            return response;
+        }
+
+        public async Task<List<Test>> GetAllTestsAsync()
         {
             EnsureTestNotNull();
             var response = await _context.Tests!

@@ -75,6 +75,16 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                 var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
                 await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                 questions = JSONConverter.ConvertToQuestions(responseLLM);
+                foreach (var question in questions)
+                {
+                    Console.WriteLine(question.Name);
+                    foreach (var option in question.Options)
+                    {
+                        Console.WriteLine(option.Name);
+                    }
+                    Console.WriteLine(question.Hint);
+                    Console.WriteLine(question.Resolution);
+                }
 
                 APIResponse<List<Question>> questionsAPIResponse = new()
                 {

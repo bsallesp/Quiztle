@@ -38,25 +38,12 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
 
         public async Task<List<PDFData>> GetAllPDFDataAsync()
         {
-            return await _context.PDFData!.ToListAsync();
+            return await _context.PDFData!.
+                Include(p => p.Pages)
+                .Include(t => t.Tests)
+                .ThenInclude(q => q.Questions)
+                .ToListAsync();
         }
-
-
-        //public async Task CreatePDFDataAsync(PDFData pdfData)
-        //{
-        //    try
-        //    {
-        //        EnsureOptionsNotNull();
-        //        _context.PDFData!.Add(pdfData);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("An exception occurred while creating the pdfData:");
-        //        Console.WriteLine(ex.ToString());
-        //        throw;
-        //    }
-        //}
 
         public async Task<PDFData?> GetPDFDataByIdAsyncByPage(Guid id, int startPage = 0, int endPage = 0)
         {

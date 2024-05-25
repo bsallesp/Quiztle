@@ -11,6 +11,7 @@ using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 using BrunoTheBot.DataContext.Repositories;
 using BrunoTheBot.DataContext.Repositories.Quiz;
+using BrunoTheBot.Blazor.Client.APIServices.Tests;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -44,6 +45,7 @@ builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllPDFDataService>();
 builder.Services.AddTransient<CreateBookTaskService>();
+builder.Services.AddTransient<GetAllTestsByPDFDataIdService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
