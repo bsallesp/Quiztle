@@ -11,7 +11,7 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         public string Name { get; set; } = "";
 
         [JsonPropertyName("Questions")]
-        public List<Question> Questions { get; set; } = [];
+        public List<Question> Questions { get; set; } = new List<Question>();
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;

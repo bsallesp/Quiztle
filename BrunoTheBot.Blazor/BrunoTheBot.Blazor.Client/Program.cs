@@ -19,6 +19,7 @@ builder.Services.AddTransient<PDFDataRepository>();
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<GetAllPDFDataService>();
 builder.Services.AddTransient<GetAllTestsByPDFDataIdService>();
+builder.Services.AddTransient<GetTestByIdService>();
 
 builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();

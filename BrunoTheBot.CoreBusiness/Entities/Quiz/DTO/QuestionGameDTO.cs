@@ -2,7 +2,7 @@
 {
     public class QuestionGameDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Question { get; set; } = "";
         public Dictionary<string, (bool, string)> Options { get; set; } = [];
 

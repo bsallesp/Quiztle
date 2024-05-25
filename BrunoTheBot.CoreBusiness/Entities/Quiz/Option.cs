@@ -5,7 +5,7 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
     public class Option
     {
         [JsonPropertyName("Id")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";

@@ -1,0 +1,35 @@
+﻿<div class="bg-light p-2 b-2">
+    <h5>
+        Get new Test
+    </h5>
+    <div class="container">
+
+        <form>
+            <div class="mb-3">
+                <label for="Name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="startPage" @bind="name">
+            </div>
+            <div class="mb-3">
+                <label for="startPage" class="form-label">Start Page</label>
+                <input type="number" class="form-control" id="startPage" @bind="startPage">
+            </div>
+
+            <div class="mb-3">
+                <label for="endPage" class="form-label">End Page</label>
+                <input type="number" class="form-control" id="endPage" @bind="endPage">
+            </div>
+
+            <button class="btn btn-primary" @onclick="CreateTest">Submit</button>
+        </form>
+    </div>
+</div>
+
+@code {
+    public string name = "";
+    public int startPage = 1, endPage;
+
+    private void CreateTest()
+    {
+        Console.WriteLine("teste123");
+    }
+}

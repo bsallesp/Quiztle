@@ -20,8 +20,8 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Tests
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/GetAllTestsByPDFDataId/" + id);
                 Console.WriteLine(stringResponse);
-                APIResponse<List<Test>> booksAPIResponse = JsonSerializer.Deserialize<APIResponse<List<Test>>>(stringResponse)!;
-                return booksAPIResponse;
+                APIResponse<List<Test>> testsAPIResponse = JsonSerializer.Deserialize<APIResponse<List<Test>>>(stringResponse)!;
+                return testsAPIResponse;
             }
             catch
             {

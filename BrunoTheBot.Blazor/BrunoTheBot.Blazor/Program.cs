@@ -46,6 +46,7 @@ builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllPDFDataService>();
 builder.Services.AddTransient<CreateBookTaskService>();
 builder.Services.AddTransient<GetAllTestsByPDFDataIdService>();
+builder.Services.AddTransient<GetTestByIdService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

@@ -1,7 +1,9 @@
-﻿@page "/Games/Regular/{bookId}"
-@page "/Games/Regular/"
+﻿@page "/Games/Test/{TestId}"
+@page "/Games/Test/"
 @using BrunoTheBot.Blazor.Client.APIServices.RegularGame
+@using BrunoTheBot.Blazor.Client.APIServices.Tests
 @using BrunoTheBot.CoreBusiness.Entities.Exam
+@using BrunoTheBot.CoreBusiness.Entities.Quiz
 @using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 @using BrunoTheBot.Blazor.Client.Pages.Games.Components
 
@@ -9,6 +11,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Nav
 @inject GetAllQuestionsToRegularGame GetAllQuestionsFromBookService
+@inject GetTestByIdService GetTestByIdService
 
 @* <p>
     count: @regularExam.Questions.Count
@@ -18,51 +21,49 @@
 </p> *@
 
 
-<FinishButtonComponent
+@* <FinishButtonComponent
     MissingQuestions=0
     Active="@(regularExam.AllQuestionsAnsweredy() ? true : false)">
-</FinishButtonComponent>
+</FinishButtonComponent> *@
 
 <h1>Test your knowledge</h1>
+@testAPIReponse.Data.Questions.Count
 
-@foreach (var q in regularExam.Questions)
+@foreach (var question in testAPIReponse.Data.Questions)
 {
     <div class="container mb-4 mt-4 p-4 b-4" style="background-color: aliceblue;">
         <h5>
             <b>
-                @q.Question
+                @question.Name
             </b>
         </h5>
 
-        @foreach (var option in q.Options)
+        @foreach (var options in question.GetShuffledAnswerAndOptions())
         {
-            <div @onclick="@(() => {
-                q.SetAllOptionsFalse();
-                q.SetOptionTrue(option.Key.ToString());
-            })" style="background-color: @(option.Value.Item1 ? "lightgreen" : "white")">
-                <div>
-                    @option.Value.Item2
-                </div>
-            </div>
-            <hr />
+            @options
         }
+
     </div>
 }
 
 @code {
     [Parameter]
-    public string bookId { get; set; } = "";
-    RegularExam regularExam = new();
+    public string TestId { get; set; } = "";
+    APIResponse<Test> testAPIReponse = new APIResponse<Test>
+        {
+            Data = new Test()
+        };
+
     QuestionComponent questionComponent = new();
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
-            Guid bookIdGuid;
-            if (Guid.TryParse(bookId, out bookIdGuid))
+            Guid testIdGuid;
+            if (Guid.TryParse(TestId, out testIdGuid))
             {
-                regularExam.Questions = await GetAllQuestionsFromBookService.ExecuteAsync(bookIdGuid);
+                testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
             }
             else
             {

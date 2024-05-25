@@ -27,6 +27,14 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             }
         }
 
+        public async Task<Test?> GetTestByIdAsync(Guid testId)
+        {
+            return await _context.Tests!
+                .Include(t => t.Questions)
+                .ThenInclude(o =>  o.Options)
+                .FirstOrDefaultAsync(t => t.Id == testId);
+        }
+
         public async Task AddQuestionsToTestAsync(Guid testId, List<Question> questions)
         {
             EnsureTestNotNull();

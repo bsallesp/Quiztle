@@ -7,60 +7,23 @@
     <h5>
         Tests
     </h5>
-    <div class="container bg-light p-2 b-2 mb-2">
+    <div class="container bg-light p-2 bb-4 mb-2" style="background-color: dimgrey;">
         @foreach (var item in pdfData.Tests)
         {
             <p>
-                @item.Name.ToString() 
-            </p>
-            <p>
-                Total questions: @item.Questions.Count
+                <a href="/Games/Test/@item.Id" target="_blank">@item.Name.ToString() : @item.Questions.Count questions</a>
             </p>
         }
     </div>
-</div>
 
-<div class="bg-light p-2 b-2">
-    <h5>
-        Get new Test
-    </h5>
-    <div class="container">
-
-        <form>
-            <div class="mb-3">
-                <label for="Name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="startPage" @bind="name">
-            </div>
-            <div class="mb-3">
-                <label for="startPage" class="form-label">Start Page</label>
-                <input type="number" class="form-control" id="startPage" @bind="startPage">
-            </div>
-
-            <div class="mb-3">
-                <label for="endPage" class="form-label">End Page</label>
-                <input type="number" class="form-control" id="endPage" @bind="endPage">
-            </div>
-
-            <button class="btn btn-primary" @onclick="CreateTest">Submit</button>
-        </form>
-    </div>
 </div>
 
 @code {
     [Parameter]
     public PDFData pdfData { get; set; } = new PDFData();
-    public string name = "";
-    public int startPage = 1, endPage;
 
     protected override void OnParametersSet()
     {
-        endPage = pdfData.Pages.Count;
-
         base.OnParametersSet();
-    }
-
-    private void CreateTest()
-    {
-        Console.WriteLine("teste123");
     }
 }
