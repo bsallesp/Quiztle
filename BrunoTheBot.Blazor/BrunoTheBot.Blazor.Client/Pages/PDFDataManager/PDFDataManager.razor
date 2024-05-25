@@ -6,16 +6,18 @@
 
 <h3 class="mb-5">PDFDataManager</h3>
 
-<CreateNewTestModule></CreateNewTestModule>
+
 
 @if(pdfDataAPIResponse != null)
 {
     <h5>
         @foreach (var item in pdfDataAPIResponse.Data)
         {
-            <TestsPDFDataItemModule pdfData="item"></TestsPDFDataItemModule>
+            <CreateNewTestModule pdfdataId="item.Id"></CreateNewTestModule>
             <hr />
+            <TestsPDFDataItemModule pdfData="item"></TestsPDFDataItemModule>
         }
+        <hr />
     </h5>
 }
 

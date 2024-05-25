@@ -25,6 +25,7 @@ builder.Services.AddTransient<RetrieveBookByIdService>();
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
 builder.Services.AddTransient<CreateBookTaskService>();
+builder.Services.AddTransient<CreateTestService>();
 
 builder.Services.AddTransient<AILogRepository>();
 

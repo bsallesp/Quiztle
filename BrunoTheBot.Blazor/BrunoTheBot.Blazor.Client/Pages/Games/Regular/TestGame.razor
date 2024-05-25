@@ -21,27 +21,25 @@
 </p> *@
 
 
-@* <FinishButtonComponent
-    MissingQuestions=0
-    Active="@(regularExam.AllQuestionsAnsweredy() ? true : false)">
-</FinishButtonComponent> *@
-
 <h1>Test your knowledge</h1>
-@testAPIReponse.Data.Questions.Count
+<h2>@testAPIReponse.Data.Name</h2>
 
 @foreach (var question in testAPIReponse.Data.Questions)
 {
     <div class="container mb-4 mt-4 p-4 b-4" style="background-color: aliceblue;">
-        <h5>
+        <h5 class="mb-4">
             <b>
                 @question.Name
             </b>
         </h5>
 
+        <p>
         @foreach (var options in question.GetShuffledAnswerAndOptions())
         {
             @options
+            <hr />
         }
+        </p>
 
     </div>
 }

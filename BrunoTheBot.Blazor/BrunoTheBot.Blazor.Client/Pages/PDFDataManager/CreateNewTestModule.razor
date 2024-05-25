@@ -1,4 +1,11 @@
-﻿<div class="bg-light p-2 b-2">
+﻿@using BrunoTheBot.Blazor.Client.APIServices.Tests
+@using BrunoTheBot.CoreBusiness.Entities.PDFData
+@using BrunoTheBot.CoreBusiness.Entities.Quiz
+
+@inject CreateTestService CreateTestService
+@inject NavigationManager NavigationManager
+
+<div class="bg-light p-2 b-2">
     <h5>
         Get new Test
     </h5>
@@ -19,17 +26,38 @@
                 <input type="number" class="form-control" id="endPage" @bind="endPage">
             </div>
 
-            <button class="btn btn-primary" @onclick="CreateTest">Submit</button>
+            <button class="btn btn-primary" @onclick="CreateTest" disabled="@disabledButton">Submit</button>
         </form>
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public Guid pdfdataId { get; set; } = new Guid();
+
+    APIResponse<Test> apiTest = new APIResponse<Test> { Data = new Test() };
+
     public string name = "";
     public int startPage = 1, endPage;
+    private bool disabledButton = false;
 
-    private void CreateTest()
+    private async Task CreateTest()
     {
-        Console.WriteLine("teste123");
+        disabledButton = true;
+
+        try
+        {
+
+
+            apiTest = await CreateTestService.ExecuteAsync(pdfdataId, name, startPage, endPage);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating test: {ex.Message}");
+        }
+        finally
+        {
+            disabledButton = false; // Re-enable button regardless of success or failure
+        }
     }
 }
