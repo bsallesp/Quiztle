@@ -54,8 +54,3 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Tests
         }
     }
 }
-
-//https://localhost:7204/api/CreateTestFromPDFDataPages?id=ca940e74-e772-44d5-b12e-1b5c34b38fa2&name=Short%20Test&startPage=300&endPage=307
-
-
-//https://localhost:7204/api/CreateTestFromPDFDataPages/id=ca940e74-e772-44d5-b12e-1b5c34b38fa2&name=From%20250%20to%20260&startPage=250&endPage=260

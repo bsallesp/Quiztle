@@ -12,6 +12,7 @@ using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 using BrunoTheBot.DataContext.Repositories;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.Blazor.Client.APIServices.Tests;
+using Microsoft.JSInterop;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
