@@ -42,7 +42,6 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             }
             catch (Exception ex)
             {
-                // Log the exception details here using your logging framework
                 return StatusCode(500, new APIResponse<List<PDFData>>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

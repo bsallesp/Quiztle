@@ -26,6 +26,7 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<PDFData>();
             modelBuilder.Entity<PDFDataPages>();
             modelBuilder.Entity<Test>();
+            modelBuilder.Entity<Response>();
         }
 
         public DbSet<Content>? Contents { get; set; }
@@ -39,5 +40,6 @@ namespace BrunoTheBot.DataContext
         public DbSet<PDFData>? PDFData { get; set; }
         public DbSet<PDFDataPages>? PDFDataPages { get; set; }
         public DbSet<Test>? Tests { get; set; }
+        public DbSet<Response>? Responses { get; set; }
     }
 }
