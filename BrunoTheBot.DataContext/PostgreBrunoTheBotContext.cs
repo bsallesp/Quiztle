@@ -19,7 +19,11 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<Chapter>();
             modelBuilder.Entity<Section>();
             modelBuilder.Entity<Content>();
-            modelBuilder.Entity<Question>();
+            modelBuilder.Entity<Question>()
+                .HasMany(q => q.Options)
+                .WithOne(o => o.Question)
+                .HasForeignKey(o => o.QuestionId);
+
             modelBuilder.Entity<Option>();
             modelBuilder.Entity<AILog>();
             modelBuilder.Entity<BookTask>();
@@ -27,6 +31,10 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<PDFDataPages>();
             modelBuilder.Entity<Test>();
             modelBuilder.Entity<Response>();
+            modelBuilder.Entity<Shot>();
+
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Content>? Contents { get; set; }
@@ -41,5 +49,6 @@ namespace BrunoTheBot.DataContext
         public DbSet<PDFDataPages>? PDFDataPages { get; set; }
         public DbSet<Test>? Tests { get; set; }
         public DbSet<Response>? Responses { get; set; }
+        public DbSet<Shot>? Shots { get; set; }
     }
 }

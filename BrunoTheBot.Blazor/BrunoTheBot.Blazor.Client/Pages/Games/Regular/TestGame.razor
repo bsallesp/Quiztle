@@ -10,7 +10,6 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Nav
-@inject GetAllQuestionsToRegularGame GetAllQuestionsFromBookService
 @inject GetTestByIdService GetTestByIdService
 
 @* <p>
@@ -20,39 +19,39 @@
     answered: @regularExam.TotalQuestionsAnswered()
 </p> *@
 
+@* <h2>@testAPIReponse.Data.Name</h2>
 
-<h1>Test your knowledge</h1>
-<h2>@testAPIReponse.Data.Name</h2>
-
-@foreach (var question in testAPIReponse.Data.Questions)
+@for (int i = 0; i < testAPIReponse.Data.Questions.Count; i++)
 {
+    var question = testAPIReponse.Data.Questions[i];
     <div class="container mb-4 mt-4 p-4 b-4" style="background-color: aliceblue;">
         <h5 class="mb-4">
             <b>
-                @question.Name
+                @(i + 1) - @question.Name
             </b>
         </h5>
 
-        <p>
-        @foreach (var options in question.GetShuffledAnswerAndOptions())
-        {
-            @options
-            <hr />
-        }
-        </p>
-
+        <OptionsComponent OnNotify="SetShot" Options="question.GetShuffledAnswerAndOptions()"></OptionsComponent>
     </div>
 }
 
 @code {
     [Parameter]
     public string TestId { get; set; } = "";
-    APIResponse<Test> testAPIReponse = new APIResponse<Test>
-        {
-            Data = new Test()
-        };
+    [Parameter]
+    public EventCallback<ShotDTO> OnNotify { get; set; }
 
-    QuestionComponent questionComponent = new();
+    APIResponse<Test> testAPIReponse = new APIResponse<Test> { Data = new Test() };
+    private int pageCount = 1;
+    private Response responses = new Response();
+
+    private void SetShot(QuestionShotDTO newShot)
+    {
+        // responses.Questions.Add(new Question
+        // {
+
+        // });
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -81,17 +80,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Obter o estado de autenticação
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-
-        // Verificar se o usuário está autenticado
         isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
-        Console.WriteLine("passou aqui");
 
-        // Redirecionar para a página de login se o usuário não estiver autenticado
         if (!isAuthenticated)
         {
             NavigationManager.NavigateTo("/pagina-de-login", true);
         }
     }
-}
+} *@

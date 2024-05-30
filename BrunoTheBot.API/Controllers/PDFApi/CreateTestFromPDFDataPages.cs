@@ -14,14 +14,17 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         private readonly PDFDataRepository _pDFDataRepository;
         private readonly TestRepository _testRepository;
         private readonly GetQuestionsFromLLM _getQuestionsFromLLM;
+        private readonly QuestionRepository _questionRespository;
 
         public CreateTestFromPDFDataPages(PDFDataRepository pDFDataRepository,
+            QuestionRepository questionRepository,
             TestRepository testRepository,
             GetQuestionsFromLLM getQuestionsFromLLM)
         {
             _pDFDataRepository = pDFDataRepository;
             _testRepository = testRepository;
             _getQuestionsFromLLM = getQuestionsFromLLM;
+            _questionRespository = questionRepository;
         }
 
         [HttpGet]
@@ -39,33 +42,33 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 var dividedPages = OpenAITokenManager.SplitTextIntoTokenSafeParts(pagesConcat, 3000);
 
                 List<Question> questions = [];
-                Test test = new Test
-                {
-                    Id = new Guid(),
-                    Name = name,
-                    Questions = [],
-                    PDFDataId = id
-                };
 
-                await _testRepository.CreateTestAsync(test);
+                var testGuid = Guid.NewGuid();
 
                 foreach (var item in dividedPages)
                 {
-                    //Thread.Sleep(1000);
-
                     try
                     {
-                        var newQuestions = await _getQuestionsFromLLM.ExecuteAsync(item, 3);
+                        var newQuestions = await _getQuestionsFromLLM.ExecuteAsync(item, 5);
                         if (newQuestions.Value == null) continue;
-                        await _testRepository.AddQuestionsToTestAsync(test.Id, newQuestions.Value.Data);
-                        Console.WriteLine(test.Questions.Count);
+
+                        questions.AddRange(newQuestions.Value.Data);
                     }
                     catch
                     {
                         continue;
                     }
-
                 }
+
+                Test test = new Test
+                {
+                    Id = testGuid,
+                    Name = name,
+                    Questions = questions,
+                    PDFDataId = id
+                };
+
+                await _testRepository.CreateTestAsync(test);
 
                 return Ok(test);
             }

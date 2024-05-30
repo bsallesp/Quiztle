@@ -5,40 +5,35 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
     public class Question
     {
+        public Question()
+        {
+            Options = new List<Option>();
+            Created = DateTime.UtcNow;
+        }
+
         [JsonPropertyName("Id")]
         public Guid Id { get; set; }
 
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
 
-        [JsonPropertyName("Answer")]
-        public string? Answer { get; set; } = "";
-
         [JsonPropertyName("Options")]
-        public List<Option> Options { get; set; } = new List<Option>();
+        public List<Option> Options { get; set; }
 
         [JsonPropertyName("Hint")]
         public string? Hint { get; set; } = "";
+
         [JsonPropertyName("Resolution")]
         public string? Resolution { get; set; } = "";
 
         [JsonPropertyName("Created")]
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public DateTime Created { get; set; }
 
-        public List<string> GetShuffledAnswerAndOptions()
+    public List<Option> GetShuffledAnswerAndOptions()
         {
-            List<string> shuffledList = new List<string>();
+            Shuffle(Options);
 
-            shuffledList.Add(Answer!);
-
-            foreach (var option in Options)
-            {
-                shuffledList.Add(option.Name);
-            }
-
-            Shuffle(shuffledList);
-
-            return shuffledList;
+            return Options;
         }
 
         private static void Shuffle<T>(List<T> list)
@@ -63,8 +58,6 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
                 Question = this.Name,
                 Options = new Dictionary<string, (bool, string)>()
             };
-
-            questionShape.Options.Add("Answer", (true, this.Answer ?? ""));
 
             int optionIndex = 1;
             foreach (var option in this.Options)

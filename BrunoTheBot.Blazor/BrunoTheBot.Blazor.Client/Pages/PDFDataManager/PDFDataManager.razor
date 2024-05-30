@@ -5,7 +5,13 @@
 
 <h3 class="mb-5">PDFDataManager</h3>
 
-@if(pdfDataAPIResponse != null)
+@if (pdfDataAPIResponse.Data.Count == 0)
+{
+    <h4>
+        Loading...
+    </h4>
+}
+else
 {
     <h5>
         @foreach (var item in pdfDataAPIResponse.Data)

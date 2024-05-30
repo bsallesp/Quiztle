@@ -22,7 +22,7 @@ namespace BrunoTheBot.DataContext.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("An exception occurred while creating the answer.", ex);
+                throw new Exception("An exception occurred while creating the log.", ex);
             }
         }
 

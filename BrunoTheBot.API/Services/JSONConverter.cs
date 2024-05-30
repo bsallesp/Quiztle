@@ -1,8 +1,11 @@
 ﻿using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Linq;
-using System.Xml.Linq;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 
 namespace BrunoTheBot.API.Services
 {
@@ -110,48 +113,54 @@ namespace BrunoTheBot.API.Services
                 Question newQuestion = new Question
                 {
                     Name = (string)sectionJSONObject["Question"]! ?? throw new Exception("Question not found in JSON."),
-                    Answer = (string)sectionJSONObject["Answer"]! ?? throw new Exception("Answer not found in JSON."),
                     Options = new List<Option>
                     {
                         new Option
                         {
-                            Name = (string)sectionJSONObject["Option1"]! ?? throw new Exception("Option1 not found in JSON.")
+                            Name = (string)sectionJSONObject["Answer"]! ?? "Answer not found in JSON.",
+                            IsCorrect = true,
                         },
+
                         new Option
                         {
-                            Name = (string)sectionJSONObject["Option2"]! ?? throw new Exception("Option2 not found in JSON.")
+                            Name = (string)sectionJSONObject["Option1"]! ?? "Option1 not found in JSON.",
+                            IsCorrect = false
                         },
+
                         new Option
                         {
-                            Name = (string)sectionJSONObject["Option3"]! ?? throw new Exception("Option3 not found in JSON.")
+                            Name = (string)sectionJSONObject["Option2"]! ?? "Option2 not found in JSON.",
+                            IsCorrect = false
                         },
+
                         new Option
                         {
-                            Name = (string)sectionJSONObject["Option4"]! ?? throw new Exception("Option4 not found in JSON.")
-                        }
+                            Name = (string)sectionJSONObject["Option3"]! ?? "Option3 not found in JSON.",
+                            IsCorrect = false
+                        },
+
+                        new Option
+                        {
+                            Name = (string)sectionJSONObject["Option4"]! ?? "Option4 not found in JSON.",
+                            IsCorrect = false
+                        },
                     },
 
-                    Hint = (string)sectionJSONObject["Hint"]! ?? throw new Exception("Hint not found in JSON.")
+                    Hint = (string)sectionJSONObject["Hint"]! ?? "Hint not found in JSON.",
+
+                    Resolution = (string)sectionJSONObject["Resolution"]! ?? "Resolution not found in JSON."
                 };
 
                 return newQuestion;
             }
-
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
-                string errorMessage = $"Ocorreu uma exceção: {ex.Message}";
-
-                // Verifica se a exceção possui uma causa (InnerException)
+                string errorMessage = $"ConvertToQuestion: Ocorreu uma exceção: {ex.Message}";
                 if (ex.InnerException != null)
                 {
-                    errorMessage += $" InnerException: {ex.InnerException.Message}";
+                    errorMessage += $"ConvertToQuestion: InnerException: {ex.InnerException.Message}";
                 }
-
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $" StackTrace: {ex.StackTrace}";
-
-                // Lança uma nova exceção com a mensagem detalhada
                 throw new Exception(errorMessage);
             }
         }
@@ -163,37 +172,60 @@ namespace BrunoTheBot.API.Services
 
             try
             {
-                var content = ExtractChatGPTResponseFromJSON(input); 
-                JObject jsonObject = JObject.Parse(content);
-                JArray questionsJSONArray = (JArray)jsonObject["Questions"]!;
-                Console.WriteLine(questionsJSONArray.Count);
+                var content = ExtractChatGPTResponseFromJSON(input);
 
-                var finalQuestions = new List<Question>();
-                foreach (JObject jsonData in questionsJSONArray.Cast<JObject>())
+                QuestionsJson questionsJson = JsonSerializer.Deserialize<QuestionsJson>(content)!;
+
+                var questions = new List<Question>();
+
+                foreach (var q in questionsJson.Questions ?? new List<QuestionJson>())
                 {
-                    var newQuestion = new Question
+                    var question = new Question
                     {
-                        Name = (string)jsonData["Question"]!,
-                        Answer = (string)jsonData["Answer"]!,
+                        Id = Guid.NewGuid(),
+                        Name = q.Question!,
+                        Hint = q.Hint,
+                        Resolution = q.Resolution,
                         Options = new List<Option>
                         {
-                            new Option { Name = (string)jsonData["Option1"]! },
-                            new Option { Name = (string)jsonData["Option2"]! },
-                            new Option { Name = (string)jsonData["Option3"]! },
-                            new Option { Name = (string)jsonData["Option4"]! }
-                        },
-                        Hint = (string)jsonData["Hint"]!,
-                        Resolution = (string)jsonData["Resolution"]!
+                            new Option { Id = Guid.NewGuid(), Name = q.Answer!, IsCorrect = true },
+                            new Option { Id = Guid.NewGuid(), Name = q.Option1!, IsCorrect = false },
+                            new Option { Id = Guid.NewGuid(), Name = q.Option2!, IsCorrect = false },
+                            new Option { Id = Guid.NewGuid(), Name = q.Option3!, IsCorrect = false },
+                            new Option { Id = Guid.NewGuid(), Name = q.Option4!, IsCorrect = false },
+                        }
                     };
-                    finalQuestions.Add(newQuestion);
+
+                    questions.Add(question);
                 }
 
-                return finalQuestions;
+                foreach (var question in questions)
+                {
+                    Console.WriteLine($"Question: {question.Name}");
+                    foreach (var option in question.Options)
+                    {
+                        Console.WriteLine($" - Option: {option.Name}, IsCorrect: {option.IsCorrect}");
+                    }
+                }
+
+                return questions;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ConvertToQuestions: An exception occurred: {ex.Message}");
-                return null;
+                // Captura e retorna informações detalhadas da exceção
+                string errorMessage = $"ConvertToQuestions: Ocorreu uma exceção: {ex.Message}";
+
+                // Verifica se a exceção possui uma causa (InnerException)
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"ConvertToQuestions: InnerException: {ex.InnerException.Message}";
+                }
+
+                // Adiciona outras propriedades da exceção, se necessário
+                errorMessage += $"ConvertToQuestions: StackTrace: {ex.StackTrace}";
+
+                // Lança uma nova exceção com a mensagem detalhada
+                throw new Exception(errorMessage);
             }
         }
 
@@ -260,7 +292,7 @@ namespace BrunoTheBot.API.Services
                 {
                     throw new ArgumentException("O JSON de entrada não contém a chave 'choices' ou está vazio.");
                 }
-                
+
                 string content = (string)jsonObject["choices"][0]?["message"]?["content"];
                 if (string.IsNullOrEmpty(content))
                 {

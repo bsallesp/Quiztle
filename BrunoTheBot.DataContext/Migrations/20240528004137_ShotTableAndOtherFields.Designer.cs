@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240528004137_ShotTableAndOtherFields")]
+    partial class ShotTableAndOtherFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,9 +211,8 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Name");
 
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uuid")
-                        .HasAnnotation("Relational:JsonPropertyName", "QuestionId");
+                    b.Property<Guid?>("QuestionId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -218,7 +220,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     b.ToTable("Options");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Option");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Id");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
@@ -450,13 +452,9 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", "Question")
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", null)
                         .WithMany("Options")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
+                        .HasForeignKey("QuestionId");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>

@@ -32,9 +32,6 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
                         await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                         var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
 
-                        Console.WriteLine(newQuestion.Name);
-                        Console.WriteLine(newQuestion.Answer);
-
                         section.Questions.Add(newQuestion);
                     }
                 }
