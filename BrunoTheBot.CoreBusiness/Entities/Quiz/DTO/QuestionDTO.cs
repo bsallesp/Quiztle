@@ -3,6 +3,7 @@
     public class QuestionDTO
     {
         public Guid Id { get; set; }
+        public string Number { get; set; } = "";
         public Question? Question { get; set; }
         public List<OptionDTO> OptionsDTO { get; private set; }
 

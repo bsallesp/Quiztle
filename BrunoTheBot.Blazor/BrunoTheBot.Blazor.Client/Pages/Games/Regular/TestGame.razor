@@ -20,7 +20,7 @@
     @foreach (var question in test.Questions)
     {
         QuestionDTO questionDTO = new QuestionDTO(question);
-        <QuestionDTOComponent questionDTO="questionDTO"></QuestionDTOComponent>
+        <QuestionDTOComponent questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
         <hr>
     }
 }
@@ -30,7 +30,6 @@
     public string TestId { get; set; } = "";
     [Parameter]
     public EventCallback<OptionDTO> OnNotify { get; set; }
-
     private Test test = new();
 
     protected override async Task OnParametersSetAsync()

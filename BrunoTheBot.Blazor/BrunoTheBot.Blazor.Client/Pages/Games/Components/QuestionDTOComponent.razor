@@ -5,21 +5,24 @@
 @if(questionDTO != null)
 {
     <h4>
-        @questionDTO.Question!.Name
+        @(1 + Number) - @questionDTO.Question!.Name
     </h4>
     <hr />
     @foreach (var option in questionDTO.OptionsDTO)
     {
         <h6>
-            @option.Name
+            @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
         </h6>
         <hr />
     }
 }
 
-
 @code
 {
     [Parameter]
     public QuestionDTO? questionDTO { get; set; }
+    [Parameter]
+    public int Number { get; set; } = 0;
+
+    private string[] letters = ["A)", "B)", "C)", "D)", "E)", "F)"];
 }
