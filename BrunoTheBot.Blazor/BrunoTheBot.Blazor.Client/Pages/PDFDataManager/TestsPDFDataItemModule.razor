@@ -1,4 +1,6 @@
-﻿@using BrunoTheBot.CoreBusiness.Entities.PDFData
+﻿@using BrunoTheBot.Blazor.Client.APIServices.Tests
+@using BrunoTheBot.CoreBusiness.Entities.PDFData
+@inject RemoveTestService RemoveTestService
 
 <h4>
     @pdfData.Name
@@ -7,20 +9,24 @@
     <h5>
         Tests
     </h5>
-    <div class="container bg-light p-2 bb-4 mb-2" style="background-color: dimgrey;">
+    <div class="container bg-light p-2 bb-4" style="background-color: dimgrey;">
         @foreach (var item in pdfData.Tests)
         {
-            <p>
-                <a href="/Games/Test/@item.Id" target="_blank">@item.Name.ToString() : @item.Questions.Count questions</a>
-            </p>
+            <div class="bb-5">
+                <p>
+                    <a href="/Games/Test/@item.Id" target="_blank">@item.Name.ToString() : @item.Questions.Count questions</a>
+                    <button @onclick="() => RemoveTest(item.Id)">Remove</button>
+                </p>
+            </div>
+
         }
     </div>
 </div>
-
+@* 
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Launch static backdrop modal
-</button>
+</button> *@
 
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -48,5 +54,14 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+    }
+
+    public async void RemoveTest(Guid testId)
+    {
+        Console.WriteLine("DELETING...");
+
+        await RemoveTestService.ExecuteAsync(testId);
+
+        StateHasChanged();
     }
 }

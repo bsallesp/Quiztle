@@ -11,6 +11,39 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<bool> RemoveTestById(Guid id)
+        {
+            try
+            {
+                EnsureTestNotNull();
+                var test = await _context.Tests!.FindAsync(id);
+                if (test == null)
+                {
+                    // Caso o teste não seja encontrado
+                    throw new KeyNotFoundException("Test not found");
+                }
+
+                _context.Tests.Remove(test);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                // Lida com o caso onde o teste não é encontrado
+                Console.WriteLine(ex.Message);
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Lida com qualquer outra exceção
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+        }
+
+
         public async Task CreateTestAsync(Test test)
         {
             try

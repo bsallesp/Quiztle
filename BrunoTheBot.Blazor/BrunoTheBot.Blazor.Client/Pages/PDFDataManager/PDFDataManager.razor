@@ -13,15 +13,17 @@
 }
 else
 {
-    <h5>
-        @foreach (var item in pdfDataAPIResponse.Data)
-        {
+    @foreach (var item in pdfDataAPIResponse.Data)
+    {
+        <h5>
             <CreateNewTestModule pdfdataId="item.Id"></CreateNewTestModule>
-            <hr />
-            <TestsPDFDataItemModule pdfData="item"></TestsPDFDataItemModule>
-        }
+        </h5>
         <hr />
-    </h5>
+        <h5>
+            <TestsPDFDataItemModule pdfData="item"></TestsPDFDataItemModule>
+        </h5>
+    }
+    <hr />
 }
 
 @code {

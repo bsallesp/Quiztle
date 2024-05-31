@@ -6,12 +6,12 @@
 {
     <h4>
         @questionDTO.Question!.Name
-        <hr />
     </h4>
+    <hr />
     @foreach (var option in questionDTO.OptionsDTO)
     {
         <h6>
-        @option.Name
+            @option.Name
         </h6>
         <hr />
     }
