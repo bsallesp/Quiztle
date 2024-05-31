@@ -31,7 +31,7 @@ namespace BrunoTheBot.DataContext.Migrations
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.CreateTable(
-                name: "Shots",
+                name: "OptionsDTO",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -56,14 +56,14 @@ namespace BrunoTheBot.DataContext.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shots_OptionId",
-                table: "Shots",
+                table: "OptionsDTO",
                 column: "OptionId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Responses_Shots_ShotId",
                 table: "Responses",
                 column: "ShotId",
-                principalTable: "Shots",
+                principalTable: "OptionsDTO",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -76,7 +76,7 @@ namespace BrunoTheBot.DataContext.Migrations
                 table: "Responses");
 
             migrationBuilder.DropTable(
-                name: "Shots");
+                name: "OptionsDTO");
 
             migrationBuilder.DropIndex(
                 name: "IX_Responses_ShotId",

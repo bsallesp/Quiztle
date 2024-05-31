@@ -311,7 +311,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     b.HasIndex("OptionId");
 
-                    b.ToTable("Shots");
+                    b.ToTable("OptionsDTO");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>

@@ -37,7 +37,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
         {
             if (_context.Shots == null)
             {
-                throw new InvalidOperationException("CreateShotAsync: The Shots DbSet is null. Make sure it is properly initialized.");
+                throw new InvalidOperationException("CreateShotAsync: The OptionsDTO DbSet is null. Make sure it is properly initialized.");
             }
         }
     }

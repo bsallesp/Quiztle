@@ -1,0 +1,25 @@
+﻿@using BrunoTheBot.CoreBusiness.Entities.Quiz
+@using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
+
+
+@if(questionDTO != null)
+{
+    <h4>
+        @questionDTO.Question!.Name
+        <hr />
+    </h4>
+    @foreach (var option in questionDTO.OptionsDTO)
+    {
+        <h6>
+        @option.Name
+        </h6>
+        <hr />
+    }
+}
+
+
+@code
+{
+    [Parameter]
+    public QuestionDTO? questionDTO { get; set; }
+}

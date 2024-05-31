@@ -2,6 +2,7 @@
 @page "/Games/Test/"
 @using BrunoTheBot.Blazor.Client.APIServices.RegularGame
 @using BrunoTheBot.Blazor.Client.APIServices.Tests
+@using BrunoTheBot.CoreBusiness.CodeEntities
 @using BrunoTheBot.CoreBusiness.Entities.Exam
 @using BrunoTheBot.CoreBusiness.Entities.Quiz
 @using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
@@ -12,46 +13,25 @@
 @inject NavigationManager Nav
 @inject GetTestByIdService GetTestByIdService
 
-@* <p>
-    count: @regularExam.Questions.Count
-</p>
-<p>
-    answered: @regularExam.TotalQuestionsAnswered()
-</p> *@
+<h2>@test.Name</h2>
 
-@* <h2>@testAPIReponse.Data.Name</h2>
-
-@for (int i = 0; i < testAPIReponse.Data.Questions.Count; i++)
+@if(test.Questions != null)
 {
-    var question = testAPIReponse.Data.Questions[i];
-    <div class="container mb-4 mt-4 p-4 b-4" style="background-color: aliceblue;">
-        <h5 class="mb-4">
-            <b>
-                @(i + 1) - @question.Name
-            </b>
-        </h5>
-
-        <OptionsComponent OnNotify="SetShot" Options="question.GetShuffledAnswerAndOptions()"></OptionsComponent>
-    </div>
+    @foreach (var question in test.Questions)
+    {
+        QuestionDTO questionDTO = new QuestionDTO(question);
+        <QuestionDTOComponent questionDTO="questionDTO"></QuestionDTOComponent>
+        <hr>
+    }
 }
 
 @code {
     [Parameter]
     public string TestId { get; set; } = "";
     [Parameter]
-    public EventCallback<ShotDTO> OnNotify { get; set; }
+    public EventCallback<OptionDTO> OnNotify { get; set; }
 
-    APIResponse<Test> testAPIReponse = new APIResponse<Test> { Data = new Test() };
-    private int pageCount = 1;
-    private Response responses = new Response();
-
-    private void SetShot(QuestionShotDTO newShot)
-    {
-        // responses.Questions.Add(new Question
-        // {
-
-        // });
-    }
+    private Test test = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -60,7 +40,10 @@
             Guid testIdGuid;
             if (Guid.TryParse(TestId, out testIdGuid))
             {
+                APIResponse<Test> testAPIReponse = new APIResponse<Test> { Data = new Test() };
                 testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
+                if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus) throw new Exception("TestGame: Error during retrieving TestApiResponse");
+                test = testAPIReponse.Data;
             }
             else
             {
@@ -88,4 +71,4 @@
             NavigationManager.NavigateTo("/pagina-de-login", true);
         }
     }
-} *@
+}

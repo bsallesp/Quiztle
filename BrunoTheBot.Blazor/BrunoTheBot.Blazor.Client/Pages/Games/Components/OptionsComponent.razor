@@ -5,7 +5,8 @@
 {
     @for (int i = 0; i < Options.Count; i++)
     {
-        <div @onclick="() => Select(Options[i])" class="@(Options[0].IsSelected ? "selected" : "")">
+        <div @onclick="() => Select(Options[i])"
+            class="@(Options[0].IsSelected ? "selected" : "")">
             @letters[i] @Options[i].Name
         </div>
         <hr class="line" />
@@ -17,7 +18,7 @@
     public List<Option> Options { get; set; } = new List<Option>();
 
     [Parameter]
-    public EventCallback<QuestionShotDTO> OnNotify { get; set; }
+    public EventCallback<QuestionDTO> OnNotify { get; set; }
 
     private List<string> letters = [ "a)", "b)", "c)", "d)", "e)" ];
 

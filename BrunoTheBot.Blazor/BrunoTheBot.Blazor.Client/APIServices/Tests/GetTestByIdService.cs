@@ -19,14 +19,13 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Tests
             try
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/GetTestById/" + id);
-                Console.WriteLine(stringResponse);
-                Test testsAPIResponse = JsonSerializer.Deserialize<Test>(stringResponse)!;
+                Test testResponse = JsonSerializer.Deserialize<Test>(stringResponse)!;
 
                 return new APIResponse<Test>
                 {
                     Status = CustomStatusCodes.SuccessStatus,
-                    Data = testsAPIResponse,
-                    Message = "Total questions: " + testsAPIResponse.Questions.Count.ToString()
+                    Data = testResponse,
+                    Message = "Total questions: " + testResponse.Questions.Count.ToString()
                 };
                 
             }
