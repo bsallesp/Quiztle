@@ -29,10 +29,9 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; }
 
-    public List<Option> GetShuffledAnswerAndOptions()
+    public List<Option> ShuffleOptions()
         {
             Shuffle(Options);
-
             return Options;
         }
 

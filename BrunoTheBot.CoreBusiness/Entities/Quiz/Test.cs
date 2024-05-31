@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
@@ -18,5 +20,20 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("PDFDataId")]
         public Guid PDFDataId { get; set; }
+
+        public void ShuffleQuestions()
+        {
+            Random rng = new Random();
+            int n = Questions.Count;
+
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                Question value = Questions[k];
+                Questions[k] = Questions[n];
+                Questions[n] = value;
+            }
+        }
     }
 }

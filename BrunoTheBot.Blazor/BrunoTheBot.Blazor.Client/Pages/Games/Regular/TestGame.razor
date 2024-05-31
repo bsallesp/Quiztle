@@ -17,8 +17,10 @@
 
 @if(test.Questions != null)
 {
+    test.ShuffleQuestions();
     @foreach (var question in test.Questions)
     {
+        question.ShuffleOptions();
         QuestionDTO questionDTO = new QuestionDTO(question);
         <QuestionDTOComponent questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
         <hr>
