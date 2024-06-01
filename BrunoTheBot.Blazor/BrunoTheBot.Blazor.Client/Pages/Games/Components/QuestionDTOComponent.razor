@@ -1,8 +1,7 @@
-﻿@using BrunoTheBot.CoreBusiness.Entities.Quiz
-@using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
+﻿@using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
+@using Microsoft.AspNetCore.Components
 
-
-@if(questionDTO != null)
+@if (questionDTO != null)
 {
     <h4>
         @(1 + Number) - @questionDTO.Question!.Name
@@ -10,9 +9,11 @@
     <hr />
     @foreach (var option in questionDTO.OptionsDTO)
     {
-        <h6>
-            @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-        </h6>
+        <div @onclick="() => SelectOption(option)">
+                <h6 @onclick="() => option.IsSelected = true" class="option @(option.IsSelected ? "selected" : "")">
+                @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name - @option.IsSelected
+            </h6>
+        </div>
         <hr />
     }
 }
@@ -22,7 +23,33 @@
     [Parameter]
     public QuestionDTO? questionDTO { get; set; }
     [Parameter]
-    public int Number { get; set; } = 0;
+    public int Number { get; set; }
+    private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
 
-    private string[] letters = ["A)", "B)", "C)", "D)", "E)", "F)"];
+    private async Task SelectOption(OptionDTO option)
+    {
+        Console.WriteLine("teste123");
+
+        // foreach (var opt in questionDTO!.OptionsDTO)
+        // {
+        //     opt.IsSelected = (opt == option);
+        // }
+
+        // await OnOptionSelected.InvokeAsync(option);
+        // StateHasChanged();
+    }
 }
+
+<style>
+    .option {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .selected {
+        background-color: #cce5ff;
+        color: #004085;
+        font-weight: bold;
+    }
+</style>

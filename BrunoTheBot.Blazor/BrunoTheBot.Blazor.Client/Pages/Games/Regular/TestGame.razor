@@ -15,40 +15,50 @@
 
 <h2>@test.Name</h2>
 
-@if(test.Questions != null)
+@if (test.Questions != null)
 {
-    test.ShuffleQuestions();
     @foreach (var question in test.Questions)
     {
-        question.ShuffleOptions();
         QuestionDTO questionDTO = new QuestionDTO(question);
         <QuestionDTOComponent questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
-        <hr>
+        <hr />
     }
 }
 
 @code {
     [Parameter]
     public string TestId { get; set; } = "";
-    [Parameter]
-    public EventCallback<OptionDTO> OnNotify { get; set; }
     private Test test = new();
+    private Response response = new Response();
 
     protected override async Task OnParametersSetAsync()
+    {
+        await CheckURLTestGuid();
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task CheckResponse()
+    {
+        
+    }
+
+    private async Task CheckURLTestGuid()
     {
         try
         {
             Guid testIdGuid;
             if (Guid.TryParse(TestId, out testIdGuid))
             {
-                APIResponse<Test> testAPIReponse = new APIResponse<Test> { Data = new Test() };
-                testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
-                if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus) throw new Exception("TestGame: Error during retrieving TestApiResponse");
+                var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
+                if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
+                    throw new Exception("TestGame: Error during retrieving TestApiResponse");
+
                 test = testAPIReponse.Data;
+                test.ShuffleQuestions();
             }
             else
             {
-                Nav.NavigateTo("", true);
+                Nav.NavigateTo("/", true);
             }
         }
         catch (Exception ex)
@@ -56,20 +66,20 @@
             Console.WriteLine($"An error occurred: {ex}");
             throw new Exception("An error occurred while processing the book. See inner exception for details.", ex);
         }
-
-        await base.OnParametersSetAsync();
     }
 
-    private bool isAuthenticated = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
-
-        if (!isAuthenticated)
-        {
-            NavigationManager.NavigateTo("/pagina-de-login", true);
-        }
-    }
 }
+    // private bool isAuthenticated = false;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    //     // isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+
+    //     // if (!isAuthenticated)
+    //     // {
+    //     //     NavigationManager.NavigateTo("/pagina-de-login", true);
+    //     // }
+
+
+    // }
