@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    [Migration("20240528002550_CutAnswerField")]
-    partial class CutAnswerField
+    [Migration("20240601141830_firstOne")]
+    partial class firstOne
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,8 +211,9 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Name");
 
-                    b.Property<Guid?>("QuestionId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasAnnotation("Relational:JsonPropertyName", "QuestionId");
 
                     b.HasKey("Id");
 
@@ -220,7 +221,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     b.ToTable("Options");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Options");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Option");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
@@ -247,9 +248,6 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Resolution");
 
-                    b.Property<Guid?>("ResponseId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("SectionId")
                         .HasColumnType("uuid");
 
@@ -257,8 +255,6 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ResponseId");
 
                     b.HasIndex("SectionId");
 
@@ -282,14 +278,40 @@ namespace BrunoTheBot.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("ShotId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("TestId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ShotId");
+
                     b.HasIndex("TestId");
 
                     b.ToTable("Responses");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Shot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasAnnotation("Relational:JsonPropertyName", "Id");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasAnnotation("Relational:JsonPropertyName", "Created");
+
+                    b.Property<Guid>("OptionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionId");
+
+                    b.ToTable("Shots");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>
@@ -431,17 +453,17 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", null)
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", "Question")
                         .WithMany("Options")
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Response", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("ResponseId");
-
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
@@ -453,13 +475,32 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Response", b =>
                 {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Shot", "Shot")
+                        .WithMany()
+                        .HasForeignKey("ShotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", "Test")
                         .WithMany()
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Shot");
+
                     b.Navigation("Test");
+                });
+
+            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Shot", b =>
+                {
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", "Option")
+                        .WithMany()
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>
@@ -505,11 +546,6 @@ namespace BrunoTheBot.DataContext.Migrations
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.Navigation("Options");
-                });
-
-            modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Response", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>

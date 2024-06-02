@@ -44,6 +44,7 @@ builder.Services.AddTransient<BookTaskRepository>();
 builder.Services.AddTransient<PDFDataRepository>();
 builder.Services.AddTransient<QuestionRepository>();
 builder.Services.AddTransient<TestRepository>();
+builder.Services.AddTransient<ResponseRepository>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 

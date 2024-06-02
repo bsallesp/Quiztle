@@ -30,10 +30,13 @@ namespace BrunoTheBot.DataContext
             modelBuilder.Entity<PDFData>();
             modelBuilder.Entity<PDFDataPages>();
             modelBuilder.Entity<Test>();
-            modelBuilder.Entity<Response>();
+            modelBuilder.Entity<Response>()
+                .HasOne<Test>()
+                .WithMany(t => t.Responses)
+                .HasForeignKey(r => r.TestId);
+
             modelBuilder.Entity<Shot>();
-
-
+            
             base.OnModelCreating(modelBuilder);
         }
 

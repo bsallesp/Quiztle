@@ -1,7 +1,11 @@
-﻿using System.Text;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
 
 namespace BrunoTheBot.Blazor.Client.APIServices.Responses
 {
@@ -14,48 +18,62 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Responses
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<APIResponse<List<Response>>> GetAllResponsesAsync()
-        {
-            var response = await _httpClient.GetAsync("api/Responses");
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<List<Response>>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        }
-
-        public async Task<APIResponse<Response>> GetResponseByIdAsync(Guid id)
-        {
-            var response = await _httpClient.GetAsync($"api/Responses/{id}");
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        }
-
         public async Task<APIResponse<Response>> CreateResponseAsync(Response response)
         {
             var responseContent = new StringContent(JsonSerializer.Serialize(response), Encoding.UTF8, "application/json");
             var responseMessage = await _httpClient.PostAsync("api/Responses", responseContent);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var errorMessage = await responseMessage.Content.ReadAsStringAsync();
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = errorMessage
+                };
+            }
+
             var responseData = await responseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<APIResponse<bool>> UpdateResponseAsync(Guid id, Response response)
+        public async Task<APIResponse<Response>> GetResponseByIdAsync(Guid id)
         {
-            var responseContent = new StringContent(JsonSerializer.Serialize(response), Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClient.PutAsync($"api/Responses/{id}", responseContent);
+            var responseMessage = await _httpClient.GetAsync($"api/Responses/{id}");
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var errorMessage = await responseMessage.Content.ReadAsStringAsync();
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = errorMessage
+                };
+            }
+
             var responseData = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<bool>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<APIResponse<bool>> DeleteResponseAsync(Guid id)
+        public async Task<APIResponse<Response>> GetUnfinalizedResponseByTestIdAsync(Guid testId)
         {
-            var responseMessage = await _httpClient.DeleteAsync($"api/Responses/{id}");
-            var responseData = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<bool>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        }
+            var responseMessage = await _httpClient.GetAsync($"api/Responses/notfinalized/{testId}");
 
-        public async Task<APIResponse<bool>> ExistsByTestIdAsync(Guid testId)
-        {
-            var response = await _httpClient.GetAsync($"api/Responses/existsByTestId/{testId}");
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<bool>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var errorMessage = await responseMessage.Content.ReadAsStringAsync();
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = errorMessage
+                };
+            }
+
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
     }
 }

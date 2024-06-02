@@ -27,7 +27,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 {
                     return Ok(new APIResponse<List<PDFData>>
                     {
-                        Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                        Status = CustomStatusCodes.NotFound,
                         Data = new List<PDFData>(),
                         Message = "No PDF data found."
                     });

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
@@ -15,11 +13,14 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Questions")]
         public List<Question> Questions { get; set; } = new List<Question>();
 
-        [JsonPropertyName("Created")]
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        [JsonPropertyName("Responses")]
+        public List<Response>? Responses { get; set; } = [];
 
         [JsonPropertyName("PDFDataId")]
         public Guid PDFDataId { get; set; }
+
+        [JsonPropertyName("Created")]
+        public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public void ShuffleQuestions()
         {

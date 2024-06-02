@@ -72,7 +72,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
 
                     if (bookTask.Name == "" || bookTask == null) return new APIResponse<BookTask>
                     {
-                        Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                        Status = CustomStatusCodes.NotFound,
                         Data = new BookTask(),
                         Message = "Book Task Name is empty or null: "
                     };
@@ -115,7 +115,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
 
                 if (bookTask == null) return new APIResponse<BookTask>
                 {
-                    Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                    Status = CustomStatusCodes.NotFound,
                     Data = bookTask ?? new BookTask(),
                     Message = "No tasks found with Guid: " + Id
                 };

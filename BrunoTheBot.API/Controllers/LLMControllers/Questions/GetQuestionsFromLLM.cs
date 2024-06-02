@@ -19,7 +19,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
             {
                 if (book == null || book.Chapters.Count <= 0) return new APIResponse<Book>
                 {
-                    Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                    Status = CustomStatusCodes.NotFound,
                     Data = new()
                 };
 
@@ -63,7 +63,7 @@ namespace BrunoTheBot.API.Controllers.LLMControllers
             {
                 if (pdfDataPages == null) return new APIResponse<List<Question>>
                 {
-                    Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                    Status = CustomStatusCodes.NotFound,
                     Data = new List<Question>()
                 };
 

@@ -1,19 +1,27 @@
 ﻿@page "/Games/Test/{TestId}"
 @page "/Games/Test/"
 @using BrunoTheBot.Blazor.Client.APIServices.RegularGame
+@using BrunoTheBot.Blazor.Client.APIServices.Responses
 @using BrunoTheBot.Blazor.Client.APIServices.Tests
 @using BrunoTheBot.CoreBusiness.CodeEntities
 @using BrunoTheBot.CoreBusiness.Entities.Exam
 @using BrunoTheBot.CoreBusiness.Entities.Quiz
 @using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 @using BrunoTheBot.Blazor.Client.Pages.Games.Components
+@using BrunoTheBot.Services
 
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Nav
 @inject GetTestByIdService GetTestByIdService
+@inject ResponsesService ResponsesService
+
+@* @CheckRenderSide.GetOSDescription()
+<hr />
+@CheckRenderSide.GetOS() *@
 
 <h2>@test.Name</h2>
+<h6>Response n:@response.Id - @response.Name</h6>
 
 @if (test.Questions != null)
 {
@@ -28,18 +36,15 @@
 @code {
     [Parameter]
     public string TestId { get; set; } = "";
+    private Guid testGuid = new Guid();
     private Test test = new();
-    private Response response = new Response();
+    private Response response = new();
 
     protected override async Task OnParametersSetAsync()
     {
         await CheckURLTestGuid();
+        if (!await CheckIfResponseExists()) await CreateResponse();
         await base.OnParametersSetAsync();
-    }
-
-    private async Task CheckResponse()
-    {
-        
     }
 
     private async Task CheckURLTestGuid()
@@ -49,12 +54,13 @@
             Guid testIdGuid;
             if (Guid.TryParse(TestId, out testIdGuid))
             {
+                testGuid = Guid.Parse(TestId);
                 var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
                 if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
                 test = testAPIReponse.Data;
-                test.ShuffleQuestions();
+                //test.ShuffleQuestions();
             }
             else
             {
@@ -68,18 +74,24 @@
         }
     }
 
+    private async Task<bool> CheckIfResponseExists()
+    {
+        var result = await ResponsesService.GetUnfinalizedResponseByTestIdAsync(testGuid);
+        if (result.Status != CustomStatusCodes.SuccessStatus) return false;
+        response = result.Data;
+        return true;
+    }
+
+    private async Task<Response> CreateResponse()
+    {
+        Console.WriteLine("CreateResponse...");
+        var newResponse = new Response
+            {
+                Name = RandomNames.GenerateConcatenatedNames(1),
+                TestId = testGuid
+            };
+
+        await ResponsesService.CreateResponseAsync(newResponse);
+        return await Task.FromResult(newResponse);
+    }
 }
-    // private bool isAuthenticated = false;
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    //     // isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
-
-    //     // if (!isAuthenticated)
-    //     // {
-    //     //     NavigationManager.NavigateTo("/pagina-de-login", true);
-    //     // }
-
-
-    // }

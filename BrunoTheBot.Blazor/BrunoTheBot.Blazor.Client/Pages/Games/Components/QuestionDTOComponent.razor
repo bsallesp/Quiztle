@@ -6,15 +6,13 @@
     <h4>
         @(1 + Number) - @questionDTO.Question!.Name
     </h4>
-    <hr />
     @foreach (var option in questionDTO.OptionsDTO)
     {
         <div @onclick="() => SelectOption(option)">
                 <h6 @onclick="() => option.IsSelected = true" class="option @(option.IsSelected ? "selected" : "")">
-                @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name - @option.IsSelected
+                @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
             </h6>
         </div>
-        <hr />
     }
 }
 
@@ -26,17 +24,12 @@
     public int Number { get; set; }
     private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
 
-    private async Task SelectOption(OptionDTO option)
+    private void SelectOption(OptionDTO option)
     {
-        Console.WriteLine("teste123");
-
-        // foreach (var opt in questionDTO!.OptionsDTO)
-        // {
-        //     opt.IsSelected = (opt == option);
-        // }
-
-        // await OnOptionSelected.InvokeAsync(option);
-        // StateHasChanged();
+        foreach (var opt in questionDTO!.OptionsDTO)
+        {
+            opt.IsSelected = (opt == option);
+        }
     }
 }
 
@@ -50,6 +43,5 @@
     .selected {
         background-color: #cce5ff;
         color: #004085;
-        font-weight: bold;
     }
 </style>

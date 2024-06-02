@@ -1,4 +1,5 @@
-﻿using BrunoTheBot.CoreBusiness.Entities.Quiz;
+﻿using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using Microsoft.EntityFrameworkCore;
 
 namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
@@ -105,6 +106,20 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
                 .ToListAsync();
             return response;
         }
+
+        public async Task UpdateTest(Test test)
+        {
+            EnsureTestNotNull();
+            var existingTest = await _context.Tests!.FirstOrDefaultAsync(t => t.Id == test.Id);
+            if (existingTest == null) throw new Exception("Test with ID: " + test.Id + " not found for update.");
+            else
+            {
+                existingTest.Name = test.Name;
+                existingTest.Responses = test.Responses;
+                existingTest.Questions = test.Questions;
+            }
+            await _context.SaveChangesAsync();
+        } 
 
         private void EnsureTestNotNull()
         {

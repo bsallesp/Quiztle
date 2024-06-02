@@ -3,7 +3,8 @@
     public static class CustomStatusCodes
     {
         public const string SuccessStatus = "Success";
+        public const string NotFound = "Object not found, in regular operation.";
+
         public const string ErrorStatus = "Error";
-        public const string EmptyObjectErrorStatus = "The object is null, empty of not enough";
     }
 }

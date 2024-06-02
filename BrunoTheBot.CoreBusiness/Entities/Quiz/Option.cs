@@ -4,10 +4,6 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
     public class Option
     {
-        public Option()
-        {
-            Created = DateTime.UtcNow;
-        }
 
         [JsonPropertyName("Id")]
         public Guid Id { get; set; }
@@ -25,6 +21,6 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         public Guid QuestionId { get; set; }
 
         [JsonIgnore]
-        public Question Question { get; set; }
+        public Question? Question { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
                 {
                     return new APIResponse<List<PDFData>>
                     {
-                        Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                        Status = CustomStatusCodes.NotFound,
                         Data = new List<PDFData>(),
                         Message = "No data or response object is null."
                     };

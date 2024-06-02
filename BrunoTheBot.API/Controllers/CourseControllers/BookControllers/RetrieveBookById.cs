@@ -28,7 +28,7 @@ namespace BrunoTheBot.API.Controllers.CourseControllers.BookControllers
                 {
                     var bookNotFoundAPIResponse = new APIResponse<Book>
                     {
-                        Status = CustomStatusCodes.EmptyObjectErrorStatus,
+                        Status = CustomStatusCodes.NotFound,
                         Data = new()
                     };
 

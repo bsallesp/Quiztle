@@ -5,7 +5,7 @@
 namespace BrunoTheBot.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class QuestionOptionsFixment : Migration
+    public partial class TestIdInResponse : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

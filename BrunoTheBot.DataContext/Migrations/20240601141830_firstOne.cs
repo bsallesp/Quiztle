@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigrate : Migration
+    public partial class firstOne : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -194,7 +194,6 @@ namespace BrunoTheBot.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Answer = table.Column<string>(type: "text", nullable: true),
                     Hint = table.Column<string>(type: "text", nullable: true),
                     Resolution = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -222,8 +221,9 @@ namespace BrunoTheBot.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    QuestionId = table.Column<Guid>(type: "uuid", nullable: true)
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,7 +232,54 @@ namespace BrunoTheBot.DataContext.Migrations
                         name: "FK_Options_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shots",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OptionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shots_Options_OptionId",
+                        column: x => x.OptionId,
+                        principalTable: "Options",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Responses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    TestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ShotId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Responses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Responses_Shots_ShotId",
+                        column: x => x.ShotId,
+                        principalTable: "Shots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Responses_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -266,6 +313,16 @@ namespace BrunoTheBot.DataContext.Migrations
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Responses_ShotId",
+                table: "Responses",
+                column: "ShotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Responses_TestId",
+                table: "Responses",
+                column: "TestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sections_ChapterId",
                 table: "Sections",
                 column: "ChapterId");
@@ -274,6 +331,11 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "IX_Sections_ContentId",
                 table: "Sections",
                 column: "ContentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shots_OptionId",
+                table: "Shots",
+                column: "OptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tests_PDFDataId",
@@ -291,13 +353,19 @@ namespace BrunoTheBot.DataContext.Migrations
                 name: "BookTasks");
 
             migrationBuilder.DropTable(
-                name: "Options");
-
-            migrationBuilder.DropTable(
                 name: "PDFDataPages");
 
             migrationBuilder.DropTable(
+                name: "Responses");
+
+            migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Shots");
+
+            migrationBuilder.DropTable(
+                name: "Options");
 
             migrationBuilder.DropTable(
                 name: "Questions");

@@ -1,6 +1,7 @@
 using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.Blazor.Client.APIServices;
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
+using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Tests;
 using BrunoTheBot.Blazor.Client.Authentication.Core;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
@@ -27,6 +28,7 @@ builder.Services.AddTransient<CheckRenderSide>();
 builder.Services.AddTransient<CreateBookTaskService>();
 builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<RemoveTestService>();
+builder.Services.AddTransient<ResponsesService>();
 
 builder.Services.AddTransient<AILogRepository>();
 

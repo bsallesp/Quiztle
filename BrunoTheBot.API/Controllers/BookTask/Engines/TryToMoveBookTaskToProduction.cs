@@ -27,7 +27,7 @@ namespace BrunoTheBot.API.Controllers.Tasks.Engines
 
                     var GetNextBookTaskFromQueueResult = await bookTaskRepository.GetNextBookTaskFromQueue();
                     if (GetNextBookTaskFromQueueResult.Status == CustomStatusCodes.ErrorStatus ||
-                        GetNextBookTaskFromQueueResult.Status == CustomStatusCodes.EmptyObjectErrorStatus)
+                        GetNextBookTaskFromQueueResult.Status == CustomStatusCodes.NotFound)
                         return new APIResponse<bool>
                         {
                             Status = CustomStatusCodes.ErrorStatus,
