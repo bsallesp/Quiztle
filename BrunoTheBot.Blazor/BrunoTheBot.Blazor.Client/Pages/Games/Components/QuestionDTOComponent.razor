@@ -1,5 +1,11 @@
-﻿@using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
+﻿@using BrunoTheBot.Blazor.Client.APIServices.Responses
+@using BrunoTheBot.Blazor.Client.APIServices.Shots
+@using BrunoTheBot.CoreBusiness.CodeEntities
+@using BrunoTheBot.CoreBusiness.Entities.Quiz
+@using BrunoTheBot.CoreBusiness.Entities.Quiz.DTO
 @using Microsoft.AspNetCore.Components
+
+@inject ShotsService ShotsService
 
 @if (questionDTO != null)
 {
@@ -8,11 +14,9 @@
     </h4>
     @foreach (var option in questionDTO.OptionsDTO)
     {
-        <div @onclick="() => SelectOption(option)">
-                <h6 @onclick="() => option.IsSelected = true" class="option @(option.IsSelected ? "selected" : "")">
-                @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-            </h6>
-        </div>
+        <h6 @onclick="() => SelectOption(option)" class="option @(option.IsSelected ? "selected" : "")">
+            @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+        </h6>
     }
 }
 
@@ -22,13 +26,46 @@
     public QuestionDTO? questionDTO { get; set; }
     [Parameter]
     public int Number { get; set; }
+    [Parameter]
+    public Guid responseGuid { get; set; }
+
     private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
 
-    private void SelectOption(OptionDTO option)
+    private async void SelectOption(OptionDTO selectedOption)
     {
-        foreach (var opt in questionDTO!.OptionsDTO)
+        if (selectedOption.IsSelected) return;
+
+        foreach (var regularOption in questionDTO!.OptionsDTO)
         {
-            opt.IsSelected = (opt == option);
+            regularOption.IsSelected = (regularOption == selectedOption);
+        }
+
+        var deleteTasks = questionDTO.OptionsDTO
+            .Where(opt => opt != selectedOption)
+            .Select(opt => ShotsService.DeleteShotAsync(opt.Id, responseGuid))
+            .Cast<Task>()
+            .ToList();
+
+        var createTask = ShotsService.CreateShotAsync(selectedOption.ConvertToShot(responseGuid));
+
+        deleteTasks.Add(createTask);
+
+        await Task.WhenAll(deleteTasks);
+    }
+
+    private async Task<Shot> GetShotById(Guid shotId)
+    {
+        try
+        {
+            var result = await ShotsService.GetShotByIdAsync(shotId);
+            if (result.Status == CustomStatusCodes.ErrorStatus) throw new Exception("ERROR DURING GETTING SHOT");
+            else if (result.Status == CustomStatusCodes.NotFound) return null!;
+            else if (result.Status == CustomStatusCodes.SuccessStatus) return result.Data;
+            return null!;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

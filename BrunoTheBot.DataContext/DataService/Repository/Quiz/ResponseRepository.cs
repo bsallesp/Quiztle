@@ -79,6 +79,50 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             }
         }
 
+        public async Task<APIResponse<Response>> UpdateResponse(Guid id, Response updatedResponse)
+        {
+            try
+            {
+                EnsureResponseNotNull();
+                var response = await _context.Responses!.FirstOrDefaultAsync(r => r.Id == id);
+
+                if (response == null)
+                {
+                    return new APIResponse<Response>
+                    {
+                        Status = CustomStatusCodes.NotFound,
+                        Data = new Response(),
+                        Message = "Response with ID " + id + " not found."
+                    };
+                }
+
+                response.Name = updatedResponse.Name;
+                response.Shots = updatedResponse.Shots;
+                response.Created = updatedResponse.Created;
+                response.TestId = updatedResponse.TestId;
+
+                _context.Responses!.Update(response);
+                await _context.SaveChangesAsync();
+
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = response,
+                    Message = "Response updated successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = "ERROR - UPDATING RESPONSE BY ID " + id + ex
+                };
+            }
+        }
+
+
         public async Task<bool> CreateResponse(Response response)
         {
             Console.WriteLine("creating response in repository...");

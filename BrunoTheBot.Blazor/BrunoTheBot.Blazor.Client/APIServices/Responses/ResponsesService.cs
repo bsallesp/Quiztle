@@ -75,5 +75,25 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Responses
             var responseData = await responseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
+
+        public async Task<APIResponse<Response>> UpdateResponseAsync(Guid id, Response updatedResponse)
+        {
+            var responseContent = new StringContent(JsonSerializer.Serialize(updatedResponse), Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClient.PutAsync($"api/Responses/{id}", responseContent);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var errorMessage = await responseMessage.Content.ReadAsStringAsync();
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = errorMessage
+                };
+            }
+
+            var responseData = await responseMessage.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
     }
 }

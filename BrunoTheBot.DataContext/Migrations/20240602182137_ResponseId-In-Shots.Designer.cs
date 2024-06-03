@@ -3,6 +3,7 @@ using System;
 using BrunoTheBot.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrunoTheBot.DataContext.Migrations
 {
     [DbContext(typeof(PostgreBrunoTheBotContext))]
-    partial class PostgreBrunoTheBotContextModelSnapshot : ModelSnapshot
+    [Migration("20240602182137_ResponseId-In-Shots")]
+    partial class ResponseIdInShots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,7 +221,7 @@ namespace BrunoTheBot.DataContext.Migrations
 
                     b.ToTable("Options");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Options");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Option");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Question", b =>
@@ -315,14 +318,14 @@ namespace BrunoTheBot.DataContext.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
                     b.Property<Guid>("OptionId")
-                        .HasColumnType("uuid")
-                        .HasAnnotation("Relational:JsonPropertyName", "OptionId");
+                        .HasColumnType("uuid");
 
-                    b.Property<Guid>("ResponseId")
-                        .HasColumnType("uuid")
-                        .HasAnnotation("Relational:JsonPropertyName", "ResponseId");
+                    b.Property<Guid?>("ResponseId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OptionId");
 
                     b.HasIndex("ResponseId");
 
@@ -501,11 +504,17 @@ namespace BrunoTheBot.DataContext.Migrations
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Shot", b =>
                 {
-                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Response", null)
-                        .WithMany("Shots")
-                        .HasForeignKey("ResponseId")
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Option", "Option")
+                        .WithMany()
+                        .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("BrunoTheBot.CoreBusiness.Entities.Quiz.Response", null)
+                        .WithMany("Shots")
+                        .HasForeignKey("ResponseId");
+
+                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("BrunoTheBot.CoreBusiness.Entities.Quiz.Test", b =>

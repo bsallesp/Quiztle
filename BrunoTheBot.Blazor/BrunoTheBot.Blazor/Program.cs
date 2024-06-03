@@ -13,6 +13,7 @@ using BrunoTheBot.DataContext.Repositories;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.Blazor.Client.APIServices.Tests;
 using BrunoTheBot.Blazor.Client.APIServices.Responses;
+using BrunoTheBot.Blazor.Client.APIServices.Shots;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -51,6 +52,7 @@ builder.Services.AddTransient<GetTestByIdService>();
 builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<RemoveTestService>();
 builder.Services.AddTransient<ResponsesService>();
+builder.Services.AddTransient<ShotsService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

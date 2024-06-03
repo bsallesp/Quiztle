@@ -7,10 +7,13 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonPropertyName("Option")]
-        public Option Option { get; set; } = new Option();
+        [JsonPropertyName("OptionId")]
+        public Guid OptionId { get; set; }
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        [JsonPropertyName("ResponseId")]
+        public Guid ResponseId { get; set; }
     }
 }

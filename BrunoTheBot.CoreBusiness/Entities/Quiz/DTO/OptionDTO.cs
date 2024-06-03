@@ -5,5 +5,16 @@
         public required Guid Id { get; set; }
         public required string Name { get; set; }
         public bool IsSelected { get; set; }
+
+        public Shot ConvertToShot(Guid responseId)
+        {
+            return new Shot
+            {
+                Id = Guid.NewGuid(),
+                OptionId = Id,
+                Created = DateTime.UtcNow,
+                ResponseId = responseId
+            };
+        }
     }
 }

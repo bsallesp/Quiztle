@@ -102,9 +102,38 @@ namespace BrunoTheBot.API.Controllers.Responses
                 {
                     Status = CustomStatusCodes.ErrorStatus,
                     Data = new Response(),
-                    Message = "An error occurred while creating the response."
+                    Message = "An error occurred while creating the response." + ex.Message
                 });
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<APIResponse<Response>>> UpdateResponse(Guid id, [FromBody] Response updatedResponse)
+        {
+            var response = await _responseRepository.UpdateResponse(id, updatedResponse);
+
+            if (response.Status == CustomStatusCodes.ErrorStatus)
+                return StatusCode(500, new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = "ERROR IN REPOSITORY - " + response.Message
+                });
+
+            if (response.Status != CustomStatusCodes.SuccessStatus)
+                return NotFound(new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.NotFound,
+                    Data = new Response(),
+                    Message = "Response not found in repository - " + response.Message
+                });
+
+            return Ok(new APIResponse<Response>
+            {
+                Status = CustomStatusCodes.SuccessStatus,
+                Data = response.Data,
+                Message = "Response updated successfully in repository - " + response.Message
+            });
         }
     }
 }

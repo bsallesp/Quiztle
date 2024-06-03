@@ -20,16 +20,19 @@
 <hr />
 @CheckRenderSide.GetOS() *@
 
-<h2>@test.Name</h2>
-<h6>Response n:@response.Id - @response.Name</h6>
-
-@if (test.Questions != null)
+@if (response != null)
 {
-    @foreach (var question in test.Questions)
+    <h2>@test.Name</h2>
+    <h6>Response n:@response.Id - @response.Name</h6>
+
+    @if (test.Questions != null)
     {
-        QuestionDTO questionDTO = new QuestionDTO(question);
-        <QuestionDTOComponent questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
-        <hr />
+        @foreach (var question in test.Questions)
+        {
+            QuestionDTO questionDTO = new QuestionDTO(question);
+            <QuestionDTOComponent responseGuid="response.Id" questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
+            <hr />
+        }
     }
 }
 
@@ -38,7 +41,7 @@
     public string TestId { get; set; } = "";
     private Guid testGuid = new Guid();
     private Test test = new();
-    private Response response = new();
+    private Response? response;
 
     protected override async Task OnParametersSetAsync()
     {
