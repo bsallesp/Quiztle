@@ -17,7 +17,36 @@ namespace BrunoTheBot.API.Controllers.Shots
             _shotRepository = shotRepository ?? throw new ArgumentNullException(nameof(shotRepository));
         }
 
-        [HttpGet("shots/{responseId}")]
+        [HttpGet("shots-by-response/{responseId}")]
+        public async Task<ActionResult<APIResponse<List<Shot>>>> GetShotsByResponseId(Guid responseId)
+        {
+            var response = await _shotRepository.GetShotsByResponseId(responseId);
+
+            if (response.Status == CustomStatusCodes.ErrorStatus)
+                return StatusCode(500, new APIResponse<List<Shot>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Shot>(),
+                    Message = "ERROR IN REPOSITORY - " + response.Message
+                });
+
+            if (response.Status == CustomStatusCodes.NotFound)
+                return NotFound(new APIResponse<List<Shot>>
+                {
+                    Status = CustomStatusCodes.NotFound,
+                    Data = new List<Shot>(),
+                    Message = "Shots not found in repository - " + response.Message
+                });
+
+            return Ok(new APIResponse<List<Shot>>
+            {
+                Status = CustomStatusCodes.SuccessStatus,
+                Data = response.Data,
+                Message = "Shots found in repository - " + response.Message
+            });
+        }
+
+        [HttpGet("shot-by-response/{responseId}")]
         public async Task<ActionResult<APIResponse<Shot>>> GetShotByResponseId(Guid responseId)
         {
             var response = await _shotRepository.GetShotByResponseId(responseId);

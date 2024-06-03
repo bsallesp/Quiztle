@@ -14,6 +14,44 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<APIResponse<List<Shot>>> GetShotsByResponseId(Guid responseId)
+        {
+            EnsureShotNotNull();
+            try
+            {
+                var shots = await _context.Shots!
+                    .Where(s => s.ResponseId == responseId)
+                    .ToListAsync();
+
+                if (shots == null || shots.Count == 0)
+                {
+                    return new APIResponse<List<Shot>>
+                    {
+                        Status = CustomStatusCodes.NotFound,
+                        Data = new List<Shot>(),
+                        Message = "Shots with Response ID " + responseId + " not found."
+                    };
+                }
+
+                return new APIResponse<List<Shot>>
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = shots,
+                    Message = "Shots found successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<Shot>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Shot>(),
+                    Message = "ERROR - GETTING SHOTS BY RESPONSE ID: " + ex.Message
+                };
+            }
+        }
+
+
         public async Task<APIResponse<Shot>> CreateShot(Shot shot)
         {
             EnsureShotNotNull();

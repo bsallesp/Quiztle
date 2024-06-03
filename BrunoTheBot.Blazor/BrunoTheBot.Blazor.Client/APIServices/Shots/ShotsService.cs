@@ -40,7 +40,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Shots
 
         public async Task<APIResponse<Shot>> GetShotByIdAsync(Guid id)
         {
-            var responseMessage = await _httpClient.GetAsync($"api/Shots/{id}");
+            var responseMessage = await _httpClient.GetAsync($"api/Shots/shot-by-response/{id}");
 
             if (!responseMessage.IsSuccessStatusCode)
             {
@@ -59,7 +59,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Shots
 
         public async Task<APIResponse<List<Shot>>> GetShotsByResponseIdAsync(Guid responseId)
         {
-            var responseMessage = await _httpClient.GetAsync($"api/shots/{responseId}");
+            var responseMessage = await _httpClient.GetAsync($"api/Shots/shots-by-response/{responseId}");
 
             if (!responseMessage.IsSuccessStatusCode)
             {
