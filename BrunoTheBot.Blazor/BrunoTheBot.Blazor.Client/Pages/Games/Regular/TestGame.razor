@@ -22,18 +22,28 @@
 
 @if (response != null)
 {
-    <h2>@test.Name</h2>
-    <h6>Response n:@response.Id - @response.Name</h6>
+    <div class="mb-4">
+        <h2>@test.Name</h2>
+        <h6>Response n:@response.Id - @response.Name</h6>
 
-    @if (test.Questions != null)
-    {
-        @foreach (var question in test.Questions)
+        @if (test.Questions != null)
         {
-            QuestionDTO questionDTO = new QuestionDTO(question);
-            <QuestionDTOComponent responseGuid="response.Id" questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
-            <hr />
+            @foreach (var question in test.Questions)
+            {
+                QuestionDTO questionDTO = new QuestionDTO(question);
+                <QuestionDTOComponent ShowResults="_showResults" responseGuid="response.Id" questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
+                <hr />
+            }
         }
-    }
+        @if (!_showResults)
+        {
+            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => _showResults = true">
+                <h3 class="mb-0">
+                    Show Results
+                </h3>
+            </button>
+        }
+    </div>
 }
 
 @code {
@@ -42,6 +52,7 @@
     private Guid testGuid = new Guid();
     private Test test = new();
     private Response? response;
+    private bool _showResults = false;
 
     protected override async Task OnParametersSetAsync()
     {

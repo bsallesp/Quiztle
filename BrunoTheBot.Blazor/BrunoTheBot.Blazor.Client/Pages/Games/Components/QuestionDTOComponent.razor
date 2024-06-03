@@ -14,7 +14,7 @@
     </h4>
     @foreach (var option in questionDTO.OptionsDTO)
     {
-        <h6 @onclick="() => SelectOption(option)" class="option @(option.IsSelected ? "selected" : "")">
+        <h6 @onclick="() => SelectOption(option)" class="option @(GetOptionClass(option))">
             @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
         </h6>
     }
@@ -29,11 +29,53 @@
     [Parameter]
     public Guid responseGuid { get; set; }
 
+    private bool _showResults;
+
+    [Parameter]
+    public bool ShowResults
+    {
+        get => _showResults;
+        set
+        {
+            if (_showResults != value)
+            {
+                _showResults = value;
+                OnShowResultsChanged();
+            }
+        }
+    }
+
+    private void OnShowResultsChanged()
+    {
+        // Lógica a ser executada quando ShowResults for alterado
+    }
+
     private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
+
+    private string GetOptionClass(OptionDTO option)
+    {
+        if (ShowResults)
+        {
+            if (option.IsSelected && option.IsCorrect)
+            {
+                return "correct";
+            }
+            else if (option.IsSelected && !option.IsCorrect)
+            {
+                return "incorrect";
+            }
+            else if (!option.IsSelected && option.IsCorrect)
+            {
+                return "not-selected-correct";
+            }
+        }
+
+        return option.IsSelected ? "selected" : "";
+    }
 
     private async void SelectOption(OptionDTO selectedOption)
     {
-        if (selectedOption.IsSelected) return;
+        if (selectedOption.IsSelected || ShowResults) return;
 
         foreach (var regularOption in questionDTO!.OptionsDTO)
         {
@@ -111,5 +153,21 @@
     .selected {
         background-color: #cce5ff;
         color: #004085;
+    }
+
+    .correct {
+        border: 3px solid blue;
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    .incorrect {
+        border: 3px solid red;
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .not-selected-correct {
+        border: 3px solid blue;
     }
 </style>

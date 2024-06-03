@@ -16,7 +16,8 @@
             {
                 Id = option.Id,
                 Name = option.Name,
-                IsSelected = false
+                IsSelected = false,
+                IsCorrect = option.IsCorrect,
             }).ToList() ?? [];
         }
     }    

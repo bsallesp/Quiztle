@@ -5,6 +5,7 @@
         public required Guid Id { get; set; }
         public required string Name { get; set; }
         public bool IsSelected { get; set; }
+        public bool IsCorrect { get; set; }
 
         public Shot ConvertToShot(Guid responseId)
         {
