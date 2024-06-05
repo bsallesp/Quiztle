@@ -11,11 +11,11 @@ namespace YourNamespace.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PDFFileController : ControllerBase
+    public class PDFFileListController : ControllerBase
     {
         private readonly string pdfDirectory;
 
-        public PDFFileController(IWebHostEnvironment env, IConfiguration configuration)
+        public PDFFileListController(IWebHostEnvironment env, IConfiguration configuration)
         {
             if (env.IsDevelopment()) pdfDirectory = configuration["PDFDirectory"] ?? throw new InvalidOperationException();
             else pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/app/bucket";

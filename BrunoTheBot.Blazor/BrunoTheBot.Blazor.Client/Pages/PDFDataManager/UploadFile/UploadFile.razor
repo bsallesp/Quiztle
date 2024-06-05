@@ -1,0 +1,30 @@
+﻿@page "/uploadfile"
+@inject UploadFileService UploadFileService
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Upload File</h3>
+
+<InputFile OnChange="HandleSelected" />
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <p>@Message</p>
+}
+
+@code {
+    private string? Message { get; set; }
+
+    private async Task HandleSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        try
+        {
+            var response = await UploadFileService.UploadAsync(file);
+            Message = "File uploaded successfully. Server response: " + response;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error uploading file: " + ex.Message;
+        }
+    }
+}

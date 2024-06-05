@@ -31,6 +31,7 @@ builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<RemoveTestService>();
 builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
+builder.Services.AddTransient<UploadFileService>();
 
 builder.Services.AddTransient<AILogRepository>();
 
@@ -43,17 +44,22 @@ builder.Services.AddAuthorizationCore();
 
 #region connectionString
 var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["ConnectionString"]!;
+if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
 #endregion
 
+
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-#region apiBaseUrl
-var apiBaseUrl = Environment.GetEnvironmentVariable("API_URL");
-if (string.IsNullOrEmpty(apiBaseUrl)) apiBaseUrl = builder.Configuration["localAPIURL"];
-if (string.IsNullOrEmpty(apiBaseUrl)) throw new Exception("Cant get apiBaseUrl at webassembly");
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
+#region pdfApiUrl
+var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
+if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
+if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(pdfApiUrl),
+    Timeout = Timeout.InfiniteTimeSpan
+});
 #endregion
 
 await builder.Build().RunAsync();

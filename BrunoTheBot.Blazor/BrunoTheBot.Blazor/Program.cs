@@ -27,13 +27,27 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 
-#region apiBaseUrl
-var apiBaseUrl = Environment.GetEnvironmentVariable("API_URL");
-if (string.IsNullOrEmpty(apiBaseUrl)) apiBaseUrl = builder.Configuration["localAPIURL"];
-if (string.IsNullOrEmpty(apiBaseUrl)) throw new Exception();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
-#endregion
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
 
+#region pdfApiUrl
+var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
+if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
+if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(pdfApiUrl),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+#endregion
 
 builder.Services.AddScoped<CodeExtraction>();
 
@@ -53,6 +67,7 @@ builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<RemoveTestService>();
 builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
+builder.Services.AddTransient<UploadFileService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
@@ -67,7 +82,6 @@ builder.Services.AddCascadingAuthenticationState();
 
 #region Postgresql Connection
 var connectionString = "";
-
 if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
 if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
@@ -90,6 +104,8 @@ else
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
