@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.Entities.Quiz
 {
@@ -18,46 +17,15 @@ namespace BrunoTheBot.CoreBusiness.Entities.Quiz
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         [JsonPropertyName("Score")]
-        public int Score { get; private set; } = 0;
+        public int Score { get; set; } = 0;
 
         [JsonPropertyName("Percentage")]
-        public decimal Percentage { get; private set; } = 0;
+        public decimal Percentage { get; set; } = 0;
 
         [JsonPropertyName("IsFinalized")]
-        public bool IsFinalized { get; private set; } = false;
+        public bool IsFinalized { get; set; } = false;
 
         [JsonPropertyName("TestId")]
         public Guid TestId { get; set; } = Guid.NewGuid();
-
-        //public void CalculateScore()
-        //{
-        //    if (IsFinalized)
-        //        throw new InvalidOperationException("Response has already been finalized and cannot be modified.");
-
-        //    Score = 0;
-        //    foreach (var question in Test.Questions)
-        //    {
-        //        var correctOption = question.Options.FirstOrDefault(i => i.IsCorrect);
-        //        if (correctOption != null && Shots.Any(s => s.Id == correctOption.Id))
-        //        {
-        //            Score++;
-        //        }
-        //    }
-
-        //    CalculatePercentage();
-        //    IsFinalized = true;
-        //}
-
-        //private void CalculatePercentage()
-        //{
-        //    if (Test.Questions.Count > 0)
-        //    {
-        //        Percentage = (decimal)Score / Test.Questions.Count * 100;
-        //    }
-        //    else
-        //    {
-        //        Percentage = 0;
-        //    }
-        //}
     }
 }

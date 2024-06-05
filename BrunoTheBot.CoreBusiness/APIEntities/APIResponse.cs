@@ -5,13 +5,13 @@ namespace BrunoTheBot.CoreBusiness.APIEntities
 {
     public class APIResponse<T>
     {
-        [JsonPropertyName("Status")]
+        [JsonPropertyName(nameof(Status))]
         public string Status { get; set; } = CustomStatusCodes.ErrorStatus;
 
-        [JsonPropertyName("Data")]
+        [JsonPropertyName(nameof(Data))]
         public required T Data { get; set; }
 
-        [JsonPropertyName("Message")]
+        [JsonPropertyName(nameof(Message))]
         public string? Message = "Unknown error.";
 
         public void SendError(string message)

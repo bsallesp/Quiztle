@@ -1,6 +1,10 @@
-﻿@using BrunoTheBot.Blazor.Client.APIServices.Tests
+﻿@using BrunoTheBot.Blazor.Client.APIServices.Responses
+@using BrunoTheBot.Blazor.Client.APIServices.Tests
 @using BrunoTheBot.CoreBusiness.Entities.PDFData
+@using BrunoTheBot.CoreBusiness.Entities.Quiz
+
 @inject RemoveTestService RemoveTestService
+@inject ResponsesService ResponsesService
 
 <h4>
     @pdfData.Name
@@ -10,51 +14,45 @@
         Tests
     </h5>
     <div class="container bg-light p-2 bb-4" style="background-color: dimgrey;">
-        @foreach (var item in pdfData.Tests)
+        @foreach (var test in pdfData.Tests)
         {
-            <div class="bb-5">
+            <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
                 <p>
-                    <a href="/Games/Test/@item.Id" target="_blank">@item.Name.ToString() : @item.Questions.Count questions</a>
-                    <button @onclick="() => RemoveTest(item.Id)">Remove</button>
+                    <h4>
+                        @test.Name - @test.Questions.Count questions
+                    </h4>
+                </p>
+                <p>
+                    <h5>
+                        <a href="/Games/Test/@test.Id" target="_blank">Start New Response</a>
+                        @* <button @onclick="() => RemoveTest(item.Id)">Remove</button> *@
+                    </h5>
+                </p>
+                <p>
+                    <div style="border: 1px solid grey; padding: 10px;">
+                        <h5>
+                            Past Responses:
+                            @* <button @onclick="() => RemoveTest(item.Id)">Remove</button> *@
+                        </h5>
+                        <h6>
+                            @foreach (var response in test.Responses!)
+                            {
+                                @(response.Name  + " / Score: " + @response.Score);
+                                <br />
+                            }
+                        </h6>
+                    </div>
                 </p>
             </div>
-
         }
     </div>
 </div>
-@* 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Launch static backdrop modal
-</button> *@
 
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 @code {
     [Parameter]
     public PDFData pdfData { get; set; } = new PDFData();
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-    }
+    public List<Response>? _responses { get; set; }
 
     public async void RemoveTest(Guid testId)
     {
@@ -63,5 +61,15 @@
         await RemoveTestService.ExecuteAsync(testId);
 
         StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var test in pdfData.Tests)
+        {
+            var result = await ResponsesService.GetFinalizedResponsesAsync(test.Id);
+
+            test.Responses = result.Data;
+        }
     }
 }

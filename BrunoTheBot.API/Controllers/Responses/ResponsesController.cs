@@ -75,6 +75,36 @@ namespace BrunoTheBot.API.Controllers.Responses
             });
         }
 
+        [HttpGet("finalized/{testId}")]
+        public async Task<ActionResult<APIResponse<List<Response>>>> GetFinalizedResponsesByTestId(Guid testId)
+        {
+            var response = await _responseRepository.GetFinalizedResponsesByTestId(testId);
+
+            if (response.Status == CustomStatusCodes.ErrorStatus)
+                return StatusCode(500, new APIResponse<List<Response>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Response>(),
+                    Message = "ERROR IN REPOSITORY - " + response.Message
+                });
+
+            if (response.Status != CustomStatusCodes.SuccessStatus)
+                return NotFound(new APIResponse<List<Response>>
+                {
+                    Status = CustomStatusCodes.NotFound,
+                    Data = new List<Response>(),
+                    Message = "Finalized responses not found in repository for test ID - " + response.Message
+                });
+
+            return Ok(new APIResponse<List<Response>>
+            {
+                Status = CustomStatusCodes.SuccessStatus,
+                Data = response.Data,
+                Message = "Finalized responses found in repository for test ID - " + response.Message
+            });
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<APIResponse<Response>>> CreateResponse(Response response)
         {
@@ -107,9 +137,13 @@ namespace BrunoTheBot.API.Controllers.Responses
             }
         }
 
+
+
         [HttpPut("{id}")]
         public async Task<ActionResult<APIResponse<Response>>> UpdateResponse(Guid id, [FromBody] Response updatedResponse)
         {
+            Console.WriteLine("Getting into UpdateResponse in ResponsesController...");
+
             var response = await _responseRepository.UpdateResponse(id, updatedResponse);
 
             if (response.Status == CustomStatusCodes.ErrorStatus)

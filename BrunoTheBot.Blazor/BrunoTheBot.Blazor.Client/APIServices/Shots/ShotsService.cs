@@ -79,7 +79,6 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Shots
         public async Task<APIResponse<bool>> DeleteShotAsync(Guid shotId, Guid responseId)
         {
             var url = $"api/Shots/{shotId}/{responseId}";
-            Console.WriteLine($"Request URL: {url}");
 
             var responseMessage = await _httpClient.DeleteAsync(url);
 

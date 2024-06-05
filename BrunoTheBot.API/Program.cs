@@ -20,6 +20,8 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddHttpClient<FromPDFToJsonFile>();
+
 builder.Services.AddTransient<ChatGPTRequest>();
 
 builder.Services.AddTransient(typeof(LogService<>));
@@ -68,8 +70,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 #region pdfApiUrl
 var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
-if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["PDF_API_URL"];
-if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get PDF_API_URL at webassembly");
+if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
+if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(pdfApiUrl),
@@ -77,9 +79,13 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? "";
-if (connectionString.IsNullOrEmpty()) connectionString = builder.Configuration["ConnectionString"]!;
-if (connectionString.IsNullOrEmpty()) throw new Exception("Cant get connections at webcoreapi.");
+#region Postgresql Connection
+var connectionString = "";
+if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
+if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
+if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+Console.WriteLine("Connection adquired: " + connectionString);
+#endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

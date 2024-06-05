@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
     [Route("api/[controller]")]
@@ -11,10 +6,16 @@ namespace BrunoTheBot.API.Controllers.PDFApi
     public class FromPDFToJsonFile : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _pdfApiUrl;
 
-        public FromPDFToJsonFile(IHttpClientFactory httpClientFactory)
+        public FromPDFToJsonFile(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL") ?? configuration["PDF_API_URL"] ?? throw new Exception("ENV VARIABLE NOT FOUND");
+            if (string.IsNullOrEmpty(_pdfApiUrl))
+            {
+                throw new Exception("PDF_API_URL is not set");
+            }
         }
 
         [HttpPost]
@@ -34,7 +35,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                     { new StringContent("1"), "partial_output_rate" } // Assuming you want to process every page
                 };
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5090/extract-text") { Content = content };
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_pdfApiUrl}/extract-text") { Content = content };
                 using var response = await client.SendAsync(request);
 
                 response.EnsureSuccessStatusCode();

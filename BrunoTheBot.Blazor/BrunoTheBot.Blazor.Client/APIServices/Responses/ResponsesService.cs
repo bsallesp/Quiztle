@@ -76,24 +76,58 @@ namespace BrunoTheBot.Blazor.Client.APIServices.Responses
             return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<APIResponse<Response>> UpdateResponseAsync(Guid id, Response updatedResponse)
+        public async Task<APIResponse<List<Response>>> GetFinalizedResponsesAsync(Guid testId)
         {
-            var responseContent = new StringContent(JsonSerializer.Serialize(updatedResponse), Encoding.UTF8, "application/json");
-            var responseMessage = await _httpClient.PutAsync($"api/Responses/{id}", responseContent);
+            var responseMessage = await _httpClient.GetAsync($"api/Responses/finalized/{testId}");
 
             if (!responseMessage.IsSuccessStatusCode)
             {
                 var errorMessage = await responseMessage.Content.ReadAsStringAsync();
-                return new APIResponse<Response>
+                return new APIResponse<List<Response>>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
-                    Data = new Response(),
+                    Data = new List<Response>(),
                     Message = errorMessage
                 };
             }
 
             var responseData = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return JsonSerializer.Deserialize<APIResponse<List<Response>>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+
+        public async Task<APIResponse<Response>> UpdateResponseAsync(Guid id, Response updatedResponse)
+        {
+            Console.WriteLine("Getting into UpdateResponseAsync in ResponsesService...");
+            try
+            {
+                var responseContent = new StringContent(JsonSerializer.Serialize(updatedResponse), Encoding.UTF8, "application/json");
+                var responseMessage = await _httpClient.PutAsync($"api/Responses/{id}", responseContent);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    var errorMessage = await responseMessage.Content.ReadAsStringAsync();
+                    return new APIResponse<Response>
+                    {
+                        Status = CustomStatusCodes.ErrorStatus,
+                        Data = new Response(),
+                        Message = errorMessage
+                    };
+                }
+
+                var responseData = await responseMessage.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<APIResponse<Response>>(responseData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new APIResponse<Response>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new Response(),
+                    Message = ex.Message
+                };
+            }
         }
     }
 }

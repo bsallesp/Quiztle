@@ -2,9 +2,9 @@
 {
     public static class CustomStatusCodes
     {
-        public const string SuccessStatus = "Success";
-        public const string NotFound = "Object not found, in regular operation.";
+        public const string SuccessStatus = "SuccessStatus: Success";
+        public const string NotFound = "NOT FOUND: Object not found, in regular operation.";
 
-        public const string ErrorStatus = "Error";
+        public const string ErrorStatus = "ErrorStatus: Error";
     }
 }

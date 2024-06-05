@@ -82,5 +82,24 @@ def extract_text_mupdf():
 
     return Response(generate(), mimetype='text/event-stream')
 
+@app.route('/list-pdfs', methods=['GET'])
+def list_pdfs():
+    pdf_directory = '/app/bucket/pdf-files'
+
+    if not os.path.exists(pdf_directory):
+        logging.error("PDF directory does not exist.")
+        raise BadRequest("PDF directory does not exist.")
+
+    pdf_files = [f for f in os.listdir(pdf_directory) if f.lower().endswith('.pdf')]
+    pdf_files_with_paths = [os.path.join(pdf_directory, f) for f in pdf_files]
+    
+    logging.debug(f"Found PDF files: {pdf_files}")
+    logging.debug(f"PDF files with paths: {pdf_files_with_paths}")
+
+    return jsonify({
+        "pdf_files": pdf_files,
+        "pdf_files_with_paths": pdf_files_with_paths
+    })   
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

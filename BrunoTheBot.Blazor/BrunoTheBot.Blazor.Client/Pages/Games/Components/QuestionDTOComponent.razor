@@ -113,10 +113,7 @@
 
     private async Task RecoverShotsAsync()
     {
-        var count = 0;
-        Console.WriteLine("Initial: " + count);
         var result = await ShotsService.GetShotsByResponseIdAsync(responseGuid);
-        Console.WriteLine(result.Data.Count);
 
         if (result.Status == CustomStatusCodes.SuccessStatus)
         {
@@ -127,12 +124,10 @@
                     if (option.Id == shot.OptionId)
                     {
                         option.IsSelected = true;
-                        count++;
                     }
                 }
             }
         }
-        Console.WriteLine("Final: " + count);
     }
 
     protected override async Task OnParametersSetAsync()

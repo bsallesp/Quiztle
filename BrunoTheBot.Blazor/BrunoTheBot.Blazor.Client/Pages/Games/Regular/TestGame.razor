@@ -2,6 +2,7 @@
 @page "/Games/Test/"
 @using BrunoTheBot.Blazor.Client.APIServices.RegularGame
 @using BrunoTheBot.Blazor.Client.APIServices.Responses
+@using BrunoTheBot.Blazor.Client.APIServices.Shots
 @using BrunoTheBot.Blazor.Client.APIServices.Tests
 @using BrunoTheBot.CoreBusiness.CodeEntities
 @using BrunoTheBot.CoreBusiness.Entities.Exam
@@ -15,31 +16,37 @@
 @inject NavigationManager Nav
 @inject GetTestByIdService GetTestByIdService
 @inject ResponsesService ResponsesService
-
-@* @CheckRenderSide.GetOSDescription()
-<hr />
-@CheckRenderSide.GetOS() *@
+@inject ShotsService ShotsService
 
 @if (response != null)
 {
     <div class="mb-4">
-        <h2>@test.Name</h2>
-        <h6>Response n:@response.Id - @response.Name</h6>
+        <h2>Test: @test.Name</h2>
+        <h6>Current Response n:@response.Id - @response.Name</h6>
+        <hr />
+
+        @if (response.IsFinalized)
+        {
+            <h4>
+                Score: @response.Score
+            </h4>
+            <hr />
+        }
 
         @if (test.Questions != null)
         {
             @foreach (var question in test.Questions)
             {
                 QuestionDTO questionDTO = new QuestionDTO(question);
-                <QuestionDTOComponent ShowResults="_showResults" responseGuid="response.Id" questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
+                <QuestionDTOComponent ShowResults="ShowResults" responseGuid="response.Id" questionDTO="questionDTO" Number="@test.Questions.IndexOf(question)"></QuestionDTOComponent>
                 <hr />
             }
         }
-        @if (!_showResults)
+        @if (!ShowResults)
         {
-            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => _showResults = true">
+            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => ShowResults = true">
                 <h3 class="mb-0">
-                    Show Results
+                    @_buttonText
                 </h3>
             </button>
         }
@@ -53,12 +60,109 @@
     private Test test = new();
     private Response? response;
     private bool _showResults = false;
+    private string _buttonText = "FINALIZE IT";
+    private List<Response> responsesList = [];
+
+    public bool ShowResults
+    {
+        get => _showResults;
+        set
+        {
+            if (_showResults != value)
+            {
+                _showResults = value;
+                FinalizeTestResponse();
+            }
+        }
+    }
+
+    private async Task<Response> ReloadResponse()
+    {
+        if (response == null) return new Response();
+
+        var result = await ResponsesService.GetResponseByIdAsync(response!.Id);
+        return await Task.FromResult(result.Data);
+    }
+
+    private async Task FinalizeTestResponse()
+    {
+        try
+        {
+            if (response == null)
+            {
+                Console.WriteLine("Response is null.");
+                return;
+            }
+
+            Console.WriteLine("Reloading response...");
+            response = await ReloadResponse();
+            Console.WriteLine("Response reloaded with ID: " + response.Id);
+
+            var shotsResult = await ShotsService.GetShotsByResponseIdAsync(response.Id);
+            Console.WriteLine("Shots received: " + shotsResult.Data.Count);
+
+            if (shotsResult.Data.Count < test.Questions.Count)
+            {
+                Console.WriteLine("response.Shots.Count < test.Questions.Count? not enough: " + shotsResult.Data.Count + " / " + test.Questions.Count);
+                _buttonText = "Respond all questions then finalize the test.";
+                ShowResults = false;
+                return;
+            }
+
+            var score = 0;
+            var correctOptions = test.Questions
+                                     .SelectMany(q => q.Options)
+                                     .Where(o => o.IsCorrect)
+                                     .ToList();
+
+            Console.WriteLine("Correct options count: " + correctOptions.Count);
+
+            foreach (var correctOption in correctOptions)
+            {
+                foreach (var shot in shotsResult.Data)
+                {
+                    Console.WriteLine("Checking shot.OptionId: " + shot.OptionId + " against correctOption.Id: " + correctOption.Id);
+
+                    if (shot.OptionId == correctOption.Id)
+                    {
+                        score++;
+                        Console.WriteLine("Score incremented: " + score);
+                    }
+                }
+            }
+
+            response.Score = score;
+            response.Percentage = (decimal)((double)score / shotsResult.Data.Count) * 100;
+            response.IsFinalized = true;
+
+            Console.WriteLine("Final score: " + score);
+            Console.WriteLine("Final percentage: " + response.Percentage);
+
+            var responseResponse = await ResponsesService.UpdateResponseAsync(response.Id, response);
+            response = responseResponse.Data;
+
+            Console.WriteLine("Response finalized and updated.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+
+
 
     protected override async Task OnParametersSetAsync()
     {
         await CheckURLTestGuid();
-        if (!await CheckIfResponseExists()) await CreateResponse();
+        if (!await CheckIfPendentResponseExists()) await CreateResponse();
+        await GetPastResponses();
         await base.OnParametersSetAsync();
+    }
+
+    private async Task GetPastResponses()
+    {
+        var result = await ResponsesService.GetFinalizedResponsesAsync(testGuid);
+        responsesList = result.Data;
     }
 
     private async Task CheckURLTestGuid()
@@ -74,21 +178,20 @@
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
                 test = testAPIReponse.Data;
-                //test.ShuffleQuestions();
             }
             else
             {
-                Nav.NavigateTo("/", true);
+                Nav.NavigateTo("/PDFDataManager", true);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex}");
-            throw new Exception("An error occurred while processing the book. See inner exception for details.", ex);
+            
+            Nav.NavigateTo("/PDFDataManager", true);
         }
     }
 
-    private async Task<bool> CheckIfResponseExists()
+    private async Task<bool> CheckIfPendentResponseExists()
     {
         var result = await ResponsesService.GetUnfinalizedResponseByTestIdAsync(testGuid);
         if (result.Status != CustomStatusCodes.SuccessStatus) return false;
@@ -98,7 +201,6 @@
 
     private async Task<Response> CreateResponse()
     {
-        Console.WriteLine("CreateResponse...");
         var newResponse = new Response
             {
                 Name = RandomNames.GenerateConcatenatedNames(1),

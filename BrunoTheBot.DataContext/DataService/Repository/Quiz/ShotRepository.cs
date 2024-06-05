@@ -51,7 +51,6 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
             }
         }
 
-
         public async Task<APIResponse<Shot>> CreateShot(Shot shot)
         {
             EnsureShotNotNull();

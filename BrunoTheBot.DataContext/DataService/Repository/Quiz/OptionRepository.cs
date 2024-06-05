@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
+using BrunoTheBot.CoreBusiness.APIEntities;
+using BrunoTheBot.CoreBusiness.CodeEntities;
 
 namespace BrunoTheBot.DataContext.Repositories.Quiz
 {
@@ -22,16 +24,45 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the option:");
-                Console.WriteLine(ex.ToString());
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
-        public async Task<Option?> GetOptionByIdAsync(int id)
+        public async Task<APIResponse<List<Option>>> GetOptionByIdAsync(Guid optionId)
         {
             EnsureOptionsNotNull();
-            return await _context.Options!.FindAsync(id);
+            try
+            {
+                var options = await _context.Options!
+                    .Where(s => s.Id == optionId)
+                    .ToListAsync();
+
+                if (options == null || options.Count == 0)
+                {
+                    return new APIResponse<List<Option>>
+                    {
+                        Status = CustomStatusCodes.NotFound,
+                        Data = new List<Option>(),
+                        Message = "Options with Response ID " + optionId + " not found."
+                    };
+                }
+
+                return new APIResponse<List<Option>>
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = options,
+                    Message = "options found successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<Option>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Option>(),
+                    Message = "ERROR - GETTING Options BY RESPONSE ID: " + ex.Message
+                };
+            }
         }
 
         public async Task<IQueryable<Option>> GetAllOptionsAsync()
@@ -48,7 +79,7 @@ namespace BrunoTheBot.DataContext.Repositories.Quiz
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteOptionAsync(int id)
+        public async Task DeleteOptionAsync(Guid id)
         {
             EnsureOptionsNotNull();
             var option = await _context.Options!.FindAsync(id);

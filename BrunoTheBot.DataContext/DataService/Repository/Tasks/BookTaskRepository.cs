@@ -27,8 +27,6 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the BookTask:");
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
@@ -43,8 +41,6 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while creating the BookTask:");
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
@@ -87,9 +83,6 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while getting next task from queue:");
-                Console.WriteLine(ex.ToString());
-
                 return new APIResponse<BookTask>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
@@ -132,8 +125,6 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An exception occurred while finishing a bookTask:");
-
                 return new APIResponse<BookTask>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

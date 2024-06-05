@@ -81,6 +81,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
 
         public async Task<APIResponse<Response>> UpdateResponse(Guid id, Response updatedResponse)
         {
+            Console.WriteLine("Getting into UpdateResponse in ResponseRepository...");
             try
             {
                 EnsureResponseNotNull();
@@ -100,6 +101,7 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
                 response.Shots = updatedResponse.Shots;
                 response.Created = updatedResponse.Created;
                 response.TestId = updatedResponse.TestId;
+                response.IsFinalized  = updatedResponse.IsFinalized;
 
                 _context.Responses!.Update(response);
                 await _context.SaveChangesAsync();
@@ -139,6 +141,43 @@ namespace BrunoTheBot.DataContext.DataService.Repository.Quiz
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine("creating response in repository... - FAILED");
                 return false;
+            }
+        }
+
+        public async Task<APIResponse<List<Response>>> GetFinalizedResponsesByTestId(Guid testId)
+        {
+            try
+            {
+                EnsureResponseNotNull();
+                var responses = await _context.Responses!
+                                     .Where(r => r.TestId == testId && r.IsFinalized == true)
+                                     .ToListAsync();
+
+                if (responses == null || !responses.Any())
+                {
+                    return new APIResponse<List<Response>>
+                    {
+                        Status = CustomStatusCodes.NotFound,
+                        Data = new List<Response>(),
+                        Message = "No finalized responses found for test ID " + testId
+                    };
+                }
+
+                return new APIResponse<List<Response>>
+                {
+                    Status = CustomStatusCodes.SuccessStatus,
+                    Data = responses,
+                    Message = "Finalized responses found for test ID " + testId
+                };
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<Response>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Response>(),
+                    Message = "ERROR - GETTING FINALIZED RESPONSES: " + ex
+                };
             }
         }
 

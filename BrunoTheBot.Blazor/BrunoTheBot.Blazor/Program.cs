@@ -65,10 +65,13 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-#region connectionString
-var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["ConnectionString"]!;
+#region Postgresql Connection
+var connectionString = "";
+
+if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
+if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+Console.WriteLine("Connection adquired: " + connectionString);
 #endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
@@ -77,10 +80,6 @@ builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 });
 
 var app = builder.Build();
-
-//await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
-//var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<PostgreBrunoTheBotContext>>();
-//await DatabaseUtility.EnsureDbCreatedAndSeedWithCountOfAsync(options, 500);
 
 if (app.Environment.IsDevelopment())
 {
