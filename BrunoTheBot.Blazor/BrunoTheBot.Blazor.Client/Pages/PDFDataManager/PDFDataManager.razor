@@ -6,7 +6,7 @@
 
 <h3 class="mb-5">PDFDataManager</h3>
 
-@if (pdfDataAPIResponse.Data.Count == 0)
+@if (pdfDataAPIResponse == null)
 {
     <h4>
         Loading...
@@ -26,12 +26,13 @@ else
     }
     <hr />
 }
+@if (pdfDataAPIResponse != null) { @pdfDataAPIResponse.Message }
 
 @code {
     APIResponse<List<PDFData>> pdfDataAPIResponse = new APIResponse<List<PDFData>>()
-        {
-            Data = new List<PDFData>()
-        };
+    {
+        Data = new List<PDFData>()
+    };
 
     protected override async Task OnInitializedAsync()
     {
