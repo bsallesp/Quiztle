@@ -12,7 +12,7 @@ namespace BrunoTheBot.CoreBusiness.APIEntities
         public required T Data { get; set; }
 
         [JsonPropertyName(nameof(Message))]
-        public string? Message = "Unknown error.";
+        public string Message { get; set; } = "";
 
         public void SendError(string message)
         {

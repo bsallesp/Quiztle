@@ -2,10 +2,7 @@
 using BrunoTheBot.CoreBusiness.CodeEntities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace YourNamespace.Controllers
 {
@@ -47,6 +44,9 @@ namespace YourNamespace.Controllers
                     pdfFilesWithPaths.Add(Path.GetFullPath(file));
                 }
 
+                Console.WriteLine("Total pdfFiles: " + pdfFiles.Count);
+                Console.WriteLine("Total pdfFilesWithPaths: " + pdfFilesWithPaths.Count);
+
                 var response = new PDFFileListResponse
                 {
                     FileNames = pdfFiles,
@@ -75,10 +75,10 @@ namespace YourNamespace.Controllers
 
     public class PDFFileListResponse
     {
-        [JsonProperty(nameof(FileNames))]
-        public List<string>? FileNames { get; set; }
+        [JsonPropertyName(nameof(FileNames))]
+        public List<string> FileNames { get; set; } = [];
 
-        [JsonProperty(nameof(FilePaths))]
-        public List<string>? FilePaths { get; set; }
+        [JsonPropertyName(nameof(FilePaths))]
+        public List<string> FilePaths { get; set; } = [];
     }
 }

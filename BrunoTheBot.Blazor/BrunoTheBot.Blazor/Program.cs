@@ -14,12 +14,19 @@ using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.Blazor.Client.APIServices.Tests;
 using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Components.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
     .Build();
+
+builder.Services.Configure<CircuitOptions>(options =>
+{
+    options.DetailedErrors = true;
+});
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -37,6 +44,17 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
+
+#region brunothebotAPIURL
+var brunothebotAPIURL = Environment.GetEnvironmentVariable("BRUNOTHEBOTAPIURL") ?? String.Empty;
+if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DevelopmentAPIURL"] ?? string.Empty;
+if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception("no API URLs in production, neven in development");
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(brunothebotAPIURL),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+#endregion
 
 #region pdfApiUrl
 var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
@@ -68,6 +86,7 @@ builder.Services.AddTransient<RemoveTestService>();
 builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
+builder.Services.AddTransient<UploadedFilesListService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

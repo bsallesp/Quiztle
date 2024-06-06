@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@* @page "/"
 @page "/API"
 
 @using System.Text.Json
@@ -28,7 +28,7 @@
     @connString
 </h5> *@
 
-
+@* 
 <div class="book-list">
     @foreach (var book in Books)
     {
@@ -88,4 +88,4 @@
         }
 
     }
-}
+} *@ 

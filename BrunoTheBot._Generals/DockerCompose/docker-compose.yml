@@ -43,6 +43,7 @@ services:
     container_name: brunothebot-blazor
     environment:
       - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
+      - BRUNOTHEBOTAPIURL=${PROD_API_URL}
     networks:
       - brunothebot-network
 

@@ -32,6 +32,7 @@ builder.Services.AddTransient<RemoveTestService>();
 builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
+builder.Services.AddTransient<UploadedFilesListService>();
 
 builder.Services.AddTransient<AILogRepository>();
 
@@ -42,24 +43,38 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-#region connectionString
+#region POSTGRESQL CONNECTION STRING
 var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
 if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
-#endregion
-
 
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+#endregion
 
-#region pdfApiUrl
+#region BRUNOTHEBOT API URL
+var brunothebotAPIURL = Environment.GetEnvironmentVariable("BRUNOTHEBOTAPIURL") ?? String.Empty;
+if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DevelopmentAPIURL"] ?? string.Empty;
+if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception("no API URLs in production, neven in development");
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(brunothebotAPIURL),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+#endregion
+
+#region PDF API URL
 var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
 if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
 if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
+
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(pdfApiUrl),
     Timeout = Timeout.InfiniteTimeSpan
 });
 #endregion
+
+builder.Services.AddScoped(sp => builder.HostEnvironment);
 
 await builder.Build().RunAsync();

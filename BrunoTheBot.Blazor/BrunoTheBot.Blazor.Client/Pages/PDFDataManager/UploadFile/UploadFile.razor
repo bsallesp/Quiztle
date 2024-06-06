@@ -1,30 +1,59 @@
 ﻿@page "/uploadfile"
+
 @inject UploadFileService UploadFileService
+@inject UploadedFilesListService UploadedFilesListService
+
 @using Microsoft.AspNetCore.Components.Forms
 
 <h3>Upload File</h3>
 
-<InputFile OnChange="HandleSelected" />
+<div class="input-group mb-3">
+    <label class="input-group-text" for="inputGroupFile01">Upload</label>
+    <InputFile OnChange="HandleSelected" />
+</div>
 
 @if (!string.IsNullOrEmpty(Message))
 {
     <p>@Message</p>
 }
 
+@if(filesList != null)
+{
+    @foreach (var item in filesList)
+    {
+        <p>@item</p>
+    }
+}
+@filesList.Count
+
 @code {
     private string? Message { get; set; }
+    private List<string> filesList = new List<string>();
+    private bool isRendered = false;
 
     private async Task HandleSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
-        try
+        var response = await UploadFileService.UploadAsync(file);
+        Message = "File uploaded successfully. Server response: " + response;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            var response = await UploadFileService.UploadAsync(file);
-            Message = "File uploaded successfully. Server response: " + response;
+            if (filesList == null || !filesList.Any())
+            {
+                var result = await UploadedFilesListService.ExecuteAsync();
+                if (result.Data?.FilePaths != null)
+                {
+                    filesList = result.Data.FilePaths;
+                    Message = result.Message;
+                    StateHasChanged();  // Adicione isso se a atualização da UI for necessária
+                }
+            }
         }
-        catch (Exception ex)
-        {
-            Message = "Error uploading file: " + ex.Message;
-        }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
