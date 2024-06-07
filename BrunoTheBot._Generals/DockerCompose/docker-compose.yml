@@ -69,17 +69,18 @@ services:
     networks:
       - brunothebot-network
 
-  brunothebot-blazor: #DEV
+  brunothebot-blazor:
     ports:
       - "5001:8080"
       - "5002:443"
-    image: brunosallesdev/brunothebotblazor:devenv
-    volumes:
-      - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.Blazor/BrunoTheBot.Blazor/bin/Release/net8.0/:/app
-    container_name: brunothebot-blazor #DEV
+    image: brunosallesdev/brunothebotblazor:latest
+    # volumes:
+    #   - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.Blazor/BrunoTheBot.Blazor/bin/Release/net8.0/:/app
+    container_name: brunothebot-blazor
     environment:
       - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
       - PROD_API_URL=${PROD_API_URL}
+      - PROD_FLASK_API_URL=${PROD_FLASK_API_URL}
     networks:
       - brunothebot-network 
 

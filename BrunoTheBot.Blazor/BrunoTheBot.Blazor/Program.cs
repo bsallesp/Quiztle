@@ -73,7 +73,7 @@ if (builder.Environment.IsProduction()) pdfApiUrl = Environment.GetEnvironmentVa
 if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
 
 if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
-else Console.WriteLine($"{nameof(pdfApiUrl)} Adquired - {pdfApiUrl}");
+else Console.WriteLine($"{nameof(pdfApiUrl)} in Blazor server Adquired - {pdfApiUrl}");
 
 
 builder.Services.AddScoped(sp => new HttpClient
