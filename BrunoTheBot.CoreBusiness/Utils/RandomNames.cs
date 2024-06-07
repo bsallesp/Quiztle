@@ -1,4 +1,4 @@
-﻿namespace BrunoTheBot.Services
+﻿namespace BrunoTheBot.CoreBusiness.Utils
 {
     public static class RandomNames
     {

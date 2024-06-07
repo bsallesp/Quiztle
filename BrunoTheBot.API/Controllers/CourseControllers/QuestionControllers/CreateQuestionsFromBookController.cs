@@ -1,6 +1,6 @@
 ﻿using BrunoTheBot.API.Controllers.LLMControllers;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using Microsoft.AspNetCore.Mvc;

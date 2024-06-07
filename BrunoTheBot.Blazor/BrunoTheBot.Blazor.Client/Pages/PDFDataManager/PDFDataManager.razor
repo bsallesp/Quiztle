@@ -6,25 +6,14 @@
 
 <h3 class="mb-5">PDFDataManager</h3>
 
-@if (pdfDataAPIResponse == null)
-{
-    <h4>
-        Loading...
-    </h4>
-}
+@if (pdfDataAPIResponse == null) { <h4> Loading... </h4> }
 else
 {
     @foreach (var item in pdfDataAPIResponse.Data)
     {
-        <h5>
-            <CreateNewTestModule pdfdataId="item.Id"></CreateNewTestModule>
-        </h5>
-        <hr />
-        <h5>
-            <TestsList pdfData="item"></TestsList>
-        </h5>
-    }
-    <hr />
+        <h5> <CreateNewTestModule pdfdataId="item.Id"></CreateNewTestModule> </h5>
+        <hr /> <h5><TestsList pdfData="item"></TestsList> </h5>
+    } <hr />
 }
 @if (pdfDataAPIResponse != null) { @pdfDataAPIResponse.Message }
 

@@ -4,7 +4,6 @@ using BrunoTheBot.DataContext;
 using BrunoTheBot.DataContext.DataService.Repository.Course;
 using BrunoTheBot.DataContext.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using BrunoTheBot.API.BackgroundTasks;
 using BrunoTheBot.API.Controllers.CourseControllers.BookControllers;
 using BrunoTheBot.DataContext.DataService.Repository.Tasks;
@@ -69,14 +68,26 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 #region pdfApiUrl
-var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
-if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
-if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
-builder.Services.AddScoped(sp => new HttpClient
+try
 {
-    BaseAddress = new Uri(pdfApiUrl),
-    Timeout = Timeout.InfiniteTimeSpan
-});
+    var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL") ?? builder.Configuration["DevelopmentPDF_API_URL"];
+    builder.Services.AddHttpClient("PDFClient", client =>
+    {
+
+        if (string.IsNullOrEmpty(pdfApiUrl))
+        {
+            throw new InvalidOperationException("PDF API URL is not set in environment variables or configuration.");
+        }
+
+        client.BaseAddress = new Uri(pdfApiUrl);
+        client.Timeout = TimeSpan.FromDays(1);
+    });
+    Console.WriteLine($"PDFClient configured with base URL: {pdfApiUrl}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error configuring PDFClient: {ex}");
+}
 #endregion
 
 #region Postgresql Connection
@@ -84,7 +95,7 @@ var connectionString = "";
 if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
 if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
-Console.WriteLine("Connection adquired: " + connectionString);
+Console.WriteLine($"connectionString: {connectionString}");
 #endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>

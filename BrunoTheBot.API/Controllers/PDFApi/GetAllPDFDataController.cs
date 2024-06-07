@@ -2,7 +2,7 @@
 using BrunoTheBot.CoreBusiness.Entities.PDFData;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {

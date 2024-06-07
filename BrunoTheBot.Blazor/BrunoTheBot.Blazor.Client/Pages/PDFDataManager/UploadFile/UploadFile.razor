@@ -2,6 +2,7 @@
 
 @inject UploadFileService UploadFileService
 @inject UploadedFilesListService UploadedFilesListService
+@inject PDFToDataFromStreamService PDFToDataFromStreamService
 
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -14,17 +15,20 @@
 
 @if (!string.IsNullOrEmpty(Message))
 {
-    <p>@Message</p>
+     <p>@Message</p>
 }
+<hr />
 
-@if(filesList != null)
+<h5> Files: </h5>
+@if (filesList != null)
 {
-    @foreach (var item in filesList)
+    foreach (var item in filesList)
     {
         <p>@item</p>
+        <hr />
     }
+    <p> Total files: @filesList.Count </p>
 }
-@filesList.Count
 
 @code {
     private string? Message { get; set; }
@@ -36,6 +40,9 @@
         var file = e.File;
         var response = await UploadFileService.UploadAsync(file);
         Message = "File uploaded successfully. Server response: " + response;
+        await RefreshFilesList();
+        if (response.Data) await ProcessPDFToString(file.Name);
+        else Message = response.Message;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -44,16 +51,28 @@
         {
             if (filesList == null || !filesList.Any())
             {
-                var result = await UploadedFilesListService.ExecuteAsync();
-                if (result.Data?.FilePaths != null)
-                {
-                    filesList = result.Data.FilePaths;
-                    Message = result.Message;
-                    StateHasChanged();  // Adicione isso se a atualização da UI for necessária
-                }
+                await RefreshFilesList();
             }
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ProcessPDFToString(string fileName)
+    {
+        var response = await PDFToDataFromStreamService.ExecuteAsync(fileName, "PDFDataName" + fileName);
+        Message = response.Message;
+        StateHasChanged();
+    }
+
+    private async Task RefreshFilesList()
+    {
+        var result = await UploadedFilesListService.ExecuteAsync();
+        if (result.Data?.FilePaths != null)
+        {
+            filesList = result.Data.FileNames;
+            Message = result.Message;
+            StateHasChanged();
+        }
     }
 }

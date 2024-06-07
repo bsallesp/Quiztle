@@ -1,5 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

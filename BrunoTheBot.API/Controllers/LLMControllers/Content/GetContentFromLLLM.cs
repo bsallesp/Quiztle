@@ -1,7 +1,7 @@
 ﻿using BrunoTheBot.API.Prompts;
 using BrunoTheBot.API.Services;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using BrunoTheBot.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
 

@@ -3,26 +3,29 @@ using BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers;
 using BrunoTheBot.DataContext.Repositories;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.CoreBusiness.Entities.PDFData;
-using static System.Net.Mime.MediaTypeNames;
+using BrunoTheBot.CoreBusiness.Utils;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreatePDFDataFromStream : ControllerBase
+    public class CreatePDFDataFromStreamController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly CreateQuestionsFromBookController _createQuestionController;
         private readonly AILogRepository _aILogRepository;
         private readonly PDFDataRepository _pDFDataRepository;
+        private readonly IConfiguration _configuration;
 
-        public CreatePDFDataFromStream(
+        public CreatePDFDataFromStreamController(
+            IConfiguration configuration,
             IHttpClientFactory httpClientFactory,
             CreateQuestionsFromBookController createQuestionsController,
             AILogRepository aILogRepository,
             PDFDataRepository pDFDataRepository
             )
         {
+            _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _createQuestionController = createQuestionsController;
             _aILogRepository = aILogRepository;
@@ -30,37 +33,39 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExecuteAsync([FromBody] string filePath = "bucket/pdf-files/teste123.pdf", string name = "unnamed")
+        public async Task<IActionResult> ExecuteAsync([FromBody] string fileName = "NEC2017.PDF", string name = "unnamed")
         {
-            var generalUUID = Guid.NewGuid();
-
-            var newPDFData = new PDFData()
-            {
-                Id = generalUUID,
-                FileName = Path.GetFileName(filePath),
-                Created = DateTime.UtcNow,
-                Name = name
-            };
-
-            if (string.IsNullOrEmpty(filePath))
-                return BadRequest("File path not provided");
-
-            var client = _httpClientFactory.CreateClient();
-            client.Timeout = TimeSpan.FromDays(1);
-
             try
             {
+                string filePath = _configuration["UploadPDFDirectoryByPythonAPI"]! ?? throw new Exception("CreatePDFDataFromStreamController: PDF DIRECTORY NOT FOUND");
+                string completeFileTarget = filePath + fileName;
+
+                var client = _httpClientFactory.CreateClient("PDFClient");
+
+                var generalUUID = Guid.NewGuid();
+
+                var newPDFData = new PDFData()
+                {
+                    Id = generalUUID,
+                    FileName = name,
+                    Created = DateTime.UtcNow,
+                    Name = name
+                };
+
+                if (string.IsNullOrEmpty(filePath))
+                    return BadRequest("File path not provided");
+
+                Console.WriteLine($"completeFileTarget: {completeFileTarget}");
                 var content = new MultipartFormDataContent
                 {
-                    { new StringContent(filePath), "file_path" },
+                    { new StringContent(completeFileTarget), "file_path" },
                     { new StringContent("1"), "partial_output_rate" }
                 };
 
-                //var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5090/extract-text-stream") { Content = content };
-                var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5090/extract-text-mupdf") { Content = content };
+                var request = new HttpRequestMessage(HttpMethod.Post, "extract-text-mupdf") { Content = content };
+                Console.WriteLine($"Final request URL: {new Uri(client.BaseAddress!, "extract-text-mupdf")}");
 
-                using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
+                using var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 using var stream = await response.Content.ReadAsStreamAsync();

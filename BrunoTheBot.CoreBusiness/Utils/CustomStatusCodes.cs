@@ -1,4 +1,4 @@
-﻿namespace BrunoTheBot.CoreBusiness.CodeEntities
+﻿namespace BrunoTheBot.CoreBusiness.Utils
 {
     public static class CustomStatusCodes
     {

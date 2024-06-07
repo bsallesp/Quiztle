@@ -1,5 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using Microsoft.AspNetCore.Mvc;

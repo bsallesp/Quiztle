@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 
 namespace BrunoTheBot.Blazor.Client.APIServices.Responses
 {

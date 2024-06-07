@@ -2,7 +2,7 @@
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.DataContext.DataService.Repository.Quiz;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 
 namespace BrunoTheBot.API.Controllers.Shots
 {

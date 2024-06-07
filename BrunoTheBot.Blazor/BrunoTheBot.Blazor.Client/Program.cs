@@ -1,5 +1,6 @@
 using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.Blazor.Client.APIServices;
+
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
@@ -33,6 +34,7 @@ builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
 builder.Services.AddTransient<UploadedFilesListService>();
+builder.Services.AddTransient<PDFToDataFromStreamService>();
 
 builder.Services.AddTransient<AILogRepository>();
 
@@ -43,7 +45,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-#region POSTGRESQL CONNECTION STRING
+#region Postgresql Connection
 var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
 if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
@@ -51,9 +53,11 @@ if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connec
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 #endregion
 
-#region BRUNOTHEBOT API URL
-var brunothebotAPIURL = Environment.GetEnvironmentVariable("BRUNOTHEBOTAPIURL") ?? String.Empty;
-if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DevelopmentAPIURL"] ?? string.Empty;
+#region brunothebotAPIURL
+var brunothebotAPIURL = Environment.GetEnvironmentVariable("PROD_API_URL") ?? String.Empty;
+if (!string.IsNullOrEmpty(brunothebotAPIURL)) Console.WriteLine($"Production Envrirovment Variable Adquired: {brunothebotAPIURL} - {nameof(brunothebotAPIURL)}");
+else if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DEV_API_URL"] ?? string.Empty;
+if (!string.IsNullOrEmpty(brunothebotAPIURL)) Console.WriteLine($"Development Envrirovment Variable Adquired: {brunothebotAPIURL} - {nameof(brunothebotAPIURL)}");
 if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception("no API URLs in production, neven in development");
 
 builder.Services.AddScoped(sp => new HttpClient
@@ -63,10 +67,12 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-#region PDF API URL
-var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
-if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
-if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
+#region Flask API URL
+var pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? String.Empty;
+if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Production Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
+else if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
+if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Development Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
+if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("no API URLs in production, neven in development");
 
 builder.Services.AddScoped(sp => new HttpClient
 {

@@ -1,5 +1,5 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
@@ -14,7 +14,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
         {
             if (env.IsDevelopment())
             {
-                pdfDirectory = configuration["PDFDirectory"] ?? throw new InvalidOperationException();
+                pdfDirectory = configuration["UploadPDFDirectory"] ?? throw new InvalidOperationException();
                 Console.WriteLine("Development environment detected. PDF directory set to configuration value.");
             }
             else

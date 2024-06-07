@@ -1,9 +1,7 @@
 ﻿using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
-using BrunoTheBot.CoreBusiness.Entities.Course;
+using BrunoTheBot.CoreBusiness.Utils;
 using BrunoTheBot.CoreBusiness.Entities.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BrunoTheBot.DataContext.DataService.Repository.Tasks
 {

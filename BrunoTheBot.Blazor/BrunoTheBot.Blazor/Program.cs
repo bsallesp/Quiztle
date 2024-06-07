@@ -14,7 +14,6 @@ using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.Blazor.Client.APIServices.Tests;
 using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Components.Server;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,10 +44,22 @@ builder.Services.AddCors(options =>
         });
 });
 
+#region Postgresql Connection
+var connectionString = "";
+if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
+if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
+if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+Console.WriteLine("Connection adquired: " + connectionString);
+#endregion
+
 #region brunothebotAPIURL
-var brunothebotAPIURL = Environment.GetEnvironmentVariable("BRUNOTHEBOTAPIURL") ?? String.Empty;
-if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DevelopmentAPIURL"] ?? string.Empty;
-if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception("no API URLs in production, neven in development");
+var brunothebotAPIURL = "";
+if (builder.Environment.IsProduction()) brunothebotAPIURL = Environment.GetEnvironmentVariable("PROD_API_URL") ?? string.Empty;
+if (builder.Environment.IsDevelopment()) brunothebotAPIURL = builder.Configuration["DEV_API_URL"] ?? string.Empty;
+
+if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(brunothebotAPIURL)}");
+else Console.WriteLine($"{nameof(brunothebotAPIURL)} Adquired - {brunothebotAPIURL}");
+
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(brunothebotAPIURL),
@@ -56,10 +67,15 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-#region pdfApiUrl
-var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL");
-if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DevelopmentAPIURL"];
-if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("Cant get DevelopmentAPIURL at webassembly");
+#region Flask API URL
+var pdfApiUrl = "";
+if (builder.Environment.IsProduction()) pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? string.Empty;
+if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
+
+if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
+else Console.WriteLine($"{nameof(pdfApiUrl)} Adquired - {pdfApiUrl}");
+
+
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(pdfApiUrl),
@@ -87,6 +103,7 @@ builder.Services.AddTransient<ResponsesService>();
 builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
 builder.Services.AddTransient<UploadedFilesListService>();
+builder.Services.AddTransient<PDFToDataFromStreamService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
@@ -99,13 +116,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
-#region Postgresql Connection
-var connectionString = "";
-if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
-if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
-Console.WriteLine("Connection adquired: " + connectionString);
-#endregion
+
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

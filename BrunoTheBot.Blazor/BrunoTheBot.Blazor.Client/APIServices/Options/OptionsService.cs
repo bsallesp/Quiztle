@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 
 namespace BrunoTheBot.Blazor.Services

@@ -1,4 +1,4 @@
-﻿using BrunoTheBot.CoreBusiness.CodeEntities;
+﻿using BrunoTheBot.CoreBusiness.Utils;
 using System.Text.Json.Serialization;
 
 namespace BrunoTheBot.CoreBusiness.APIEntities

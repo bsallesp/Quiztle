@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BrunoTheBot.CoreBusiness.Entities.Quiz;
 using BrunoTheBot.CoreBusiness.APIEntities;
-using BrunoTheBot.CoreBusiness.CodeEntities;
+using BrunoTheBot.CoreBusiness.Utils;
 
 namespace BrunoTheBot.DataContext.Repositories.Quiz
 {
