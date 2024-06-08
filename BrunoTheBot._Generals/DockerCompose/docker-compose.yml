@@ -60,29 +60,29 @@ services:
     image: brunosallesdev/brunothebotapi:devenv
     container_name: brunothebot-api #DEV
     volumes:
-      - pdf-volume:${PROD_PDF_DIRECTORY}
+      - pdf-volume:/app/bucket/pdf-files
       - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.API/bin/Release/net8.0/:/app
     environment:
       - PROD_FLASK_API_URL=${PROD_FLASK_API_URL}
-      - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
-      - PDF_DIRECTORY=${PROD_PDF_DIRECTORY}
+      - PROD_POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
+      - PDF_DIRECTORY=/app/bucket/pdf-files
     networks:
       - brunothebot-network
 
-  brunothebot-blazor:
+  brunothebot-blazor: #DEV
     ports:
       - "5001:8080"
       - "5002:443"
-    image: brunosallesdev/brunothebotblazor:latest
-    # volumes:
-    #   - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.Blazor/BrunoTheBot.Blazor/bin/Release/net8.0/:/app
-    container_name: brunothebot-blazor
+    image: brunosallesdev/brunothebotblazor:devenv
+    volumes:
+      - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.Blazor/BrunoTheBot.Blazor/bin/Release/net8.0/publish:/app
+    container_name: brunothebot-blazor #DEV
     environment:
-      - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
+      - PROD_POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
       - PROD_API_URL=${PROD_API_URL}
       - PROD_FLASK_API_URL=${PROD_FLASK_API_URL}
     networks:
-      - brunothebot-network 
+      - brunothebot-network
 
   nginx:
     image: brunosallesdev/nginx:latest
@@ -147,7 +147,7 @@ services:
     ports:
       - "5090:5000"
     volumes:
-      - pdf-volume:${PROD_PDF_DIRECTORY}
+      - pdf-volume:/app/bucket/pdf-files
     environment:
       OUTPUT_FILES: ${OUTPUT_FILES}
       PARTIAL_OUTPUT_RATE: ${PARTIAL_OUTPUT_RATE}
@@ -161,11 +161,6 @@ volumes:
   pdf_input_volume:
   output_volume:
   pdf-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PROD_PDF_DIRECTORY}
 
 networks:
   brunothebot-network:

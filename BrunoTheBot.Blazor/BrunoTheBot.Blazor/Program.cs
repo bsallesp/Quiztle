@@ -16,6 +16,8 @@ using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
 using Microsoft.AspNetCore.Components.Server;
 
+Console.WriteLine("testing here");
+
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
@@ -45,10 +47,9 @@ builder.Services.AddCors(options =>
 });
 
 #region Postgresql Connection
-var connectionString = "";
-if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
-if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+var connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
+//if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING");
+if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at blazor server:");
 Console.WriteLine("Connection adquired: " + connectionString);
 #endregion
 
@@ -74,7 +75,6 @@ if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_
 
 if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
 else Console.WriteLine($"{nameof(pdfApiUrl)} in Blazor server Adquired - {pdfApiUrl}");
-
 
 builder.Services.AddScoped(sp => new HttpClient
 {
@@ -115,8 +115,6 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp
     => sp.GetRequiredService<DefaultAuthenticationStateProvider>());
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
-
-
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
 {

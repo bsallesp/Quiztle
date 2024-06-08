@@ -46,8 +46,9 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
 #region Postgresql Connection
-var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
+var connectionString = "";
+//var connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING");
+connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
 
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

@@ -92,10 +92,9 @@ catch (Exception ex)
 
 #region Postgresql Connection
 var connectionString = "";
-if (builder.Environment.IsDevelopment()) connectionString = builder.Configuration["DevelopmentConnectionString"]!;
-if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
-if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
-Console.WriteLine($"connectionString: {connectionString}");
+connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
+//connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING") ?? "";
+if (string.IsNullOrEmpty(connectionString)) throw new Exception($"Cant get connections at dotnet api: {connectionString}");
 #endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>
