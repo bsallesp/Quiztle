@@ -6,18 +6,14 @@
 
 @using Microsoft.AspNetCore.Components.Forms
 
-<h3>Upload File</h3>
+<h3>Upload File V1.1</h3>
 
 <div class="input-group mb-3">
     <label class="input-group-text" for="inputGroupFile01">Upload</label>
     <InputFile OnChange="HandleSelected" />
 </div>
 
-@if (!string.IsNullOrEmpty(Message))
-{
-     <p>@Message</p>
-}
-<hr />
+@if (!string.IsNullOrEmpty(UploadMessage)) { <p>@UploadMessage</p> } <hr />
 
 <h5> Files: </h5>
 @if (filesList != null)
@@ -25,13 +21,16 @@
     foreach (var item in filesList)
     {
         <p>@item</p>
-        <hr />
     }
     <p> Total files: @filesList.Count </p>
+    <p> @FilesListMessage </p>
+    <hr />
 }
 
 @code {
-    private string? Message { get; set; }
+    private string? UploadMessage { get; set; }
+    private string? FilesListMessage { get; set; }
+
     private List<string> filesList = new List<string>();
     private bool isRendered = false;
 
@@ -39,10 +38,10 @@
     {
         var file = e.File;
         var response = await UploadFileService.UploadAsync(file);
-        Message = "File uploaded successfully. Server response: " + response;
+        UploadMessage = "File uploaded successfully.";
         await RefreshFilesList();
         if (response.Data) await ProcessPDFToString(file.Name);
-        else Message = response.Message;
+        else FilesListMessage = response.Message;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -60,8 +59,9 @@
 
     private async Task ProcessPDFToString(string fileName)
     {
-        var response = await PDFToDataFromStreamService.ExecuteAsync(fileName, "PDFDataName" + fileName);
-        Message = response.Message;
+        FilesListMessage = "Processing pdf data...";
+        var response = await PDFToDataFromStreamService.CreatePDFDataAsync(fileName, "PDFDataName" + fileName);
+        FilesListMessage = response.Message;
         StateHasChanged();
     }
 
@@ -71,7 +71,7 @@
         if (result.Data?.FilePaths != null)
         {
             filesList = result.Data.FileNames;
-            Message = result.Message;
+            FilesListMessage = result.Message;
             StateHasChanged();
         }
     }

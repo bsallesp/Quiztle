@@ -1,71 +1,17 @@
 services:
-
-#C:\Users\bsall\source\repos\BrunoTheBot.Blazor\BrunoTheBot.API\bin\Debug\net8.0\
-
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   container_name: pgadmin
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: brunosallesdev@gmail.com
-  #     PGADMIN_DEFAULT_PASSWORD: root
-  #     PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
-  #   ports:
-  #     - "5050:80"
-  #   networks:
-  #     - brunothebot-network
-  #   volumes:
-  #     - ./servers.json:/pgadmin4/servers.json
-
-  # webmin:
-  #   image: johanp/webmin
-  #   container_name: webmin
-  #   ports:
-  #     - "10000:10000"
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  #   networks:
-  #     - brunothebot-network
- 
-    # brunothebot-api: #PROD
-  #   ports:
-  #     - "5041:8080"
-  #     - "5042:443"
-  #   image: brunosallesdev/brunothebotapi:latest
-  #   container_name: brunothebot-api #PROD
-  #   volumes:
-  #     - pdf-volume:${PROD_PDF_DIRECTORY}
-  #   environment:
-  #     - PDF_API_URL=${PROD_PDF_API_URL}
-  #     - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
-  #     - PDF_DIRECTORY=${PROD_PDF_DIRECTORY}
-  #   networks:
-  #     - brunothebot-network
-
-# brunothebot-blazor:
-#   ports:
-#     - "5001:8080"
-#     - "5002:443"
-#   image: brunosallesdev/brunothebotblazor:latest
-#   container_name: brunothebot-blazor
-#   environment:
-#     - POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
-#     - BRUNOTHEBOTAPIURL=${PROD_API_URL}
-#   networks:
-#     - brunothebot-network 
-
-  brunothebot-api: #DEV
+  brunothebot-api:
     ports:
       - "5041:8080"
       - "5042:443"
     image: brunosallesdev/brunothebotapi:devenv
-    container_name: brunothebot-api #DEV
+    container_name: brunothebot-api
     volumes:
-      - pdf-volume:/app/bucket/pdf-files
+      - C:/bucket:/bucket:rw
       - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.API/bin/Release/net8.0/:/app
     environment:
       - PROD_FLASK_API_URL=${PROD_FLASK_API_URL}
       - PROD_POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
-      - PDF_DIRECTORY=/app/bucket/pdf-files
+      - PDF_DIRECTORY=/bucket
     networks:
       - brunothebot-network
 
@@ -95,6 +41,9 @@ services:
     networks:
       - brunothebot-network
       - thelaserspace-network
+    depends_on:
+      - brunothebot-api
+      - brunothebot-blazor
 
   thelaserspace:
     image: brunosallesdev/thelaserspace2024:latest
@@ -142,12 +91,13 @@ services:
       - brunothebot-network
   
   pdf-api:
+    build: .  
     image: brunosallesdev/pdf-api:latest
     container_name: pdf-api-flask
     ports:
       - "5090:5000"
     volumes:
-      - pdf-volume:/app/bucket/pdf-files
+      -  C:/bucket:/bucket/
     environment:
       OUTPUT_FILES: ${OUTPUT_FILES}
       PARTIAL_OUTPUT_RATE: ${PARTIAL_OUTPUT_RATE}

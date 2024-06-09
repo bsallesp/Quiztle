@@ -68,19 +68,19 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-#region Flask API URL
-var pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? String.Empty;
-if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Production Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
-else if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
-if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Development Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
-if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("no API URLs in production, neven in development");
+//#region Flask API URL
+//var pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? String.Empty;
+//if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Production Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
+//else if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
+//if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Development Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
+//if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("no API URLs in production, neven in development");
 
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri(pdfApiUrl),
-    Timeout = Timeout.InfiniteTimeSpan
-});
-#endregion
+//builder.Services.AddScoped(sp => new HttpClient
+//{
+//    BaseAddress = new Uri(pdfApiUrl),
+//    Timeout = Timeout.InfiniteTimeSpan
+//});
+//#endregion
 
 builder.Services.AddScoped(sp => builder.HostEnvironment);
 

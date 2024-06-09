@@ -70,7 +70,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 #region pdfApiUrl
 try
 {
-    var pdfApiUrl = Environment.GetEnvironmentVariable("PDF_API_URL") ?? builder.Configuration["DevelopmentPDF_API_URL"];
+    var pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? builder.Configuration["DevelopmentPDF_API_URL"];
     builder.Services.AddHttpClient("PDFClient", client =>
     {
 

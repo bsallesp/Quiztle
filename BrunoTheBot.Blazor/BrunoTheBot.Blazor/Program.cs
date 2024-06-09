@@ -16,8 +16,6 @@ using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
 using Microsoft.AspNetCore.Components.Server;
 
-Console.WriteLine("testing here");
-
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
@@ -68,20 +66,20 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-#region Flask API URL
-var pdfApiUrl = "";
-if (builder.Environment.IsProduction()) pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? string.Empty;
-if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
+//#region Flask API URL
+//var pdfApiUrl = "";
+//if (builder.Environment.IsProduction()) pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? string.Empty;
+//if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
 
-if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
-else Console.WriteLine($"{nameof(pdfApiUrl)} in Blazor server Adquired - {pdfApiUrl}");
+//if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
+//else Console.WriteLine($"{nameof(pdfApiUrl)} in Blazor server Adquired - {pdfApiUrl}");
 
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri(pdfApiUrl),
-    Timeout = Timeout.InfiniteTimeSpan
-});
-#endregion
+//builder.Services.AddScoped(sp => new HttpClient
+//{
+//    BaseAddress = new Uri(pdfApiUrl),
+//    Timeout = Timeout.InfiniteTimeSpan
+//});
+//#endregion
 
 builder.Services.AddScoped<CodeExtraction>();
 

@@ -3,7 +3,7 @@ using BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers;
 using BrunoTheBot.DataContext.Repositories;
 using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.CoreBusiness.Entities.PDFData;
-using BrunoTheBot.CoreBusiness.Utils;
+using System.IO;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
@@ -15,17 +15,14 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         private readonly CreateQuestionsFromBookController _createQuestionController;
         private readonly AILogRepository _aILogRepository;
         private readonly PDFDataRepository _pDFDataRepository;
-        private readonly IConfiguration _configuration;
 
         public CreatePDFDataFromStreamController(
-            IConfiguration configuration,
             IHttpClientFactory httpClientFactory,
             CreateQuestionsFromBookController createQuestionsController,
             AILogRepository aILogRepository,
             PDFDataRepository pDFDataRepository
             )
         {
-            _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _createQuestionController = createQuestionsController;
             _aILogRepository = aILogRepository;
@@ -33,12 +30,18 @@ namespace BrunoTheBot.API.Controllers.PDFApi
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExecuteAsync([FromBody] string fileName = "NEC2017.PDF", string name = "unnamed")
+        public async Task<IActionResult> ExecuteAsync([FromQuery] string fileName, [FromQuery] string pdfDataName)
         {
             try
             {
-                string filePath = _configuration["UploadPDFDirectoryByPythonAPI"]! ?? throw new Exception("CreatePDFDataFromStreamController: PDF DIRECTORY NOT FOUND");
+                Console.WriteLine("starting to extract...");
+                string filePath = string.Empty;
+                if (Directory.Exists("c:/bucket")) filePath = "c:/bucket/";
+                if (Directory.Exists("/bucket")) filePath = "/bucket/";
+                if (string.IsNullOrEmpty(filePath)) throw new Exception("BTB API - CreatePDFDataFromStreamController: filePath to get the file not found.");
+
                 string completeFileTarget = filePath + fileName;
+                Console.WriteLine($"Complete file path: {completeFileTarget}");
 
                 var client = _httpClientFactory.CreateClient("PDFClient");
 
@@ -47,9 +50,9 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                 var newPDFData = new PDFData()
                 {
                     Id = generalUUID,
-                    FileName = name,
+                    FileName = pdfDataName,
                     Created = DateTime.UtcNow,
-                    Name = name
+                    Name = pdfDataName
                 };
 
                 if (string.IsNullOrEmpty(filePath))
@@ -57,10 +60,10 @@ namespace BrunoTheBot.API.Controllers.PDFApi
 
                 Console.WriteLine($"completeFileTarget: {completeFileTarget}");
                 var content = new MultipartFormDataContent
-                {
-                    { new StringContent(completeFileTarget), "file_path" },
-                    { new StringContent("1"), "partial_output_rate" }
-                };
+        {
+            { new StringContent(completeFileTarget), "file_path" },
+            { new StringContent("1"), "partial_output_rate" }
+        };
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "extract-text-mupdf") { Content = content };
                 Console.WriteLine($"Final request URL: {new Uri(client.BaseAddress!, "extract-text-mupdf")}");
@@ -95,7 +98,7 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             }
             catch (Exception ex)
             {
-                return BadRequest($"An error occurred: {ex.Message}");
+                return BadRequest($"An error occurred: {ex.Message} {ex.InnerException}");
             }
         }
     }

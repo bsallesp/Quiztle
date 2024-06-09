@@ -55,8 +55,9 @@ def extract_text_mupdf():
     partial_output_rate = int(request.form.get('partial_output_rate', 1))
 
     if not file_path or not os.path.exists(file_path):
-        logging.error("Invalid file path or file does not exist.")
-        raise BadRequest("No valid file path provided or file does not exist.")
+        error_message = f"Invalid file path or file does not exist: {file_path}"
+        logging.error(error_message)
+        raise BadRequest(error_message)
 
     def generate():
         logging.debug(f"Opening PDF file: {file_path}")
@@ -75,8 +76,9 @@ def extract_text_mupdf():
                     yield f"data:Page {index + 1}: {cleaned_text}\n\n"
                     logging.debug(f"Streamed text for page {index + 1}")
         except Exception as e:
-            logging.error(f"Failed to open or read PDF file: {e}")
-            raise BadRequest("Could not open or read PDF file.")
+            error_detail = f"Failed to open or read PDF file at {file_path}: {str(e)}"
+            logging.error(error_detail)
+            raise BadRequest(error_detail)
         finally:
             doc.close()
 

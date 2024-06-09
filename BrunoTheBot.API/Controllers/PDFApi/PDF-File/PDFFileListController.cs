@@ -15,7 +15,7 @@ namespace YourNamespace.Controllers
         public PDFFileListController(IWebHostEnvironment env, IConfiguration configuration)
         {
             if (env.IsDevelopment()) pdfDirectory = configuration["PDFDirectory"] ?? throw new InvalidOperationException();
-            else pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/app/bucket";
+            else pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/bucket";
         }
 
         [HttpGet("list-files")]

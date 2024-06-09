@@ -34,6 +34,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
                 content.Add(content: fileContent, name: "file", fileName: file.Name);
 
                 Console.WriteLine($"Uploading file: {file.Name} to {_uploadEndpoint}");
+                Console.WriteLine($"Full URI: {_httpClient.BaseAddress}{_uploadEndpoint}");
 
                 var response = await _httpClient.PostAsync(_uploadEndpoint, content);
                 Console.WriteLine($"Response status code: {response.StatusCode}");
@@ -58,7 +59,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
                 {
                     Status = CustomStatusCodes.ErrorStatus,
                     Data = false,
-                    Message = "UploadFileService: " + ex.Message
+                    Message = "UploadFileService: error: " + ex.Message
                 };
             }
         }

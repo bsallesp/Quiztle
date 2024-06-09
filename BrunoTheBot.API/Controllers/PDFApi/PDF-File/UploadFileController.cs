@@ -14,13 +14,13 @@ namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
         {
             if (env.IsDevelopment())
             {
-                pdfDirectory = configuration["UploadPDFDirectory"] ?? throw new InvalidOperationException();
-                Console.WriteLine("Development environment detected. PDF directory set to configuration value.");
+                pdfDirectory = configuration["UploadPDFDirectory"] ?? throw new InvalidOperationException("UploadPDFDirectory configuration not found.");
+                Console.WriteLine($"Development environment detected. PDF directory set to: {pdfDirectory}");
             }
             else
             {
-                pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/app/bucket";
-                Console.WriteLine("Production environment detected. PDF directory set to environment variable or default value.");
+                pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/bucket";
+                Console.WriteLine($"Production environment detected. PDF directory set to: {pdfDirectory}");
             }
         }
 
@@ -31,8 +31,6 @@ namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse<string>>> UploadFile([FromForm] IFormFile file)
         {
-            Console.WriteLine("UploadFile endpoint hit.");
-
             if (file == null || file.Length == 0)
             {
                 Console.WriteLine("No file uploaded or file is empty.");
@@ -44,12 +42,18 @@ namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
                 });
             }
 
+            Console.WriteLine($"UploadFile endpoint hit with file: {file.FileName}");
+
             try
             {
                 if (!Directory.Exists(pdfDirectory))
                 {
                     Console.WriteLine($"PDF directory does not exist. Creating directory: {pdfDirectory}");
                     Directory.CreateDirectory(pdfDirectory);
+                }
+                else
+                {
+                    Console.WriteLine($"Using existing PDF directory: {pdfDirectory}");
                 }
 
                 var filePath = Path.Combine(pdfDirectory, file.FileName);
