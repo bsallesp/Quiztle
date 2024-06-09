@@ -11,6 +11,8 @@ namespace BrunoTheBot.API.Controllers.PDFApi
     [ApiController]
     public class CreatePDFDataFromStreamController : ControllerBase
     {
+        #region CTOR and others
+
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly CreateQuestionsFromBookController _createQuestionController;
         private readonly AILogRepository _aILogRepository;
@@ -29,22 +31,16 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             _pDFDataRepository = pDFDataRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ExecuteAsync([FromQuery] string fileName, [FromQuery] string pdfDataName)
+        #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> ExecuteAsync([FromQuery] string fileName, [FromQuery] string pdfDataName, [FromQuery] int partialOutputRate = 1)
         {
             try
             {
-                Console.WriteLine("starting to extract...");
-                string filePath = string.Empty;
-                if (Directory.Exists("c:/bucket")) filePath = "c:/bucket/";
-                if (Directory.Exists("/bucket")) filePath = "/bucket/";
-                if (string.IsNullOrEmpty(filePath)) throw new Exception("BTB API - CreatePDFDataFromStreamController: filePath to get the file not found.");
-
-                string completeFileTarget = filePath + fileName;
-                Console.WriteLine($"Complete file path: {completeFileTarget}");
+                Console.WriteLine("Starting to extract...");
 
                 var client = _httpClientFactory.CreateClient("PDFClient");
-
                 var generalUUID = Guid.NewGuid();
 
                 var newPDFData = new PDFData()
@@ -55,20 +51,10 @@ namespace BrunoTheBot.API.Controllers.PDFApi
                     Name = pdfDataName
                 };
 
-                if (string.IsNullOrEmpty(filePath))
-                    return BadRequest("File path not provided");
+                string requestUri = $"extract-text-mupdf/{Uri.EscapeDataString(fileName)}/{partialOutputRate}";
+                Console.WriteLine($"Final request URL: {new Uri(client.BaseAddress!, requestUri)}");
 
-                Console.WriteLine($"completeFileTarget: {completeFileTarget}");
-                var content = new MultipartFormDataContent
-        {
-            { new StringContent(completeFileTarget), "file_path" },
-            { new StringContent("1"), "partial_output_rate" }
-        };
-
-                var request = new HttpRequestMessage(HttpMethod.Post, "extract-text-mupdf") { Content = content };
-                Console.WriteLine($"Final request URL: {new Uri(client.BaseAddress!, "extract-text-mupdf")}");
-
-                using var response = await client.SendAsync(request);
+                using var response = await client.GetAsync(new Uri(client.BaseAddress!, requestUri));
                 response.EnsureSuccessStatusCode();
 
                 using var stream = await response.Content.ReadAsStreamAsync();

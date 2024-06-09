@@ -99,6 +99,7 @@ services:
     volumes:
       -  C:/bucket:/bucket/
     environment:
+      BUCKET_PATH: ${BUCKET_PATH}
       OUTPUT_FILES: ${OUTPUT_FILES}
       PARTIAL_OUTPUT_RATE: ${PARTIAL_OUTPUT_RATE}
     networks:
