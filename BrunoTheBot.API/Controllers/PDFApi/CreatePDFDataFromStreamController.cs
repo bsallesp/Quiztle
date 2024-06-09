@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BrunoTheBot.API.Controllers.CourseControllers.QuestionControllers;
 using BrunoTheBot.DataContext.Repositories;
-using BrunoTheBot.DataContext.Repositories.Quiz;
 using BrunoTheBot.CoreBusiness.Entities.PDFData;
 using System.IO;
+using BrunoTheBot.DataContext.Repositories.Quiz;
 
 namespace BrunoTheBot.API.Controllers.PDFApi
 {
@@ -11,27 +11,16 @@ namespace BrunoTheBot.API.Controllers.PDFApi
     [ApiController]
     public class CreatePDFDataFromStreamController : ControllerBase
     {
-        #region CTOR and others
-
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly CreateQuestionsFromBookController _createQuestionController;
-        private readonly AILogRepository _aILogRepository;
-        private readonly PDFDataRepository _pDFDataRepository;
+        private readonly PDFDataRepository _pdfDataRepository;
 
         public CreatePDFDataFromStreamController(
             IHttpClientFactory httpClientFactory,
-            CreateQuestionsFromBookController createQuestionsController,
-            AILogRepository aILogRepository,
-            PDFDataRepository pDFDataRepository
-            )
+            PDFDataRepository pdfDataRepository)
         {
             _httpClientFactory = httpClientFactory;
-            _createQuestionController = createQuestionsController;
-            _aILogRepository = aILogRepository;
-            _pDFDataRepository = pDFDataRepository;
+            _pdfDataRepository = pdfDataRepository;
         }
-
-        #endregion
 
         [HttpGet]
         public async Task<IActionResult> ExecuteAsync([FromQuery] string fileName, [FromQuery] string pdfDataName, [FromQuery] int partialOutputRate = 1)
@@ -39,46 +28,16 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             try
             {
                 Console.WriteLine("Starting to extract...");
+                var client = CreateHttpClient("PDFClient");
+                var newPDFData = InitializePDFData(pdfDataName);
 
-                var client = _httpClientFactory.CreateClient("PDFClient");
-                var generalUUID = Guid.NewGuid();
-
-                var newPDFData = new PDFData()
-                {
-                    Id = generalUUID,
-                    FileName = pdfDataName,
-                    Created = DateTime.UtcNow,
-                    Name = pdfDataName
-                };
-
-                string requestUri = $"extract-text-mupdf/{Uri.EscapeDataString(fileName)}/{partialOutputRate}";
-                Console.WriteLine($"Final request URL: {new Uri(client.BaseAddress!, requestUri)}");
-
-                using var response = await client.GetAsync(new Uri(client.BaseAddress!, requestUri));
+                string requestUri = FormatRequestUri(fileName, partialOutputRate);
+                using var response = await client.GetAsync(requestUri);
                 response.EnsureSuccessStatusCode();
 
-                using var stream = await response.Content.ReadAsStreamAsync();
-                using var reader = new StreamReader(stream);
+                await ProcessPDFStream(response, newPDFData);
 
-                var count = 0;
-                while (!reader.EndOfStream)
-                {
-                    var line = await reader.ReadLineAsync();
-                    if (!string.IsNullOrEmpty(line) && line.StartsWith("data:"))
-                    {
-                        var text = line.Substring(5);
-                        Console.WriteLine("Received text part: " + text);
-                        count++;
-                        newPDFData.Pages.Add(new PDFDataPages
-                        {
-                            Content = text,
-                            Page = count,
-                            Created = DateTime.UtcNow
-                        });
-                    }
-                }
-
-                await _pDFDataRepository.CreatePDFDataAsync(newPDFData);
+                await _pdfDataRepository.CreatePDFDataAsync(newPDFData);
 
                 return Ok("Processing complete");
             }
@@ -86,6 +45,65 @@ namespace BrunoTheBot.API.Controllers.PDFApi
             {
                 return BadRequest($"An error occurred: {ex.Message} {ex.InnerException}");
             }
+        }
+
+        private HttpClient CreateHttpClient(string clientName)
+        {
+            return _httpClientFactory.CreateClient(clientName);
+        }
+
+        private static PDFData InitializePDFData(string pdfDataName)
+        {
+            return new PDFData
+            {
+                Id = Guid.NewGuid(),
+                FileName = pdfDataName,
+                Created = DateTime.UtcNow,
+                Name = pdfDataName
+            };
+        }
+
+        private string FormatRequestUri(string fileName, int partialOutputRate)
+        {
+            return $"extract-text-mupdf/{Uri.EscapeDataString(fileName)}/{partialOutputRate}";
+        }
+
+        private async Task ProcessPDFStream(HttpResponseMessage response, PDFData pdfData)
+        {
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+            var count = 0;
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (IsDataLine(line))
+                {
+                    var text = ExtractTextFromDataLine(line);
+                    LogReceivedText(text);
+                    pdfData.Pages.Add(new PDFDataPages
+                    {
+                        Content = text,
+                        Page = ++count,
+                        Created = DateTime.UtcNow
+                    });
+                }
+            }
+        }
+
+        private static bool IsDataLine(string line)
+        {
+            return !string.IsNullOrEmpty(line) && line.StartsWith("data:");
+        }
+
+        private static string ExtractTextFromDataLine(string line)
+        {
+            return line.Substring(5);
+        }
+
+        private static void LogReceivedText(string text)
+        {
+            Console.WriteLine("Received text part: " + text);
         }
     }
 }
