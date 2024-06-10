@@ -1,6 +1,5 @@
 using BrunoTheBot.Blazor.Client;
 using BrunoTheBot.Blazor.Client.APIServices;
-
 using BrunoTheBot.Blazor.Client.APIServices.RegularGame;
 using BrunoTheBot.Blazor.Client.APIServices.Responses;
 using BrunoTheBot.Blazor.Client.APIServices.Shots;
@@ -45,42 +44,18 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-#region Postgresql Connection
-var connectionString = "";
-//var connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING");
-connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
-if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at webassembly");
+// Configuração da API
+var brunothebotAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
+if (string.IsNullOrEmpty(brunothebotAPIURL))
+    throw new Exception("API URL is not configured in appsettings.json");
 
-builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-#endregion
-
-#region brunothebotAPIURL
-var brunothebotAPIURL = Environment.GetEnvironmentVariable("PROD_API_URL") ?? String.Empty;
-if (!string.IsNullOrEmpty(brunothebotAPIURL)) Console.WriteLine($"Production Envrirovment Variable Adquired: {brunothebotAPIURL} - {nameof(brunothebotAPIURL)}");
-else if (string.IsNullOrEmpty(brunothebotAPIURL)) brunothebotAPIURL = builder.Configuration["DEV_API_URL"] ?? string.Empty;
-if (!string.IsNullOrEmpty(brunothebotAPIURL)) Console.WriteLine($"Development Envrirovment Variable Adquired: {brunothebotAPIURL} - {nameof(brunothebotAPIURL)}");
-if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception("no API URLs in production, neven in development");
+Console.WriteLine($"API Base URL Acquired: {brunothebotAPIURL}");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(brunothebotAPIURL),
     Timeout = Timeout.InfiniteTimeSpan
 });
-#endregion
-
-//#region Flask API URL
-//var pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? String.Empty;
-//if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Production Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
-//else if (string.IsNullOrEmpty(pdfApiUrl)) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
-//if (!string.IsNullOrEmpty(pdfApiUrl)) Console.WriteLine($"Development Envrirovment Variable Adquired: {pdfApiUrl} - {nameof(pdfApiUrl)}");
-//if (string.IsNullOrEmpty(pdfApiUrl)) throw new Exception("no API URLs in production, neven in development");
-
-//builder.Services.AddScoped(sp => new HttpClient
-//{
-//    BaseAddress = new Uri(pdfApiUrl),
-//    Timeout = Timeout.InfiniteTimeSpan
-//});
-//#endregion
 
 builder.Services.AddScoped(sp => builder.HostEnvironment);
 

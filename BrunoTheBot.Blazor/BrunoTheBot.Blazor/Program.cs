@@ -66,21 +66,6 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 #endregion
 
-//#region Flask API URL
-//var pdfApiUrl = "";
-//if (builder.Environment.IsProduction()) pdfApiUrl = Environment.GetEnvironmentVariable("PROD_FLASK_API_URL") ?? string.Empty;
-//if (builder.Environment.IsDevelopment()) pdfApiUrl = builder.Configuration["DEV_FLASK_API_URL"] ?? string.Empty;
-
-//if (string.IsNullOrEmpty(brunothebotAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(pdfApiUrl)}");
-//else Console.WriteLine($"{nameof(pdfApiUrl)} in Blazor server Adquired - {pdfApiUrl}");
-
-//builder.Services.AddScoped(sp => new HttpClient
-//{
-//    BaseAddress = new Uri(pdfApiUrl),
-//    Timeout = Timeout.InfiniteTimeSpan
-//});
-//#endregion
-
 builder.Services.AddScoped<CodeExtraction>();
 
 builder.Services.AddTransient<BookRepository>();
