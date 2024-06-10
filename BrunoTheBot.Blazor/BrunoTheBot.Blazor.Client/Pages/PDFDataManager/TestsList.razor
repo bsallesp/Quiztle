@@ -6,9 +6,6 @@
 @inject RemoveTestService RemoveTestService
 @inject ResponsesService ResponsesService
 
-<h4>
-    @pdfData.Name
-</h4>
 <div class="bg-light p-2 b-2 mb-2">
     <h5>
         Tests
@@ -16,7 +13,7 @@
     <div class="container bg-light p-2 bb-4" style="background-color: dimgrey;">
         @foreach (var test in pdfData.Tests)
         {
-            <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
+            <div style="padding: 10px; margin-bottom: 10px;">
                 <p>
                     <h4>
                         @test.Name - @test.Questions.Count questions

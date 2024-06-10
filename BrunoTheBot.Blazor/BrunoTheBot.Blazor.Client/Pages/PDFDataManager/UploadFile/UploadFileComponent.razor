@@ -4,6 +4,7 @@
 @inject UploadedFilesListService UploadedFilesListService
 @inject PDFToDataFromStreamService PDFToDataFromStreamService
 
+@using BrunoTheBot.CoreBusiness.Utils
 @using Microsoft.AspNetCore.Components.Forms
 
 <h3>Upload File V1.1</h3>
@@ -60,7 +61,7 @@
     private async Task ProcessPDFToString(string fileName)
     {
         FilesListMessage = "Processing pdf data...";
-        var response = await PDFToDataFromStreamService.CreatePDFDataAsync(fileName, "PDFDataName" + fileName);
+        var response = await PDFToDataFromStreamService.CreatePDFDataAsync(fileName, RandomNames.GenerateConcatenatedNames(1) + fileName);
         FilesListMessage = response.Message;
         StateHasChanged();
     }

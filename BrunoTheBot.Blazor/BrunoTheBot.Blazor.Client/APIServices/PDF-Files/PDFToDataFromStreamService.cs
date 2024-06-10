@@ -8,10 +8,7 @@ namespace BrunoTheBot.Blazor.Client.APIServices
         private readonly HttpClient _httpClient;
         private readonly string _baseServiceUrl = "api/CreatePDFDataFromStream";
 
-        public PDFToDataFromStreamService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public PDFToDataFromStreamService(HttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<APIResponse<string>> CreatePDFDataAsync(string fileName, string pdfDataName, int partialOutputRate = 1)
         {

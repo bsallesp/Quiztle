@@ -6,8 +6,9 @@ services:
     image: brunosallesdev/brunothebotapi:devenv
     container_name: brunothebot-api
     volumes:
-      - C:/bucket:/bucket:rw
-      - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.API/bin/Release/net8.0/:/app
+      - pdf-bucket-volume:/bucket:rw
+      # Only in Development Envirovment
+      - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.API/bin/Release/net8.0/publish:/app
     environment:
       - PROD_FLASK_API_URL=${PROD_FLASK_API_URL}
       - PROD_POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
@@ -21,6 +22,7 @@ services:
       - "5002:443"
     image: brunosallesdev/brunothebotblazor:devenv
     volumes:
+      # Only in Development Envirovment
       - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.Blazor/BrunoTheBot.Blazor/bin/Release/net8.0/publish:/app
     container_name: brunothebot-blazor #DEV
     environment:
@@ -97,7 +99,7 @@ services:
     ports:
       - "5090:5000"
     volumes:
-      -  C:/bucket:/bucket/
+      -  pdf-bucket-volume:/bucket/
     environment:
       BUCKET_PATH: ${BUCKET_PATH}
       OUTPUT_FILES: ${OUTPUT_FILES}
@@ -111,7 +113,7 @@ volumes:
   brunothebot-postgres-data:
   pdf_input_volume:
   output_volume:
-  pdf-volume:
+  pdf-bucket-volume:
 
 networks:
   brunothebot-network:
