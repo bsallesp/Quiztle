@@ -45,8 +45,7 @@ builder.Services.AddCors(options =>
 });
 
 #region Postgresql Connection
-var connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
-//if (string.IsNullOrEmpty(connectionString)) connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING");
+var connectionString = builder.Configuration["DB_CONN"];
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at blazor server:");
 Console.WriteLine("Connection adquired: " + connectionString);
 #endregion

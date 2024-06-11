@@ -7,6 +7,7 @@ services:
     container_name: brunothebot-api
     volumes:
       - pdf-bucket-volume:/bucket:rw
+      - c:/bucket:/bucket:rw
       # Only in Development Envirovment
       - C:/Users/bsall/source/repos/BrunoTheBot.Blazor/BrunoTheBot.API/bin/Release/net8.0/publish:/app
     environment:
@@ -114,6 +115,11 @@ volumes:
   pdf_input_volume:
   output_volume:
   pdf-bucket-volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: c:/bucket
+      o: bind
 
 networks:
   brunothebot-network:

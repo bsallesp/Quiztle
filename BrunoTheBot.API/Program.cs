@@ -91,10 +91,8 @@ catch (Exception ex)
 #endregion
 
 #region Postgresql Connection
-var connectionString = "";
-connectionString = "Host=brunothebot-postgres;Database=BrunoTheBotDB;Username=brunothebotuser;Password=@pyramid2050!";
-//connectionString = Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING") ?? "";
-if (string.IsNullOrEmpty(connectionString)) throw new Exception($"Cant get connections at dotnet api: {connectionString}");
+var connectionString = builder.Configuration["DB_CONN"];
+if (string.IsNullOrEmpty(connectionString)) throw new Exception($"Cant get connections at BrunoTheBot.API project: {connectionString}");
 #endregion
 
 builder.Services.AddDbContextFactory<PostgreBrunoTheBotContext>(opt =>

@@ -14,12 +14,12 @@ namespace BrunoTheBot.API.Controllers.PDFApi.PDF_File
         {
             if (env.IsDevelopment())
             {
-                pdfDirectory = configuration["UploadPDFDirectory"] ?? throw new InvalidOperationException("UploadPDFDirectory configuration not found.");
+                pdfDirectory = configuration["UploadPDFDirectory"] ?? "C:/bucket/";
                 Console.WriteLine($"Development environment detected. PDF directory set to: {pdfDirectory}");
             }
-            else
+            else if (env.IsProduction())
             {
-                pdfDirectory = Environment.GetEnvironmentVariable("PDF_DIRECTORY") ?? "/bucket";
+                pdfDirectory = Environment.GetEnvironmentVariable("UploadPDFDirectory") ?? "/bucket";
                 Console.WriteLine($"Production environment detected. PDF directory set to: {pdfDirectory}");
             }
         }
