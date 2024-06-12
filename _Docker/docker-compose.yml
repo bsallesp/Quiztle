@@ -22,7 +22,7 @@ services:
       - "5001:8080"
       - "5002:443"
     image: brunosallesdev/quiztleblazor:latest
-    container_name: quiztleblazor #DEV
+    container_name: quiztleblazor
     environment:
       - PROD_POSTGRES_CONNECTION_STRING=${PROD_POSTGRES_CONNECTION_STRING}
       - PROD_API_URL=${PROD_API_URL}
@@ -37,7 +37,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx-conf-d-volume:/etc/nginx/conf.d
+      - C:/Users/bsall/source/repos/Quiztle/Quiztle.API/_nginx:/etc/nginx/conf.d
+      - C:/Users/bsall/source/repos/Quiztle/Quiztle.Blazor/Quiztle.Blazor/_nginx:/etc/nginx/conf.d
     networks:
       - quiztle-network
       - thelaserspace-network
