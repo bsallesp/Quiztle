@@ -1,6 +1,0 @@
-@BrunoTheBot.PDFAPI_HostAddress = http://localhost:5261
-
-GET {{BrunoTheBot.PDFAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

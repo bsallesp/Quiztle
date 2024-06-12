@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.API", "Quiztle.API\Quiztle.API.csproj", "{DB82B34C-8CE7-4BC9-9DD9-D81307CE460A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.Blazor", "Quiztle.Blazor\BrunoTheBot.Blazor\Quiztle.Blazor.csproj", "{86EF4BAA-040A-4382-8BE6-01FE6BF25F16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.Blazor.Client", "Quiztle.Blazor\BrunoTheBot.Blazor.Client\Quiztle.Blazor.Client.csproj", "{C7D4D11D-5C1E-4C6F-9A93-BB8322AEE36D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.CoreBusiness", "Quiztle.CoreBusiness\Quiztle.CoreBusiness.csproj", "{362B4696-3FD0-457F-9D3F-3AE584673B2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.DataContext", "Quiztle.DataContext\Quiztle.DataContext.csproj", "{157FEB30-EE15-4B76-847B-DFB6C87FF323}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quiztle.Flask.PDFScanner", "Quiztle.Flask.PDFScanner", "{F9EA55E4-EC02-4E54-946E-5ACC23717B95}"
+	ProjectSection(SolutionItems) = preProject
+		Quiztle.Flask.PDFScanner\app.py = Quiztle.Flask.PDFScanner\app.py
+		Quiztle.Flask.PDFScanner\build.bat = Quiztle.Flask.PDFScanner\build.bat
+		Quiztle.Flask.PDFScanner\Dockerfile = Quiztle.Flask.PDFScanner\Dockerfile
+		Quiztle.Flask.PDFScanner\requirements.txt = Quiztle.Flask.PDFScanner\requirements.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quiztle.Postgresql", "Quiztle.Postgresql", "{C17AA084-D0B4-4146-889B-7049D25683D3}"
+	ProjectSection(SolutionItems) = preProject
+		Quiztle.Postgresql\Dockerfile = Quiztle.Postgresql\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Docker", "_Docker", "{6EB47798-AE4A-43A6-BD34-D17307D8323E}"
+	ProjectSection(SolutionItems) = preProject
+		_Docker\.env = _Docker\.env
+		_Docker\docker-compose.yml = _Docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB82B34C-8CE7-4BC9-9DD9-D81307CE460A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB82B34C-8CE7-4BC9-9DD9-D81307CE460A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB82B34C-8CE7-4BC9-9DD9-D81307CE460A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB82B34C-8CE7-4BC9-9DD9-D81307CE460A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86EF4BAA-040A-4382-8BE6-01FE6BF25F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EF4BAA-040A-4382-8BE6-01FE6BF25F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86EF4BAA-040A-4382-8BE6-01FE6BF25F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86EF4BAA-040A-4382-8BE6-01FE6BF25F16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7D4D11D-5C1E-4C6F-9A93-BB8322AEE36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7D4D11D-5C1E-4C6F-9A93-BB8322AEE36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7D4D11D-5C1E-4C6F-9A93-BB8322AEE36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7D4D11D-5C1E-4C6F-9A93-BB8322AEE36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{362B4696-3FD0-457F-9D3F-3AE584673B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{362B4696-3FD0-457F-9D3F-3AE584673B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{362B4696-3FD0-457F-9D3F-3AE584673B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{362B4696-3FD0-457F-9D3F-3AE584673B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{157FEB30-EE15-4B76-847B-DFB6C87FF323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{157FEB30-EE15-4B76-847B-DFB6C87FF323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{157FEB30-EE15-4B76-847B-DFB6C87FF323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{157FEB30-EE15-4B76-847B-DFB6C87FF323}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCAC457D-A1BC-4F97-8789-2CDA6A5416A5}
+	EndGlobalSection
+EndGlobal
