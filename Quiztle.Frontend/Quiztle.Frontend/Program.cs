@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Quiztle.Frontend.Client.Pages;
 using Quiztle.Frontend.Components;
 using Quiztle.Frontend.Components.Account;
 using Quiztle.Frontend.Data;
