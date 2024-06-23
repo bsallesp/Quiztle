@@ -1,7 +1,7 @@
 /* Font faces */
 @font-face {
     font-family: 'Rajdhani';
-    src: url('/fonts/Rajdhani-Regular.ttf') format('truetype');
+    src: url('/fonts/Rajdhani-Regular.woff2') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

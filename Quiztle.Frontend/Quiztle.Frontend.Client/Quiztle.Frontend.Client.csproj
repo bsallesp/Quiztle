@@ -9,16 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Pages\Home\HeroComponent.razor.css" />
+    <None Remove="Pages\Components\AboutComponent.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Pages\Home\HeroComponent.razor.css" />
+    <Content Include="Pages\Components\AboutComponent.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.6" />
+    <PackageReference Include="MudBlazor" Version="6.20.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Stripe.net" Version="44.13.0" />
   </ItemGroup>
 
 </Project>

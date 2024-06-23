@@ -1,0 +1,107 @@
+﻿@inject IJSRuntime JSRuntime
+@rendermode InteractiveAuto
+
+<div class="main-menu-div">
+    <a href="/">
+        <div class="logo-div">
+            <div class="logo-svg">
+                <img src="img/logo/logo2.svg" width="40" height="40" alt="Logo">
+            </div>
+            quiztle
+        </div>
+    </a>
+
+    <div id="hamburger-menu" style="display: none;">
+        <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Start))">
+            <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" />
+        </MudButton>
+    </div>
+
+    <div id="wide-menu" style="display: none;">
+        <div class="menu-item">
+            <a href="/">
+                Home
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="/about">
+                About
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="/create-order">
+                Pricing
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="/support">
+                Support
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="/company">
+                Company
+            </a>
+        </div>
+    </div>
+</div>
+
+<MudDrawer @bind-Open="@open" Anchor="@anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">My App</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Match="NavLinkMatch.All">Home</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">About</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Pricing</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Support</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
+
+@code {
+    bool open;
+    Anchor anchor;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("showDivBasedOnWidth");
+        }
+    }
+
+    void OpenDrawer(Anchor anchor)
+    {
+        open = true;
+        this.anchor = anchor;
+    }
+}
+
+<script>
+    window.showDivBasedOnWidth = function () {
+        const width = window.innerWidth;
+        const divA = document.getElementById('hamburger-menu');
+        const divB = document.getElementById('wide-menu');
+
+        if (width <= 770) {
+            divA.style.display = 'block';
+            divB.style.display = 'none';
+        } else {
+            divA.style.display = 'none';
+            divB.style.display = 'flex';
+        }
+
+        // Run the function on window resize
+        window.addEventListener('resize', function () {
+            const width = window.innerWidth;
+            if (width <= 770) {
+                divA.style.display = 'block';
+                divB.style.display = 'none';
+            } else {
+                divA.style.display = 'none';
+                divB.style.display = 'flex';
+            }
+        });
+    }
+</script>

@@ -1,0 +1,119 @@
+﻿.hero {
+    background: conic-gradient(from 180deg at 50% 50%, #1E3A8A, #1E3A8A 25%, #263A8C 25%, #263A8C 50%, #1E3A8A 50%, #1E3A8A 75%, #263A8C 75%, #263A8C), radial-gradient(circle at bottom left, #1E3A8A, transparent 50%), radial-gradient(circle at bottom right, #1E3A8A, transparent 50%);
+    background-blend-mode: screen;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 2rem;
+    line-height: 1;
+}
+
+.hero-content {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.display-main-1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 4.5rem;
+    margin-bottom: 60px;
+    background: linear-gradient(90deg, white, #1d9dce);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+@media (max-width: 1199px) {
+    .display-main-1 {
+        font-size: 4rem;
+    }
+
+    .hero .btn {
+        padding: 0.9rem 1.8rem;
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 899px) {
+    .display-main-1 {
+        font-size: 3.5rem;
+    }
+
+    .hero .btn {
+        padding: 0.8rem 1.6rem;
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 599px) {
+    .display-main-1 {
+        font-size: 3rem;
+    }
+
+    .hero .btn {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 399px) {
+    .display-main-1 {
+        font-size: 2.5rem;
+    }
+
+    .hero .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
+
+.display-main-2 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    color: whitesmoke;
+    margin-bottom: 50px;
+}
+
+.display-main-3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+    color: whitesmoke;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 70px;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero .btn {
+    padding-left: 20rem;
+    padding-right: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    border-radius: 0.5rem;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1E3A8A;
+    border-color: #1E3A8A;
+    font-weight: 600;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #10B981;
+    border-color: #10B981;
+    font-weight: 600;
+}

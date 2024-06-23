@@ -4,13 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using Quiztle.Frontend.Components;
 using Quiztle.Frontend.Components.Account;
 using Quiztle.Frontend.Data;
+using MudBlazor.Services;
+using Microsoft.AspNetCore.Components.Server;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
+
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddMudServices();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -35,6 +44,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+StripeConfiguration.ApiKey =
+    "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";
 
 var app = builder.Build();
 
