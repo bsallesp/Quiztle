@@ -1,6 +1,9 @@
 ﻿@inject IJSRuntime JSRuntime
 @rendermode InteractiveAuto
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
 <div class="main-menu-div">
     <a href="/">
         <div class="logo-div">
@@ -43,6 +46,18 @@
                 Company
             </a>
         </div>
+        <div class="menu-item">
+            <a href="/AuthUser/Login">
+                @if (isSignedIn)
+                {
+                        <img src="svg/user.svg" style="height:50px; width:50px" alt="User Profile" />
+                }
+                else
+                {
+                    <p>Login</p>
+                }
+            </a>
+        </div>
     </div>
 </div>
 
@@ -56,12 +71,23 @@
         <MudNavLink Match="NavLinkMatch.All">Pricing</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Support</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 
 @code {
     bool open;
     Anchor anchor;
+    private bool isSignedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated) isSignedIn = true;
+        else isSignedIn = false;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

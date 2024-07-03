@@ -1,0 +1,28 @@
+﻿@page "/Profile"
+@inject AuthenticationState AuthenticationState
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer Style="margin-top: 40px; padding: 20px; background-color: rgba(0, 0, 0, 0.05);" MaxWidth="MaxWidth.Medium">
+            <h3>Profile</h3>
+            <h4>
+                Email:
+            </h4>
+            <h5>
+                @context.User.Identity?.Name
+            </h5>
+            <h5>
+                Sign out
+            </h5>
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    public HttpContext? HttpContext { get; set; }
+
+
+}
