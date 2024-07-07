@@ -1,28 +1,59 @@
 ﻿@page "/Profile"
-@inject AuthenticationState AuthenticationState
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 <AuthorizeView>
     <Authorized>
         <MudContainer Style="margin-top: 40px; padding: 20px; background-color: rgba(0, 0, 0, 0.05);" MaxWidth="MaxWidth.Medium">
             <h3>Profile</h3>
-            <h4>
-                Email:
-            </h4>
-            <h5>
-                @context.User.Identity?.Name
-            </h5>
-            <h5>
-                Sign out
-            </h5>
+            <h4>Email:</h4>
+            <h5>@context.User.Identity?.Name</h5>
+            <div class="nav-item px-3">
+                <form action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="returnUrl" value="@currentUrl" />
+                    <button type="submit" class="nav-link">
+                        <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                    </button>
+                </form>
+            </div>
         </MudContainer>
     </Authorized>
     <NotAuthorized>
+        <p>You are not authorized to view this page.</p>
     </NotAuthorized>
 </AuthorizeView>
 
-
 @code {
-    public HttpContext? HttpContext { get; set; }
+    private string? currentUrl;
 
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+        UpdateAntiforgeryToken();
+    }
 
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        UpdateAntiforgeryToken();
+        StateHasChanged();
+    }
+
+    private void UpdateAntiforgeryToken()
+    {
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            Antiforgery.GetAndStoreTokens(httpContext); // Atualiza o token antifalsificação
+        }
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
 }

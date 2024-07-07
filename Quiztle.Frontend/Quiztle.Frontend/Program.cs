@@ -6,7 +6,6 @@ using Quiztle.Frontend.Components.Account;
 using Quiztle.Frontend.Data;
 using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Server;
-
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +26,11 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN"; // Adicionando o suporte para o header
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -35,8 +39,8 @@ builder.Services.AddAuthentication(options =>
 .AddGoogle(options =>
 {
     IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-    options.ClientId = googleAuthNSection["ClientId"] ?? throw new Exception("Google ClientId wasnt found in program.cs");
-    options.ClientSecret = googleAuthNSection["ClientSecret"] ?? throw new Exception("Google ClientId wasnt found in program.cs");
+    options.ClientId = googleAuthNSection["ClientId"] ?? throw new Exception("Google ClientId wasn't found in program.cs");
+    options.ClientSecret = googleAuthNSection["ClientSecret"] ?? throw new Exception("Google ClientId wasn't found in program.cs");
     options.CallbackPath = "/signin-google";
 }).AddIdentityCookies();
 
@@ -71,10 +75,12 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
