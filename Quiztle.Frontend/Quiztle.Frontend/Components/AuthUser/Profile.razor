@@ -22,7 +22,7 @@
         </MudContainer>
     </Authorized>
     <NotAuthorized>
-        <p>You are not authorized to view this page.</p>
+        <RedirectTo url="/"></RedirectTo>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -48,7 +48,7 @@
         var httpContext = HttpContextAccessor.HttpContext;
         if (httpContext != null)
         {
-            Antiforgery.GetAndStoreTokens(httpContext); // Atualiza o token antifalsificação
+            Antiforgery.GetAndStoreTokens(httpContext);
         }
     }
 

@@ -28,7 +28,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAu
 
 builder.Services.AddAntiforgery(options =>
 {
-    options.HeaderName = "X-CSRF-TOKEN"; // Adicionando o suporte para o header
+    options.HeaderName = "X-CSRF-TOKEN";
 });
 
 builder.Services.AddAuthentication(options =>
