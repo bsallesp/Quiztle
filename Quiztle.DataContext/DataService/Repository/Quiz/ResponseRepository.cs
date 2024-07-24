@@ -102,6 +102,8 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
                 response.Created = updatedResponse.Created;
                 response.TestId = updatedResponse.TestId;
                 response.IsFinalized  = updatedResponse.IsFinalized;
+                response.Score = updatedResponse.Score;
+                response.Percentage = updatedResponse.Percentage;
 
                 _context.Responses!.Update(response);
                 await _context.SaveChangesAsync();

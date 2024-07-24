@@ -142,7 +142,7 @@ namespace Quiztle.API.Controllers.Responses
         [HttpPut("{id}")]
         public async Task<ActionResult<APIResponse<Response>>> UpdateResponse(Guid id, [FromBody] Response updatedResponse)
         {
-            Console.WriteLine("Getting into UpdateResponse in ResponsesController...");
+            Console.WriteLine("Getting into HttpPutUpdateResponse in ResponsesController...");
 
             var response = await _responseRepository.UpdateResponse(id, updatedResponse);
 

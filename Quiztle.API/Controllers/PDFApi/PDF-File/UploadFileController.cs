@@ -29,7 +29,7 @@ namespace Quiztle.API.Controllers.PDFApi.PDF_File
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(APIResponse<string>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse<string>>> UploadFile([FromForm] IFormFile file)
+        public async Task<ActionResult<APIResponse<string>>> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {

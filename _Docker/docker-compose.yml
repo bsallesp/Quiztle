@@ -17,7 +17,7 @@ services:
     networks:
       - quiztle-network
 
-  quiztleblazor: #DEV
+  quiztleblazor:
     ports:
       - "5001:8080"
       - "5002:443"
@@ -104,6 +104,26 @@ services:
       PARTIAL_OUTPUT_RATE: ${PARTIAL_OUTPUT_RATE}
     networks:
       - quiztle-network
+  
+  mailserver:
+    image: mailserver/docker-mailserver:latest
+    hostname: mail
+    domainname: quiztle.com
+    container_name: mailserver
+    env_file: mailserver.env
+    ports:
+      - "25:25"
+      - "143:143"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - ./maildata:/var/mail
+      - ./mailstate:/var/mail-state
+      - ./config/:/tmp/docker-mailserver/
+    restart: always
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
 
 volumes:
   nginx-conf-d-volume:
