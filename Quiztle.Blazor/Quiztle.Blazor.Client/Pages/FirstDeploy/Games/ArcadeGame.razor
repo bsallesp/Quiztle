@@ -7,22 +7,26 @@
 <div>
     @if (_test.Questions != null)
     {
+        <h1>@_test.Name</h1>
 
         @foreach (var question in _test.Questions)
         {
             QuestionDTO questionDTO = new QuestionDTO(question);
-            <QuestionDTOComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_test.Questions.IndexOf(question)"></QuestionDTOComponent>
+
+            <div style="background-color: aliceblue;">
+                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_test.Questions.IndexOf(question)"></QuestionDTOArcadeComponent>
+            </div>
             <hr />
         }
     }
-            
+
     @if (!ShowResults)
     {
-    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
-    <h3 class="mb-0">
-        @_buttonText
-    </h3>
-    </button>
+        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
+            <h3 class="mb-0">
+                @_buttonText
+            </h3>
+        </button>
     }
 </div>
 
@@ -50,7 +54,7 @@
 
     private void FinalizeTestResponse()
     {
-        
+        _showResults = true;
     }
 
     protected override async Task OnParametersSetAsync()
