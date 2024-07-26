@@ -34,6 +34,7 @@ builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
 builder.Services.AddTransient<UploadedFilesListService>();
 builder.Services.AddTransient<PDFToDataFromStreamService>();
+builder.Services.AddTransient<GetAllTests>();
 
 builder.Services.AddTransient<AILogRepository>();
 

@@ -1,0 +1,86 @@
+﻿@page "/Games/Arcade/{TestId}"
+
+@using Quiztle.Blazor.Client.Pages.Games.Components
+@using Quiztle.CoreBusiness.Entities.Quiz.DTO
+@using Quiztle.CoreBusiness.Utils
+
+<div>
+    @if (_test.Questions != null)
+    {
+
+        @foreach (var question in _test.Questions)
+        {
+            QuestionDTO questionDTO = new QuestionDTO(question);
+            <QuestionDTOComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_test.Questions.IndexOf(question)"></QuestionDTOComponent>
+            <hr />
+        }
+    }
+            
+    @if (!ShowResults)
+    {
+    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
+    <h3 class="mb-0">
+        @_buttonText
+    </h3>
+    </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string TestId { get; set; } = "";
+
+    private Test _test = new();
+    private Response? _response;
+    private Guid _testGuid = new Guid();
+    private string _buttonText = "FINISH";
+
+    private bool _showResults = false;
+    public bool ShowResults
+    {
+        get => _showResults;
+        set
+        {
+            if (_showResults != value)
+            {
+                _showResults = value;
+            }
+        }
+    }
+
+    private void FinalizeTestResponse()
+    {
+        
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await CheckURLTestGuid();
+        await base.OnParametersSetAsync();
+    }
+    private async Task CheckURLTestGuid()
+    {
+        try
+        {
+            Guid testIdGuid;
+            if (Guid.TryParse(TestId, out testIdGuid))
+            {
+                _testGuid = Guid.Parse(TestId);
+                var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
+                if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
+                    throw new Exception("TestGame: Error during retrieving TestApiResponse");
+
+                _test = testAPIReponse.Data;
+            }
+            else
+            {
+                Nav.NavigateTo("/PDFDataManager", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Nav.NavigateTo("/PDFDataManager", true);
+        }
+    }
+}

@@ -56,7 +56,8 @@ if (builder.Environment.IsProduction()) QuiztleAPIURL = Environment.GetEnvironme
 if (builder.Environment.IsDevelopment()) QuiztleAPIURL = builder.Configuration["DEV_API_URL"] ?? string.Empty;
 
 if (string.IsNullOrEmpty(QuiztleAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(QuiztleAPIURL)}");
-else Console.WriteLine($"{nameof(QuiztleAPIURL)} Adquired - {QuiztleAPIURL}");
+Console.WriteLine($"{nameof(QuiztleAPIURL)} Adquired - {QuiztleAPIURL}");
+Console.WriteLine($"URL gotten of: {(builder.Environment.IsProduction() ? "Production" : "Development")}");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
@@ -86,6 +87,7 @@ builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
 builder.Services.AddTransient<UploadedFilesListService>();
 builder.Services.AddTransient<PDFToDataFromStreamService>();
+builder.Services.AddTransient<GetAllTests>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

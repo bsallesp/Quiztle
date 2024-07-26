@@ -6,19 +6,19 @@ namespace Quiztle.API.Controllers.Tests
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GetAllTestsByPDFDataIdController : ControllerBase
+    public class GetAllTestsController : ControllerBase
     {
         private readonly TestRepository _testRepository;
 
-        public GetAllTestsByPDFDataIdController(TestRepository testRepository)
+        public GetAllTestsController(TestRepository testRepository)
         {
             _testRepository = testRepository ?? throw new ArgumentNullException(nameof(testRepository));
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<List<Test>>> ExecuteAsync(Guid id)
+        [HttpGet]
+        public async Task<ActionResult<List<Test>>> ExecuteAsync()
         {
-            var response = await _testRepository.GetAllTestsByPDFDataIdAsync(id);
+            var response = await _testRepository.GetAllTestsAsync();
             if (response == null)
             {
                 return NotFound();

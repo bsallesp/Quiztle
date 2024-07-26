@@ -1,10 +1,10 @@
 ﻿@page "/PDFDataManager"
-@page "/"
+
+<h1>PDFDataManager</h1>
 
 @using Quiztle.CoreBusiness.Entities.PDFData
 @inject GetAllPDFDataService GetAllPDFDataService
 
-<h3 class="mb-5">PDFDataManager</h3>
 
 @if (pdfDataAPIResponse == null) { <h4> Loading... </h4> }
 else
