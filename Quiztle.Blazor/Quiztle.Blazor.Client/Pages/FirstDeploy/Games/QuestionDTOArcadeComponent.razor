@@ -7,20 +7,21 @@
 
 @rendermode InteractiveAuto
 
-@if (questionDTO != null)
-{
-    <h4>
-        @(1 + Number) - @questionDTO.Question!.Name
-    </h4>
+<div style="margin-bottom:25px;margin-top:25px; background-color: whitesmoke;">
+        @if (questionDTO != null)
+        {
+            <h4 style="padding: 10px;">
+                @(1 + Number) - @questionDTO.Question!.Name
+            </h4>
 
-    @foreach (var option in questionDTO.OptionsDTO)
-    {
-        <h6 @onclick="() => SelectOption(option)" class="option @GetOptionStyle(option)">
-            @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-        </h6>
-    }
-}
-
+            @foreach (var option in questionDTO.OptionsDTO)
+            {
+                <h6 @onclick="() => SelectOption(option)" class="option @GetOptionStyle(option)">
+                    @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+                </h6>
+            }
+        }
+    </div>
 @code
 {
     [Parameter]
@@ -54,8 +55,14 @@
 
     protected override Task OnParametersSetAsync()
     {
-        questionDTO!.ShuffleOptions();
+
         return base.OnParametersSetAsync();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        questionDTO!.ShuffleOptions();
+        return base.OnInitializedAsync();
     }
 
     private void PreserveSelections()

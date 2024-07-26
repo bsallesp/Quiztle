@@ -5,18 +5,18 @@
 @using Quiztle.CoreBusiness.Utils
 
 <div>
-    @if (_testDTO.QuestionsDTO != null)
-    {
-        <h1>@_testDTO.Name</h1>
-
-        @foreach (var questionDTO in _testDTO.QuestionsDTO)
+    <div style="padding-bottom:80px;">
+        @if (_testDTO.QuestionsDTO != null)
         {
-            <div style="background-color: whitesmoke;">
-                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
-            </div>
-            <hr />
+            <h1>@_testDTO.Name</h1>
+
+            @foreach (var questionDTO in _testDTO.QuestionsDTO)
+            {
+
+                    <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
+            }
         }
-    }
+    </div>
     <div class="fixed-bottom-container">
         @if (!ShowResults)
         {
