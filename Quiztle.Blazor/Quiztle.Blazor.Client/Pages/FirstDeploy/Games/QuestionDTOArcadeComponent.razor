@@ -12,6 +12,7 @@
     <h4>
         @(1 + Number) - @questionDTO.Question!.Name
     </h4>
+
     @foreach (var option in questionDTO.OptionsDTO)
     {
         <h6 @onclick="() => SelectOption(option)" class="option @GetOptionStyle(option)">
@@ -53,6 +54,7 @@
 
     protected override Task OnParametersSetAsync()
     {
+        questionDTO!.ShuffleOptions();
         return base.OnParametersSetAsync();
     }
 

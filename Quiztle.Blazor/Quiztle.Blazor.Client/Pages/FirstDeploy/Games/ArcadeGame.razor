@@ -30,7 +30,7 @@
         {
             <div style="background-color: mintcream;">
                 <h4>
-                    You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct!
+                    You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
 
                 </h4>
             </div>
@@ -65,14 +65,13 @@
     private void FinalizeTestResponse()
     {
         if (IsAllQuestionsAnswered()) ShowResults = true;
-        if (!IsAllQuestionsAnswered()) _buttonText = "Answer all questions and Finalize";
+        if (!IsAllQuestionsAnswered()) _buttonText = $"Complete all questions";
     }
 
     private bool IsAllQuestionsAnswered()
     {
-        Console.WriteLine(_testDTO.QuestionsDTO.Count);
-        Console.WriteLine(_testDTO.GetTotalSelectedAnswers());
-
+        // Console.WriteLine(_testDTO.QuestionsDTO.Count);
+        // Console.WriteLine(_testDTO.GetTotalSelectedAnswers());
         if (_testDTO.QuestionsDTO.Count == _testDTO.GetTotalSelectedAnswers()) return true;
         return false;
     }

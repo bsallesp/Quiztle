@@ -20,5 +20,21 @@
                 IsCorrect = option.IsCorrect,
             }).ToList() ?? [];
         }
+
+        public void ShuffleOptions()
+        {
+            Random rng = new Random();
+            int n = OptionsDTO.Count;
+
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = OptionsDTO[k];
+                OptionsDTO[k] = OptionsDTO[n];
+                OptionsDTO[n] = value;
+            }
+        }
+
     }
 }
