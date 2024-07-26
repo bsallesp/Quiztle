@@ -189,7 +189,7 @@ namespace Quiztle.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Questions",
+                name: "QuestionsDTO",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -231,7 +231,7 @@ namespace Quiztle.DataContext.Migrations
                     table.ForeignKey(
                         name: "FK_Options_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Questions",
+                        principalTable: "QuestionsDTO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -304,12 +304,12 @@ namespace Quiztle.DataContext.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_SectionId",
-                table: "Questions",
+                table: "QuestionsDTO",
                 column: "SectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_TestId",
-                table: "Questions",
+                table: "QuestionsDTO",
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
@@ -368,7 +368,7 @@ namespace Quiztle.DataContext.Migrations
                 name: "Options");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "QuestionsDTO");
 
             migrationBuilder.DropTable(
                 name: "Sections");

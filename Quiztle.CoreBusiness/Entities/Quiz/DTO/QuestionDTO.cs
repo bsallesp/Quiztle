@@ -20,5 +20,5 @@
                 IsCorrect = option.IsCorrect,
             }).ToList() ?? [];
         }
-    }    
+    }
 }

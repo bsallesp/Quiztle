@@ -5,36 +5,46 @@
 @using Quiztle.CoreBusiness.Utils
 
 <div>
-    @if (_test.Questions != null)
+    @if (_testDTO.QuestionsDTO != null)
     {
-        <h1>@_test.Name</h1>
+        <h1>@_testDTO.Name</h1>
 
-        @foreach (var question in _test.Questions)
+        @foreach (var questionDTO in _testDTO.QuestionsDTO)
         {
-            QuestionDTO questionDTO = new QuestionDTO(question);
-
-            <div style="background-color: aliceblue;">
-                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_test.Questions.IndexOf(question)"></QuestionDTOArcadeComponent>
+            <div style="background-color: whitesmoke;">
+                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
             </div>
             <hr />
         }
     }
+    <div class="fixed-bottom-container">
+        @if (!ShowResults)
+        {
+            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
+                <h3 class="mb-0">
+                    @_buttonText
+                </h3>
+            </button>
+        }
+        @if (ShowResults)
+        {
+            <div style="background-color: mintcream;">
+                <h4>
+                    You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct!
 
-    @if (!ShowResults)
-    {
-        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
-            <h3 class="mb-0">
-                @_buttonText
-            </h3>
-        </button>
-    }
+                </h4>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
+    private int _totalSelectedAnswers = 0;
+
     [Parameter]
     public string TestId { get; set; } = "";
 
-    private Test _test = new();
+    private TestDTO _testDTO = new();
     private Response? _response;
     private Guid _testGuid = new Guid();
     private string _buttonText = "FINISH";
@@ -54,7 +64,17 @@
 
     private void FinalizeTestResponse()
     {
-        _showResults = true;
+        if (IsAllQuestionsAnswered()) ShowResults = true;
+        if (!IsAllQuestionsAnswered()) _buttonText = "Answer all questions and Finalize";
+    }
+
+    private bool IsAllQuestionsAnswered()
+    {
+        Console.WriteLine(_testDTO.QuestionsDTO.Count);
+        Console.WriteLine(_testDTO.GetTotalSelectedAnswers());
+
+        if (_testDTO.QuestionsDTO.Count == _testDTO.GetTotalSelectedAnswers()) return true;
+        return false;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -74,7 +94,7 @@
                 if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
-                _test = testAPIReponse.Data;
+                _testDTO.FromTest(testAPIReponse.Data);
             }
             else
             {
@@ -88,3 +108,20 @@
         }
     }
 }
+
+<style>
+    .fixed-bottom-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px; /* Ajuste conforme necessário para o espaçamento */
+        background-color: #fff; /* Opcional: Adiciona um fundo branco para o botão */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Opcional: Adiciona uma sombra para destaque */
+    }
+
+    .btn {
+        border-radius: 0; /* Opcional: Remove a borda arredondada para um estilo mais reto */
+    }
+
+</style>

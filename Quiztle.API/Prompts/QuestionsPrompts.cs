@@ -8,7 +8,7 @@
 
             string json = $@"
             {{
-                ""Questions""
+                ""QuestionsDTO""
                 {{
                     ""Question"": ""Write a captivating and creative question related to {text}."",
                     ""Answer"": ""Here is the right answer. Answers and options lack any distinctive writing patterns,

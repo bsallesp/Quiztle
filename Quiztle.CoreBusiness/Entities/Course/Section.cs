@@ -19,7 +19,7 @@ namespace Quiztle.CoreBusiness.Entities.Course
         [JsonPropertyName("Content")]
         public Content Content { get; set; } = new Content();
 
-        [JsonPropertyName("Questions")]
+        [JsonPropertyName("QuestionsDTO")]
         public List<Question> Questions { get; set; } = new List<Question>();
     }
 }

@@ -257,9 +257,9 @@ namespace Quiztle.DataContext.Migrations
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("QuestionsDTO");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Questions");
+                    b.HasAnnotation("Relational:JsonPropertyName", "QuestionsDTO");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>
@@ -482,11 +482,11 @@ namespace Quiztle.DataContext.Migrations
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.HasOne("Quiztle.CoreBusiness.Entities.Course.Section", null)
-                        .WithMany("Questions")
+                        .WithMany("QuestionsDTO")
                         .HasForeignKey("SectionId");
 
                     b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", null)
-                        .WithMany("Questions")
+                        .WithMany("QuestionsDTO")
                         .HasForeignKey("TestId");
                 });
 
@@ -538,7 +538,7 @@ namespace Quiztle.DataContext.Migrations
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Course.Section", b =>
                 {
-                    b.Navigation("Questions");
+                    b.Navigation("QuestionsDTO");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.PDFData.PDFData", b =>
@@ -560,7 +560,7 @@ namespace Quiztle.DataContext.Migrations
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Test", b =>
                 {
-                    b.Navigation("Questions");
+                    b.Navigation("QuestionsDTO");
 
                     b.Navigation("Responses");
                 });

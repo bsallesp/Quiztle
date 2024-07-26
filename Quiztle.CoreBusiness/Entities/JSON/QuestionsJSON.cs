@@ -2,6 +2,6 @@
 
 public class QuestionsJson
 {
-    [JsonPropertyName("Questions")]
+    [JsonPropertyName("QuestionsDTO")]
     public List<QuestionJson>? Questions { get; set; }
 }

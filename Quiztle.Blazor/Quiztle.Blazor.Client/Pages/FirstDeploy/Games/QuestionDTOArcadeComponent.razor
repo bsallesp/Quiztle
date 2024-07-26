@@ -5,6 +5,8 @@
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Microsoft.AspNetCore.Components
 
+@rendermode InteractiveAuto
+
 @if (questionDTO != null)
 {
     <h4>
@@ -59,7 +61,7 @@
         _selectedOptionIds.Clear();
         foreach (var option in questionDTO!.OptionsDTO.Where(o => o.IsSelected))
         {
-            _selectedOptionIds.Add(option.Id); // Assume that OptionDTO has an Id property
+            _selectedOptionIds.Add(option.Id);
         }
     }
 
@@ -129,123 +131,3 @@
         border: 3px solid blue;
     }
 </style>
-
-
-@* @using Quiztle.Blazor.Client.APIServices.Responses
-@using Quiztle.Blazor.Client.APIServices.Shots
-@using Quiztle.CoreBusiness.Utils
-@using Quiztle.CoreBusiness.Entities.Quiz
-@using Quiztle.CoreBusiness.Entities.Quiz.DTO
-@using Microsoft.AspNetCore.Components
-
-@if (questionDTO != null)
-{
-    <h4>
-        @(1 + Number) - @questionDTO.Question!.Name
-    </h4>
-    @foreach (var option in questionDTO.OptionsDTO)
-    {
-        <h6 @onclick="() => SelectOption(option)" class="option @GetOptionStyle(option)">
-            @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-        </h6>
-    }
-}
-
-@code
-{
-    [Parameter]
-    public QuestionDTO? questionDTO { get; set; }
-    [Parameter]
-    public int Number { get; set; }
-    [Parameter]
-    public Guid responseGuid { get; set; }
-
-    private bool _showResults;
-
-    [Parameter]
-    public bool ShowResults
-    {
-        get => _showResults;
-        set
-        {
-            if (_showResults != value)
-            {
-                _showResults = value;
-            }
-        }
-    }
-
-    private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
-
-    protected override Task OnParametersSetAsync()
-    {
-
-        return base.OnParametersSetAsync();
-    }
-
-    private string GetOptionStyle(OptionDTO option)
-    {
-        // Console.WriteLine(DateTime.Now + " " + option.IsSelected);
-        if (ShowResults)
-        {
-            // Console.WriteLine($"{DateTime.Now} - Working with {option.Name} who is {option.IsSelected} and {option.IsCorrect}");
-            if (option.IsSelected && option.IsCorrect)
-            {
-                return "correct";
-            }
-            if (option.IsSelected && !option.IsCorrect)
-            {
-                Console.WriteLine("bateu aqui");
-                return "incorrect";
-            }
-            if (!option.IsSelected && option.IsCorrect)
-            {
-                return "not-selected-correct";
-            }
-        }
-        return option.IsSelected ? "selected" : "";
-    }
-
-    private void SelectOption(OptionDTO selectedOption)
-    {
-        if (ShowResults) return;
-        UnselectAll();
-        selectedOption.IsSelected = true;
-    }
-
-    private void UnselectAll()
-    {
-        foreach (var option in questionDTO!.OptionsDTO)
-            option.IsSelected = false;
-    }
-}
-
-<style>
-    .option {
-        cursor: pointer;
-        padding: 10px;
-        border: 1px solid #ccc;
-    }
-
-    .selected {
-        background-color: #cce5ff;
-        color: #004085;
-    }
-
-    .correct {
-        border: 3px solid blue;
-        background-color: #cce5ff;
-        color: #004085;
-    }
-
-    .incorrect {
-        border: 3px solid red;
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .not-selected-correct {
-        border: 3px solid blue;
-    }
-</style>
- *@

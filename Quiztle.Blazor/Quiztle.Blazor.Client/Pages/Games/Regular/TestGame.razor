@@ -104,7 +104,7 @@
 
             if (shotsResult.Data.Count < test.Questions.Count)
             {
-                Console.WriteLine("response.Shots.Count < test.Questions.Count? not enough: " + shotsResult.Data.Count + " / " + test.Questions.Count);
+                Console.WriteLine("response.Shots.Count < test.QuestionsDTO.Count? not enough: " + shotsResult.Data.Count + " / " + test.Questions.Count);
                 _buttonText = "Respond all questions then finalize the test.";
                 ShowResults = false;
                 return;

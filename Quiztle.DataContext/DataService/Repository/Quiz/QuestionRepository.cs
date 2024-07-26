@@ -63,7 +63,7 @@ namespace Quiztle.DataContext.Repositories.Quiz
         {
             if (_context.Questions == null)
             {
-                throw new InvalidOperationException("The Questions DbSet is null. Make sure it is properly initialized.");
+                throw new InvalidOperationException("The QuestionsDTO DbSet is null. Make sure it is properly initialized.");
             }
         }
     }

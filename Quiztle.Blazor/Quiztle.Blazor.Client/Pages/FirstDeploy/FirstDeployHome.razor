@@ -1,7 +1,6 @@
 ﻿@page "/"
 
 <h1>First Deploy</h1>
-
 @foreach (var i in listTests.Data)
 {
     <a href="/Games/Arcade/@i.Id">
@@ -10,6 +9,8 @@
 }
 
 @code {
+    private bool _isEmpty = true;
+
     private APIResponse<List<Test>> listTests = new APIResponse<List<Test>>
         {
             Data = new List<Test>()
@@ -17,9 +18,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        listTests = await GetAllTests.ExecuteAsync();
-        Console.WriteLine(listTests.Data.Count);
-
         await base.OnInitializedAsync();
+        listTests = await GetAllTests.ExecuteAsync();
+        _isEmpty = false;
     }
 }

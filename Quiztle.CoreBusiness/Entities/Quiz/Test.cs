@@ -10,7 +10,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
 
-        [JsonPropertyName("Questions")]
+        [JsonPropertyName("QuestionsDTO")]
         public List<Question> Questions { get; set; } = new List<Question>();
 
         [JsonPropertyName("Responses")]
