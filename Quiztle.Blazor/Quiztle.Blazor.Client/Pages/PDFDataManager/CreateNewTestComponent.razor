@@ -5,6 +5,7 @@
 
 @inject CreateTestService CreateTestService
 @inject NavigationManager NavigationManager
+@inject CreateTestFromPDFService CreateTestFromPDFService
 
 <div class="bg-light p-2 b-2">
     <h5>
@@ -45,7 +46,7 @@
         try
         {
             disabledButton = true;
-            apiTest = await CreateTestService.ExecuteAsync(pdfdataId, name, startPage, endPage);
+            apiTest = await CreateTestFromPDFService.ExecuteAsync(pdfdataId, name, startPage, endPage);
             Thread.Sleep(10000);
             if (apiTest.Status != CustomStatusCodes.SuccessStatus) Console.WriteLine(apiTest.Message);
         }

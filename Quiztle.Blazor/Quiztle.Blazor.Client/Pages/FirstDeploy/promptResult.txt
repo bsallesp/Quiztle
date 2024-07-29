@@ -1,0 +1,258 @@
+﻿{
+  "Name": "DevOps Hard Level Practice Test",
+  "Questions": [
+    {
+      "Name": "In a continuous integration pipeline, which component is responsible for automatically deploying code after a successful build?",
+      "Options": [
+        {
+          "Name": "Continuous Deployment Tool",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Version Control System",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Build Server",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Artifact Repository",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Consider the tool that handles deployment.",
+      "Resolution": "The Continuous Deployment Tool is responsible for automatically deploying code after a successful build."
+    },
+    {
+      "Name": "Which of the following is NOT a benefit of Infrastructure as Code (IaC)?",
+      "Options": [
+        {
+          "Name": "Ability to scale infrastructure horizontally",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Enhanced security through manual configuration",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Consistency across environments",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Faster provisioning and changes",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about what IaC does not improve.",
+      "Resolution": "Enhanced security through manual configuration is not a benefit of IaC. IaC aims to automate and standardize configurations."
+    },
+    {
+      "Name": "What is the main difference between blue-green deployment and canary deployment?",
+      "Options": [
+        {
+          "Name": "Blue-green deployment involves switching between two identical environments, while canary deployment releases changes to a small subset of users.",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Blue-green deployment updates a single environment, while canary deployment updates all environments simultaneously.",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Blue-green deployment focuses on database migrations, while canary deployment focuses on application code.",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Blue-green deployment is suitable for microservices, while canary deployment is not.",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Consider how each deployment method manages changes.",
+      "Resolution": "Blue-green deployment involves switching between two identical environments, while canary deployment releases changes to a small subset of users."
+    },
+    {
+      "Name": "Which DevOps practice focuses on monitoring applications to detect issues before they impact users?",
+      "Options": [
+        {
+          "Name": "Proactive Monitoring",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Continuous Monitoring",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Reactive Monitoring",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Periodic Monitoring",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about a practice that ensures ongoing oversight.",
+      "Resolution": "Continuous Monitoring focuses on detecting issues before they impact users, ensuring ongoing oversight."
+    },
+    {
+      "Name": "What is a potential drawback of using a microservices architecture in a DevOps environment?",
+      "Options": [
+        {
+          "Name": "Increased complexity in managing inter-service communication",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Reduced scalability compared to monolithic applications",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Decreased fault tolerance",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Less flexibility in deployment",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Consider the challenges associated with service interactions.",
+      "Resolution": "Increased complexity in managing inter-service communication is a potential drawback of using a microservices architecture."
+    },
+    {
+      "Name": "Which tool is primarily used to manage containerized applications and orchestrate deployments?",
+      "Options": [
+        {
+          "Name": "Kubernetes",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Docker Compose",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Jenkins",
+          "IsCorrect": false
+        },
+        {
+          "Name": "GitLab CI",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about a tool designed for managing clusters of containers.",
+      "Resolution": "Kubernetes is primarily used to manage containerized applications and orchestrate deployments."
+    },
+    {
+      "Name": "In a DevOps pipeline, what is the purpose of a 'build artifact'?",
+      "Options": [
+        {
+          "Name": "To store the compiled code and resources ready for deployment",
+          "IsCorrect": true
+        },
+        {
+          "Name": "To automate the creation of deployment scripts",
+          "IsCorrect": false
+        },
+        {
+          "Name": "To manage and track source code changes",
+          "IsCorrect": false
+        },
+        {
+          "Name": "To monitor application performance in real-time",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Consider what happens after the code is compiled.",
+      "Resolution": "A 'build artifact' stores the compiled code and resources ready for deployment."
+    },
+    {
+      "Name": "Which practice is focused on ensuring that code changes do not break existing functionality?",
+      "Options": [
+        {
+          "Name": "Continuous Integration",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Continuous Delivery",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Continuous Deployment",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Continuous Testing",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about integrating code changes frequently.",
+      "Resolution": "Continuous Integration focuses on ensuring that code changes do not break existing functionality by frequently integrating changes into the codebase."
+    },
+    {
+      "Name": "What is a 'rollback' in the context of a deployment?",
+      "Options": [
+        {
+          "Name": "Reverting to a previous version of the application due to a failed deployment",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Rolling out new features incrementally to users",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Reducing the size of deployment packages",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Improving the performance of existing code",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about what happens when a deployment fails.",
+      "Resolution": "A 'rollback' is reverting to a previous version of the application due to a failed deployment."
+    },
+    {
+      "Name": "Which term describes a set of practices aimed at integrating security into every stage of the DevOps lifecycle?",
+      "Options": [
+        {
+          "Name": "DevSecOps",
+          "IsCorrect": true
+        },
+        {
+          "Name": "SecOps",
+          "IsCorrect": false
+        },
+        {
+          "Name": "SecDevOps",
+          "IsCorrect": false
+        },
+        {
+          "Name": "OpsSec",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Consider integrating security into the DevOps practices.",
+      "Resolution": "DevSecOps describes integrating security into every stage of the DevOps lifecycle."
+    },
+    {
+      "Name": "What is a common practice to ensure that infrastructure changes are tracked and managed effectively?",
+      "Options": [
+        {
+          "Name": "Infrastructure as Code",
+          "IsCorrect": true
+        },
+        {
+          "Name": "Ad-hoc Configuration Management",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Manual Deployment Scripts",
+          "IsCorrect": false
+        },
+        {
+          "Name": "Traditional ITIL Practices",
+          "IsCorrect": false
+        }
+      ],
+      "Hint": "Think about automating and versioning infrastructure changes.",
+      "Resolution": "Infrastructure as Code (IaC) is a common practice to ensure that infrastructure changes are tracked and managed effectively."
+    }
+  ]
+}

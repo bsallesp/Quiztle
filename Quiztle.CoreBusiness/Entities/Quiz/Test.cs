@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Quiz
 {
@@ -17,7 +18,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public List<Response>? Responses { get; set; } = [];
 
         [JsonPropertyName("PDFDataId")]
-        public Guid PDFDataId { get; set; }
+        public Guid? PDFDataId { get; set; } = null; // Inicialize com null
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;

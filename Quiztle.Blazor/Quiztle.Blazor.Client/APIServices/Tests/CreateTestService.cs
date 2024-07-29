@@ -1,7 +1,7 @@
 ﻿using Quiztle.CoreBusiness.APIEntities;
 using Quiztle.CoreBusiness.Utils;
 using Quiztle.CoreBusiness.Entities.Quiz;
-using System;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace Quiztle.Blazor.Client.APIServices.Tests
@@ -15,34 +15,52 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             _httpClient = httpClient;
         }
 
-        public async Task<APIResponse<Test>> ExecuteAsync(Guid id, string name  = "unnamed", int startPage = 1, int endPage = 20)
+        public async Task<APIResponse<Test>> ExecuteAsync(Test test)
         {
             try
             {
-                var url = "api/CreateTestFromPDFDataPages/"
-                    + "?id=" + id
-                    + "&name=" + Uri.EscapeDataString(name)
-                    + "&startPage=" + startPage.ToString()
-                    + "&endPage=" + endPage.ToString();
+                var url = "api/CreateTest/";
 
                 Console.WriteLine(url);
+                Console.WriteLine($"Base Address: {_httpClient.BaseAddress}");
+                Console.WriteLine($"Test Object: {JsonSerializer.Serialize(test)}");
 
+                var httpResponse = await _httpClient.PostAsJsonAsync(url, test);
 
-                var stringResponse = await _httpClient.GetStringAsync(url);
-                
-                Test testsAPIResponse = JsonSerializer.Deserialize<Test>(stringResponse)!;
-
-                return new APIResponse<Test>
+                if (httpResponse.IsSuccessStatusCode)
                 {
-                    Status = CustomStatusCodes.SuccessStatus,
-                    Data = testsAPIResponse,
-                    Message = "Total questions: " + testsAPIResponse.Questions.Count.ToString()
-                };
+                    Console.WriteLine("Sucess");
+                    var testsAPIResponse = await httpResponse.Content.ReadFromJsonAsync<Test>();
+                    return testsAPIResponse == null
+                        ? throw new Exception("CreateTestService: testsAPIResponse is null")
+                        : new APIResponse<Test>
+                        {
+                            Status = CustomStatusCodes.SuccessStatus,
+                            Data = testsAPIResponse,
+                            Message = "Total questions: " + testsAPIResponse.Questions.Count.ToString()
+                        };
+                }
+                else
+                {
+                    var statusCode = (int)httpResponse.StatusCode;
+                    var errorMessage = await httpResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error Status Code: {statusCode}");
+                    Console.WriteLine($"Error Message: {errorMessage}");
+                    Console.WriteLine($"Error Response Content: {errorMessage}");
+
+
+                    return new APIResponse<Test>
+                    {
+                        Status = CustomStatusCodes.ErrorStatus,
+                        Data = new Test(),
+                        Message = errorMessage
+                    };
+                }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + " " + ex.Data.ToString());
+                Console.WriteLine(ex.Message + " ERROR IN CreateTestService... : " + ex.Data.ToString());
 
                 return new APIResponse<Test>
                 {

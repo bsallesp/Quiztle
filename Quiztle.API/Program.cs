@@ -91,8 +91,9 @@ catch (Exception ex)
 #endregion
 
 #region Postgresql Connection
-var connectionString = builder.Configuration["DB_CONN"];
+var connectionString = builder.Configuration["PROD_POSTGRES_CONNECTION_STRING"];
 if (string.IsNullOrEmpty(connectionString)) throw new Exception($"Cant get connections at Quiztle.API project: {connectionString}");
+Console.WriteLine($"Connection gotten: {connectionString}");
 #endregion
 
 builder.Services.AddDbContextFactory<PostgreQuiztleContext>(opt =>

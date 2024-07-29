@@ -41,6 +41,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_GeneralDocs", "_GeneralDoc
 		_GeneralDocs\Plano de Negocio.txt = _GeneralDocs\Plano de Negocio.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Nginx", "_Nginx", "{EF43BE3E-B0B1-41FE-BA35-F5325EE37449}"
+	ProjectSection(SolutionItems) = preProject
+		_Nginx\quiztle.conf = _Nginx\quiztle.conf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace Quiztle.Blazor.Client.APIServices.Tests
 {
-    public class GetAllTests
+    public class GetAllTestsService
     {
         private readonly HttpClient _httpClient;
 
-        public GetAllTests(HttpClient httpClient)
+        public GetAllTestsService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -18,19 +18,19 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
         {
             try
             {
-                var stringResponse = await _httpClient.GetStringAsync("api/GetAllTests/");
+                var stringResponse = await _httpClient.GetStringAsync("api/GetAllTests");
                 List<Test> dataTemp = JsonSerializer.Deserialize<List<Test>>(stringResponse)!;
-
-                APIResponse<List<Test>> apiResult = new APIResponse<List<Test>> { Data = dataTemp };
+                APIResponse<List<Test>> apiResult = new() { Data = dataTemp };
 
                 return apiResult;
             }
-            catch
+            catch (Exception ex)
             {
                 return new APIResponse<List<Test>>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
-                    Data = new List<Test>()
+                    Data = new List<Test>(),
+                    Message = "error in GetAllTestsService " + DateTime.UtcNow + "\n" + ex.Message.ToString()
                 };
             }
         }

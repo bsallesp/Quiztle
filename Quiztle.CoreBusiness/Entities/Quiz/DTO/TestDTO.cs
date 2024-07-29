@@ -21,7 +21,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             Id = test.Id;
             Name = test.Name;
             QuestionsDTO = test.Questions.Select(q => new QuestionDTO(q)).ToList();
-            PDFDataId = test.PDFDataId;
+            //PDFDataId = test.PDFDataId;
             Created = test.Created;
         }
 

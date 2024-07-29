@@ -15,6 +15,7 @@ using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Blazor.Client.APIServices.Responses;
 using Quiztle.Blazor.Client.APIServices.Shots;
 using Microsoft.AspNetCore.Components.Server;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -46,6 +47,20 @@ builder.Services.AddCors(options =>
 
 #region Postgresql Connection
 var connectionString = builder.Configuration["DB_CONN"];
+
+try
+{
+    using (var connection = new NpgsqlConnection(connectionString))
+    {
+        connection.Open();
+        Console.WriteLine("Database Connection Successful");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Database Connection Failed: " + ex.Message);
+}
+
 if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at blazor server:");
 Console.WriteLine("Connection adquired: " + connectionString);
 #endregion
@@ -64,7 +79,22 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(QuiztleAPIURL),
     Timeout = Timeout.InfiniteTimeSpan
 });
+
+// Teste de conexão à API
+try
+{
+    using (var httpClient = new HttpClient())
+    {
+        var response = await httpClient.GetAsync(QuiztleAPIURL);
+        Console.WriteLine(response.IsSuccessStatusCode ? "API Connection Successful" : "API Connection Failed: " + response.ReasonPhrase);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("API Connection Failed: " + ex.Message);
+}
 #endregion
+
 
 builder.Services.AddScoped<CodeExtraction>();
 
@@ -87,7 +117,9 @@ builder.Services.AddTransient<ShotsService>();
 builder.Services.AddTransient<UploadFileService>();
 builder.Services.AddTransient<UploadedFilesListService>();
 builder.Services.AddTransient<PDFToDataFromStreamService>();
-builder.Services.AddTransient<GetAllTests>();
+builder.Services.AddTransient<GetAllTestsService>();
+builder.Services.AddTransient<CreateTestFromPDFService>();
+builder.Services.AddTransient<CreateTestService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

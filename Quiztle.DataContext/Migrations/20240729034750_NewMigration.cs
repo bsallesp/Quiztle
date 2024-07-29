@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Quiztle.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class firstOne : Migration
+    public partial class NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -128,8 +128,8 @@ namespace Quiztle.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: false)
+                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,7 +189,30 @@ namespace Quiztle.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionsDTO",
+                name: "Responses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Score = table.Column<int>(type: "integer", nullable: false),
+                    Percentage = table.Column<decimal>(type: "numeric", nullable: false),
+                    IsFinalized = table.Column<bool>(type: "boolean", nullable: false),
+                    TestId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Responses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Responses_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -216,6 +239,26 @@ namespace Quiztle.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Shots",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OptionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ResponseId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shots_Responses_ResponseId",
+                        column: x => x.ResponseId,
+                        principalTable: "Responses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Options",
                 columns: table => new
                 {
@@ -231,53 +274,7 @@ namespace Quiztle.DataContext.Migrations
                     table.ForeignKey(
                         name: "FK_Options_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "QuestionsDTO",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Shots",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OptionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Shots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Shots_Options_OptionId",
-                        column: x => x.OptionId,
-                        principalTable: "Options",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Responses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    TestId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShotId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Responses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Responses_Shots_ShotId",
-                        column: x => x.ShotId,
-                        principalTable: "Shots",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Responses_Tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "Tests",
+                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -304,18 +301,13 @@ namespace Quiztle.DataContext.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_SectionId",
-                table: "QuestionsDTO",
+                table: "Questions",
                 column: "SectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_TestId",
-                table: "QuestionsDTO",
+                table: "Questions",
                 column: "TestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Responses_ShotId",
-                table: "Responses",
-                column: "ShotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Responses_TestId",
@@ -333,9 +325,9 @@ namespace Quiztle.DataContext.Migrations
                 column: "ContentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shots_OptionId",
+                name: "IX_Shots_ResponseId",
                 table: "Shots",
-                column: "OptionId");
+                column: "ResponseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tests_PDFDataId",
@@ -353,22 +345,22 @@ namespace Quiztle.DataContext.Migrations
                 name: "BookTasks");
 
             migrationBuilder.DropTable(
+                name: "Options");
+
+            migrationBuilder.DropTable(
                 name: "PDFDataPages");
-
-            migrationBuilder.DropTable(
-                name: "Responses");
-
-            migrationBuilder.DropTable(
-                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Shots");
 
             migrationBuilder.DropTable(
-                name: "Options");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "QuestionsDTO");
+                name: "Questions");
+
+            migrationBuilder.DropTable(
+                name: "Responses");
 
             migrationBuilder.DropTable(
                 name: "Sections");
