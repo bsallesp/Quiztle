@@ -70,12 +70,10 @@
         try
         {
             var result = await GetAllTestsService.ExecuteAsync();
-            result.Data = _tests;
+            _tests = result.Data;
 
             Console.WriteLine(_tests.Count);
-
             _error = result.Message;
-            Console.WriteLine(_tests.Count);
             await base.OnInitializedAsync();
         }
         catch (Exception ex)
