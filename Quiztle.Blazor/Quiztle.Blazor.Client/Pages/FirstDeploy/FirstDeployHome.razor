@@ -1,7 +1,13 @@
-﻿@page "/"
+﻿@layout Quiztle.Blazor.Client.Layout.MainLayout
+@page "/"
 
-<h1>First Deploy</h1>
-@foreach (var i in listTests.Data)
+<HeroComponent />
+
+<UploadFileComponent/>
+
+<TestsListComponent/>
+
+@* @foreach (var i in listTests.Data)
 {
     <a href="/Games/Arcade/@i.Id">
         <h5 style="margin-bottom:15px;">
@@ -25,3 +31,4 @@
         _isEmpty = false;
     }
 }
+ *@

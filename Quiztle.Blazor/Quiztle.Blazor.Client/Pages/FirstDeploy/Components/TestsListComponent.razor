@@ -1,0 +1,34 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+
+<div class="m-4">
+    @foreach (var i in listTests.Data)
+    {
+        <div class="tests-list-font">
+            <div class="m-2">
+                @i.Name
+                <div class="mt-4" style="font-size: 15px;">@i.Questions.Count questions</div>
+            </div>
+            <a href="/Games/Arcade/@i.Id">
+                <div class="icon-text">
+                    <i class="bi bi-play-circle"></i>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    private bool _isEmpty = true;
+
+    private APIResponse<List<Test>> listTests = new APIResponse<List<Test>>
+        {
+            Data = new List<Test>()
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        listTests = await GetAllTestsService.ExecuteAsync();
+        _isEmpty = false;
+    }
+}
