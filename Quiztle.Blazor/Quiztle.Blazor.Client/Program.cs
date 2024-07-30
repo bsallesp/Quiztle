@@ -52,7 +52,7 @@ var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
 if (string.IsNullOrEmpty(QuiztleAPIURL))
     throw new Exception("API URL is not configured in appsettings.json");
 
-Console.WriteLine($"API Base URL Acquired: {QuiztleAPIURL}");
+Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {QuiztleAPIURL}");
 
 builder.Services.AddScoped(sp => new HttpClient
 {

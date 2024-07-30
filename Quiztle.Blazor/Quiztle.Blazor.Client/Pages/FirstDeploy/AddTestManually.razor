@@ -44,18 +44,12 @@
             {
                 Console.WriteLine("Creating Test in CreateTestService.ExecuteAsync...");
                 var response = await CreateTestService.ExecuteAsync(test);
-
-                // foreach(var item in test!.Questions)
-                // {
-                //     Console.WriteLine(item.Name);
-                //     foreach(var item2 in item.Options)
-                //     {
-                //         Console.WriteLine(item2.Name);
-                //     }
-                // }
-
                 _error = response.Message;
             }
+
+            await LoadTests();
+
+            jsonInput = "";
         }
         catch (Exception ex)
         {
@@ -65,7 +59,7 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    private async Task LoadTests()
     {
         try
         {
@@ -74,13 +68,19 @@
 
             Console.WriteLine(_tests.Count);
             _error = result.Message;
-            await base.OnInitializedAsync();
+
         }
         catch (Exception ex)
         {
             _error = ex.ToString();
             throw;
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTests();
+        await base.OnInitializedAsync();
     }
 }
 
@@ -100,83 +100,6 @@
 @* 
 
 
-{
-  "Name": "Azure AZ-900 Hard Level Practice Test",
-  "Questions": [
-    {
-      "Name": "What is the primary purpose of the Azure Policy initiative?",
-      "Options": [
-        {
-          "Name": "To enforce organizational standards and assess compliance at-scale",
-          "IsCorrect": true,
-        },
-        {
-          "Name": "To provide recommendations for optimizing resources",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To monitor security threats and vulnerabilities",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To manage costs across multiple subscriptions",
-          "IsCorrect": false,
-        }
-      ],
-      "Hint": "Think about compliance and governance.",
-      "Resolution": "Azure Policy is used to enforce organizational standards and assess compliance at-scale.",
-    },
- {
-      "Name": "What is the primary purpose of the Azure Policy initiative?",
-      "Options": [
-        {
-          "Name": "To enforce organizational standards and assess compliance at-scale",
-          "IsCorrect": true,
-        },
-        {
-          "Name": "To provide recommendations for optimizing resources",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To monitor security threats and vulnerabilities",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To manage costs across multiple subscriptions",
-          "IsCorrect": false,
-        }
-      ],
-      "Hint": "Think about compliance and governance.",
-      "Resolution": "Azure Policy is used to enforce organizational standards and assess compliance at-scale.",
-    },
- {
-      "Name": "What is the primary purpose of the Azure Policy initiative?",
-      "Options": [
-        {
-          "Name": "To enforce organizational standards and assess compliance at-scale",
-          "IsCorrect": true,
-        },
-        {
-          "Name": "To provide recommendations for optimizing resources",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To monitor security threats and vulnerabilities",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To manage costs across multiple subscriptions",
-          "IsCorrect": false,
-        }
-      ],
-      "Hint": "Think about compliance and governance.",
-      "Resolution": "Azure Policy is used to enforce organizational standards and assess compliance at-scale.",
-    },
-]
-}
-
-
-observe essa estrutura e vamos utilizar para fazer 10 perguntas sobre Devops. aproveite a mesma estrutura, escreva tudo em ingles. elabore conteudo capcioso, e perguntas que fazem pegadinha. ao mesmo tempo, o conteudo eh profissional. de forma que promove a curiosidade de quem esta lendo, uma charada interessante. irreverente e ao mesmo tempo respeitosa e profissional.
 
 
   *@
