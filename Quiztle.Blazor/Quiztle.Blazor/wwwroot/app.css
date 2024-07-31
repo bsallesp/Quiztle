@@ -1,6 +1,5 @@
-
-.top-row{
-    text-align: center;
+html, body {
+    font-family: 'Roboto', sans-serif;
 }
 
 a, .btn-link {
@@ -84,80 +83,8 @@ h1:focus {
     color: transparent;
 }
 
-@media (min-width: 0px) {
-    .hero-font {
-        font-size: 4rem;
-    }
 
-    .badge {
-        font-size: 1.0rem !important;
-        padding: 0.5em 1em !important;
-    }
 
-    .tests-list-font {
-        height: 300px;
-    }
-}
-
-@media (min-width: 500px) {
-    .hero-font {
-        font-size: 5rem;
-    }
-
-    .badge {
-        font-size: 1.3rem !important;
-        padding: 0.5em 1em !important;
-    }
-
-    .tests-list-font {
-        height: 200px;
-    }
-}
-
-@media (min-width: 768px) {
-    .hero-font {
-        font-size: 5rem;
-    }
-
-    .badge {
-        font-size: 1.3rem !important;
-        padding: 0.5em 1em !important;
-    }
-
-    .tests-list-font {
-        height: 250px;
-    }
-}
-
-@media (min-width: 992px) {
-    .hero-font {
-        font-size: 6rem;
-    }
-
-    .badge {
-        font-size: 1.4rem !important;
-        padding: 0.5em 1em !important;
-    }
-
-    .tests-list-font {
-        height: 200px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .hero-font {
-        font-size: 7rem;
-    }
-
-    .badge {
-        font-size: 1.5rem !important;
-        padding: 0.5em 1em !important;
-    }
-
-    .tests-list-font {
-        height: 250px;
-    }
-}
 
 .arsenal-sc-regular {
     font-family: "Arsenal SC", sans-serif;
@@ -179,57 +106,100 @@ h1:focus {
     padding: 6px;
 }
 
-.tests-list-font {
+.badge-test {
+    font-size: 1.0rem;
+    padding: 0.5em 1em;
+    background-color: wheat;
+}
+
+.text-test {
+    font-size: 1.3em;
+}
+
+.hero-container {
+}
+
+.container-tests {
     display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Espaço entre os itens */
+    justify-content: center;
+}
+
+.test-item {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    font-family: "Anton SC", sans-serif;
-    font-size: 1.5em;
+    align-items: center; /* Centraliza horizontalmente */
     background: linear-gradient(to top, #ebebeb31, #8fffff4e);
     padding: 15px;
-    width: 100%;
+    box-sizing: border-box; /* Inclui padding e border no tamanho total */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Borda com cor alfa 0.1 */
+    border-radius: 0.375rem; /* Raio da borda */
+    height: 300px; /* Altura ajustável */
+    position: relative; /* Para posicionamento dos links */
 }
 
-    .tests-list-font a {
-        text-decoration: none;
+.test-content {
+    flex-grow: 1; /* Ocupa o espaço disponível */
+    text-align: center;
+}
+
+.play-button {
+    margin-top: 1rem;
+    font-size: 2em;
+    align-self: flex-end;
+}
+
+.share-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    position: absolute;
+    bottom: 10px; /* Distância do fundo */
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza horizontalmente */
+}
+
+    .share-links a {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        transition: border-color 0.3s;
     }
 
-.icon-text {
+        .share-links a:hover {
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+
+.logo-quiztle {
+    font-family: 'PlaywriteAUNSW', sans-serif !important;
+    color: white !important;
+    text-decoration: none;
+}
+
+.logo-quiztle-div {
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 5px solid #dbdbdb7f;
+    background: linear-gradient(45deg, rgb(0, 0, 0, 0.70), #006bb7);
+    z-index: 1000;
+    text-align: center;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
-
-    .icon-text i {
-        margin-left: 0.5em;
-        font-size: 1.5em;
-    }
 
 @font-face {
     font-family: 'PlaywriteAUNSW';
     src: url('/fonts/Playwrite_AU_NSW/PlaywriteAUNSW-VariableFont_wght.ttf') format('truetype');
-    font-weight: 100 900; /* Ajuste conforme necessário para fontes variáveis */
-    font-style: normal; /* Ajuste se a fonte tiver estilos adicionais */
+    font-weight: 100 900;
+    font-style: normal;
 }
-
-.logo-quiztle {
-    font-family: 'PlaywriteAUNSW', sans-serif !important;
-}
-
-.logo-quiztle-div {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 20px;
-    border-bottom: 5px solid #dbdbdb7f; /* Borda inferior cinza e grossa */
-    background-color: white;
-    z-index: 1000; /* Para garantir que fica acima de outros elementos */
-    text-align: center; /* Centraliza o conteúdo */
-    height: 150px;
-    display: flex;
-    align-items: center; /* Centraliza verticalmente */
-    justify-content: center; /* Centraliza horizontalmente */
-}
-
 
 @font-face {
     font-family: 'Roboto';
@@ -301,7 +271,118 @@ h1:focus {
     font-style: italic;
 }
 
-html, body {
-    font-family: 'Roboto', sans-serif;
+@media (min-width: 0px) {
+    .hero-font {
+        font-size: 4rem;
+    }
+
+    .badge {
+        font-size: 1.0rem !important;
+        padding: 0.5em 1em !important;
+    }
+
+    .tests-list-font {
+        height: 300px;
+    }
+
+    .logo-quiztle {
+        font-size: 40px;
+    }
+
+    .logo-quiztle-div {
+        height: 90px;
+    }
 }
 
+@media (min-width: 500px) {
+    .hero-font {
+        font-size: 5rem;
+    }
+
+    .badge {
+        font-size: 1.3rem !important;
+        padding: 0.5em 1em !important;
+    }
+
+    .tests-list-font {
+        height: 200px;
+    }
+
+    .logo-quiztle {
+        font-size: 45px;
+    }
+
+    .logo-quiztle-div {
+        height: 90px;
+    }
+}
+
+
+@media (min-width: 768px) {
+    .hero-font {
+        font-size: 5rem;
+    }
+
+    .badge {
+        font-size: 1.3rem !important;
+        padding: 0.5em 1em !important;
+    }
+
+    .tests-list-font {
+        height: 250px;
+    }
+
+    .logo-quiztle {
+        font-size: 50px;
+    }
+
+    .logo-quiztle-div {
+        height: 90px;
+    }
+}
+
+@media (min-width: 992px) {
+    .hero-font {
+        font-size: 6rem;
+    }
+
+    .badge {
+        font-size: 1.4rem !important;
+        padding: 0.5em 1em !important;
+    }
+
+    .tests-list-font {
+        height: 200px;
+    }
+
+    .logo-quiztle {
+        font-size: 55px;
+    }
+
+    .logo-quiztle-div {
+        height: 90px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero-font {
+        font-size: 7rem;
+    }
+
+    .badge {
+        font-size: 1.5rem !important;
+        padding: 0.5em 1em !important;
+    }
+
+    .tests-list-font {
+        height: 250px;
+    }
+
+    .logo-quiztle {
+        font-size: 60px;
+    }
+
+    .logo-quiztle-div {
+        height: 130px;
+    }
+}

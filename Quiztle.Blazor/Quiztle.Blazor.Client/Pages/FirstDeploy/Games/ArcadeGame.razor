@@ -4,6 +4,10 @@
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
 
+<title>
+    @if (_title != null) @_title
+</title>
+
 <div>
     <div style="padding-bottom:80px;">
         @if (_testDTO.QuestionsDTO != null)
@@ -40,6 +44,7 @@
 
 @code {
     private int _totalSelectedAnswers = 0;
+    private string _title = "Quiztle";
 
     [Parameter]
     public string TestId { get; set; } = "";
@@ -78,10 +83,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await CheckURLTestGuid();
+        await LoadTestAsync();
         await base.OnParametersSetAsync();
     }
-    private async Task CheckURLTestGuid()
+    private async Task LoadTestAsync()
     {
         try
         {
@@ -94,6 +99,8 @@
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
                 _testDTO.FromTest(testAPIReponse.Data);
+
+                _title = testAPIReponse.Data.Name;
             }
             else
             {
