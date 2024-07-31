@@ -9,10 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Authentication\Interface\Register\Register.razor.css" />
     <None Remove="Pages\Games\Regular\FinishButtonComponent.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Authentication\Interface\Register\Register.razor.css" />
     <Content Include="Pages\Games\Regular\FinishButtonComponent.razor.css" />
   </ItemGroup>
 
@@ -34,6 +36,10 @@
     <Content Update="wwwroot\appsettings.Production.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Authentication\Interface\Login\" />
   </ItemGroup>
 
 </Project>

@@ -23,16 +23,15 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
     .Build();
 
-builder.Services.Configure<CircuitOptions>(options =>
-{
-    options.DetailedErrors = true;
-});
+builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHttpClient();
+
+builder.Services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 
 builder.Services.AddCors(options =>
 {
@@ -94,7 +93,6 @@ catch (Exception ex)
     Console.WriteLine("API Connection Failed: " + ex.Message);
 }
 #endregion
-
 
 builder.Services.AddScoped<CodeExtraction>();
 
