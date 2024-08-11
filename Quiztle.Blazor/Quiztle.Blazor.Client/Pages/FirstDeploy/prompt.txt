@@ -48,29 +48,6 @@
       "Hint": "Think about compliance and governance.",
       "Resolution": "Azure Policy is used to enforce organizational standards and assess compliance at-scale.",
     },
- {
-      "Name": "What is the primary purpose of the Azure Policy initiative?",
-      "Options": [
-        {
-          "Name": "To enforce organizational standards and assess compliance at-scale",
-          "IsCorrect": true,
-        },
-        {
-          "Name": "To provide recommendations for optimizing resources",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To monitor security threats and vulnerabilities",
-          "IsCorrect": false,
-        },
-        {
-          "Name": "To manage costs across multiple subscriptions",
-          "IsCorrect": false,
-        }
-      ],
-      "Hint": "Think about compliance and governance.",
-      "Resolution": "Azure Policy is used to enforce organizational standards and assess compliance at-scale.",
-    },
 ]
 }
 
@@ -82,7 +59,3 @@ Elabore conteudo capcioso, e perguntas que fazem pegadinha.
 Ao mesmo tempo, conteudo profissional.
 Crie de forma que promove a curiosidade de quem esta lendo, uma charada interessante. irreverente e ao mesmo tempo respeitosa e profissional.
 Retorne somente o json, de forma que fique facil copiar, sem necessidade de remover texto de chat.
-
-
-
-

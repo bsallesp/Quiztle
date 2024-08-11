@@ -1,0 +1,156 @@
+﻿@* @page "/AddTest" *@
+@using Quiztle.CoreBusiness.Entities.PDFData
+@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JS
+
+<div class="main-div">
+    <div class="title-basic">
+        <h3>Create your own Quiz</h3>
+    </div>
+
+    <div class="div-topic ban">
+        1: Fill the topic (max length: 40)
+        <input id="input-topic" class="input-topic" oninput="OnTopicChangeAsync()" placeholder="What do you want to read and learn about?" maxlength="40" />
+        <div id="topic-count">0 caracteres</div>
+        <button id="SubmitTopic" @bind="Topic" class="btn-primary button-topic">Generate Code</button>
+    </div>
+
+@*     <div class="div-topic ban">
+        2: Get the code and paste in <a href="https://chatgpt.com" target="_blank">chatgpt</a>
+        <input id="inputTopic" disabled="disabled" class="input-topic" placeholder="" maxlength="40" />
+        <button id="copyButton">Copy</button>
+    </div>
+
+    <div>@_error</div>
+
+    <form @onsubmit="Submit">
+        <label for="main-input"></label>
+        <textarea id="main-input" class="main-input" placeholder="Type..." @bind="jsonInput"></textarea>
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    @if (_tests != null)
+    {
+        foreach (var item in _tests)
+        {
+            <h5>@item.Name</h5>
+        }
+    } *@
+</div>
+
+<script>
+    function OnTopicChangeAsync() {
+        const input = document.getElementById("input-topic");
+        const button = document.getElementById("SubmitTopic");
+        button.disabled = input.value.trim() === "";
+        console.log(input.value.length);
+    }
+
+    function init() {
+        var inputTopic = document.getElementById('input-topic');
+        var submitButton = document.getElementById('SubmitTopic');
+        var topicCount = document.getElementById('topic-count');
+
+        function toggleSubmitButton() {
+            var charCount = inputTopic.value.length;
+            topicCount.textContent = charCount + ' caracteres';
+            submitButton.disabled = charCount === 0;
+        }
+
+        // Inicializar o estado do botão ao carregar a página
+        toggleSubmitButton();
+
+        // Adicionar evento de input para o campo
+        inputTopic.addEventListener('input', toggleSubmitButton);
+
+        document.getElementById('copyButton').addEventListener('click', function () {
+            var input = document.getElementById('inputTopic');
+            input.disabled = false;
+            input.select();
+            document.execCommand('copy');
+            input.disabled = true;
+            alert('Content copied to clipboard');
+        });
+    }
+</script>
+
+@code {
+    private string jsonInput = string.Empty;
+    private List<Test> _tests = new List<Test>();
+    private string _error = "";
+    private string Topic = "";
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await LoadTests();
+    // }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("init");
+        }
+    }
+
+    // private async Task Submit()
+    // {
+    //     try
+    //     {
+    //         if (string.IsNullOrWhiteSpace(jsonInput))
+    //         {
+    //             _error = "Input cannot be empty.";
+    //             return;
+    //         }
+
+    //         var test = JsonConvert.DeserializeObject<Test>(jsonInput);
+    //         if (test == null)
+    //         {
+    //             _error = "Invalid JSON format.";
+    //             return;
+    //         }
+
+    //         var validationContext = new ValidationContext(test, serviceProvider: null, items: null);
+    //         var validationResults = new List<ValidationResult>();
+    //         bool isValid = Validator.TryValidateObject(test, validationContext, validationResults, true);
+
+    //         if (!isValid)
+    //         {
+    //             _error = string.Join(", ", validationResults.Select(vr => vr.ErrorMessage));
+    //             return;
+    //         }
+
+    //         test.PDFDataId = null;
+
+    //         var response = await CreateTestService.ExecuteAsync(test);
+    //         _error = response.Message;
+
+    //         await LoadTests();
+
+    //         jsonInput = string.Empty;
+    //     }
+    //     catch (JsonException jsonEx)
+    //     {
+    //         _error = "Invalid JSON format: " + jsonEx.Message;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         _error = "An error occurred: " + ex.Message;
+    //     }
+    // }
+
+    // private async Task LoadTests()
+    // {
+    //     try
+    //     {
+    //         var result = await GetAllTestsService.ExecuteAsync();
+    //         _tests = result.Data;
+    //         _error = result.Message;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         _error = "An error occurred while loading tests: " + ex.Message;
+    //     }
+    // }
+}

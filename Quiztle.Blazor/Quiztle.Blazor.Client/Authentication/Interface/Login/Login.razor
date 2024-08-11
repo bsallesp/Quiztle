@@ -1,4 +1,4 @@
-﻿@page "/register"
+﻿@page "/login"
 
 @rendermode InteractiveAuto
 
@@ -6,31 +6,31 @@
 
 <div class="container">
     <div class="display-5">
-        Register
+        Login
     </div>
     <input type="email" id="email" name="email" placeholder="Email">
-@*     <div class="forgot-links">
+    <div class="forgot-links">
         Forgot my email
-    </div> *@
+    </div>
     <input type="password" id="password" name="password" placeholder="password">
-@*     <div class="forgot-links">
+    <div class="forgot-links">
         Forgot my password
-    </div> *@
-    <button>Submit</button>
+    </div>
+    <button>
+        Login
+    </button>
     <button class="google-button">
-    
         <img src="/svg/google.png"/>
-        Register with google
-        
+        Login with google
     </button>
     <hr>
-    <button @onclick="GoToLogin" class="div-login-link">Already registered? Login</button>
+    <button @onclick="GoToRegister" class="div-login-link">Not registered? Register</button>
 </div>
 
-@code{
-    private void GoToLogin()
+@code {
+    private void GoToRegister()
     {
-        Console.WriteLine("GoToLogin");
-        NavigationManager.NavigateTo("/login", true);
+        Console.WriteLine("GoToRegister");
+        NavigationManager.NavigateTo("/register", true);
     }
 }

@@ -4,6 +4,7 @@ html, body {
 
 a, .btn-link {
     color: #006bb7;
+    text-decoration: none;
 }
 
 .btn-primary {
@@ -11,6 +12,15 @@ a, .btn-link {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
+
+    .btn-primary:disabled {
+        background-color: #b0bec5; /* Cor de fundo quando desabilitado */
+        color: #ffffff; /* Cor do texto quando desabilitado */
+        border: 1px solid #b0bec5; /* Borda quando desabilitado */
+        cursor: not-allowed; /* Cursor em forma de barra */
+        opacity: 0.65; /* Opacidade reduzida quando desabilitado */
+        pointer-events: none; /* Desativa os eventos do mouse */
+    }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
@@ -50,6 +60,17 @@ h1:focus {
     border-color: #929292;
 }
 
+.title-basic{
+    margin-bottom: 30px;
+}
+
+.ban { /*background-alpha-nice*/
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+/*------------------ABAIXO VAMOS REDISTRIBUIR PARA OS RAZORS PERTENCENTES E DEIXAR AQUI SOMENTE O QUE EH GERAL.---------------------------------*/
+
 .hero-font {
     font-family: 'Arsenal SC', sans-serif;
     font-weight: 900;
@@ -82,9 +103,6 @@ h1:focus {
     background-clip: text;
     color: transparent;
 }
-
-
-
 
 .arsenal-sc-regular {
     font-family: "Arsenal SC", sans-serif;
