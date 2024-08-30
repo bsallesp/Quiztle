@@ -147,9 +147,9 @@ else
     app.UseHsts();
 }
 
-app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 
 app.UseStaticFiles();
 app.UseAntiforgery();

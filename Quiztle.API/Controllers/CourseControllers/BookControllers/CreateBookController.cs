@@ -64,21 +64,25 @@ namespace Quiztle.API.Controllers.CourseControllers.BookControllers
             }
             catch (Exception ex)
             {
-                // Captura e retorna informações detalhadas da exceção
+                // Captura e registra informações detalhadas da exceção
                 string errorMessage = $"Ocorreu uma exceção no CreateBookController: {ex.Message}";
 
-                // Verifica se a exceção possui uma causa (InnerException)
                 if (ex.InnerException != null)
                 {
                     errorMessage += $" InnerException: {ex.InnerException.Message}";
                 }
 
-                // Adiciona outras propriedades da exceção, se necessário
                 errorMessage += $" StackTrace: {ex.StackTrace}";
 
-                // Lança uma nova exceção com a mensagem detalhada
-                throw new Exception(errorMessage);
+                // Retorna uma resposta de erro contendo a mensagem detalhada
+                return StatusCode(500, new APIResponse<Book>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Message = errorMessage,
+                    Data = null
+                });
             }
+
         }
     }
 }

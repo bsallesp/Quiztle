@@ -18,14 +18,19 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddHttpClient<IChatGPTRequest, OllamaRequest>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(10);
+});
+
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 
 builder.Services.AddTransient<ChatGPTRequest>();
+builder.Services.AddTransient<OllamaRequest>();
 
 builder.Services.AddTransient(typeof(LogService<>));
 
-builder.Services.AddTransient<SaveAILogController>();
+//builder.Services.AddTransient<SaveAILogController>();
 builder.Services.AddTransient<CreateBookController>();
 builder.Services.AddTransient<CreateBookTaskController>();
 builder.Services.AddTransient<CreateTestFromPDFDataPages>();

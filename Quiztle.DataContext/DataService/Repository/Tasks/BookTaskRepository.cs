@@ -47,12 +47,14 @@ namespace Quiztle.DataContext.DataService.Repository.Tasks
         {
             try
             {
-                await _semaphore.WaitAsync();
+                //await _semaphore.WaitAsync();
 
                 EnsureBooksNotNull();
 
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    Console.WriteLine("getting here?????????");
+
                     var bookTask = await _context.BookTasks!
                         .Where(bt => bt.Status == 0)
                         .FirstOrDefaultAsync();
@@ -85,12 +87,12 @@ namespace Quiztle.DataContext.DataService.Repository.Tasks
                 {
                     Status = CustomStatusCodes.ErrorStatus,
                     Data = new BookTask(),
-                    Message = ex.Data.ToString()
+                    Message = ex.Data.ToString() ?? ex.Message
                 };
             }
             finally
             {
-                _semaphore.Release();
+                //_semaphore.Release();
             }
         }
 

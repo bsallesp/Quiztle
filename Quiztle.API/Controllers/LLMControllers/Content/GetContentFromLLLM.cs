@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Quiztle.API.Controllers.LLMControllers
 {
-    public class GetContentFromLLLM(IChatGPTRequest chatGPTAPI, SaveAILogController fromLLMToLogController) : ControllerBase
+    public class GetContentFromLLLM(IChatGPTRequest chatGPTAPI) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
-        private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
+        //private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
         public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book)
         {
@@ -23,7 +23,7 @@ namespace Quiztle.API.Controllers.LLMControllers
                         var prompt = CreateBookPrompts.GetNewContentFromSection(book.Name, chapter.Name, section.Name);
                         var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
                         var registerName = book.Name + chapter.Name + section.Name;
-                        await _fromLLMToLogController.ExecuteAsync(registerName, responseLLM);
+                        //await _fromLLMToLogController.ExecuteAsync(registerName, responseLLM);
                         var newContent = JSONConverter.ConvertToContent(responseLLM, "NewContent");
                         if (string.IsNullOrEmpty(newContent)) throw new Exception("The FromLLMToContent amount is zero or null");
 

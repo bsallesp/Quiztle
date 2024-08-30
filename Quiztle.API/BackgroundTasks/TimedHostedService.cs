@@ -18,7 +18,7 @@ namespace Quiztle.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(DoWork!, null, TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(100000000));
+                TimeSpan.FromMilliseconds(50000000));
 
             return Task.CompletedTask;
         }
@@ -30,7 +30,9 @@ namespace Quiztle.API.BackgroundTasks
                 var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
                 try
                 {
+                    Console.WriteLine("Launching _tryToMoveBookTaskToProduction.ExecuteAsync... at " + DateTime.UtcNow);
                     var result = await _tryToMoveBookTaskToProduction.ExecuteAsync();
+                    Console.WriteLine(result.Message);
                 }
                 catch (Exception ex)
                 {

@@ -1,0 +1,466 @@
+[33mcommit b34a46ba7d4db16ee38fd90244f2afc3aa4b8ed3[m
+Author: Bruno <bsallesp@gmail.com>
+Date:   Thu Apr 4 09:04:30 2024 -0400
+
+    dbcontext adjusted.
+
+[1mdiff --git a/BrunoTheBot.API/BrunoTheBot.API.csproj b/BrunoTheBot.API/BrunoTheBot.API.csproj[m
+[1mindex cdf1446..65bccc1 100644[m
+[1m--- a/BrunoTheBot.API/BrunoTheBot.API.csproj[m
+[1m+++ b/BrunoTheBot.API/BrunoTheBot.API.csproj[m
+[36m@@ -21,8 +21,4 @@[m
+     <ProjectReference Include="..\BrunoTheBot.DataContext\BrunoTheBot.DataContext.csproj" />[m
+   </ItemGroup>[m
+ [m
+[31m-  <ItemGroup>[m
+[31m-    <Folder Include="Controllers\HeadControllers\" />[m
+[31m-  </ItemGroup>[m
+[31m-[m
+ </Project>[m
+[1mdiff --git a/BrunoTheBot.API/BrunoTheBot/CoreBusiness/Entities/School.cs b/BrunoTheBot.API/BrunoTheBot/CoreBusiness/Entities/School.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a682afb[m
+[1m--- /dev/null[m
+[1m+++ b/BrunoTheBot.API/BrunoTheBot/CoreBusiness/Entities/School.cs[m
+[36m@@ -0,0 +1,12 @@[m
+[32m+[m[32m﻿[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mnamespace BrunoTheBot.CoreBusiness.Entities[m
+[32m+[m[32m{[m
+[32m+[m[32m    internal class School : Quiz.School[m
+[32m+[m[32m    {[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/AILogsController.cs b/BrunoTheBot.API/Controllers/AILogsController.cs[m
+[1mindex 19071d6..c532784 100644[m
+[1m--- a/BrunoTheBot.API/Controllers/AILogsController.cs[m
+[1m+++ b/BrunoTheBot.API/Controllers/AILogsController.cs[m
+[36m@@ -1,7 +1,7 @@[m
+ ﻿using Microsoft.AspNetCore.Mvc;[m
+ using Microsoft.EntityFrameworkCore;[m
+[31m-using BrunoTheBot.CoreBusiness;[m
+ using BrunoTheBot.DataContext;[m
+[32m+[m[32musing BrunoTheBot.CoreBusiness.Log;[m
+ [m
+ namespace BrunoTheBot.API.Controllers[m
+ {[m
+[36m@@ -20,100 +20,100 @@[m [mnamespace BrunoTheBot.API.Controllers[m
+         [HttpGet][m
+         public async Task<ActionResult<IEnumerable<AILog>>> Index()[m
+         {[m
+[31m-            var logs = await _context.AILogs.ToListAsync();[m
+[32m+[m[32m            var logs = _context.AILogs?.ToListAsync();[m
+             if (logs == null)[m
+             {[m
+                 return NotFound();[m
+             }[m
+[31m-            return logs;[m
+[32m+[m[32m            return await logs;[m
+         }[m
+ [m
+[31m-        // GET: api/AILogs/5[m
+[31m-        [HttpGet("{id}")][m
+[31m-        public async Task<ActionResult<AILog>> Details(int id)[m
+[31m-        {[m
+[31m-            var aILog = await _context.AILogs.FindAsync(id);[m
+[31m-[m
+[31m-            if (aILog == null)[m
+[31m-            {[m
+[31m-                return NotFound();[m
+[31m-            }[m
+[31m-[m
+[31m-            return aILog;[m
+[31m-        }[m
+[31m-[m
+[31m-        // POST: api/AILogs[m
+[31m-        [HttpPost][m
+[31m-        public async Task<ActionResult<AILog>> Create([FromBody]AILog aILog)[m
+[31m-        {[m
+[31m-            Console.WriteLine("JSON AT HTTPPOST API:: " + aILog.JSON);[m
+[31m-[m
+[31m-            if (aILog == null)[m
+[31m-            {[m
+[31m-                return BadRequest();[m
+[31m-            }[m
+[31m-[m
+[31m-            _context.AILogs.Add(aILog);[m
+[31m-            await _context.SaveChangesAsync();[m
+[31m-[m
+[31m-            return CreatedAtAction(nameof(Details), new { id = aILog.Id }, aILog);[m
+[31m-        }[m
+[31m-[m
+[31m-        // PUT: api/AILogs/5[m
+[31m-        [HttpPut("{id}")][m
+[31m-        public async Task<IActionResult> Edit(int id, AILog aILog)[m
+[31m-        {[m
+[31m-            if (aILog == null || id != aILog.Id)[m
+[31m-            {[m
+[31m-                return BadRequest();[m
+[31m-            }[m
+[31m-[m
+[31m-            var existingLog = await _context.AILogs.FindAsync(id);[m
+[31m-            if (existingLog == null)[m
+[31m-            {[m
+[31m-                return NotFound();[m
+[31m-            }[m
+[31m-[m
+[31m-            _context.Entry(existingLog).State = EntityState.Modified;[m
+[31m-[m
+[31m-            try[m
+[31m-            {[m
+[31m-                await _context.SaveChangesAsync();[m
+[31m-            }[m
+[31m-            catch (DbUpdateConcurrencyException)[m
+[31m-            {[m
+[31m-                if (!AILogExists(id))[m
+[31m-                {[m
+[31m-                    return NotFound();[m
+[31m-                }[m
+[31m-                else[m
+[31m-                {[m
+[31m-                    throw;[m
+[31m-                }[m
+[31m-            }[m
+[31m-[m
+[31m-            return NoContent();[m
+[31m-        }[m
+[31m-[m
+[31m-        // DELETE: api/AILogs/5[m
+[31m-        [HttpDelete("{id}")][m
+[31m-        public async Task<IActionResult> Delete(int id)[m
+[31m-        {[m
+[31m-            var aILog = await _context.AILogs.FindAsync(id);[m
+[31m-            if (aILog == null)[m
+[31m-            {[m
+[31m-                return NotFound();[m
+[31m-            }[m
+[31m-[m
+[31m-            _context.AILogs.Remove(aILog);[m
+[31m-            await _context.SaveChangesAsync();[m
+[31m-[m
+[31m-            return NoContent();[m
+[31m-        }[m
+[31m-[m
+[31m-        private bool AILogExists(int id)[m
+[31m-        {[m
+[31m-            return _context.AILogs.Any(e => e.Id == id);[m
+[31m-        }[m
+[32m+[m[32m        //// GET: api/AILogs/5[m
+[32m+[m[32m        //[HttpGet("{id}")][m
+[32m+[m[32m        //public async Task<ActionResult<AILog>> Details(int id)[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    var aILog = await _context.AILogs.FindAsync(id);[m
+[32m+[m
+[32m+[m[32m        //    if (aILog == null)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        return NotFound();[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    return aILog;[m
+[32m+[m[32m        //}[m
+[32m+[m
+[32m+[m[32m        //// POST: api/AILogs[m
+[32m+[m[32m        //[HttpPost][m
+[32m+[m[32m        //public async Task<ActionResult<AILog>> Create([FromBody]AILog aILog)[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    Console.WriteLine("JSON AT HTTPPOST API:: " + aILog.JSON);[m
+[32m+[m
+[32m+[m[32m        //    if (aILog == null)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        return BadRequest();[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    _context.AILogs.Add(aILog);[m
+[32m+[m[32m        //    await _context.SaveChangesAsync();[m
+[32m+[m
+[32m+[m[32m        //    return CreatedAtAction(nameof(Details), new { id = aILog.Id }, aILog);[m
+[32m+[m[32m        //}[m
+[32m+[m
+[32m+[m[32m        //// PUT: api/AILogs/5[m
+[32m+[m[32m        //[HttpPut("{id}")][m
+[32m+[m[32m        //public async Task<IActionResult> Edit(int id, AILog aILog)[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    if (aILog == null || id != aILog.Id)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        return BadRequest();[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    var existingLog = await _context.AILogs.FindAsync(id);[m
+[32m+[m[32m        //    if (existingLog == null)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        return NotFound();[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    _context.Entry(existingLog).State = EntityState.Modified;[m
+[32m+[m
+[32m+[m[32m        //    try[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        await _context.SaveChangesAsync();[m
+[32m+[m[32m        //    }[m
+[32m+[m[32m        //    catch (DbUpdateConcurrencyException)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        if (!AILogExists(id))[m
+[32m+[m[32m        //        {[m
+[32m+[m[32m        //            return NotFound();[m
+[32m+[m[32m        //        }[m
+[32m+[m[32m        //        else[m
+[32m+[m[32m        //        {[m
+[32m+[m[32m        //            throw;[m
+[32m+[m[32m        //        }[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    return NoContent();[m
+[32m+[m[32m        //}[m
+[32m+[m
+[32m+[m[32m        //// DELETE: api/AILogs/5[m
+[32m+[m[32m        //[HttpDelete("{id}")][m
+[32m+[m[32m        //public async Task<IActionResult> Delete(int id)[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    var aILog = await _context.AILogs.FindAsync(id);[m
+[32m+[m[32m        //    if (aILog == null)[m
+[32m+[m[32m        //    {[m
+[32m+[m[32m        //        return NotFound();[m
+[32m+[m[32m        //    }[m
+[32m+[m
+[32m+[m[32m        //    _context.AILogs.Remove(aILog);[m
+[32m+[m[32m        //    await _context.SaveChangesAsync();[m
+[32m+[m
+[32m+[m[32m        //    return NoContent();[m
+[32m+[m[32m        //}[m
+[32m+[m
+[32m+[m[32m        //private bool AILogExists(int id)[m
+[32m+[m[32m        //{[m
+[32m+[m[32m        //    return _context.AILogs.Any(e => e.Id == id);[m
+[32m+[m[32m        //}[m
+     }[m
+ }[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/ChatGPTAPI/CustomPromptsToRequest/CustomPromptsToRequest.cs b/BrunoTheBot.API/Controllers/ChatGPTAPI/CustomPromptsToRequest/CustomPromptsToRequest.cs[m
+[1mindex 98888fb..8def3fb 100644[m
+[1m--- a/BrunoTheBot.API/Controllers/ChatGPTAPI/CustomPromptsToRequest/CustomPromptsToRequest.cs[m
+[1m+++ b/BrunoTheBot.API/Controllers/ChatGPTAPI/CustomPromptsToRequest/CustomPromptsToRequest.cs[m
+[36m@@ -1,6 +1,4 @@[m
+[31m-﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;[m
+[31m-[m
+[31m-namespace BrunoTheBot.API[m
+[32m+[m[32m﻿namespace BrunoTheBot.API.Prompts[m
+ {[m
+     public static class CustomPromptsToRequest[m
+     {[m
+[36m@@ -38,13 +36,13 @@[m [mnamespace BrunoTheBot.API[m
+             return prompt;[m
+         }[m
+ [m
+[31m-        public static string GetSubTopics(string input, int amount = 10)[m
+[32m+[m[32m        public static string GetTopics(string input, int amount = 10)[m
+         {[m
+             // Construir a prompt conforme o formato especificado[m
+[31m-            string prompt = $"Return a JSON containing {amount} subtopics related to the topic '{input}'.\n\n";[m
+[32m+[m[32m            string prompt = $"Return a JSON containing {amount} subtopics related to the professional and technical topic '{input}'.\n\n";[m
+             prompt += "{\n";[m
+             prompt += $"  \"topic\": \"{input}\",\n";[m
+[31m-            prompt += "  \"subtopics\": [subTopic1, subtopic2, and so on]\n";[m
+[32m+[m[32m            prompt += "  \"subtopics\": [topics such as algorithms, data structures, networking, cybersecurity, machine learning, artificial intelligence, software development methodologies, and more]\n";[m
+             prompt += "}\n";[m
+ [m
+             return prompt;[m
+[36m@@ -71,5 +69,13 @@[m [mnamespace BrunoTheBot.API[m
+ [m
+             return prompt;[m
+         }[m
+[32m+[m
+[32m+[m[32m        public static string BachelorDegrees(string input, int amount = 20)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Construir a prompt conforme o formato especificado[m
+[32m+[m[32m            string prompt = $"Return a JSON containing the most relevant {amount} bachelor degrees worldwide, such as medicine, law, engineering, computer science, economics, psychology, biology, physics, mathematics, chemistry, architecture, business administration, environmental science, sociology, political science, literature, history, education, anthropology, and more.\n\n";[m
+[32m+[m
+[32m+[m[32m            return prompt;[m
+[32m+[m[32m        }[m
+     }[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/ChatGPTAPI/Services/ChatGPTContentJSONParse.cs b/BrunoTheBot.API/Controllers/ChatGPTAPI/Services/ChatGPTContentJSONParse.cs[m
+[1mindex ce3edfe..615f92a 100644[m
+[1m--- a/BrunoTheBot.API/Controllers/ChatGPTAPI/Services/ChatGPTContentJSONParse.cs[m
+[1m+++ b/BrunoTheBot.API/Controllers/ChatGPTAPI/Services/ChatGPTContentJSONParse.cs[m
+[36m@@ -1,8 +1,5 @@[m
+ ﻿using Newtonsoft.Json.Linq;[m
+[31m-using BrunoTheBot.CoreBusiness.Entities;[m
+[31m-using System;[m
+[31m-using System.Collections.Generic;[m
+[31m-using BrunoTheBot.CoreBusiness;[m
+[32m+[m[32musing BrunoTheBot.CoreBusiness.Entities.Quiz;[m
+ [m
+ namespace BrunoTheBot.APIs.Service[m
+ {[m
+[36m@@ -18,8 +15,11 @@[m [mnamespace BrunoTheBot.APIs.Service[m
+                 if (!string.IsNullOrEmpty(json))[m
+                 {[m
+                     JObject jsonObject = JObject.Parse(json);[m
+[32m+[m[32m#pragma warning disable CS8600[m
+                     json = (string)jsonObject["choices"]?[0]?["message"]?["content"] ?? "";[m
+[32m+[m[32m#pragma warning restore CS8600[m
+                 }[m
+[32m+[m
+                 else[m
+                 {[m
+                     Console.WriteLine("Input JSON is empty or null.");[m
+[36m@@ -41,7 +41,10 @@[m [mnamespace BrunoTheBot.APIs.Service[m
+             var jsonObject = JObject.Parse(content);[m
+ [m
+             // Extract the topic name and subtopics[m
+[32m+[m[32m#pragma warning disable CS8600[m
+             var topicName = (string)jsonObject["topic"];[m
+[32m+[m[32m#pragma warning restore CS8600[m
+[32m+[m
+             var subtopics = jsonObject["subtopics"]?.ToObject<List<string>>();[m
+ [m
+             // Create a new school[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/FillSchoolRepositoryController.cs b/BrunoTheBot.API/Controllers/FillSchoolRepositoryController.cs[m
+[1mindex 5933632..75cfc3a 100644[m
+[1m--- a/BrunoTheBot.API/Controllers/FillSchoolRepositoryController.cs[m
+[1m+++ b/BrunoTheBot.API/Controllers/FillSchoolRepositoryController.cs[m
+[36m@@ -1,6 +1,7 @@[m
+ ﻿using Microsoft.AspNetCore.Mvc;[m
+ using BrunoTheBot.DataContext;[m
+ using BrunoTheBot.APIs.Service;[m
+[32m+[m[32musing BrunoTheBot.DataContext.Repositories;[m
+ [m
+ namespace BrunoTheBot.API.Controllers[m
+ {[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/RequestLLMController.cs b/BrunoTheBot.API/Controllers/FromLLMToLogController.cs[m
+[1msimilarity index 70%[m
+[1mrename from BrunoTheBot.API/Controllers/RequestLLMController.cs[m
+[1mrename to BrunoTheBot.API/Controllers/FromLLMToLogController.cs[m
+[1mindex d053528..ff96e75 100644[m
+[1m--- a/BrunoTheBot.API/Controllers/RequestLLMController.cs[m
+[1m+++ b/BrunoTheBot.API/Controllers/FromLLMToLogController.cs[m
+[36m@@ -1,15 +1,22 @@[m
+[31m-﻿using Microsoft.AspNetCore.Mvc;[m
+[32m+[m[32m﻿using BrunoTheBot.API.Prompts;[m
+[32m+[m[32musing BrunoTheBot.CoreBusiness.Log;[m
+[32m+[m[32musing BrunoTheBot.DataContext.Repositories;[m
+[32m+[m[32musing Microsoft.AspNetCore.Mvc;[m
+[32m+[m[32musing Newtonsoft.Json;[m
+ [m
+ namespace BrunoTheBot.API.Controllers[m
+ {[m
+     [Route("api/[controller]")][m
+     [ApiController][m
+[31m-    public class RequestLLMController : ControllerBase[m
+[32m+[m[32m    public class FromLLMToLogController : ControllerBase[m
+     {[m
+         private readonly IChatGPTRequest _chatGPTRequest;[m
+[31m-        private readonly DataContext.AILogRepository aiLogDb;[m
+[32m+[m[32m        private readonly AILogRepository aiLogDb;[m
+[32m+[m[41m        [m
+[32m+[m[32m        private const string SuccessStatus = "Success";[m
+[32m+[m[32m        private const string ErrorStatus = "Error";[m
+ [m
+[31m-        public RequestLLMController(IChatGPTRequest chatGPTAPI, DataContext.AILogRepository aiLogDb)[m
+[32m+[m[32m        public FromLLMToLogController(IChatGPTRequest chatGPTAPI, AILogRepository aiLogDb)[m
+         {[m
+             _chatGPTRequest = chatGPTAPI;[m
+             this.aiLogDb = aiLogDb;[m
+[36m@@ -51,18 +58,31 @@[m [mnamespace BrunoTheBot.API.Controllers[m
+         {[m
+             try[m
+             {[m
+[31m-                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetSubTopics(input, amount));[m
+[32m+[m[32m                var response = await _chatGPTRequest.ChatWithGPT(CustomPromptsToRequest.GetTopics(input, amount));[m
+ [m
+                 await SaveLog(input, response);[m
+[31m-                return Ok(response);[m
+[32m+[m
+[32m+[m[32m                var responseObject = new[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    status = SuccessStatus,[m
+[32m+[m[32m                    response[m
+[32m+[m[32m                };[m
+[32m+[m
+[32m+[m[32m                return JsonConvert.SerializeObject(responseObject);[m
+[32m+[m
+             }[m
+             catch (Exception ex)[m
+             {[m
+[31m-                return StatusCode(500, $"Erro ao interagir com a API ChatGPT: {ex.Message}");[m
+[32m+[m[32m                var responseObject = new[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    status = ErrorStatus,[m
+[32m+[m[32m                    response = ex.Message[m
+[32m+[m[32m                };[m
+[32m+[m
+[32m+[m[32m                return JsonConvert.SerializeObject(responseObject);[m
+             }[m
+         }[m
+ [m
+[31m-[m
+         [HttpPost("GetBestAuthors")][m
+         public async Task<ActionResult<string>> GetBestAuthors([FromBody] string input)[m
+         {[m
+[36m@@ -81,7 +101,7 @@[m [mnamespace BrunoTheBot.API.Controllers[m
+ [m
+         private async Task SaveLog(string name, string json)[m
+         {[m
+[31m-            await aiLogDb.CreateAILogAsync(new CoreBusiness.AILog[m
+[32m+[m[32m            await aiLogDb.CreateAILogAsync(new AILog[m
+             {[m
+                 Name = name,[m
+                 JSON = json[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/HeadControllers/GetSchoolTopicsAuthorsController.cs b/BrunoTheBot.API/Controllers/HeadControllers/GetSchoolTopicsAuthorsController.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..656be3e[m
+[1m--- /dev/null[m
+[1m+++ b/BrunoTheBot.API/Controllers/HeadControllers/GetSchoolTopicsAuthorsController.cs[m
+[36m@@ -0,0 +1,44 @@[m
+[32m+[m[32m﻿using BrunoTheBot.CoreBusiness.Entities;[m
+[32m+[m[32musing BrunoTheBot.DataContext.Repositories;[m
+[32m+[m[32musing Microsoft.AspNetCore.Mvc;[m
+[32m+[m
+[32m+[m[32mnamespace BrunoTheBot.API.Controllers.HeadControllers[m
+[32m+[m[32m{[m
+[32m+[m[32m    [Route("api/[controller]")][m
+[32m+[m[32m    [ApiController][m
+[32m+[m[32m    public class GetSchoolTopicsAuthorsController : ControllerBase[m
+[32m+[m[32m    {[m
+[32m+[m[32m        private readonly SchoolRepository _schoolDb;[m
+[32m+[m[32m        private readonly FromLLMToLogController _requestLLMController;[m
+[32m+[m
+[32m+[m[32m        public GetSchoolTopicsAuthorsController(SchoolRepository schoolDb, FromLLMToLogController requestLLMController)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _schoolDb = schoolDb;[m
+[32m+[m[32m            _requestLLMController = requestLLMController;[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [HttpPost("GetSchoolTopicsAuthors")][m
+[32m+[m[32m        public async Task<ActionResult<string>> GetSchoolFeatures([FromBody] string input, int subTopicsAmount)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            try[m
+[32m+[m[32m            {[m
+[32m+[m[32m                School _school = new School();[m
+[32m+[m
+[32m+[m[32m                var subTopicsResponse = await _requestLLMController.GetSubTopics(input, subTopicsAmount);[m
+[32m+[m[41m                [m
+[32m+[m[41m                [m
+[32m+[m
+[32m+[m[32m                await _schoolDb.CreateSchoolAsync(new CoreBusiness.Entities.School[m
+[32m+[m[32m                {[m
+[32m+[m
+[32m+[m[32m                });[m
+[32m+[m
+[32m+[m[32m                return Ok();[m
+[32m+[m[32m            }[m
+[32m+[m[32m            catch (Exception ex)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                return StatusCode(500, $"Erro ao interagir com a API ChatGPT: {ex.Message}");[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[1mdiff --git a/BrunoTheBot.API/Controllers/Quiz/SchoolController.cs b/BrunoTheBot.API/Controllers/Quiz/SchoolController.cs[m
+[1mindex 1fb215d..aafb706 100644[m
+[1m--- a/BrunoTheBot.API/C

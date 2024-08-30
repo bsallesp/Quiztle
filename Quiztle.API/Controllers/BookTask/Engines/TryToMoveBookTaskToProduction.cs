@@ -21,11 +21,13 @@ namespace Quiztle.API.Controllers.Tasks.Engines
             {
                 using (var scope = _scopeFactory.CreateScope())
                 {
+                    Console.WriteLine("Launching TryToMoveBookTaskToProduction...");
                     var dbContext = scope.ServiceProvider.GetRequiredService<PostgreQuiztleContext>();
                     var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
                     var createBookController = scope.ServiceProvider.GetRequiredService<CreateBookController>();
 
                     var GetNextBookTaskFromQueueResult = await bookTaskRepository.GetNextBookTaskFromQueue();
+
                     if (GetNextBookTaskFromQueueResult.Status == CustomStatusCodes.ErrorStatus ||
                         GetNextBookTaskFromQueueResult.Status == CustomStatusCodes.NotFound)
                         return new APIResponse<bool>
@@ -59,7 +61,7 @@ namespace Quiztle.API.Controllers.Tasks.Engines
                 {
                     Status = CustomStatusCodes.ErrorStatus,
                     Data = false,
-                    Message = ex.Data.ToString()
+                    Message = ex.Data.ToString() ?? "Empty variable at TryToMoveBookTaskToProduction class"
                 };
             }
         }

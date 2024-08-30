@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Quiztle.API.Controllers.LLMControllers
 {
-    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI, SaveAILogController saveAILogController) : ControllerBase
+    public class GetQuestionsFromLLM(IChatGPTRequest chatGPTAPI) : ControllerBase
     {
         private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
-        private readonly SaveAILogController _saveAILogController = saveAILogController;
+        //private readonly SaveAILogController _saveAILogController = saveAILogController;
 
         public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book, int questionsPerSection = 1)
         {
@@ -29,7 +29,7 @@ namespace Quiztle.API.Controllers.LLMControllers
                     {
                         var prompt = CreateBookPrompts.GetNewQuestionFromLLMBook(section.Content.Text!, questionsPerSection);
                         var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
-                        await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
+                        //await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                         var newQuestion = JSONConverter.ConvertToQuestion(responseLLM);
 
                         section.Questions.Add(newQuestion);
@@ -70,7 +70,7 @@ namespace Quiztle.API.Controllers.LLMControllers
                 var questions = new List<Question>();
                 var prompt = QuestionsPrompts.GetNewQuestionFromPages(pdfDataPages, questionsPerSection);
                 var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
-                await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
+                //await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                 questions = JSONConverter.ConvertToQuestions(responseLLM);
                 foreach (var question in questions)
                 {

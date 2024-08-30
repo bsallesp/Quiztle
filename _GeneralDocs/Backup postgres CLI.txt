@@ -1,0 +1,1 @@
+scp -i C:\keys\vitoria_key.pem azureuser@20.84.89.62:/home/azureuser/bucket/quiztle-postgres-data.tar.gz C:\bucket\
