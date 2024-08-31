@@ -67,5 +67,31 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return TotalCorrectAnswers;
         }
+
+        public void SetQuestionsAmount(int amount)
+        {
+            if (amount >= QuestionsDTO.Count)
+            {
+                throw new ArgumentException("The amount must be less than the number of questions.");
+            }
+
+            // Create a random number generator
+            Random rng = new Random();
+
+            // Generate a list of indices for the questions to keep
+            var indicesToKeep = new HashSet<int>();
+
+            while (indicesToKeep.Count < amount)
+            {
+                indicesToKeep.Add(rng.Next(QuestionsDTO.Count));
+            }
+
+            // Keep only the questions at the generated indices
+            QuestionsDTO = QuestionsDTO
+                .Select((q, index) => new { q, index })
+                .Where(x => indicesToKeep.Contains(x.index))
+                .Select(x => x.q)
+                .ToList();
+        }
     }
 }

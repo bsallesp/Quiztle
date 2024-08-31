@@ -37,5 +37,18 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 Questions[n] = value;
             }
         }
+
+        public Question GetRandomQuestion()
+        {
+            if (Questions == null || Questions.Count == 0)
+            {
+                throw new InvalidOperationException("Não há perguntas disponíveis.");
+            }
+
+            Random rng = new Random();
+            int index = rng.Next(Questions.Count);
+            return Questions[index];
+        }
+
     }
 }

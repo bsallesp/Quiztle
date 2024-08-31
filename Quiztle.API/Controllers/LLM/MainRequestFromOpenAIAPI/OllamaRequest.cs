@@ -3,10 +3,10 @@ using System.Text.Json;
 
 namespace Quiztle.API
 {
-    public class OllamaRequest : IChatGPTRequest
+    public class OllamaRequest : ILLMRequest
     {
         private readonly HttpClient _client;
-        private readonly string _ngrokEndpoint = "https://6d9f-2600-1700-6a32-e650-5818-9fb5-102c-346b.ngrok-free.app/api/generate";
+        private readonly string _ngrokEndpoint = "https://dfd0-2600-1700-6a32-e650-4e8-3766-8b80-1a7c.ngrok-free.app/api/generate";
 
         public OllamaRequest(HttpClient client)
         {
@@ -41,7 +41,7 @@ namespace Quiztle.API
                     string responseJsonString = root.GetProperty("response").GetString() ?? "";
 
                     Console.WriteLine("----------OLLAMA RESPONSE: " + responseJsonString);
-                    return jsonResponse;
+                    return responseJsonString;
                 }
                 else
                 {

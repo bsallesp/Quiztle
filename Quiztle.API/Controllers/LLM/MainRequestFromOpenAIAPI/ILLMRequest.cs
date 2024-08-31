@@ -1,6 +1,6 @@
 ﻿namespace Quiztle.API
 {
-    public interface IChatGPTRequest
+    public interface ILLMRequest
     {
         Task<string> ExecuteAsync(string input, string systemProfile = "");
     }

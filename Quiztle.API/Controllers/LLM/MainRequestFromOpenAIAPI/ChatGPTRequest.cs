@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Quiztle.API
 {
-    public class ChatGPTRequest : IChatGPTRequest, IDisposable
+    public class ChatGPTRequest : ILLMRequest, IDisposable
     {
         private readonly HttpClient _client;
         private readonly string _apiKey;

@@ -1,4 +1,5 @@
 ﻿@page "/Games/Arcade/{TestId}"
+@page "/Games/Arcade/{TestId}/{amount}"
 
 @using Quiztle.Blazor.Client.Pages.Games.Components
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
@@ -48,6 +49,8 @@
 
     [Parameter]
     public string TestId { get; set; } = "";
+    [Parameter]
+    public string amount { get; set; } = "";
 
     private TestDTO _testDTO = new();
     private Response? _response;
@@ -75,8 +78,6 @@
 
     private bool IsAllQuestionsAnswered()
     {
-        // Console.WriteLine(_testDTO.QuestionsDTO.Count);
-        // Console.WriteLine(_testDTO.GetTotalSelectedAnswers());
         if (_testDTO.QuestionsDTO.Count == _testDTO.GetTotalSelectedAnswers()) return true;
         return false;
     }
@@ -88,6 +89,7 @@
     }
     private async Task LoadTestAsync()
     {
+        Console.WriteLine("FHIASDHFUIHASDUIFHUIASDHUIFHUSD");
         try
         {
             Guid testIdGuid;
@@ -99,8 +101,13 @@
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
                 _testDTO.FromTest(testAPIReponse.Data);
-
                 _title = testAPIReponse.Data.Name;
+
+                var amount = 0;
+                if (int.TryParse(this.amount, out amount))
+                {
+                    _testDTO.SetQuestionsAmount(amount);
+                }
             }
             else
             {

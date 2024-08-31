@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Quiztle.API.Controllers.LLMControllers
 {
-    public class GetContentFromLLLM(IChatGPTRequest chatGPTAPI) : ControllerBase
+    public class GetContentFromLLLM(ILLMRequest chatGPTAPI) : ControllerBase
     {
-        private readonly IChatGPTRequest _chatGPTRequest = chatGPTAPI;
+        private readonly ILLMRequest _chatGPTRequest = chatGPTAPI;
         //private readonly SaveAILogController _fromLLMToLogController = fromLLMToLogController;
 
         public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book)

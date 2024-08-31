@@ -100,7 +100,7 @@ builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<PDFDataRepository>();
 
 builder.Services.AddTransient<GetAllBooksController>();
-builder.Services.AddTransient<IChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddTransient<ILLMRequest, ChatGPTRequest>();
 
 builder.Services.AddTransient<GetAllBooksService>();
 builder.Services.AddTransient<RetrieveBookByIdService>();

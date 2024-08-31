@@ -10,14 +10,6 @@
 @inject NavigationManager Nav
 @inject GetAllQuestionsToRegularGame GetAllQuestionsFromBookService
 
-@* <p>
-    count: @regularExam.Questions.Count
-</p>
-<p>
-    answered: @regularExam.TotalQuestionsAnswered()
-</p> *@
-
-
 <FinishButtonComponent
     MissingQuestions=0
     Active="@(regularExam.AllQuestionsAnsweredy() ? true : false)">

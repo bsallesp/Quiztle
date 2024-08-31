@@ -15,10 +15,11 @@ using Quiztle.DataContext.Repositories.Quiz;
 using Quiztle.API.Controllers.PDFApi;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using System.Text.Json.Serialization;
+using Quiztle.API.BackgroundTasks.Questions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<IChatGPTRequest, OllamaRequest>(client =>
+builder.Services.AddHttpClient<ILLMRequest, OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
 });
@@ -52,6 +53,7 @@ builder.Services.AddTransient<QuestionRepository>();
 builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<ResponseRepository>();
 builder.Services.AddTransient<ShotRepository>();
+builder.Services.AddTransient<BGQuestions>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 

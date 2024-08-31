@@ -19,6 +19,8 @@ namespace Quiztle.DataContext.Repositories.Quiz
                 EnsureQuestionsNotNull();
                 _context.Questions!.Add(question);
                 await _context.SaveChangesAsync();
+
+                Console.WriteLine("QuestionRepository/CreateQuestionAsync success created: " + question.Id);
             }
             catch (Exception ex)
             {

@@ -9,9 +9,9 @@ namespace Quiztle.API.Controllers.LLM
         [Route("api/[controller]")]
         public class OllamaTestController : ControllerBase
         {
-            private readonly IChatGPTRequest _ollamaRequest;
+            private readonly ILLMRequest _ollamaRequest;
             
-            public OllamaTestController(IChatGPTRequest ollamaRequest)
+            public OllamaTestController(ILLMRequest ollamaRequest)
             {
                 _ollamaRequest = ollamaRequest;
             }

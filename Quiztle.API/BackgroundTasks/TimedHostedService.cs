@@ -1,5 +1,8 @@
-﻿using Quiztle.API.Controllers.Tasks.Engines;
+﻿using Quiztle.API.BackgroundTasks.Questions;
+using Quiztle.API.Controllers.Tasks.Engines;
 using Quiztle.DataContext.DataService.Repository.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Quiztle.API.BackgroundTasks
 {
@@ -7,36 +10,36 @@ namespace Quiztle.API.BackgroundTasks
     {
         private Timer? _timer;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly TryToMoveBookTaskToProduction _tryToMoveBookTaskToProduction;
 
-        public TimedHostedService(IServiceScopeFactory scopeFactory, TryToMoveBookTaskToProduction tryToMoveBookTaskToProduction)
+        public TimedHostedService(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-            _tryToMoveBookTaskToProduction = tryToMoveBookTaskToProduction;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork!, null, TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(50000000));
+            // Define o intervalo do Timer
+            //_timer = new Timer(DoWork!, null, TimeSpan.Zero, TimeSpan.FromSeconds(0));
 
             return Task.CompletedTask;
         }
 
         private async void DoWork(object state)
         {
+            // Cria um escopo para usar serviços scoped
             using (var scope = _scopeFactory.CreateScope())
             {
-                var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
                 try
                 {
-                    Console.WriteLine("Launching _tryToMoveBookTaskToProduction.ExecuteAsync... at " + DateTime.UtcNow);
-                    var result = await _tryToMoveBookTaskToProduction.ExecuteAsync();
-                    Console.WriteLine(result.Message);
+                    var bgQuestions = scope.ServiceProvider.GetRequiredService<BGQuestions>();
+
+                    Console.WriteLine("Launching _bgQuestions.ExecuteAsync... at " + DateTime.UtcNow);
+                    var result = await bgQuestions.ExecuteAsync();
+                    Console.WriteLine(result);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("An exception occurred while checkin tht queue: ");
+                    Console.WriteLine("TimedHostedService / DoWork: An exception occurred while checking the queue: ");
                     Console.WriteLine(ex.ToString());
                 }
             }
@@ -44,6 +47,7 @@ namespace Quiztle.API.BackgroundTasks
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            // Para o Timer quando o serviço for interrompido
             _timer?.Change(Timeout.Infinite, 0);
 
             return Task.CompletedTask;
@@ -51,6 +55,7 @@ namespace Quiztle.API.BackgroundTasks
 
         public void Dispose()
         {
+            // Libera os recursos do Timer
             _timer?.Dispose();
         }
     }
