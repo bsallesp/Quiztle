@@ -5,7 +5,6 @@
         public static string GetNewQuestionFromPages(string text, int questionsAmount = 5)
         {
             string description = $@"
-
                 1. **`Questions`**: 
                    - Type: Array of objects.
                    - Description: A list of questions. Each object in the array represents a specific question.
@@ -43,14 +42,22 @@
                      - Description: A complete explanation of the correct answer. Should justify why the answer is correct and may mention the source of the question (e.g., the page of a document).
             ";
 
-            if (questionsAmount <= 1)
-            {
-                return $"Create a question about '{text}' and format the JSON according to the provided description: {description}. The json ras";
-            }
-            else
-            {
-                return $"Create {questionsAmount} questions about '{text}' and format each one according to the described JSON structure: {description}";
-            }
+            return GenerateQuestionPrompt(text, description, questionsAmount);
+        }
+
+        private static string GenerateQuestionPrompt(string text, string description, int questionsAmount)
+        {
+            string questionPart = questionsAmount <= 1
+                ? "a question"
+                : $"{questionsAmount} questions";
+
+            return $"Generate {questionPart} based on" +
+                $" ------TEXT BEGIN------------ \\n" +
+                $"'{text}'." +
+                $"-------TEXT END-------------- \\n" +
+                $"Format the JSON according to the provided description: {description}. " +
+                $"Only use the information provided here. Do not add or omit any content. " +
+                $"These questions are designed for learning and passing official certification exams from major companies.";
         }
     }
 }

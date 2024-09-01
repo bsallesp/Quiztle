@@ -17,8 +17,7 @@
 
             @foreach (var questionDTO in _testDTO.QuestionsDTO)
             {
-
-                    <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
+                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
             }
         }
     </div>
@@ -34,10 +33,18 @@
         @if (ShowResults)
         {
             <div style="background-color: mintcream;">
-                <h4>
-                    You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
-
-                </h4>
+                
+                @if(_testDTO.QuestionsDTO!.Count > 1)
+                {
+                    <h4>
+                        You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
+                    </h4>
+                }
+                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
+                    <h3 class="mb-0">
+                        Next
+                    </h3>
+                </button>
             </div>
         }
     </div>
@@ -68,6 +75,13 @@
                 _showResults = value;
             }
         }
+    }
+
+    private void NextQuestion()
+    {
+        Console.WriteLine("uhauhauha");
+        Nav.NavigateTo("/Games/Arcade/" + _testGuid + "/" + _testDTO.QuestionsDTO!.Count, true);
+
     }
 
     private void FinalizeTestResponse()

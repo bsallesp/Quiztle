@@ -1,8 +1,4 @@
 ﻿using Quiztle.API.BackgroundTasks.Questions;
-using Quiztle.API.Controllers.Tasks.Engines;
-using Quiztle.DataContext.DataService.Repository.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Quiztle.API.BackgroundTasks
 {
@@ -19,8 +15,7 @@ namespace Quiztle.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Define o intervalo do Timer
-            //_timer = new Timer(DoWork!, null, TimeSpan.Zero, TimeSpan.FromSeconds(0));
-
+            _timer = new Timer(DoWork!, null, TimeSpan.Zero, TimeSpan.FromSeconds(150));
             return Task.CompletedTask;
         }
 

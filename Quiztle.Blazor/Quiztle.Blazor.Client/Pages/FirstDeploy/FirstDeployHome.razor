@@ -8,29 +8,3 @@
 <UploadFileComponent/>
 
 <TestsListComponent/>
-
-@* @foreach (var i in listTests.Data)
-{
-    <a href="/Games/Arcade/@i.Id">
-        <h5 style="margin-bottom:15px;">
-            @i.Name
-        </h5>
-    </a>
-}
-
-@code {
-    private bool _isEmpty = true;
-
-    private APIResponse<List<Test>> listTests = new APIResponse<List<Test>>
-        {
-            Data = new List<Test>()
-        };
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        listTests = await GetAllTestsService.ExecuteAsync();
-        _isEmpty = false;
-    }
-}
- *@
