@@ -1,36 +1,40 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Quiztle.API.Controllers.LLM.Interfaces;
 
-namespace Quiztle.API
+namespace Quiztle.API.Controllers.LLM
 {
     public class OllamaRequest : ILLMRequest
     {
         private readonly HttpClient _client;
-        private readonly string _ngrokEndpoint = "https://dfd0-2600-1700-6a32-e650-4e8-3766-8b80-1a7c.ngrok-free.app/api/generate";
+        private readonly IEndpointProvider _endpointProvider;
 
-        public OllamaRequest(HttpClient client)
+        public OllamaRequest(HttpClient client, IEndpointProvider endpointProvider)
         {
             _client = client;
+            _endpointProvider = endpointProvider;
         }
 
         public async Task<string> ExecuteAsync(string input, string systemProfile = "")
         {
             try
             {
-                if (string.IsNullOrEmpty(systemProfile))
-                    systemProfile = "You are a helpful assistant specialized in crafting educational content, possessing comprehensive understanding across all study-related domains. You consistently provide structured JSON responses, ensuring clarity and consistency in information delivery";
+                var ngrokEndpoint = _endpointProvider.GetNgrokEndpoint();
 
                 var requestData = new
                 {
                     model = "llama3.1",
                     stream = false,
-                    format =  "json",
+                    format = "json",
                     prompt = input
                 };
 
                 var jsonRequest = JsonSerializer.Serialize(requestData);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync(_ngrokEndpoint, content);
+
+                _client.Timeout = Timeout.InfiniteTimeSpan;
+
+                var response = await _client.PostAsync(ngrokEndpoint, content);
 
                 if (response.IsSuccessStatusCode)
                 {

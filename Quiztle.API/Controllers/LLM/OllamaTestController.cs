@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.CoreBusiness.Utils;
 
 namespace Quiztle.API.Controllers.LLM

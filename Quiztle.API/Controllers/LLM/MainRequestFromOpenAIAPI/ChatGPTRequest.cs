@@ -1,4 +1,5 @@
-﻿using Quiztle.CoreBusiness.Log;
+﻿using Quiztle.API.Controllers.LLM.Interfaces;
+using Quiztle.CoreBusiness.Log;
 using Quiztle.DataContext.Repositories;
 using System;
 using System.Linq;

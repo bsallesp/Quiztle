@@ -1,25 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.API.Prompts;
-using Quiztle.API.Services;
 using Quiztle.CoreBusiness.Entities.Quiz;
-using Quiztle.CoreBusiness.Utils;
+using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+using Quiztle.DataContext.DataService.Repository.Quiz;
 using Quiztle.DataContext.Repositories;
 using Quiztle.DataContext.Repositories.Quiz;
-using System.Xml.Linq;
 
 
 namespace Quiztle.API.BackgroundTasks.Questions
 {
-    public class BGQuestions
+    public class BuildQuestionsInBackgroundByLLM
     {
         private readonly ILLMRequest _llmRequest;
         private readonly PDFDataRepository _pDFDataRepository;
         private readonly QuestionRepository _questionRepository;
+        private readonly TestRepository _testRepository;
         private readonly AILogRepository _aILogRepository;
 
-        public BGQuestions(ILLMRequest ollamaRequest,
+        public BuildQuestionsInBackgroundByLLM(ILLMRequest ollamaRequest,
             PDFDataRepository pDFDataRepository,
+            TestRepository testRepository,
             QuestionRepository questionRepository,
             AILogRepository aILogRepository
             )
@@ -27,6 +29,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
             _llmRequest = ollamaRequest;
             _pDFDataRepository = pDFDataRepository;
             _questionRepository = questionRepository;
+            _testRepository = testRepository;
             _aILogRepository = aILogRepository;
         }
 
@@ -38,7 +41,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 var _pdfDataAZ900 = await _pDFDataRepository.GetPDFDataByIdAsync(guid);
 
                 // Descobrir o total de páginas no PDF
-                int totalPages = _pdfDataAZ900.Pages.Count;
+                int totalPages = _pdfDataAZ900!.Pages.Count;
 
                 // Gerar um número aleatório para selecionar uma página
                 int randomPageIndex = new Random().Next(0, totalPages);
@@ -48,7 +51,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
-                    Name = "BGQuestions",
+                    Name = "BuildQuestionsInBackgroundByLLM",
                     JSON = llmInput,
                     Created = DateTime.UtcNow
                 });
@@ -57,7 +60,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
-                    Name = "BGQuestions",
+                    Name = "BuildQuestionsInBackgroundByLLM",
                     JSON = llmResult,
                     Created = DateTime.UtcNow
                 });
@@ -69,22 +72,27 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 if (questionsToken == null) throw new ArgumentException("No 'Questions' found in JSON.");
                 var questions = questionsToken.ToObject<List<Question>>();
 
+                Console.WriteLine("Total questions in json: " + questions!.Count);
 
-                Console.WriteLine("Total questions in json: " + questions.Count);
+                var testId = new Guid("3cad927f-53eb-4f03-a6c3-29daf3369dbc");
+                await _testRepository.AddQuestionsToTestAsync(testId, questions);
 
-                foreach(var question in questions) await _questionRepository.CreateQuestionAsync(question);
 
+                //foreach (var question in questions)
+                //{
+                //    await _questionRepository.CreateQuestionAsync(question);
+                //} 
+                
                 Console.WriteLine(llmResult);
 
                 return new JsonResult(llmInput) { StatusCode = 200 };
             }
             catch (Exception ex)
             {
-                var error = $"Error in BGQuestions/ExecuteAsync: {ex.Message}";
+                var error = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
                 Console.WriteLine(error);
                 return new ObjectResult(error) { StatusCode = 500 };
             }
         }
-
     }
 }

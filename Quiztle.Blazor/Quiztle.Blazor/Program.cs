@@ -16,6 +16,7 @@ using Quiztle.Blazor.Client.APIServices.Responses;
 using Quiztle.Blazor.Client.APIServices.Shots;
 using Microsoft.AspNetCore.Components.Server;
 using Npgsql;
+using Quiztle.API.Controllers.LLM.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -45,7 +46,9 @@ builder.Services.AddCors(options =>
 });
 
 #region Postgresql Connection
-var connectionString = builder.Configuration["DB_CONN"];
+var connectionString = builder.Configuration["DB_CONN"]
+    ?? Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING")
+    ?? throw new Exception("DB CONNECTION NOT FOUND");
 
 try
 {

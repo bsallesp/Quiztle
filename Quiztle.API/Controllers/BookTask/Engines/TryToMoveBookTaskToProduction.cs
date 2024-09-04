@@ -24,7 +24,7 @@ namespace Quiztle.API.Controllers.Tasks.Engines
                     Console.WriteLine("Launching TryToMoveBookTaskToProduction...");
                     var dbContext = scope.ServiceProvider.GetRequiredService<PostgreQuiztleContext>();
                     var bookTaskRepository = scope.ServiceProvider.GetRequiredService<BookTaskRepository>();
-                    var createBookController = scope.ServiceProvider.GetRequiredService<CreateBookController>();
+                    var createBookController = scope.ServiceProvider.GetRequiredService<CreateBookByLLMController>();
 
                     var GetNextBookTaskFromQueueResult = await bookTaskRepository.GetNextBookTaskFromQueue();
 

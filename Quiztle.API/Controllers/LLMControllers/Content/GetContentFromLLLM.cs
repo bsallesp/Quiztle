@@ -4,6 +4,7 @@ using Quiztle.CoreBusiness.APIEntities;
 using Quiztle.CoreBusiness.Utils;
 using Quiztle.CoreBusiness.Entities.Course;
 using Microsoft.AspNetCore.Mvc;
+using Quiztle.API.Controllers.LLM.Interfaces;
 
 namespace Quiztle.API.Controllers.LLMControllers
 {

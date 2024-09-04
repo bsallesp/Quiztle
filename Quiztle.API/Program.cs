@@ -16,6 +16,8 @@ using Quiztle.API.Controllers.PDFApi;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using System.Text.Json.Serialization;
 using Quiztle.API.BackgroundTasks.Questions;
+using Quiztle.API.Controllers.LLM;
+using Quiztle.API.Controllers.LLM.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,12 +29,14 @@ builder.Services.AddHttpClient<ILLMRequest, OllamaRequest>(client =>
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 
 builder.Services.AddTransient<ChatGPTRequest>();
-builder.Services.AddTransient<OllamaRequest>();
+builder.Services.AddTransient<IEndpointProvider, NgrokEndpointProvider>();
+builder.Services.AddTransient<ILLMRequest, OllamaRequest>();
+
 
 builder.Services.AddTransient(typeof(LogService<>));
 
 //builder.Services.AddTransient<SaveAILogController>();
-builder.Services.AddTransient<CreateBookController>();
+builder.Services.AddTransient<CreateBookByLLMController>();
 builder.Services.AddTransient<CreateBookTaskController>();
 builder.Services.AddTransient<CreateTestFromPDFDataPages>();
 
@@ -53,7 +57,7 @@ builder.Services.AddTransient<QuestionRepository>();
 builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<ResponseRepository>();
 builder.Services.AddTransient<ShotRepository>();
-builder.Services.AddTransient<BGQuestions>();
+builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();
 

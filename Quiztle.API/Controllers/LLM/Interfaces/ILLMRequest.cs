@@ -1,4 +1,4 @@
-﻿namespace Quiztle.API
+﻿namespace Quiztle.API.Controllers.LLM.Interfaces
 {
     public interface ILLMRequest
     {

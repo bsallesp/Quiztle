@@ -9,7 +9,7 @@ namespace Quiztle.DataContext
         {
             var optionsBuilder = new DbContextOptionsBuilder<PostgreQuiztleContext>();
 
-            string connectionString = "Host=Quiztle-postgres;Database=QuiztleDB;Username=Quiztleuser;Password=@pyramid2050!";
+            string connectionString = "Host=localhost;port=5432;Database=QuiztleDB;Username=bobtest;Password=@pyramid2050!";
 
             optionsBuilder.UseNpgsql(connectionString);
 
@@ -17,3 +17,7 @@ namespace Quiztle.DataContext
         }
     }
 }
+
+
+// "Host=localhost;port=5432;Database=QuiztleDB;Username=bobtest;Password=@pyramid2050!",
+// "Host=Quiztle-postgres;Database=QuiztleDB;Username=Quiztleuser;Password=@pyramid2050!";
