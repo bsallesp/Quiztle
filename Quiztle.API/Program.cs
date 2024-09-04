@@ -18,6 +18,8 @@ using System.Text.Json.Serialization;
 using Quiztle.API.BackgroundTasks.Questions;
 using Quiztle.API.Controllers.LLM;
 using Quiztle.API.Controllers.LLM.Interfaces;
+using Quiztle.API.Controllers.ScratchControllers;
+using Quiztle.DataContext.DataService.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +41,7 @@ builder.Services.AddTransient(typeof(LogService<>));
 builder.Services.AddTransient<CreateBookByLLMController>();
 builder.Services.AddTransient<CreateBookTaskController>();
 builder.Services.AddTransient<CreateTestFromPDFDataPages>();
-
+builder.Services.AddTransient<AddScratchController>();
 builder.Services.AddTransient<CreateQuestionsFromBookController>();
 
 builder.Services.AddTransient<GetChaptersFromLLM>();
@@ -57,6 +59,8 @@ builder.Services.AddTransient<QuestionRepository>();
 builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<ResponseRepository>();
 builder.Services.AddTransient<ShotRepository>();
+builder.Services.AddTransient<ScratchRepository>();
+
 builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 
 builder.Services.AddTransient<TryToMoveBookTaskToProduction>();

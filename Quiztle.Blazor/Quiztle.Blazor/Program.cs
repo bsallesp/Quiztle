@@ -121,6 +121,7 @@ builder.Services.AddTransient<PDFToDataFromStreamService>();
 builder.Services.AddTransient<GetAllTestsService>();
 builder.Services.AddTransient<CreateTestFromPDFService>();
 builder.Services.AddTransient<CreateTestService>();
+builder.Services.AddTransient<AddScratchService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();
