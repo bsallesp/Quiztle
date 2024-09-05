@@ -23,14 +23,14 @@ using Quiztle.DataContext.DataService.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<ILLMRequest, OllamaRequest>(client =>
+builder.Services.AddHttpClient<OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
 });
 
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 
-builder.Services.AddTransient<ChatGPTRequest>();
+builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddTransient<IEndpointProvider, NgrokEndpointProvider>();
 builder.Services.AddTransient<ILLMRequest, OllamaRequest>();
 

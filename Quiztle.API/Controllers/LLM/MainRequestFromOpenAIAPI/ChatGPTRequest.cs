@@ -1,16 +1,12 @@
 ﻿using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.CoreBusiness.Log;
 using Quiztle.DataContext.Repositories;
-using System;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Quiztle.API
 {
-    public class ChatGPTRequest : ILLMRequest, IDisposable
+    public class ChatGPTRequest : ILLMChatGPTRequest, IDisposable
     {
         private readonly HttpClient _client;
         private readonly string _apiKey;
@@ -50,7 +46,7 @@ namespace Quiztle.API
                 await _logRepository.CreateAILogAsync(new AILog
                 {
                     JSON = jsonRequest,
-                    Name = "ChapGPTRequest"
+                    Name = "ChatGPTRequest"
                 });
 
                 var response = await _client.PostAsync("https://api.openai.com/v1/chat/completions", content);

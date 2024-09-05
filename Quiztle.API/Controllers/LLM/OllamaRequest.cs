@@ -15,7 +15,7 @@ namespace Quiztle.API.Controllers.LLM
             _endpointProvider = endpointProvider;
         }
 
-        public async Task<string> ExecuteAsync(string input, string systemProfile = "")
+        public async Task<string> ExecuteAsync(string input, CancellationToken cancellationToken, string systemProfile = "")
         {
             try
             {
@@ -26,15 +26,19 @@ namespace Quiztle.API.Controllers.LLM
                     model = "llama3.1",
                     stream = false,
                     format = "json",
-                    prompt = input
+                    temperature = 0,
+                    prompt = input,
+                    num_gpu = 1,
+                    main_gpu = 0
                 };
+
 
                 var jsonRequest = JsonSerializer.Serialize(requestData);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
                 _client.Timeout = Timeout.InfiniteTimeSpan;
 
-                var response = await _client.PostAsync(ngrokEndpoint, content);
+                var response = await _client.PostAsync(ngrokEndpoint, content, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -2,6 +2,6 @@
 {
     public interface ILLMRequest
     {
-        Task<string> ExecuteAsync(string input, string systemProfile = "");
+        Task<string> ExecuteAsync(string input, CancellationToken cancellationToken, string systemProfile = "");
     }
 }

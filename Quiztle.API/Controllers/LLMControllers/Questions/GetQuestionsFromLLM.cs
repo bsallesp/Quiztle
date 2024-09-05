@@ -9,9 +9,9 @@ using Quiztle.API.Controllers.LLM.Interfaces;
 
 namespace Quiztle.API.Controllers.LLMControllers
 {
-    public class GetQuestionsFromLLM(ILLMRequest chatGPTAPI) : ControllerBase
+    public class GetQuestionsFromLLM(ILLMChatGPTRequest chatGPTAPI) : ControllerBase
     {
-        private readonly ILLMRequest _chatGPTRequest = chatGPTAPI;
+        private readonly ILLMChatGPTRequest _chatGPTRequest = chatGPTAPI;
         //private readonly SaveAILogController _saveAILogController = saveAILogController;
 
         public async Task<ActionResult<APIResponse<Book>>> ExecuteAsync(Book book, int questionsPerSection = 1)

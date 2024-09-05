@@ -3,51 +3,76 @@ using Newtonsoft.Json.Linq;
 using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.API.Prompts;
 using Quiztle.CoreBusiness.Entities.Quiz;
-using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+using Quiztle.DataContext.DataService.Repository;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using Quiztle.DataContext.Repositories;
 using Quiztle.DataContext.Repositories.Quiz;
-
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Quiztle.API.BackgroundTasks.Questions
 {
     public class BuildQuestionsInBackgroundByLLM
     {
         private readonly ILLMRequest _llmRequest;
-        private readonly PDFDataRepository _pDFDataRepository;
+        private readonly ScratchRepository _scratchRepository;
         private readonly QuestionRepository _questionRepository;
-        private readonly TestRepository _testRepository;
         private readonly AILogRepository _aILogRepository;
+        private readonly TestRepository _testRepository;
+        private static CancellationTokenSource? _cts;
+        private static DateTime _lastRequestTime = DateTime.MinValue;
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
 
-        public BuildQuestionsInBackgroundByLLM(ILLMRequest ollamaRequest,
-            PDFDataRepository pDFDataRepository,
-            TestRepository testRepository,
+        // Cria um semáforo que limita o número de execuções simultâneas
+        private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+
+        public BuildQuestionsInBackgroundByLLM(
+            ILLMRequest llmRequest,
+            ScratchRepository scratchRepository,
             QuestionRepository questionRepository,
-            AILogRepository aILogRepository
-            )
+            AILogRepository aILogRepository,
+            TestRepository testRepository
+        )
         {
-            _llmRequest = ollamaRequest;
-            _pDFDataRepository = pDFDataRepository;
+            _llmRequest = llmRequest;
+            _scratchRepository = scratchRepository;
             _questionRepository = questionRepository;
-            _testRepository = testRepository;
             _aILogRepository = aILogRepository;
+            _testRepository = testRepository;
         }
 
         public async Task<IActionResult> ExecuteAsync()
         {
+            var now = DateTime.UtcNow;
+
+            // Cancelamento e limpeza do token de cancelamento
+            if (_cts != null && now - _lastRequestTime > RequestTimeout)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
+
+            _cts = new CancellationTokenSource();
+            var cancellationToken = _cts.Token;
+            _lastRequestTime = DateTime.UtcNow;
+
+            // Verifica se o semáforo está disponível
+            if (!await _semaphore.WaitAsync(TimeSpan.FromSeconds(1)))
+            {
+                Console.WriteLine("Ação já em andamento, não será acionada uma nova solicitação.");
+                return new ObjectResult("Ação já em andamento.") { StatusCode = 429 };
+            }
+
             try
             {
-                Guid guid = new Guid("511c65f6-4200-4700-a135-9dd5cc468a54");
-                var _pdfDataAZ900 = await _pDFDataRepository.GetPDFDataByIdAsync(guid);
+                Guid guid = new Guid("5f8440e0-a38b-492a-be47-5a244f7ae16e");
+                var scratch = await _scratchRepository.GetScratchByIdAsync(guid);
 
-                // Descobrir o total de páginas no PDF
-                int totalPages = _pdfDataAZ900!.Pages.Count;
-
-                // Gerar um número aleatório para selecionar uma página
+                int totalPages = scratch!.Drafts!.Count;
                 int randomPageIndex = new Random().Next(0, totalPages);
-
-                // Atribuir o conteúdo da página aleatória
-                var llmInput = QuestionsPrompts.GetNewQuestionFromPages(_pdfDataAZ900.Pages[randomPageIndex].Content, 3);
+                var llmInput = QuestionsPrompts.GetNewQuestionFromPages(scratch.Drafts[randomPageIndex], 3);
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
@@ -56,7 +81,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
                     Created = DateTime.UtcNow
                 });
 
-                var llmResult = await _llmRequest.ExecuteAsync(llmInput);
+                var llmResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
@@ -65,27 +90,28 @@ namespace Quiztle.API.BackgroundTasks.Questions
                     Created = DateTime.UtcNow
                 });
 
-                Console.WriteLine(llmResult);
-
                 JObject jsonObject = JObject.Parse(llmResult);
                 var questionsToken = jsonObject["Questions"];
                 if (questionsToken == null) throw new ArgumentException("No 'Questions' found in JSON.");
                 var questions = questionsToken.ToObject<List<Question>>();
 
-                Console.WriteLine("Total questions in json: " + questions!.Count);
+                var temporaryTest = new Test
+                {
+                    Id = new Guid("4f5f9086-c5f1-4a9a-8a6f-3f2d1c8f9e65"),
+                    Name = "AZ-900: Test inspired in Official Microsoft Content",
+                };
 
-                var testId = new Guid("3cad927f-53eb-4f03-a6c3-29daf3369dbc");
-                await _testRepository.AddQuestionsToTestAsync(testId, questions);
+                if (await _testRepository.GetTestByIdAsync(temporaryTest.Id) == null)
+                    await _testRepository.CreateTestAsync(temporaryTest);
 
-
-                //foreach (var question in questions)
-                //{
-                //    await _questionRepository.CreateQuestionAsync(question);
-                //} 
-                
-                Console.WriteLine(llmResult);
+                await _testRepository.AddQuestionsToTestAsync(temporaryTest.Id, questions!);
 
                 return new JsonResult(llmInput) { StatusCode = 200 };
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("BuildQuestionsInBackgroundByLLM/ExecuteAsync was canceled.");
+                return new ObjectResult("Request was canceled.") { StatusCode = 499 }; // 499 indicates client closed request
             }
             catch (Exception ex)
             {
@@ -93,6 +119,12 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 Console.WriteLine(error);
                 return new ObjectResult(error) { StatusCode = 500 };
             }
+            finally
+            {
+                // Libera o semáforo após a execução
+                _semaphore.Release();
+            }
         }
+
     }
 }
