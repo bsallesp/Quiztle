@@ -38,6 +38,7 @@ builder.Services.AddTransient<GetAllTestsService>();
 builder.Services.AddTransient<CreateTestFromPDFService>();
 builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<AddScratchService>();
+builder.Services.AddTransient<RemoveQuestionService>();
 
 builder.Services.AddTransient<AILogRepository>();
 

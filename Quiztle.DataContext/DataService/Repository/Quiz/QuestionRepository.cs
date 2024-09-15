@@ -12,6 +12,17 @@ namespace Quiztle.DataContext.Repositories.Quiz
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public QuestionRepository()
+        {
+        }
+
+        public async Task<Question?> GetARandomQuestionToRate()
+        {
+            EnsureQuestionsNotNull();
+
+            return await _context.Questions!.Where(q => q.Verified == false).FirstAsync();
+        }
+
         public async Task CreateQuestionAsync(Question question)
         {
             try
@@ -36,6 +47,12 @@ namespace Quiztle.DataContext.Repositories.Quiz
             return await _context.Questions!.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Question?>> GetQuestionByDraftAsync(Guid id)
+        {
+            EnsureQuestionsNotNull();
+            return await _context.Questions!.Where(q => q.Draft!.Id == id).ToListAsync();
+        }
+
         public async Task<IQueryable<Question>> GetAllQuestionsAsync()
         {
             EnsureQuestionsNotNull();
@@ -50,7 +67,7 @@ namespace Quiztle.DataContext.Repositories.Quiz
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteQuestionAsync(int id)
+        public async Task<bool> DeleteQuestionAsync(Guid id)
         {
             EnsureQuestionsNotNull();
             var question = await _context.Questions!.FindAsync(id);
@@ -58,7 +75,10 @@ namespace Quiztle.DataContext.Repositories.Quiz
             {
                 _context.Questions.Remove(question);
                 await _context.SaveChangesAsync();
+
+                return true;
             }
+            return false;
         }
 
         private void EnsureQuestionsNotNull()

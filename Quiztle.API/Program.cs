@@ -55,11 +55,13 @@ builder.Services.AddTransient<AILogRepository>();
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<BookTaskRepository>();
 builder.Services.AddTransient<PDFDataRepository>();
+builder.Services.AddTransient<PromptRepository>();
 builder.Services.AddTransient<QuestionRepository>();
-builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<ResponseRepository>();
-builder.Services.AddTransient<ShotRepository>();
 builder.Services.AddTransient<ScratchRepository>();
+builder.Services.AddTransient<ShotRepository>();
+builder.Services.AddTransient<TestRepository>();
+
 
 builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 

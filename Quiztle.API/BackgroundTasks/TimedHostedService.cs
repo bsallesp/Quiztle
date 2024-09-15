@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Quiztle.API.BackgroundTasks.Questions;
+using Quiztle.API.BackgroundTasks.Curation;
+using Quiztle.API.Controllers.LLM.Interfaces;
+using Quiztle.DataContext.Repositories.Quiz;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,11 +34,12 @@ namespace Quiztle.API.BackgroundTasks
             {
                 try
                 {
-                    var bgQuestions = scope.ServiceProvider.GetRequiredService<BuildQuestionsInBackgroundByLLM>();
+                    var questionRepository = scope.ServiceProvider.GetRequiredService<QuestionRepository>();
+                    var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMRequest>();
+                    var curationBackground = new CurationBackground(llmRequest, CancellationToken.None); // Adjust as needed
 
-                    // Ensure that any ongoing requests are cancelled
-                    var result = await bgQuestions.ExecuteAsync();
-                    Console.WriteLine(result);
+                    var getQuestionRate = new GetQuestionRate(questionRepository, curationBackground);
+                    await getQuestionRate.ExecuteAsync();
                 }
                 catch (Exception ex)
                 {

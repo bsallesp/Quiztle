@@ -22,19 +22,42 @@ namespace Quiztle.DataContext
             modelBuilder.Entity<BookTask>();
             modelBuilder.Entity<Chapter>();
             modelBuilder.Entity<Content>();
+            modelBuilder.Entity<Draft>()
+                    .HasMany(d => d.Questions)
+                    .WithOne(q => q.Draft)
+                    .HasForeignKey(q => q.DraftId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<Option>();
             modelBuilder.Entity<PDFData>();
             modelBuilder.Entity<PDFDataPages>();
             modelBuilder.Entity<Prompt>();
+            modelBuilder.Entity<PromptItem>()
+                .HasOne(pi => pi.Sentence)
+                .WithMany()
+                .HasForeignKey(pi => pi.SentenceId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PromptItem>()
+                .HasOne(pi => pi.Draft)
+                .WithMany()
+                .HasForeignKey(pi => pi.DraftId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PromptItem>()
+                .HasIndex(pi => new { pi.PromptId, pi.Order })
+                .IsUnique();
             modelBuilder.Entity<Question>()
-                .HasMany(q => q.Options)
-                .WithOne(o => o.Question)
-                .HasForeignKey(o => o.QuestionId);
+                    .HasMany(q => q.Options)
+                    .WithOne(o => o.Question)
+                    .HasForeignKey(o => o.QuestionId);
             modelBuilder.Entity<Response>()
                 .HasOne<Test>()
                 .WithMany(t => t.Responses)
                 .HasForeignKey(r => r.TestId);
-            modelBuilder.Entity<Scratch>();
+            modelBuilder.Entity<Scratch>()
+                .HasMany(s => s.Drafts)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Section>();
             modelBuilder.Entity<Shot>();
             modelBuilder.Entity<Test>();
@@ -47,10 +70,12 @@ namespace Quiztle.DataContext
         public DbSet<BookTask>? BookTasks { get; set; }
         public DbSet<Chapter>? Chapters { get; set; }
         public DbSet<Content>? Contents { get; set; }
+        public DbSet<Draft>? Drafts { get; set; }
         public DbSet<Option>? Options { get; set; }
         public DbSet<PDFData>? PDFData { get; set; }
         public DbSet<PDFDataPages>? PDFDataPages { get; set; }
         public DbSet<Prompt>? Prompts { get; set; }
+        public DbSet<PromptItem>? PromptItems { get; set; }
         public DbSet<Question>? Questions { get; set; }
         public DbSet<Response>? Responses { get; set; }
         public DbSet<Scratch>? Scratches { get; set; }

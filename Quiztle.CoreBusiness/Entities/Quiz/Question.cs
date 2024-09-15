@@ -1,4 +1,6 @@
-﻿using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+﻿using Quiztle.CoreBusiness.Entities.Course;
+using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+using Quiztle.CoreBusiness.Entities.Scratch;
 using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Quiz
@@ -29,7 +31,19 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; }
 
-    public List<Option> ShuffleOptions()
+        [JsonPropertyName("DraftId")]
+        public Guid DraftId { get; set; }
+
+        [JsonPropertyName("Draft")]
+        public Draft? Draft { get; set; }
+
+        [JsonPropertyName("Verified")]
+        public bool Verified { get; set; } = false;
+
+        [JsonPropertyName("Rate")]
+        public int Rate { get; set; } = 0;
+
+        public List<Option> ShuffleOptions()
         {
             Shuffle(Options);
             return Options;
@@ -66,5 +80,19 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return questionShape;
         }
+
+        public string ToFormattedString()
+        {
+            var correctOption = Options.FirstOrDefault(o => o.IsCorrect);
+            var formattedOptions = Options.Select(o =>
+                $"{(o.IsCorrect ? "[Correct] " : "[Incorrect] ")}{o.Name}"
+            );
+
+            var questionString = $"{Name}\n";
+            questionString += string.Join("\n", formattedOptions);
+
+            return questionString;
+        }
+
     }
 }

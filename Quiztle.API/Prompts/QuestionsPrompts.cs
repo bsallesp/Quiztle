@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using System.Text;
 
 namespace Quiztle.API.Prompts
 {
@@ -30,6 +31,10 @@ namespace Quiztle.API.Prompts
 
             prompt.Add("Only use the information provided here. Do not add any content.");
 
+            prompt.Add("You have already create similar questions, have a look");
+
+            prompt.Add("You must to vary the questions you will make now.");
+
             prompt.Add("The student must be able to obtain the correct answer by reading the text provided above.");
 
             prompt.Add("Adopt a style similar to official certification exams.");
@@ -56,10 +61,92 @@ namespace Quiztle.API.Prompts
 
             var finalString = string.Join(" ", prompt);
 
-            Console.WriteLine(finalString);
-
             return finalString;
         }
+
+        public static string GetNewQuestionFromPages(string bookArticle, IEnumerable<string> questionsAlreadyMade, int questionsAmount = 5, int incorrectOptionsAmount = 4)
+        {
+            if (string.IsNullOrEmpty(bookArticle))
+            {
+                throw new ArgumentException("Article content cannot be null or empty.", nameof(bookArticle));
+            }
+
+            StringBuilder promptBuilder = new StringBuilder();
+
+            // Construindo o cabeçalho
+            AddHeader(promptBuilder);
+
+
+            // Adicionando o artigo
+            promptBuilder.AppendLine("----------------------BEGIN OF ARTICLE-----------------------------------------------------------");
+            promptBuilder.AppendLine(bookArticle);
+            promptBuilder.AppendLine("----------------------END OF ARTICLE-----------------------------------------------------------");
+
+            // Adicionando estrutura JSON
+            promptBuilder.AppendLine("Provide questions and answers in the JSON structure below:");
+            promptBuilder.AppendLine(GetJsonStructure(incorrectOptionsAmount));
+            promptBuilder.AppendLine("Only use the information provided above. Do not add any content.");
+            promptBuilder.AppendLine("Ensure that all answers (correct and incorrect) are similar in length and style to avoid making the correct answer stand out.");
+            promptBuilder.AppendLine("The correct answer must not be longer, more detailed, or written in a noticeably different style compared to the incorrect answers.");
+            promptBuilder.AppendLine("The incorrect answers should be plausible and equally detailed, so that the student must think critically to determine the right answer.");
+
+
+            // Adicionando perguntas anteriores, se houver
+            if (questionsAlreadyMade?.Any() == true)
+            {
+                AddPreviousQuestions(promptBuilder, questionsAlreadyMade);
+            }
+
+            // Configurando os detalhes das perguntas
+            AddQuestionDetails(promptBuilder, questionsAmount, incorrectOptionsAmount);
+
+            // Adicionando exemplo de pergunta
+            AddExampleQuestion(promptBuilder);
+
+            return promptBuilder.ToString();
+        }
+
+        private static void AddHeader(StringBuilder promptBuilder)
+        {
+            promptBuilder.AppendLine("As a specialist in constructing exams for the Azure AZ-900 Fundamentals Certification, " +
+                                     "you need to create varied questions based strictly on the words and phrases in the provided text. " +
+                                     "The questions should simulate real-world scenarios where the candidate needs to choose the best solution " +
+                                     "based on practical use cases described in the text. Avoid using synonyms or creatively rephrasing the content. " +
+                                     "Vary the structure of the questions, using different formats such as 'Which of the following', 'How can', 'Why would', 'When should', etc. " +
+                                     "Ensure the product name appears in the answer choices when applicable, and avoid directly including it in the question." +
+                                     "Focus on questions that challenge the candidate’s ability to apply knowledge practically and in detail. " +
+                                     "Provide the questions and answers in the JSON format below:");
+        }
+
+        private static void AddPreviousQuestions(StringBuilder promptBuilder, IEnumerable<string> questionsAlreadyMade)
+        {
+            promptBuilder.AppendLine("You have already created similar questions from this article, don't repeat or create close variations of the same questions. Avoid similar questions, like:");
+
+            foreach (var question in questionsAlreadyMade)
+            {
+                promptBuilder.AppendLine($"{question}");
+            }
+
+            promptBuilder.AppendLine("You must vary the questions you will make now, ensuring they are different in structure and context.");
+        }
+
+        private static void AddQuestionDetails(StringBuilder promptBuilder, int questionsAmount, int incorrectOptionsAmount)
+        {
+            promptBuilder.AppendLine($"Total questions: {questionsAmount}.");
+            promptBuilder.AppendLine("Total Correct Answers: 1.");
+            promptBuilder.AppendLine($"Total Incorrect Answers: {incorrectOptionsAmount}.");
+            promptBuilder.AppendLine("Additional Note: \"Ensure that the questions and answers are strictly aligned with the provided text, without introducing new information or interpretations.\"");
+        }
+
+        private static void AddExampleQuestion(StringBuilder promptBuilder)
+        {
+            promptBuilder.AppendLine("Here is an example of a question with proper structure and variation: " +
+                "{\r\n  \"Questions\": [\r\n    {\r\n      \"Name\": \"Which of the following is a cost-saving feature of cloud computing?\",\r\n      \"Options\": [\r\n        {\r\n          \"Name\": \"You only pay for what you use.\",\r\n          \"IsCorrect\": true\r\n        },\r\n        {\r\n          \"Name\": \"Cloud providers offer free hardware.\",\r\n          \"IsCorrect\": false\r\n        },\r\n        {\r\n          \"Name\": \"Cloud services do not incur bandwidth costs.\",\r\n          \"IsCorrect\": false\r\n        },\r\n        {\r\n          \"Name\": \"Cloud services are only available in one region.\",\r\n          \"IsCorrect\": false\r\n        }\r\n      ],\r\n      \"Hint\": \"Consider how cloud providers bill for services and how they help organizations manage resources.\",\r\n      \"Resolution\": \"The correct answer is 'You only pay for what you use'. This reflects the pay-as-you-go model, which allows organizations to scale resources and reduce costs.\" \r\n    }\r\n  ]\r\n}");
+
+            promptBuilder.AppendLine("\"Hint\" provides a clue, offering a subtle guide toward the correct answer without revealing it outright. It serves as a shortcut to help users think in the right direction.");
+            promptBuilder.AppendLine("\"Resolution\" is a detailed and accurate explanation of the correct answer, providing full clarity and understanding.");
+        }
+
 
         private static string GetJsonStructure(int incorrectOptionsAmount)
         {

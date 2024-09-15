@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20240914221220_someVars3")]
+    partial class someVars3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,10 +306,6 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Name");
 
-                    b.Property<int>("Rate")
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "Rate");
-
                     b.Property<string>("Resolution")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Resolution");
@@ -316,10 +315,6 @@ namespace Quiztle.DataContext.Migrations
 
                     b.Property<Guid?>("TestId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool>("Verified")
-                        .HasColumnType("boolean")
-                        .HasAnnotation("Relational:JsonPropertyName", "Verified");
 
                     b.HasKey("Id");
 
@@ -437,6 +432,9 @@ namespace Quiztle.DataContext.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<int>("QuestionsDesiredAmount")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("ScratchId")
                         .HasColumnType("uuid");

@@ -33,6 +33,7 @@ namespace Quiztle.DataContext.DataService.Repository
             {
                 EnsureScratchNotNull();
                 return await _context.Scratches!
+                    .Include(s => s.Drafts) // Incluindo os Drafts relacionados
                     .AsNoTracking()
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
@@ -43,6 +44,26 @@ namespace Quiztle.DataContext.DataService.Repository
                 throw;
             }
         }
+
+
+        public async Task<IEnumerable<Scratch?>> GetAllScratchesAsync()
+        {
+            try
+            {
+                EnsureScratchNotNull();
+                return await _context.Scratches!
+                    .Include(s => s.Drafts) // Incluindo os Drafts relacionados
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetAllScratchesAsync: An exception occurred while retrieving all scratches:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
 
         private void EnsureScratchNotNull()
         {

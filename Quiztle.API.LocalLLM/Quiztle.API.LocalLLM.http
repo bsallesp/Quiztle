@@ -1,0 +1,6 @@
+@Quiztle.API.LocalLLM_HostAddress = http://localhost:5110
+
+GET {{Quiztle.API.LocalLLM_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

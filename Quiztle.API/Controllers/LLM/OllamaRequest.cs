@@ -48,7 +48,7 @@ namespace Quiztle.API.Controllers.LLM
                     JsonElement root = document.RootElement;
                     string responseJsonString = root.GetProperty("response").GetString() ?? "";
 
-                    Console.WriteLine("----------OLLAMA RESPONSE: " + responseJsonString);
+                    //Console.WriteLine("----------OLLAMA RESPONSE: " + responseJsonString);
                     return responseJsonString;
                 }
                 else

@@ -22,8 +22,8 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
         {
             try
             {
-                var response = await _httpClient.GetStringAsync("api/RemoveTest/" + id);
-                
+                var response = await _httpClient.GetStringAsync("api/RemoveQuestion/" + id);
+
                 var isRemoved = bool.Parse(response);
 
                 if (!isRemoved) return new APIResponse<bool>

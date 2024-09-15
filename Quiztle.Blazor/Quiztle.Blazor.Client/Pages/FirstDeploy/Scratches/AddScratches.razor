@@ -9,12 +9,12 @@
 
     <input placeholder="Scratch Name" @bind="scratch.Name" />
 
-    @foreach (var content in scratch.Drafts!)
+    @foreach (var draft in scratch.Drafts!)
     {
-        <input placeholder="Content" @bind="scratch.Drafts![scratch.Drafts.IndexOf(content)]" />
+        <input placeholder="Content" @bind="draft.Text" />
     }
 
-    <button @onclick="AddContent">add Content</button>
+    <button @onclick="AddContent">Add Content</button>
 
     <hr />
     <button @onclick="Finish">FINISH</button>
@@ -26,12 +26,10 @@
 
     private void AddContent()
     {
-        scratch.Drafts!.Add("");
-        Console.WriteLine(scratch.Name);
-        foreach(var content in scratch.Drafts!)
-        {
-            Console.WriteLine(content);
-        }
+        scratch.Drafts!.Add(new Draft
+            {
+                Text = ""
+            });
     }
 
     private async void Finish()

@@ -46,6 +46,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Nginx", "_Nginx", "{EF43BE
 		_Nginx\quiztle.conf = _Nginx\quiztle.conf
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quiztle.Flask.HomeLLM", "Quiztle.Flask.HomeLLM", "{6FD5F50B-767D-4342-BAEE-3059B243C71F}"
+	ProjectSection(SolutionItems) = preProject
+		Quiztle.Flask.HomeLLM\app.py = Quiztle.Flask.HomeLLM\app.py
+		Quiztle.Flask.HomeLLM\Dockerfile = Quiztle.Flask.HomeLLM\Dockerfile
+		Quiztle.Flask.HomeLLM\requirements.txt = Quiztle.Flask.HomeLLM\requirements.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiztle.API.LocalLLM", "Quiztle.API.LocalLLM\Quiztle.API.LocalLLM.csproj", "{975A879E-1477-4828-814B-600648ED89B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +89,10 @@ Global
 		{FFEA904B-4ADF-42E8-9D62-7F03BB85427A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFEA904B-4ADF-42E8-9D62-7F03BB85427A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFEA904B-4ADF-42E8-9D62-7F03BB85427A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{975A879E-1477-4828-814B-600648ED89B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{975A879E-1477-4828-814B-600648ED89B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{975A879E-1477-4828-814B-600648ED89B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{975A879E-1477-4828-814B-600648ED89B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

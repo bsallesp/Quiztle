@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20240914220301_someVars")]
+    partial class someVars
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,9 +293,11 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
-                    b.Property<Guid>("DraftId")
-                        .HasColumnType("uuid")
-                        .HasAnnotation("Relational:JsonPropertyName", "DraftId");
+                    b.Property<Guid?>("DraftId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DraftId1")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Hint")
                         .HasColumnType("text")
@@ -302,10 +307,6 @@ namespace Quiztle.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Name");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "Rate");
 
                     b.Property<string>("Resolution")
                         .HasColumnType("text")
@@ -317,13 +318,11 @@ namespace Quiztle.DataContext.Migrations
                     b.Property<Guid?>("TestId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Verified")
-                        .HasColumnType("boolean")
-                        .HasAnnotation("Relational:JsonPropertyName", "Verified");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DraftId");
+
+                    b.HasIndex("DraftId1");
 
                     b.HasIndex("SectionId");
 
@@ -451,7 +450,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.ToTable("Drafts");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Draft");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Content");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Scratch", b =>
@@ -613,11 +612,14 @@ namespace Quiztle.DataContext.Migrations
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Question", b =>
                 {
-                    b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", "Draft")
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", null)
                         .WithMany("Questions")
                         .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", "Draft")
+                        .WithMany()
+                        .HasForeignKey("DraftId1");
 
                     b.HasOne("Quiztle.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")

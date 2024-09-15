@@ -7,9 +7,6 @@ using Quiztle.DataContext.DataService.Repository;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using Quiztle.DataContext.Repositories;
 using Quiztle.DataContext.Repositories.Quiz;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Quiztle.API.BackgroundTasks.Questions
 {
@@ -61,33 +58,38 @@ namespace Quiztle.API.BackgroundTasks.Questions
             // Verifica se o semáforo está disponível
             if (!await _semaphore.WaitAsync(TimeSpan.FromSeconds(1)))
             {
-                Console.WriteLine("Ação já em andamento, não será acionada uma nova solicitação.");
                 return new ObjectResult("Ação já em andamento.") { StatusCode = 429 };
             }
 
             try
             {
-                Guid guid = new Guid("5f8440e0-a38b-492a-be47-5a244f7ae16e");
-                var scratch = await _scratchRepository.GetScratchByIdAsync(guid);
+                var scratches = await _scratchRepository.GetAllScratchesAsync();
 
-                int totalPages = scratch!.Drafts!.Count;
-                int randomPageIndex = new Random().Next(0, totalPages);
-                var llmInput = QuestionsPrompts.GetNewQuestionFromPages(scratch.Drafts[randomPageIndex], 3);
+                // Seleciona um scratch aleatório
+                var randomScratch = scratches.OrderBy(s => Guid.NewGuid()).FirstOrDefault();
+                if (randomScratch == null) throw new InvalidOperationException("No scratches found.");
+
+                // Seleciona um draft aleatório do scratch selecionado
+                var randomDraft = randomScratch.Drafts!.OrderBy(d => Guid.NewGuid()).FirstOrDefault();
+                if (randomDraft == null) throw new InvalidOperationException("No drafts found in the selected scratch.");
+
+                var questionsList = await _questionRepository.GetQuestionByDraftAsync(randomDraft.Id);
+                var descriptionOfQuestions = questionsList.Select(d => d!.Name.ToString()).ToList();
+
+                var llmInput = QuestionsPrompts.GetNewQuestionFromPages(randomDraft.Text, descriptionOfQuestions, 3);
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
-                    Name = "BuildQuestionsInBackgroundByLLM",
                     JSON = llmInput,
-                    Created = DateTime.UtcNow
+                    Name = "BuildQuestionsInBackgroundByLLM - " + "llmInput"
                 });
 
                 var llmResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
 
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
-                    Name = "BuildQuestionsInBackgroundByLLM",
                     JSON = llmResult,
-                    Created = DateTime.UtcNow
+                    Name = "BuildQuestionsInBackgroundByLLM - " + "llmResult"
                 });
 
                 JObject jsonObject = JObject.Parse(llmResult);
@@ -95,33 +97,34 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 if (questionsToken == null) throw new ArgumentException("No 'Questions' found in JSON.");
                 var questions = questionsToken.ToObject<List<Question>>();
 
+                foreach (var question in questions!) question.Draft = randomDraft;
+
                 var temporaryTest = new Test
                 {
                     Id = new Guid("4f5f9086-c5f1-4a9a-8a6f-3f2d1c8f9e65"),
-                    Name = "AZ-900: Test inspired in Official Microsoft Content",
+                    Name = "AZ-900",
                 };
 
                 if (await _testRepository.GetTestByIdAsync(temporaryTest.Id) == null)
                     await _testRepository.CreateTestAsync(temporaryTest);
 
                 await _testRepository.AddQuestionsToTestAsync(temporaryTest.Id, questions!);
+                Console.WriteLine("Questions make by LLM Finished.");
 
-                return new JsonResult(llmInput) { StatusCode = 200 };
+                return new JsonResult(new { message = "All drafts processed" }) { StatusCode = 200 };
+
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("BuildQuestionsInBackgroundByLLM/ExecuteAsync was canceled.");
-                return new ObjectResult("Request was canceled.") { StatusCode = 499 }; // 499 indicates client closed request
+                return new ObjectResult("Request was canceled.") { StatusCode = 499 };
             }
             catch (Exception ex)
             {
                 var error = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
-                Console.WriteLine(error);
                 return new ObjectResult(error) { StatusCode = 500 };
             }
             finally
             {
-                // Libera o semáforo após a execução
                 _semaphore.Release();
             }
         }

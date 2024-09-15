@@ -3,7 +3,7 @@
     public class Prompt
     {
         public Guid Id { get; set; } = new();
-        public string? Text { get; set; }
-        public DateTime Created = DateTime.UtcNow;
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public ICollection<PromptItem> Items { get; set; } = [];
     }
 }
