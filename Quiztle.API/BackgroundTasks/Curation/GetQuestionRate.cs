@@ -19,6 +19,13 @@ namespace Quiztle.API.BackgroundTasks.Curation
 
         public async Task ExecuteAsync()
         {
+            // Check the semaphore state before proceeding
+            if (!await _curationBackground.CanExecuteAsync())
+            {
+                Console.WriteLine("Semaphore is red. Exiting execution.");
+                return;
+            }
+
             var question = await _questionRepository.GetARandomQuestionToRate();
             if (question == null)
             {
@@ -29,7 +36,7 @@ namespace Quiztle.API.BackgroundTasks.Curation
             Console.WriteLine(question.ToFormattedString());
 
             var questionString = question.ToFormattedString();
-            var resultJson = await _curationBackground.ExecuteAsync(questionString); // Await the Task<string>
+            var resultJson = await _curationBackground.ExecuteAsync(questionString);
 
             // Log the raw JSON result
             Console.WriteLine("Raw JSON result: " + resultJson);

@@ -34,6 +34,7 @@ builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequest>();
 builder.Services.AddTransient<IEndpointProvider, NgrokEndpointProvider>();
 builder.Services.AddTransient<ILLMRequest, OllamaRequest>();
 
+builder.Services.AddTransient<RemoveBadQuestions>();
 
 builder.Services.AddTransient(typeof(LogService<>));
 
