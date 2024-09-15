@@ -20,7 +20,13 @@ namespace Quiztle.DataContext.Repositories.Quiz
         {
             EnsureQuestionsNotNull();
 
-            return await _context.Questions!.Where(q => q.Verified == false).FirstAsync();
+            var question = await _context.Questions!
+                .Where(q => !q.Verified)
+                .OrderBy(q => Guid.NewGuid())
+                .FirstOrDefaultAsync();
+
+            return question;
+
         }
 
         public async Task CreateQuestionAsync(Question question)

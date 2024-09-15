@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Quiztle.CoreBusiness.Entities.Quiz;
 using Quiztle.DataContext.Repositories.Quiz;
 
@@ -25,6 +23,12 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 .Where(q => q.Verified)
                 .GroupBy(q => q.Name)
                 .Where(g => g.Count() > 1);
+
+            if (!duplicateGroups.Any())
+            {
+                Console.WriteLine("No pending duplicates found.");
+                return;
+            }
 
             foreach (var group in duplicateGroups)
             {

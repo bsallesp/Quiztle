@@ -7,6 +7,7 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
     public class TestRepository
     {
         private readonly PostgreQuiztleContext _context;
+
         public TestRepository(PostgreQuiztleContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -33,7 +34,6 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
             {
                 // Lida com o caso onde o teste não é encontrado
                 Console.WriteLine(ex.Message);
-
                 return false;
             }
             catch (Exception ex)
@@ -43,7 +43,6 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
                 return false;
             }
         }
-
 
         public async Task CreateTestAsync(Test test)
         {
@@ -65,7 +64,7 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
         {
             return await _context.Tests!
                 .Include(t => t.Questions)
-                .ThenInclude(o =>  o.Options)
+                .ThenInclude(o => o.Options)
                 .FirstOrDefaultAsync(t => t.Id == testId);
         }
 
@@ -111,7 +110,8 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
         {
             EnsureTestNotNull();
             var existingTest = await _context.Tests!.FirstOrDefaultAsync(t => t.Id == test.Id);
-            if (existingTest == null) throw new Exception("Test with ID: " + test.Id + " not found for update.");
+            if (existingTest == null)
+                throw new Exception("Test with ID: " + test.Id + " not found for update.");
             else
             {
                 existingTest.Name = test.Name;
@@ -119,7 +119,16 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
                 existingTest.Questions = test.Questions;
             }
             await _context.SaveChangesAsync();
-        } 
+        }
+
+        public async Task<Test?> GetTestByNameAsync(string name)
+        {
+            EnsureTestNotNull();
+            return await _context.Tests!
+                .Include(t => t.Questions)
+                .ThenInclude(o => o.Options)
+                .FirstOrDefaultAsync(t => t.Name == name);
+        }
 
         private void EnsureTestNotNull()
         {
