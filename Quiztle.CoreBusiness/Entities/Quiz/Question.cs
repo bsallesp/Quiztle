@@ -43,6 +43,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
 
+        public Question GetQuestionSample() => QuestionFactory.CreateFilledQuestion();
+
         public List<Option> ShuffleOptions()
         {
             Shuffle(Options);

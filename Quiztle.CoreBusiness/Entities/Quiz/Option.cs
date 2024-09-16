@@ -22,5 +22,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonIgnore]
         public Question? Question { get; set; }
+
+        public Option GetOptionSample() => OptionFactory.CreateFilledOption();
     }
 }
