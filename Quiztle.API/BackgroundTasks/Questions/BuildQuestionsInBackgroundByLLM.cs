@@ -71,14 +71,14 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 if (debugCW) Console.WriteLine("Draft isnt null, going forward...");
                 if (debugCW) Console.WriteLine("Total questions in draft: " + draft!.Questions!.Count);
 
-                if (debugCW) Console.WriteLine("Getting resul from LLM...");
+                if (debugCW) Console.WriteLine("Getting result from LLM...");
 
                 var stringQuestions = draft?.Questions?
                     .Where(q => !string.IsNullOrEmpty(q.Name))
                     .Select(q => q.Name)
                     .ToList();
 
-                foreach(var name in stringQuestions ?? new List<string>()) Console.WriteLine(name);
+                foreach (var name in stringQuestions ?? new List<string>()) Console.WriteLine(name);
 
                 var llmInput = Prompts.QuestionsPrompts.GetNewQuestionFromPages(draft!.Text, stringQuestions, 3);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
@@ -86,7 +86,6 @@ namespace Quiztle.API.BackgroundTasks.Questions
                     JSON = llmInput,
                     Name = "BuildQuestionsInBackgroundByLLM - " + "llmInput"
                 });
-
 
                 var llmRequestResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
@@ -102,22 +101,19 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
                 if (questions == null)
                 {
-                    Console.WriteLine("QUESTIONS ARE NULL. FNINSHING THE SCOPE.");
-                    throw new Exception("QUESTIONS ARE NULL. FNINSHING THE SCOPE.");
+                    Console.WriteLine("QUESTIONS ARE NULL. FINISHING THE SCOPE.");
+                    throw new Exception("QUESTIONS ARE NULL. FINISHING THE SCOPE.");
                 }
 
-
                 if (debugCW) Console.WriteLine(llmRequestResult);
+                if (debugCW) Console.WriteLine("QUESTIONS SET ACQUIRED. MOVING QUESTIONS TO DRAFT...");
 
-                if (debugCW) Console.WriteLine("QUESTIONS SET ADQUIRED. MOVING QUESTIONS TO DRAFT...");
-                if (debugCW) Console.WriteLine("Total questions in draft: " + draft!.Questions!.Count);
                 if (draft.Questions == null) draft.Questions = [];
                 draft.Questions.AddRange(questions);
 
-                if (draft.Questions == null) Console.WriteLine("questions eh nulo");
-                if (draft.Questions == null) throw new Exception("questions eh nulo");
+                if (debugCW) Console.WriteLine("Total questions in draft: " + draft!.Questions!.Count);
 
-                foreach (var question in draft.Questions) Console.WriteLine(question.Name);
+                foreach (var question in draft.Questions) if (debugCW) Console.WriteLine(question.Name);
 
                 await _draftRepository.UpdateDraftAsync(draft);
 
@@ -131,42 +127,34 @@ namespace Quiztle.API.BackgroundTasks.Questions
             }
             catch (Exception ex)
             {
-                // Detalhes do erro para diagnóstico
                 var errorMessage = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
                 var stackTrace = ex.StackTrace ?? "No stack trace available";
 
-                // Log completo do erro
                 var detailedError = new
                 {
                     Error = errorMessage,
                     StackTrace = stackTrace,
                     ExceptionType = ex.GetType().Name,
                     InnerException = ex.InnerException?.Message ?? "No inner exception",
-                    Timestamp = DateTime.UtcNow,
-                    InputData = new { /* adicione aqui variáveis relevantes para o contexto */ }
+                    Timestamp = DateTime.UtcNow
                 };
 
-                // Registrar no sistema de logs
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
                     JSON = JsonConvert.SerializeObject(detailedError),
                     Name = "BuildQuestionsInBackgroundByLLM - Error"
                 });
 
-                // Log para depuração imediata (se necessário)
                 Console.WriteLine(JsonConvert.SerializeObject(detailedError, Formatting.Indented));
 
-                // Retornar mensagem amigável para o usuário (ou API)
                 var userFriendlyMessage = "An unexpected error occurred while processing your request. Please try again later.";
                 return new ObjectResult(userFriendlyMessage) { StatusCode = 500 };
             }
-
             finally
             {
                 Console.WriteLine("Releasing semaphore...");
                 _semaphore.Release();
             }
-
         }
     }
 }

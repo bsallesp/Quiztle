@@ -80,9 +80,14 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
                 throw new KeyNotFoundException($"No test found with ID {testId}");
             }
 
+            var existingQuestionIds = test.Questions.Select(q => q.Id).ToHashSet();
+
             foreach (var question in questions)
             {
-                test.Questions.Add(question);
+                if (!existingQuestionIds.Contains(question.Id))
+                {
+                    test.Questions.Add(question);
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -157,58 +162,50 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
             {
                 EnsureTestNotNull();
 
-                // Lista para armazenar os testes a serem criados
                 var testsToCreate = new List<Test>();
 
-                // Percorre cada Scratch da lista
                 foreach (var scratch in scratches)
                 {
-                    // Cria um novo teste
                     var newTest = new Test
                     {
-                        Name = $"Test from {scratch.Name}", // Nome do teste baseado no Scratch
-                        Questions = new List<Question>(), // Inicializa a lista de perguntas
-                        Created = DateTime.UtcNow // Ajusta a data de criação ou outros detalhes
+                        Name = $"Test from {scratch.Name}",
+                        Questions = new List<Question>(),
+                        Created = DateTime.UtcNow
                     };
 
-                    // Lista temporária para armazenar todas as perguntas dos Drafts desse Scratch
                     var allQuestionsFromScratch = new List<Question>();
 
-                    // Percorre todos os drafts dentro do Scratch
-                    foreach (var draft in scratch.Drafts!)
+                    foreach (var draft in scratch.Drafts ?? Enumerable.Empty<Draft>())
                     {
-                        // Adiciona todas as perguntas do Draft à lista de perguntas do Scratch usando AsNoTracking para não rastrear
-                        allQuestionsFromScratch.AddRange(
-                            _context.Questions!
-                                .Where(q => draft.Questions!.Select(dq => dq.Id).Contains(q.Id))
-                                .AsNoTracking()
-                                .ToList()
-                        );
+                        // Fetch questions for each draft efficiently
+                        var questionsFromDraft = await _context.Questions!
+                            .Where(q => draft.Questions!.Select(dq => dq.Id).Contains(q.Id))
+                            .AsNoTracking()
+                            .ToListAsync();
+
+                        allQuestionsFromScratch.AddRange(questionsFromDraft);
                     }
 
-                    // Seleciona uma quantidade aleatória de perguntas (ou até 10, se houver menos)
                     var selectedQuestions = allQuestionsFromScratch
-                        .OrderBy(q => Guid.NewGuid()) // Randomiza a seleção das perguntas
+                        .OrderBy(q => Guid.NewGuid()) // Randomize
                         .Take(numberOfQuestionsPerTest)
+                        .DistinctBy(q => q.Id) // Ensure no duplicate questions
                         .ToList();
 
-                    // Adiciona essas perguntas ao novo teste
                     newTest.Questions.AddRange(selectedQuestions);
 
-                    // Adiciona o novo teste à lista de testes a serem criados
                     testsToCreate.Add(newTest);
                 }
 
-                // Adiciona todos os testes criados ao contexto do banco de dados
+                // Bulk insert tests
                 await _context.Tests!.AddRangeAsync(testsToCreate);
-
-                // Salva as mudanças no banco de dados
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while creating tests from scratches:");
                 Console.WriteLine(ex.ToString());
+                // Optionally, use a logging framework here
                 throw;
             }
         }
@@ -225,14 +222,20 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
         public async Task UpdateTest(Test test)
         {
             EnsureTestNotNull();
-            var existingTest = await _context.Tests!.FirstOrDefaultAsync(t => t.Id == test.Id);
+            var existingTest = await _context.Tests!
+                .Include(t => t.Questions)
+                .FirstOrDefaultAsync(t => t.Id == test.Id);
+
             if (existingTest == null)
                 throw new Exception("Test with ID: " + test.Id + " not found for update.");
             else
             {
                 existingTest.Name = test.Name;
                 existingTest.Responses = test.Responses;
-                existingTest.Questions = test.Questions;
+
+                // Clear existing questions and add new ones
+                existingTest.Questions.Clear();
+                existingTest.Questions.AddRange(test.Questions);
             }
             await _context.SaveChangesAsync();
         }

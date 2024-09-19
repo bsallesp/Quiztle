@@ -88,7 +88,19 @@ namespace Quiztle.DataContext.DataService.Repository
                     existingDraft.Questions!.Clear();
                     foreach (var question in draft.Questions)
                     {
-                        existingDraft.Questions.Add(question);
+                        // Verifica se a pergunta já está sendo rastreada no contexto
+                        var existingQuestion = await _context.Questions!.FindAsync(question.Id);
+
+                        if (existingQuestion != null)
+                        {
+                            // Se a pergunta já está sendo rastreada, anexe a instância correta
+                            _context.Entry(existingQuestion).CurrentValues.SetValues(question);
+                        }
+                        else
+                        {
+                            // Se a pergunta não está no contexto, anexe-a
+                            _context.Attach(question);
+                        }
                     }
                 }
 
@@ -125,23 +137,21 @@ namespace Quiztle.DataContext.DataService.Repository
             }
         }
 
-
-
         public async Task<Draft?> GetNextDraftToMakeQuestionsAsync()
         {
             try
             {
                 EnsureDraftNotNull();
 
-                // Check if _context.Drafts is not null
+                // Certifique-se de que _context.Drafts não seja null
                 if (_context.Drafts == null)
                 {
                     throw new InvalidOperationException("Drafts collection is null.");
                 }
 
-                // Fetch drafts and filter in memory
+                // Fetch drafts and include related questions, without AsNoTracking()
                 var drafts = await _context.Drafts
-                    .AsNoTracking()
+                    .AsTracking()
                     .Include(q => q.Questions)
                     .ToListAsync();
 
@@ -158,10 +168,6 @@ namespace Quiztle.DataContext.DataService.Repository
                         draftWithGreatestDifference = draft;
                         maxDifference = difference;
                         Console.WriteLine($"{draft} id: {draft.Id} -- good. Total questions found: {questionCount}, difference: {difference}.");
-                    }
-                    else
-                    {
-                        //Console.WriteLine($"{draft} id: {draft.Id} -- bad. Trying again... Total questions found: {questionCount}, difference: {difference}.");
                     }
                 }
 

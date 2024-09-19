@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20240919131401_migration0006")]
+    partial class migration0006
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,7 +293,7 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
-                    b.Property<Guid?>("DraftId")
+                    b.Property<Guid>("DraftId")
                         .HasColumnType("uuid")
                         .HasAnnotation("Relational:JsonPropertyName", "DraftId");
 
@@ -430,23 +433,6 @@ namespace Quiztle.DataContext.Migrations
                     b.ToTable("Tests");
 
                     b.HasAnnotation("Relational:JsonPropertyName", "Tests");
-                });
-
-            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.TestQuestion", b =>
-                {
-                    b.Property<Guid>("TestId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("TestId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("TestsQuestions");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>
@@ -636,7 +622,8 @@ namespace Quiztle.DataContext.Migrations
                     b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", "Draft")
                         .WithMany("Questions")
                         .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Quiztle.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
@@ -672,25 +659,6 @@ namespace Quiztle.DataContext.Migrations
                     b.HasOne("Quiztle.CoreBusiness.Entities.PDFData.PDFData", null)
                         .WithMany("Tests")
                         .HasForeignKey("PDFDataId");
-                });
-
-            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.TestQuestion", b =>
-                {
-                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Question", "Question")
-                        .WithMany("TestQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", "Test")
-                        .WithMany("TestQuestions")
-                        .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("Test");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>
@@ -740,8 +708,6 @@ namespace Quiztle.DataContext.Migrations
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.Navigation("Options");
-
-                    b.Navigation("TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>
@@ -754,8 +720,6 @@ namespace Quiztle.DataContext.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Responses");
-
-                    b.Navigation("TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>

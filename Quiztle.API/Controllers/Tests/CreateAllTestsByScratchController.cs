@@ -32,9 +32,8 @@ namespace Quiztle.API.Controllers
                 var allScratchesFiltered = await _scratchRepository.GetFilteredScratchesAsync();
                 if (allScratchesFiltered == null) return NotFound();
 
-                //var result = _testRepository.CreateTestsFromScratchesAsync(allScratchesFiltered.ToImmutableList(), 10);
-
-
+                // Aguarde a criação dos testes
+                await _testRepository.CreateTestsFromScratchesAsync(allScratchesFiltered.ToImmutableList(), 10);
 
                 //    .GetDraftWithQuestionsAsync(scratchId, trackChanges: true);
 

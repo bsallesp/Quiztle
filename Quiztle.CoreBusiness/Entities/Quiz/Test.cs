@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Quiz
 {
@@ -11,17 +10,20 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
 
-        [JsonPropertyName("QuestionsDTO")]
+        [JsonPropertyName("Questions")]
         public List<Question> Questions { get; set; } = new List<Question>();
 
         [JsonPropertyName("Responses")]
-        public List<Response>? Responses { get; set; } = [];
+        public List<Response>? Responses { get; set; } = new List<Response>();
 
         [JsonPropertyName("PDFDataId")]
-        public Guid? PDFDataId { get; set; } = null; // Inicialize com null
+        public Guid? PDFDataId { get; set; } = null;
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        [JsonPropertyName("TestQuestions")]
+        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
 
         public void ShuffleQuestions()
         {
@@ -50,5 +52,15 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             return Questions[index];
         }
 
+        public static Test GetTestSample()
+        {
+            return new Test
+            {
+                Id = Guid.NewGuid(),
+                Name = "Sample Test",
+                Questions = new List<Question> { QuestionFactory.CreateFilledQuestion() },
+                Created = DateTime.UtcNow
+            };
+        }
     }
 }

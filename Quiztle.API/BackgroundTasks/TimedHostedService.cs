@@ -90,6 +90,7 @@ namespace Quiztle.API.BackgroundTasks
             }
         }
 
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _timer?.Change(Timeout.Infinite, 0);

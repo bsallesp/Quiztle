@@ -18,48 +18,86 @@ namespace Quiztle.DataContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AILog>();
+
             modelBuilder.Entity<Book>();
+
             modelBuilder.Entity<BookTask>();
+
             modelBuilder.Entity<Chapter>();
+
             modelBuilder.Entity<Content>();
+
             modelBuilder.Entity<Draft>()
                     .HasMany(d => d.Questions)
                     .WithOne(q => q.Draft)
                     .HasForeignKey(q => q.DraftId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
 
 
             modelBuilder.Entity<Option>();
+
             modelBuilder.Entity<PDFData>();
+
             modelBuilder.Entity<PDFDataPages>();
+
             modelBuilder.Entity<Prompt>();
+
             modelBuilder.Entity<PromptItem>()
                 .HasOne(pi => pi.Sentence)
                 .WithMany()
                 .HasForeignKey(pi => pi.SentenceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<PromptItem>()
                 .HasOne(pi => pi.Draft)
                 .WithMany()
                 .HasForeignKey(pi => pi.DraftId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<PromptItem>()
                 .HasIndex(pi => new { pi.PromptId, pi.Order })
                 .IsUnique();
+
             modelBuilder.Entity<Question>()
                     .HasMany(q => q.Options)
                     .WithOne(o => o.Question)
                     .HasForeignKey(o => o.QuestionId);
+
+            modelBuilder.Entity<Question>()
+                .HasOne(q => q.Draft)
+                .WithMany(d => d.Questions)
+                .HasForeignKey(q => q.DraftId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Response>()
                 .HasOne<Test>()
                 .WithMany(t => t.Responses)
                 .HasForeignKey(r => r.TestId);
+
             modelBuilder.Entity<Scratch>()
                 .HasMany(s => s.Drafts)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<TestQuestion>()
+                            .HasKey(tq => new { tq.TestId, tq.QuestionId });
+
+            modelBuilder.Entity<TestQuestion>()
+                .HasOne(tq => tq.Test)
+                .WithMany(t => t.TestQuestions)  // Updated to use the correct navigation property
+                .HasForeignKey(tq => tq.TestId);
+
+            modelBuilder.Entity<TestQuestion>()
+                .HasOne(tq => tq.Question)
+                .WithMany(q => q.TestQuestions)  // Updated to use the correct navigation property
+                .HasForeignKey(tq => tq.QuestionId);
+
+
             modelBuilder.Entity<Section>();
+
             modelBuilder.Entity<Shot>();
+
             modelBuilder.Entity<Test>();
 
             base.OnModelCreating(modelBuilder);
@@ -82,5 +120,8 @@ namespace Quiztle.DataContext
         public DbSet<Section>? Sections { get; set; }
         public DbSet<Shot>? Shots { get; set; }
         public DbSet<Test>? Tests { get; set; }
+
+
+        public DbSet<TestQuestion> TestsQuestions { get; set; }
     }
 }

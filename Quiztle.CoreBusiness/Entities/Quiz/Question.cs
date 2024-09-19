@@ -32,7 +32,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public DateTime Created { get; set; }
 
         [JsonPropertyName("DraftId")]
-        public Guid DraftId { get; set; }
+        public Guid? DraftId { get; set; }
 
         [JsonPropertyName("Draft")]
         public Draft? Draft { get; set; }
@@ -42,6 +42,9 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
+
+        [JsonPropertyName("TestQuestions")]
+        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
 
         public Question GetQuestionSample() => QuestionFactory.CreateFilledQuestion();
 
@@ -95,6 +98,5 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return questionString;
         }
-
     }
 }
