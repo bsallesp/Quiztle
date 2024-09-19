@@ -7,7 +7,7 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
         public Guid Id { get; set; }
         public required string Text { get; set; }
         public List<Question>? Questions { get; set; }
-        public int QuestionsAmountTarget = 10;
+        public int QuestionsAmountTarget { get; set; } = 10;
 
         public bool NeedMoreQuestions()
         {

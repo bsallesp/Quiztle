@@ -187,7 +187,7 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
         {
             if (_context.Responses == null)
             {
-                throw new InvalidOperationException("CreateTestAsync: The Response DbSet is null. Make sure it is properly initialized.");
+                throw new InvalidOperationException("CreateScratchAsync: The Response DbSet is null. Make sure it is properly initialized.");
             }
         }
     }

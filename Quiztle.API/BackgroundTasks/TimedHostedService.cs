@@ -23,8 +23,8 @@ namespace Quiztle.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Ajuste os intervalos dos timers conforme necessário
-            _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
-            _timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             return Task.CompletedTask;
         }
 
@@ -59,28 +59,28 @@ namespace Quiztle.API.BackgroundTasks
                 try
                 {
                     var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMRequest>();
-                    var scratchRepository = scope.ServiceProvider.GetRequiredService<ScratchRepository>();
-                    var questionRepository = scope.ServiceProvider.GetRequiredService<QuestionRepository>();
                     var aILogRepository = scope.ServiceProvider.GetRequiredService<AILogRepository>();
                     var testRepository = scope.ServiceProvider.GetRequiredService<TestRepository>();
+                    var draftRepository = scope.ServiceProvider.GetRequiredService<DraftRepository>();
+                    var questionRepository = scope.ServiceProvider.GetRequiredService<QuestionRepository>();
 
                     var buildQuestions = new BuildQuestionsInBackgroundByLLM(
                         llmRequest,
-                        scratchRepository,
-                        questionRepository,
                         aILogRepository,
-                        testRepository
+                        testRepository,
+                        draftRepository,
+                        questionRepository
                     );
 
                     await buildQuestions.ExecuteAsync();
 
-                    // Após a criação das perguntas, remova duplicatas
-                    var removeDuplicates = new RemoveDuplicates(questionRepository);
-                    await removeDuplicates.ExecuteAsync();
+                    //// Após a criação das perguntas, remova duplicatas
+                    //var removeDuplicates = new RemoveDuplicates(questionRepository);
+                    //await removeDuplicates.ExecuteAsync();
 
-                    // Remover perguntas com rate < 3
-                    var removeBadQuestions = new RemoveBadQuestions(questionRepository);
-                    await removeBadQuestions.ExecuteAsync();
+                    //// Remover perguntas com rate < 3
+                    //var removeBadQuestions = new RemoveBadQuestions(questionRepository);
+                    //await removeBadQuestions.ExecuteAsync();
                 }
                 catch (Exception ex)
                 {

@@ -29,7 +29,7 @@ namespace Quiztle.API.BackgroundTasks.Curation
             var question = await _questionRepository.GetARandomQuestionToRate();
             if (question == null)
             {
-                Console.WriteLine("No question found.");
+                Console.WriteLine("No questions found to rate.");
                 return;
             }
 

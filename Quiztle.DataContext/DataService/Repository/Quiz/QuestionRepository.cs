@@ -47,7 +47,7 @@ namespace Quiztle.DataContext.Repositories.Quiz
             }
         }
 
-        public async Task<Question?> GetQuestionByIdAsync(int id)
+        public async Task<Question?> GetQuestionByIdAsync(Guid id)
         {
             EnsureQuestionsNotNull();
             return await _context.Questions!.FindAsync(id);

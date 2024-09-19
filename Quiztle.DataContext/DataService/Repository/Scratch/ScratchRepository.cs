@@ -11,7 +11,7 @@ namespace Quiztle.DataContext.DataService.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task CreateTestAsync(Scratch scratch)
+        public async Task CreateScratchAsync(Scratch scratch)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace Quiztle.DataContext.DataService.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine("CreateTestAsync: An exception occurred while creating the test:");
+                Console.WriteLine("CreateScratchAsync: An exception occurred while creating the test:");
                 Console.WriteLine(ex.ToString());
                 throw;
             }
@@ -45,7 +45,6 @@ namespace Quiztle.DataContext.DataService.Repository
             }
         }
 
-
         public async Task<IEnumerable<Scratch?>> GetAllScratchesAsync()
         {
             try
@@ -53,6 +52,8 @@ namespace Quiztle.DataContext.DataService.Repository
                 EnsureScratchNotNull();
                 return await _context.Scratches!
                     .Include(s => s.Drafts) // Incluindo os Drafts relacionados
+                        .ThenInclude(d => d.Questions) // Incluindo as Questions de cada Draft
+                            .ThenInclude(q => q.Options) // Incluindo as Options de cada Question
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -63,6 +64,89 @@ namespace Quiztle.DataContext.DataService.Repository
                 throw;
             }
         }
+
+        public async Task<IEnumerable<Scratch?>> GetFilteredScratchesAsync()
+        {
+            try
+            {
+                EnsureScratchNotNull();
+
+                var scratches = await _context.Scratches!
+                    .Include(s => s.Drafts)
+                        .ThenInclude(d => d.Questions)
+                            .ThenInclude(q => q.Options)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var filteredScratches = scratches
+                    .Select(scratch => new Scratch
+                    {
+                        // Copia as propriedades do Scratch
+                        Id = scratch.Id,
+                        Name = scratch.Name,
+                        Drafts = scratch.Drafts!
+                            .Select(draft => new Draft
+                            {
+                                // Copia as propriedades do Draft
+                                Id = draft.Id,
+                                Text = draft.Text,
+                                Questions = draft.Questions!
+                                    .Where(q => q.Options.Any() &&
+                                                !string.IsNullOrEmpty(q.Hint) &&
+                                                !string.IsNullOrEmpty(q.Resolution))
+                                    .ToList()
+                            })
+                            // Mantém apenas os Drafts que têm pelo menos uma Question válida
+                            .Where(draft => draft.Questions.Any())
+                            .ToList()
+                    })
+                    // Mantém apenas os Scratches que têm pelo menos um Draft válido
+                    .Where(scratch => scratch.Drafts.Any())
+                    .ToList();
+
+                return filteredScratches;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetFilteredScratchesAsync: An exception occurred while filtering scratches:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+        public async Task UpdateScratchAsync(Scratch scratch)
+        {
+            try
+            {
+                EnsureScratchNotNull();
+
+                // Verifica se o Scratch existe
+                var existingScratch = await _context.Scratches!
+                    .Include(s => s.Drafts) // Incluindo os Drafts relacionados se necessário
+                    .FirstOrDefaultAsync(s => s.Id == scratch.Id);
+
+                if (existingScratch == null)
+                {
+                    throw new InvalidOperationException("UpdateScratchAsync: The Scratch to update does not exist.");
+                }
+
+                // Atualiza as propriedades do Scratch existente com os valores do scratch fornecido
+                _context.Entry(existingScratch).CurrentValues.SetValues(scratch);
+
+                // Se você precisar atualizar os Drafts também, você pode fazer isso aqui
+                // Certifique-se de manipular os Drafts com cuidado para evitar problemas de concorrência e duplicação
+
+                // Salva as alterações no banco de dados
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("UpdateScratchAsync: An exception occurred while updating the scratch:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
 
 
         private void EnsureScratchNotNull()

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20240919010518_migration0005")]
+    partial class migration0005
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -315,8 +318,7 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("TestId")
-                        .HasColumnType("uuid")
-                        .HasAnnotation("Relational:JsonPropertyName", "TestId");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Verified")
                         .HasColumnType("boolean")
@@ -430,7 +432,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.ToTable("Tests");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Test");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Tests");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>
@@ -620,22 +622,19 @@ namespace Quiztle.DataContext.Migrations
                     b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", "Draft")
                         .WithMany("Questions")
                         .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Quiztle.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SectionId");
 
-                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", "Test")
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", null)
                         .WithMany("Questions")
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Draft");
-
-                    b.Navigation("Test");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>

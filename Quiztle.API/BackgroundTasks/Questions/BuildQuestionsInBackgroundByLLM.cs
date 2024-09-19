@@ -1,47 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.API.Prompts;
 using Quiztle.CoreBusiness.Entities.Quiz;
+using Quiztle.CoreBusiness.Entities.Scratch;
 using Quiztle.DataContext.DataService.Repository;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using Quiztle.DataContext.Repositories;
 using Quiztle.DataContext.Repositories.Quiz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace Quiztle.API.BackgroundTasks.Questions
 {
     public class BuildQuestionsInBackgroundByLLM
     {
         private readonly ILLMRequest _llmRequest;
-        private readonly ScratchRepository _scratchRepository;
-        private readonly QuestionRepository _questionRepository;
         private readonly AILogRepository _aILogRepository;
         private readonly TestRepository _testRepository;
+        private readonly DraftRepository _draftRepository;
         private static CancellationTokenSource? _cts;
         private static DateTime _lastRequestTime = DateTime.MinValue;
         private static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(5);
+        private bool debugCW = false;
 
         // Semáforo para limitar execuções simultâneas
         private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         public BuildQuestionsInBackgroundByLLM(
             ILLMRequest llmRequest,
-            ScratchRepository scratchRepository,
-            QuestionRepository questionRepository,
             AILogRepository aILogRepository,
-            TestRepository testRepository
-        )
+            TestRepository testRepository,
+            DraftRepository draftRepository
+,
+            QuestionRepository questionRepository)
         {
             _llmRequest = llmRequest;
-            _scratchRepository = scratchRepository;
-            _questionRepository = questionRepository;
             _aILogRepository = aILogRepository;
             _testRepository = testRepository;
+            _draftRepository = draftRepository;
         }
 
         public async Task<IActionResult> ExecuteAsync()
@@ -61,83 +58,115 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
             if (!await _semaphore.WaitAsync(TimeSpan.FromSeconds(1)))
             {
+                Console.WriteLine("Red light at " + DateTime.UtcNow.ToString() + "...");
                 return new ObjectResult("Ação já em andamento.") { StatusCode = 429 };
             }
 
             try
             {
-                var scratches = await _scratchRepository.GetAllScratchesAsync();
+                if (debugCW) Console.WriteLine("Running BuildQuestionsInBackgroundByLLM/ExecuteAsync...");
 
-                var randomScratch = scratches.OrderBy(s => Guid.NewGuid()).FirstOrDefault();
-                if (randomScratch == null) throw new InvalidOperationException("No scratches found.");
+                var draft = await _draftRepository.GetNextDraftToMakeQuestionsAsync() ?? throw new Exception("No drafts.");
+                if (draft == null) throw new Exception("DRAFT IS NULL");
+                if (debugCW) Console.WriteLine("Draft isnt null, going forward...");
+                if (debugCW) Console.WriteLine("Total questions in draft: " + draft!.Questions!.Count);
 
-                var randomDraft = randomScratch.Drafts!.OrderBy(d => Guid.NewGuid()).FirstOrDefault();
-                if (randomDraft == null) throw new InvalidOperationException("No drafts found in the selected scratch.");
+                if (debugCW) Console.WriteLine("Getting resul from LLM...");
 
-                var questionsList = await _questionRepository.GetQuestionByDraftAsync(randomDraft.Id);
-                var descriptionOfQuestions = questionsList.Select(d => d!.Name.ToString()).ToList();
+                var stringQuestions = draft?.Questions?
+                    .Where(q => !string.IsNullOrEmpty(q.Name))
+                    .Select(q => q.Name)
+                    .ToList();
 
-                var llmInput = QuestionsPrompts.GetNewQuestionFromPages(randomDraft.Text, descriptionOfQuestions, 3);
+                foreach(var name in stringQuestions ?? new List<string>()) Console.WriteLine(name);
 
+                var llmInput = Prompts.QuestionsPrompts.GetNewQuestionFromPages(draft!.Text, stringQuestions, 3);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
                     JSON = llmInput,
                     Name = "BuildQuestionsInBackgroundByLLM - " + "llmInput"
                 });
 
-                var llmResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
 
+                var llmRequestResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
-                    JSON = llmResult,
+                    JSON = llmRequestResult,
                     Name = "BuildQuestionsInBackgroundByLLM - " + "llmResult"
                 });
 
-                JObject jsonObject = JObject.Parse(llmResult);
-                var questionsToken = jsonObject["Questions"];
-                if (questionsToken == null) throw new ArgumentException("No 'Questions' found in JSON.");
+                JObject jsonObject = JObject.Parse(llmRequestResult);
+                var questionsToken = jsonObject["Questions"] ?? throw new ArgumentException("No 'Questions' found in JSON.");
                 var questions = questionsToken.ToObject<List<Question>>();
+                if (debugCW) Console.WriteLine("QuestionsToken: " + questionsToken);
 
-                foreach (var question in questions!) question.Draft = randomDraft;
-
-                var test = await _testRepository.GetTestByNameAsync(randomScratch.Name!);
-                if (test == null)
+                if (questions == null)
                 {
-                    test = new Test
-                    {
-                        Name = randomScratch.Name!,
-                        Questions = questions
-                    };
-
-                    await _testRepository.CreateTestAsync(test);
+                    Console.WriteLine("QUESTIONS ARE NULL. FNINSHING THE SCOPE.");
+                    throw new Exception("QUESTIONS ARE NULL. FNINSHING THE SCOPE.");
                 }
 
-                var existingQuestionIds = test.Questions.Select(q => q.Id).ToHashSet();
-                var newQuestions = questions.Where(q => !existingQuestionIds.Contains(q.Id)).ToList();
 
-                if (newQuestions.Any())
-                {
-                    test.Questions.AddRange(newQuestions);
-                    await _testRepository.UpdateTest(test);
-                }
+                if (debugCW) Console.WriteLine(llmRequestResult);
 
-                Console.WriteLine("Questions generated by LLM finished.");
+                if (debugCW) Console.WriteLine("QUESTIONS SET ADQUIRED. MOVING QUESTIONS TO DRAFT...");
+                if (debugCW) Console.WriteLine("Total questions in draft: " + draft!.Questions!.Count);
+                if (draft.Questions == null) draft.Questions = [];
+                draft.Questions.AddRange(questions);
 
+                if (draft.Questions == null) Console.WriteLine("questions eh nulo");
+                if (draft.Questions == null) throw new Exception("questions eh nulo");
+
+                foreach (var question in draft.Questions) Console.WriteLine(question.Name);
+
+                await _draftRepository.UpdateDraftAsync(draft);
+
+                if (debugCW) Console.WriteLine("Questions generated by LLM finished.");
                 return new JsonResult(new { message = "All drafts processed" }) { StatusCode = 200 };
             }
             catch (OperationCanceledException)
             {
+                Console.WriteLine("Request was canceled.");
                 return new ObjectResult("Request was canceled.") { StatusCode = 499 };
             }
             catch (Exception ex)
             {
-                var error = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
-                return new ObjectResult(error) { StatusCode = 500 };
+                // Detalhes do erro para diagnóstico
+                var errorMessage = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
+                var stackTrace = ex.StackTrace ?? "No stack trace available";
+
+                // Log completo do erro
+                var detailedError = new
+                {
+                    Error = errorMessage,
+                    StackTrace = stackTrace,
+                    ExceptionType = ex.GetType().Name,
+                    InnerException = ex.InnerException?.Message ?? "No inner exception",
+                    Timestamp = DateTime.UtcNow,
+                    InputData = new { /* adicione aqui variáveis relevantes para o contexto */ }
+                };
+
+                // Registrar no sistema de logs
+                await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
+                {
+                    JSON = JsonConvert.SerializeObject(detailedError),
+                    Name = "BuildQuestionsInBackgroundByLLM - Error"
+                });
+
+                // Log para depuração imediata (se necessário)
+                Console.WriteLine(JsonConvert.SerializeObject(detailedError, Formatting.Indented));
+
+                // Retornar mensagem amigável para o usuário (ou API)
+                var userFriendlyMessage = "An unexpected error occurred while processing your request. Please try again later.";
+                return new ObjectResult(userFriendlyMessage) { StatusCode = 500 };
             }
+
             finally
             {
+                Console.WriteLine("Releasing semaphore...");
                 _semaphore.Release();
             }
+
         }
     }
 }

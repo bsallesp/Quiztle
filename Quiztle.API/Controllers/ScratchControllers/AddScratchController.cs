@@ -31,7 +31,7 @@ namespace Quiztle.API.Controllers.ScratchControllers
                     Created = DateTime.UtcNow
                 };
 
-                await _scratchrepository.CreateTestAsync(newScratch);
+                await _scratchrepository.CreateScratchAsync(newScratch);
 
                 return Ok(newScratch);
             }
