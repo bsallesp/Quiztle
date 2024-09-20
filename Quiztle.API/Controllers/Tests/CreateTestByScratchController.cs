@@ -26,8 +26,6 @@ namespace Quiztle.API.Controllers
             {
                 try
                 {
-                    scratchId = new Guid("3b59fa95-c727-4b4d-bae3-46d0c2bfa639");
-
                     var scratch = await _scratchRepository.GetScratchByIdAsync(scratchId);
 
                     if (scratch == null) return NotFound($"Scratch with ID {scratchId} not found.");
@@ -41,14 +39,12 @@ namespace Quiztle.API.Controllers
                     Test test = new()
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Teste teste hahaha",
+                        Name = scratch.Name!,
                         Questions = questions,
                         Created = DateTime.UtcNow
                     };
 
                     await _scratchRepository.SaveChangesAsync(test);
-                    
-                    //await _testRepository.CreateTestAsync(test, questions.Select(i => i.Id).ToList());
 
                     return Ok(test);
                 }

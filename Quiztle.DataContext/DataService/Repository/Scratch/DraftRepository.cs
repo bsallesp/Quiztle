@@ -188,6 +188,11 @@ namespace Quiztle.DataContext.DataService.Repository
             }
         }
 
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         private void EnsureDraftNotNull()
         {
             if (_context.Drafts == null)

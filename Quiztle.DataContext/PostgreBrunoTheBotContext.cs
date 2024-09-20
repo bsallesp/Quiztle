@@ -28,11 +28,10 @@ namespace Quiztle.DataContext
             modelBuilder.Entity<Content>();
 
             modelBuilder.Entity<Draft>()
-                    .HasMany(d => d.Questions)
-                    .WithOne(q => q.Draft)
-                    .HasForeignKey(q => q.DraftId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
+                .HasMany(d => d.Questions)
+                .WithOne(q => q.Draft)
+                .HasForeignKey(q => q.DraftId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Option>();
 
@@ -59,9 +58,9 @@ namespace Quiztle.DataContext
                 .IsUnique();
 
             modelBuilder.Entity<Question>()
-                    .HasMany(q => q.Options)
-                    .WithOne(o => o.Question)
-                    .HasForeignKey(o => o.QuestionId);
+                .HasMany(q => q.Options)
+                .WithOne(o => o.Question)
+                .HasForeignKey(o => o.QuestionId);
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Draft)
@@ -79,29 +78,30 @@ namespace Quiztle.DataContext
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             modelBuilder.Entity<TestQuestion>()
-                            .HasKey(tq => new { tq.TestId, tq.QuestionId });
-
-            modelBuilder.Entity<TestQuestion>()
-                .HasOne(tq => tq.Test)
-                .WithMany(t => t.TestQuestions)  // Updated to use the correct navigation property
-                .HasForeignKey(tq => tq.TestId);
-
-            modelBuilder.Entity<TestQuestion>()
-                .HasOne(tq => tq.Question)
-                .WithMany(q => q.TestQuestions)  // Updated to use the correct navigation property
-                .HasForeignKey(tq => tq.QuestionId);
-
+                .HasKey(tq => new { tq.TestId, tq.QuestionId });
 
             modelBuilder.Entity<Section>();
 
             modelBuilder.Entity<Shot>();
 
-            modelBuilder.Entity<Test>();
+            // Relação entre Test e TestQuestion
+            modelBuilder.Entity<Test>()
+                .HasMany(t => t.TestQuestions)
+                .WithOne(tq => tq.Test)
+                .HasForeignKey(tq => tq.TestId) // Adicionando chave estrangeira
+                .OnDelete(DeleteBehavior.Cascade); // Para exclusão em cascata de TestQuestions
+
+            // Relação entre Question e TestQuestion
+            modelBuilder.Entity<Question>()
+                .HasMany(q => q.TestQuestions)
+                .WithOne(tq => tq.Question)
+                .HasForeignKey(tq => tq.QuestionId) // Adicionando chave estrangeira
+                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata ao remover Questions
 
             base.OnModelCreating(modelBuilder);
         }
+
 
         public DbSet<AILog>? AILogs { get; set; }
         public DbSet<Book>? Books { get; set; }
@@ -120,8 +120,5 @@ namespace Quiztle.DataContext
         public DbSet<Section>? Sections { get; set; }
         public DbSet<Shot>? Shots { get; set; }
         public DbSet<Test>? Tests { get; set; }
-
-
-        public DbSet<TestQuestion> TestsQuestions { get; set; }
     }
 }

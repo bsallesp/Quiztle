@@ -21,7 +21,7 @@ namespace Quiztle.API.Controllers.Tests
         {
             try
             {
-                var questions = await _questionRepository.GetAllQuestionsAsync(); // Ajuste para refletir o método real em QuestionRepository
+                var questions = await _questionRepository.GetAllQuestionsAsync();
                 return Ok(questions);
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace Quiztle.API.Controllers.Tests
         {
             try
             {
-                var question = await _questionRepository.GetQuestionByIdAsync(id); // Ajuste para refletir o método real em QuestionRepository
+                var question = await _questionRepository.GetQuestionByIdAsync(id);
                 if (question == null)
                 {
                     return NotFound();
