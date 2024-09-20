@@ -23,7 +23,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         [JsonPropertyName("TestQuestions")]
-        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
+        public ICollection<TestQuestion> TestQuestions { get; set; } = [];
 
         public void ShuffleQuestions()
         {

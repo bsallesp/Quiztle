@@ -14,6 +14,18 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
             return Questions == null || Questions.Count < QuestionsAmountTarget;
         }
 
+        public List<Question> GetRandomQuestions(int amount)
+        {
+            if (Questions == null || !Questions.Any())
+                return new List<Question>();
+
+            var random = new Random();
+            return Questions
+                .OrderBy(q => random.Next()) // Ordena aleatoriamente
+                .Take(amount) // Seleciona a quantidade desejada
+                .ToList();
+        }
+
         public static Draft GetDraftSample()
         {
             return new Draft

@@ -23,7 +23,6 @@ namespace Quiztle.API.Controllers
         {
             try
             {
-                // Busca o Draft pelo ID, incluindo as perguntas associadas
                 var draft = await _draftRepository.GetDraftWithQuestionsAsync(draftId, trackChanges: true);
 
                 if (draft == null)
@@ -36,16 +35,14 @@ namespace Quiztle.API.Controllers
                     return BadRequest("The draft has no questions to create a test.");
                 }
 
-                // Cria um novo Test com as perguntas do Draft
                 Test test = new()
                 {
                     Id = Guid.NewGuid(),
                     Name = testName,
-                    Questions = draft.Questions, // Associa todas as perguntas do Draft
+                    Questions = draft.Questions,
                     Created = DateTime.UtcNow
                 };
 
-                // Adiciona o Test ao DbContext
                 await _testRepository.CreateTestAsync(test);
 
 

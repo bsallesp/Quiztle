@@ -44,7 +44,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public int Rate { get; set; } = 0;
 
         [JsonPropertyName("TestQuestions")]
-        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
+        public ICollection<TestQuestion> TestQuestions { get; set; } = [];
 
         public Question GetQuestionSample() => QuestionFactory.CreateFilledQuestion();
 

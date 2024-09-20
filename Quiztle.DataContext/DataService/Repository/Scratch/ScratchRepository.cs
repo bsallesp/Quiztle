@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Quiztle.CoreBusiness.Entities.Quiz;
 using Quiztle.CoreBusiness.Entities.Scratch;
 
 namespace Quiztle.DataContext.DataService.Repository
@@ -33,8 +34,9 @@ namespace Quiztle.DataContext.DataService.Repository
             {
                 EnsureScratchNotNull();
                 return await _context.Scratches!
-                    .Include(s => s.Drafts) // Incluindo os Drafts relacionados
-                    .AsNoTracking()
+                    .Include(s => s.Drafts!)
+                    .ThenInclude(d => d.Questions)
+                    .AsTracking()
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
             catch (Exception ex)
@@ -45,15 +47,21 @@ namespace Quiztle.DataContext.DataService.Repository
             }
         }
 
+        public async Task SaveChangesAsync(Test test)
+        {
+            await _context!.Tests!.AddAsync(test);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Scratch?>> GetAllScratchesAsync()
         {
             try
             {
                 EnsureScratchNotNull();
                 return await _context.Scratches!
-                    .Include(s => s.Drafts) // Incluindo os Drafts relacionados
-                        .ThenInclude(d => d.Questions) // Incluindo as Questions de cada Draft
-                            .ThenInclude(q => q.Options) // Incluindo as Options de cada Question
+                    .Include(s => s.Drafts!) 
+                        .ThenInclude(d => d.Questions!)
+                            .ThenInclude(q => q.Options)
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -72,8 +80,8 @@ namespace Quiztle.DataContext.DataService.Repository
                 EnsureScratchNotNull();
 
                 var scratches = await _context.Scratches!
-                    .Include(s => s.Drafts)
-                        .ThenInclude(d => d.Questions)
+                    .Include(s => s.Drafts!)
+                        .ThenInclude(d => d.Questions!)
                             .ThenInclude(q => q.Options)
                     .AsNoTracking()
                     .ToListAsync();
@@ -96,12 +104,10 @@ namespace Quiztle.DataContext.DataService.Repository
                                                 !string.IsNullOrEmpty(q.Resolution))
                                     .ToList()
                             })
-                            // Mantém apenas os Drafts que têm pelo menos uma Question válida
-                            .Where(draft => draft.Questions.Any())
+                            .Where(draft => draft.Questions!.Count != 0)
                             .ToList()
                     })
-                    // Mantém apenas os Scratches que têm pelo menos um Draft válido
-                    .Where(scratch => scratch.Drafts.Any())
+                    .Where(scratch => scratch.Drafts!.Count != 0)
                     .ToList();
 
                 return filteredScratches;
@@ -146,8 +152,6 @@ namespace Quiztle.DataContext.DataService.Repository
                 throw;
             }
         }
-
-
 
         private void EnsureScratchNotNull()
         {

@@ -14,26 +14,18 @@ namespace Quiztle.API.Prompts
 
             var promptBuilder = new StringBuilder();
 
-            // Adicionar cabeçalho
             AddHeader(promptBuilder);
 
-            // Adicionar conteúdo do artigo
             AddArticleContent(promptBuilder, bookArticle);
 
-            // Adicionar estrutura JSON
             AddJsonStructure(promptBuilder, incorrectOptionsAmount);
 
-            // Adicionar perguntas anteriores se houver
             if (questionsAlreadyMade?.Any() == true)
             {
                 AddPreviousQuestions(promptBuilder, questionsAlreadyMade);
             }
 
-            // Configurar detalhes das perguntas
             AddQuestionDetails(promptBuilder, questionsAmount, incorrectOptionsAmount);
-
-            //// Adicionar exemplo de pergunta
-            //AddExampleQuestion(promptBuilder);
 
             return promptBuilder.ToString();
         }
@@ -75,18 +67,9 @@ namespace Quiztle.API.Prompts
             promptBuilder.AppendLine("Total Correct Answers: 1.");
             promptBuilder.AppendLine($"Total Incorrect Answers: {incorrectOptionsAmount}.");
             promptBuilder.AppendLine("Ensure questions and answers strictly align with the provided text.");
+            promptBuilder.AppendLine("Make sure the hint provides a useful clue for arriving at the correct answer, but avoid making it too obvious.");
+            promptBuilder.AppendLine("Ensure the explanation is at least 50 words long, providing detailed reasoning to justify why the given answer is correct.");
         }
-
-        //private static void AddExampleQuestion(StringBuilder promptBuilder)
-        //{
-        //    promptBuilder.AppendLine("Here is an example of a question with proper structure and variation: ");
-        //    promptBuilder.AppendLine(GetExampleQuestion());
-        //}
-
-        //private static string GetExampleQuestion()
-        //{
-        //    return "{\r\n  \"Questions\": [\r\n    {\r\n      \"Name\": \"Which of the following is a cost-saving feature of cloud computing?\",\r\n      \"Options\": [\r\n        {\r\n          \"Name\": \"You only pay for what you use.\",\r\n          \"IsCorrect\": true\r\n        },\r\n        {\r\n          \"Name\": \"Cloud providers offer free hardware.\",\r\n          \"IsCorrect\": false\r\n        },\r\n        {\r\n          \"Name\": \"Cloud services do not incur bandwidth costs.\",\r\n          \"IsCorrect\": false\r\n        },\r\n        {\r\n          \"Name\": \"Cloud services are only available in one region.\",\r\n          \"IsCorrect\": false\r\n        }\r\n      ],\r\n      \"Hint\": \"Consider how cloud providers bill for services.\",\r\n      \"Resolution\": \"The correct answer is 'You only pay for what you use'.\" \r\n    }\r\n  ]\r\n}";
-        //}
 
         private static string GetJsonStructure(int incorrectOptionsAmount)
         {

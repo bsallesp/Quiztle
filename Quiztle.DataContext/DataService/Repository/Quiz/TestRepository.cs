@@ -44,6 +44,55 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
             }
         }
 
+        public async Task CreateTestAsync(Test test, List<Guid> questionIds)
+        {
+            try
+            {
+                EnsureTestNotNull();
+
+                // Buscar as perguntas existentes no banco de dados usando os Ids fornecidos
+                var existingQuestions = await _context.Questions!
+                    .Where(q => questionIds.Contains(q.Id)).AsNoTracking()
+                    .ToListAsync();
+
+                if (existingQuestions.Count != questionIds.Count)
+                {
+                    throw new InvalidOperationException("Uma ou mais perguntas fornecidas não foram encontradas.");
+                }
+
+                // Para cada questão existente, garantimos que o EF Core não esteja rastreando duplicadamente
+                foreach (var question in existingQuestions)
+                {
+                    // Detach a questão se já estiver sendo rastreada no contexto
+                    if (_context.Entry(question).State == EntityState.Detached)
+                    {
+                        _context.Attach(question);
+                    }
+
+                    test.TestQuestions.Add(new TestQuestion
+                    {
+                        Test = test,
+                        Question = question,
+                        TestId = test.Id,
+                        QuestionId = question.Id
+                    });
+                }
+
+                // Adicionar o teste ao contexto
+                _context.Tests!.Add(test);
+
+                // Salvar as mudanças
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("CreateTestAsync: An exception occurred while creating the test:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+
         public async Task CreateTestAsync(Test test)
         {
             try

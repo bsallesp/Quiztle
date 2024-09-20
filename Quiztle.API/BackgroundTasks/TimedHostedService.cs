@@ -23,7 +23,7 @@ namespace Quiztle.API.BackgroundTasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Ajuste os intervalos dos timers conforme necessário
-            _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
             //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             return Task.CompletedTask;
         }

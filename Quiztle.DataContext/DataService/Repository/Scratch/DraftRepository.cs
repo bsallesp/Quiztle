@@ -121,12 +121,10 @@ namespace Quiztle.DataContext.DataService.Repository
             {
                 EnsureDraftNotNull();
 
-                // Define se o rastreamento de alterações será feito ou não
                 var query = trackChanges
                     ? _context.Drafts!.Include(d => d.Questions).AsTracking()
                     : _context.Drafts!.Include(d => d.Questions).AsNoTracking();
 
-                // Busca o draft com as perguntas
                 return await query.FirstOrDefaultAsync(d => d.Id == id);
             }
             catch (Exception ex)

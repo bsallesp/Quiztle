@@ -32,34 +32,6 @@ namespace Quiztle.API.Controllers
                 var allScratchesFiltered = await _scratchRepository.GetFilteredScratchesAsync();
                 if (allScratchesFiltered == null) return NotFound();
 
-                // Aguarde a criação dos testes
-                await _testRepository.CreateTestsFromScratchesAsync(allScratchesFiltered.ToImmutableList(), 10);
-
-                //    .GetDraftWithQuestionsAsync(scratchId, trackChanges: true);
-
-                //if (scratch == null)
-                //{
-                //    return NotFound($"Draft with ID {scratchId} not found.");
-                //}
-
-                //if (scratch.Questions == null || !scratch.Questions.Any())
-                //{
-                //    return BadRequest("The scratch has no questions to create a test.");
-                //}
-
-                //// Cria um novo Test com as perguntas do Draft
-                //Test test = new()
-                //{
-                //    Id = Guid.NewGuid(),
-                //    Name = testName,
-                //    Questions = scratch.Questions,
-                //    Created = DateTime.UtcNow
-                //};
-
-                //// Adiciona o Test ao DbContext
-                //await _testRepository.CreateTestAsync(test);
-
-
                 return Ok(allScratchesFiltered);
             }
             catch (Exception ex)
