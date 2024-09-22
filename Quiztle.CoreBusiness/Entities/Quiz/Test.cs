@@ -22,6 +22,9 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
+        [JsonPropertyName("IsAvaiable")]
+        public bool IsAvaiable { get; set; } = false;
+
         [JsonPropertyName("TestQuestions")]
         public ICollection<TestQuestion> TestQuestions { get; set; } = [];
 

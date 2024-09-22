@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Quiztle.API.Prompts
 {
-    public static class QuestionsPrompts
+    public static class CreateQuestionsPrompt
     {
         public static string GetNewQuestionFromPages(string bookArticle, IEnumerable<string>? questionsAlreadyMade = null, int questionsAmount = 5, int incorrectOptionsAmount = 4)
         {

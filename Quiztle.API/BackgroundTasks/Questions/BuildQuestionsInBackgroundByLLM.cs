@@ -78,7 +78,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
                 foreach (var name in stringQuestions ?? new List<string>()) Console.WriteLine(name);
 
-                var llmInput = Prompts.QuestionsPrompts.GetNewQuestionFromPages(draft!.Text, stringQuestions, 3);
+                var llmInput = Prompts.CreateQuestionsPrompt.GetNewQuestionFromPages(draft!.Text, stringQuestions, 3);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
                     JSON = llmInput,

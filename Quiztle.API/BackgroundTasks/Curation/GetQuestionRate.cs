@@ -35,8 +35,7 @@ namespace Quiztle.API.BackgroundTasks.Curation
 
             Console.WriteLine(question.ToFormattedString());
 
-            var questionString = question.ToFormattedString();
-            var resultJson = await _curationBackground.ExecuteAsync(questionString);
+            var resultJson = await _curationBackground.ExecuteAsync(question);
 
             // Log the raw JSON result
             Console.WriteLine("Raw JSON result: " + resultJson);
@@ -56,10 +55,12 @@ namespace Quiztle.API.BackgroundTasks.Curation
                 {
                     // Update the question's rating based on the evaluation
                     question.Verified = true;
+                    question.Consistency = result.Consistency != 0;
                     question.Rate = result.Score;
 
                     await _questionRepository.UpdateQuestionAsync(question);
                     Console.WriteLine($"Question rated with score: {result.Score}");
+                    Console.WriteLine($"Question consistencty is: {result.Consistency}");
                 }
                 else
                 {
@@ -76,6 +77,6 @@ namespace Quiztle.API.BackgroundTasks.Curation
     public class QuizEvaluationResult
     {
         public int Score { get; set; }
-        public string Feedback { get; set; } = "";
+        public int Consistency { get; set; }
     }
 }

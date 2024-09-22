@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20240920135030_migration0012")]
+    partial class migration0012
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,10 +289,6 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("uuid")
                         .HasAnnotation("Relational:JsonPropertyName", "Id");
 
-                    b.Property<bool>("Consistency")
-                        .HasColumnType("boolean")
-                        .HasAnnotation("Relational:JsonPropertyName", "Consistency");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
@@ -417,10 +416,6 @@ namespace Quiztle.DataContext.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
-
-                    b.Property<bool>("IsAvaiable")
-                        .HasColumnType("boolean")
-                        .HasAnnotation("Relational:JsonPropertyName", "IsAvaiable");
 
                     b.Property<string>("Name")
                         .IsRequired()

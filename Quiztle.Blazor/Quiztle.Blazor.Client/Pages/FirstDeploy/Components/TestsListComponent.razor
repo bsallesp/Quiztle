@@ -51,7 +51,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        listTests = await GetAllTestsService.ExecuteAsync();
+        listTests = await GetAllTestsService.ExecuteAsync(true);
         _isEmpty = false;
     }
 }

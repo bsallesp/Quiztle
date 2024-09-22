@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Quiztle.CoreBusiness.Entities.Quiz;
-using Quiztle.DataContext.Repositories.Quiz;
+﻿using Quiztle.DataContext.Repositories.Quiz;
 
 namespace Quiztle.API.BackgroundTasks.Questions
 {
@@ -23,11 +17,12 @@ namespace Quiztle.API.BackgroundTasks.Questions
             var allQuestions = await _questionRepository.GetAllQuestionsAsync();
 
             // Filtrar perguntas com rate menor que 3
-            var badQuestions = allQuestions.Where(q => q.Rate < 3).Where(v => v.Verified).ToList();
+            var badQuestions = allQuestions.Where(q => q.Rate < 1).Where(v => v.Verified).ToList();
 
             // Remover perguntas ruins
             foreach (var question in badQuestions)
             {
+                Console.WriteLine("Deleting question: " + question.Id + "with score: " + question.Rate.ToString());
                 // Use DeleteQuestionAsync para remover a pergunta
                 await _questionRepository.DeleteQuestionAsync(question.Id);
             }

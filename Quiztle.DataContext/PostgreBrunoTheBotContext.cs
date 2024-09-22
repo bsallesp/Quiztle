@@ -120,5 +120,8 @@ namespace Quiztle.DataContext
         public DbSet<Section>? Sections { get; set; }
         public DbSet<Shot>? Shots { get; set; }
         public DbSet<Test>? Tests { get; set; }
+
+        
+        public DbSet<TestQuestion>? TestsQuestions { get; set; }
     }
 }

@@ -23,6 +23,8 @@ namespace Quiztle.DataContext.Repositories.Quiz
             var question = await _context.Questions!
                 .Where(q => !q.Verified)
                 .OrderBy(q => Guid.NewGuid())
+                .Include(o => o.Options)
+                .Include(d => d.Draft)
                 .FirstOrDefaultAsync();
 
             return question;

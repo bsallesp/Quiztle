@@ -69,7 +69,7 @@ namespace Quiztle.API.Controllers.LLMControllers
                 };
 
                 var questions = new List<Question>();
-                var prompt = QuestionsPrompts.GetNewQuestionFromPages(pdfDataPages, new List<string>(), questionsPerSection);
+                var prompt = CreateQuestionsPrompt.GetNewQuestionFromPages(pdfDataPages, new List<string>(), questionsPerSection);
                 var responseLLM = await _chatGPTRequest.ExecuteAsync(prompt) ?? throw new Exception();
                 //await _saveAILogController.ExecuteAsync(nameof(ExecuteAsync), responseLLM);
                 questions = JSONConverter.ConvertToQuestions(responseLLM);

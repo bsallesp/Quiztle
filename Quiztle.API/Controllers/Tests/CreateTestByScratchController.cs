@@ -20,7 +20,7 @@ namespace Quiztle.API.Controllers
         }
 
         [HttpPost("{scratchId}")]
-        public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName)
+        public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName, int questionsPerScratch)
         {
             if (testName is not null)
             {
@@ -34,7 +34,9 @@ namespace Quiztle.API.Controllers
 
                     var questions = new List<Question>();
 
-                    foreach (var item in scratch.Drafts) questions.AddRange([.. item.GetRandomQuestions(10)]);
+                    foreach (var item in scratch.Drafts) questions.AddRange([.. item.GetRandomQuestions(questionsPerScratch)]);
+
+                    questions = questions.Where(v => v.Verified).ToList();
 
                     Test test = new()
                     {
