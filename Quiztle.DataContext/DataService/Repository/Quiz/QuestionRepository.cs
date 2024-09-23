@@ -75,6 +75,25 @@ namespace Quiztle.DataContext.Repositories.Quiz
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> UpdateQuestionAsync(Guid id, Question question)
+        {
+            try
+            {
+                Console.WriteLine("Updating...");
+                EnsureQuestionsNotNull();
+                _context.Entry(question).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine("Updating done.");
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Updating error: " + ex);
+                return false;
+            }
+        }
+
         public async Task<bool> DeleteQuestionAsync(Guid id)
         {
             EnsureQuestionsNotNull();

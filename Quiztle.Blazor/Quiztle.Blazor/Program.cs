@@ -123,6 +123,7 @@ builder.Services.AddTransient<CreateTestFromPDFService>();
 builder.Services.AddTransient<CreateTestService>();
 builder.Services.AddTransient<AddScratchService>();
 builder.Services.AddTransient<RemoveQuestionService>();
+builder.Services.AddTransient<UpdateQuestionService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

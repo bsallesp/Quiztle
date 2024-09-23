@@ -1,7 +1,7 @@
 ﻿using Quiztle.DataContext.Repositories.Quiz;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Quiztle.API.Controllers.Tests
+namespace Quiztle.API.Controllers.Questions
 {
     [ApiController]
     [Route("api/[controller]")]
