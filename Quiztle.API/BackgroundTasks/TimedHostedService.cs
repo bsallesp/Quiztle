@@ -13,18 +13,25 @@ namespace Quiztle.API.BackgroundTasks
         private Timer? _timer;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _configuration;
+        private readonly IHostEnvironment _hostEnvironment;
 
-        public TimedHostedService(IServiceScopeFactory scopeFactory, IConfiguration configuration)
+        public TimedHostedService(IServiceScopeFactory scopeFactory, IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             _scopeFactory = scopeFactory;
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Ajuste os intervalos dos timers conforme necessário
-            //_timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
-            _timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+
+            if (_hostEnvironment.IsDevelopment())
+            {
+                _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+                //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            }
+
             return Task.CompletedTask;
         }
 
