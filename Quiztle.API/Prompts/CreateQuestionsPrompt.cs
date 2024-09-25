@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using System.Text;
+﻿using System.Text;
 
 namespace Quiztle.API.Prompts
 {
@@ -15,9 +14,7 @@ namespace Quiztle.API.Prompts
             var promptBuilder = new StringBuilder();
 
             AddHeader(promptBuilder);
-
             AddArticleContent(promptBuilder, bookArticle);
-
             AddJsonStructure(promptBuilder, incorrectOptionsAmount);
 
             if (questionsAlreadyMade?.Any() == true)
@@ -33,7 +30,7 @@ namespace Quiztle.API.Prompts
         private static void AddHeader(StringBuilder promptBuilder)
         {
             promptBuilder.AppendLine("As a specialist in constructing exams for the Azure AZ-900 Fundamentals Certification, " +
-                                     "create varied questions based strictly on the provided text. Avoid using synonyms or creatively rephrasing the content.");
+                                     "create distinct and clear questions based strictly on the provided text. Avoid synonyms, rephrasing, or ambiguity in answer choices.");
         }
 
         private static void AddArticleContent(StringBuilder promptBuilder, string bookArticle)
@@ -48,7 +45,7 @@ namespace Quiztle.API.Prompts
             promptBuilder.AppendLine("Provide questions and answers in the JSON structure below:");
             promptBuilder.AppendLine(GetJsonStructure(incorrectOptionsAmount));
             promptBuilder.AppendLine("Only use the information provided above. Do not add any content.");
-            promptBuilder.AppendLine("Ensure answers are similar in length and style, and incorrect answers are plausible and detailed.");
+            promptBuilder.AppendLine("Ensure answers are similar in length and style, and that incorrect answers are plausible but clearly distinguishable from the correct answer.");
         }
 
         private static void AddPreviousQuestions(StringBuilder promptBuilder, IEnumerable<string> questionsAlreadyMade)
@@ -58,7 +55,7 @@ namespace Quiztle.API.Prompts
             {
                 promptBuilder.AppendLine($"{question}");
             }
-            promptBuilder.AppendLine("Ensure new questions differ in structure and context.");
+            promptBuilder.AppendLine("Ensure new questions have a different structure and context.");
         }
 
         private static void AddQuestionDetails(StringBuilder promptBuilder, int questionsAmount, int incorrectOptionsAmount)
@@ -69,6 +66,8 @@ namespace Quiztle.API.Prompts
             promptBuilder.AppendLine("Ensure questions and answers strictly align with the provided text.");
             promptBuilder.AppendLine("Make sure the hint provides a useful clue for arriving at the correct answer, but avoid making it too obvious.");
             promptBuilder.AppendLine("Ensure the explanation is at least 50 words long, providing detailed reasoning to justify why the given answer is correct.");
+            promptBuilder.AppendLine("When creating incorrect options, ensure they are plausible but have clear differences that highlight why they are incorrect compared to the correct answer.");
+            promptBuilder.AppendLine("In Rate field, rate it form 0 to 5 (where 0 the resolution is totally easy, 5 is completely hard)");
         }
 
         private static string GetJsonStructure(int incorrectOptionsAmount)
@@ -78,13 +77,14 @@ namespace Quiztle.API.Prompts
                     {{
                         ""Name"": ""<Question Text>"",
                         ""Options"": [
-                            {{ ""Name"": ""<Option 1>"", ""IsCorrect"": true }},
-                            {{ ""Name"": ""<Option 2>"", ""IsCorrect"": false }},
-                            {{ ""Name"": ""<Option 3>"", ""IsCorrect"": false }},
-                            {{ ""Name"": ""<Option 4>"", ""IsCorrect"": false }}
+                            {{ ""Name"": ""<Correct Option>"", ""IsCorrect"": true }},
+                            {{ ""Name"": ""<Distinct Incorrect Option 1>"", ""IsCorrect"": false }},
+                            {{ ""Name"": ""<Distinct Incorrect Option 2>"", ""IsCorrect"": false }},
+                            {{ ""Name"": ""<Distinct Incorrect Option 3>"", ""IsCorrect"": false }}
                         ],
                         ""Hint"": ""<Hint Text>"",
-                        ""Resolution"": ""<Resolution Text>""
+                        ""Resolution"": ""<Resolution Text>"",
+                        ""Rate"": ""Rate integer""
                     }}
                 ]
             }}";

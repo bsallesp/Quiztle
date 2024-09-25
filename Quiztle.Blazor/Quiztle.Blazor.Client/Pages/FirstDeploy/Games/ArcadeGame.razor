@@ -1,12 +1,20 @@
 ﻿@page "/Games/Arcade/{TestId}"
+@page "/Games/Arcade/{TestId}/{admin:bool?}"
 @page "/Games/Arcade/{TestId}/{amount}"
+@page "/Games/Arcade/{TestId}/{amount}/{admin:bool?}"
+
+
 
 @using Quiztle.Blazor.Client.Pages.Games.Components
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
 
+@inject GetQuestionsService GetQuestionsService
+
 <title>
-    @if (_title != null) @_title
+    @if (_title != null)
+        @_title
+
 </title>
 
 <div>
@@ -17,7 +25,11 @@
 
             @foreach (var questionDTO in _testDTO.QuestionsDTO)
             {
-                <QuestionDTOArcadeComponent ShowResults="ShowResults" questionDTO="questionDTO" Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"></QuestionDTOArcadeComponent>
+                <QuestionDTOArcadeComponent ShowResults="ShowResults"
+                                            questionDTO="questionDTO"
+                                            Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"
+                                            Admin="@Admin">
+                </QuestionDTOArcadeComponent>
             }
         }
     </div>
@@ -33,8 +45,8 @@
         @if (ShowResults)
         {
             <div style="background-color: mintcream;">
-                
-                @if(_testDTO.QuestionsDTO!.Count > 1)
+
+                @if (_testDTO.QuestionsDTO!.Count > 1)
                 {
                     <h4>
                         You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
@@ -58,6 +70,8 @@
     public string TestId { get; set; } = "";
     [Parameter]
     public string amount { get; set; } = "";
+    [Parameter]
+    public bool Admin { get; set; } = false;
 
     private TestDTO _testDTO = new();
     private Response? _response;
@@ -79,10 +93,9 @@
 
     private void NextQuestion()
     {
-        Console.WriteLine("uhauhauha");
-        Nav.NavigateTo("/Games/Arcade/" + _testGuid + "/" + _testDTO.QuestionsDTO!.Count, true);
-
+        Nav.NavigateTo($"/Games/Arcade/{_testGuid}/{_testDTO.QuestionsDTO!.Count}/{Admin}", true);
     }
+
 
     private void FinalizeTestResponse()
     {
@@ -105,8 +118,22 @@
     {
         try
         {
-            Guid testIdGuid;
-            if (Guid.TryParse(TestId, out testIdGuid))
+            if (TestId == "00000")
+            {
+                var result = await GetQuestionsService.ExecuteAsync();
+                if (result == null) return;
+
+                var test = new Test();
+                test.Name = "All Questions";
+                test.Questions = result.Data.ToList();
+
+                _testDTO.FromTest(test);
+            }
+            else if (!Guid.TryParse(TestId, out Guid testIdGuid))
+            {
+                Nav.NavigateTo("/", true);
+            }
+            else
             {
                 _testGuid = Guid.Parse(TestId);
                 var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
@@ -122,15 +149,11 @@
                     _testDTO.SetQuestionsAmount(amount);
                 }
             }
-            else
-            {
-                Nav.NavigateTo("/PDFDataManager", true);
-            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
-            Nav.NavigateTo("/PDFDataManager", true);
+            // Handle exception or log it
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }

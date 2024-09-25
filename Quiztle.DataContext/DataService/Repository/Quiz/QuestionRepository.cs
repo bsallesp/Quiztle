@@ -64,7 +64,9 @@ namespace Quiztle.DataContext.Repositories.Quiz
         public async Task<IQueryable<Question>> GetAllQuestionsAsync()
         {
             EnsureQuestionsNotNull();
-            var questions = await _context.Questions!.ToListAsync();
+            var questions = await _context.Questions!
+                .Include(o => o.Options)
+                .ToListAsync();
             return questions.AsQueryable();
         }
 

@@ -6,12 +6,13 @@
 @using Microsoft.AspNetCore.Components
 
 @inject UpdateQuestionService UpdateQuestionService
+@inject RemoveQuestionService RemoveQuestionService
 @rendermode InteractiveAuto
 
 <div style="margin-bottom:25px;margin-top:25px; background-color: whitesmoke;">
     @if (questionDTO != null)
     {
-        @questionDTO!.Question!.Id
+        @* @questionDTO!.Question!.Id *@
 
         <h4 style="padding: 10px;">
             @(1 + Number) - @questionDTO.Question!.Name
@@ -25,13 +26,41 @@
         }
     }
 
-    <input class="btn btn-primary w-100 d-flex align-items-center justify-content-center" type="number" @bind="_rate" />
+    @if (_showTips)
+    {
+        <div>
+            @questionDTO!.Question!.Hint
+            <hr />
+            @questionDTO.Question.Resolution
+        </div>
+    }
 
-    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => RateIt()" style="background-color: lightgreen">
+    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+            @onclick="() => ShowTips()"
+            style="background-color: antiquewhite">
         <h3 class="mb-0">
-            Rate
+            Show Tips
         </h3>
     </button>
+
+    @if (Admin)
+    {
+        <input class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="font-size: 30px" type="number" @bind="_rate" />
+        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                @onclick="() => RateIt()"
+                style="background-color: lightgreen">
+            <h3 class="mb-0">
+                Rate
+            </h3>
+        </button>
+        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                @onclick="() => DeleteQuestion()"
+                style="background-color: red">
+            <h3 class="mb-0">
+                Delete
+            </h3>
+        </button>
+    }
 </div>
 @code
 {
@@ -41,6 +70,10 @@
     public int Number { get; set; }
     [Parameter]
     public Guid responseGuid { get; set; }
+    [Parameter]
+    public bool Admin { get; set; } = false;
+
+    private bool _showTips;
 
     private int _rate;
 
@@ -62,6 +95,24 @@
                 }
             }
         }
+    }
+
+    private void ShowTips()
+    {
+        _showTips = !_showTips;
+    }
+
+    private async void DeleteQuestion()
+    {
+        var id = questionDTO!.Question!.Id;
+        Console.WriteLine(id);
+
+        questionDTO.Question.Rate = _rate;
+        Console.WriteLine("New Rate: " + _rate);
+
+        var update = await RemoveQuestionService.ExecuteAsync(id);
+
+        Console.WriteLine(update.Data);
     }
 
     private async void RateIt()
@@ -87,7 +138,8 @@
 
     protected override Task OnInitializedAsync()
     {
-        questionDTO!.ShuffleOptions();
+        // questionDTO!.ShuffleOptions();
+        if (questionDTO != null) _rate = questionDTO.Question!.Rate;
         return base.OnInitializedAsync();
     }
 
