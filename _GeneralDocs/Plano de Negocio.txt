@@ -1,0 +1,89 @@
+1. **Direct Factual Question**  
+Direct question about a specific fact or data.
+
+2. **Definition Selection**  
+Question asking for the definition of a term or concept.
+
+3. **Function Selection**  
+Question inquiring about the function of a concept or entity.
+
+4. **Complete the Sentence**  
+Question requiring selection of the correct option to complete a sentence.
+
+5. **Term Association**  
+Question that asks to associate related terms or concepts.
+
+6. **Cause Selection**  
+Question identifying the cause of a phenomenon or event.
+
+7. **Effect Selection**  
+Question requesting identification of the effect of an action or event.
+
+8. **Correct Sequence**  
+Question regarding the correct order of steps in a process.
+
+9. **Exclusion Question**  
+Question identifying the item that does not belong to a group.
+
+10. **Incorrect Option Selection**  
+Question asking to identify the incorrect statement among given options.
+
+11. **Exception Selection**  
+Question requiring identification of an exception to a rule or trend.
+
+12. **Inference Based on Information**  
+Question asking for an inference based on provided information.
+
+13. **Best Explanation Selection**  
+Question requesting the most plausible explanation for a phenomenon.
+
+14. **Problem Scenario**  
+Question presenting a hypothetical scenario to resolve.
+
+15. **Concept Comparison**  
+Question requiring comparison between two or more concepts.
+
+16. **True Statement Selection**  
+Question asking to select the only true statement.
+
+17. **Abstract Conceptual Question**  
+Question testing understanding of an abstract concept.
+
+18. **Graph or Table Based Question**  
+Question requiring interpretation of graphical or tabular data.
+
+19. **Calculation Question**  
+Question necessitating simple calculations.
+
+20. **Temporal Sequence**  
+Question about the chronology of events.
+
+21. **Improvement Selection**  
+Question requesting a suggestion for improvement in a situation.
+
+22. **Cause and Consequence**  
+Question about the relationship between cause and effect.
+
+23. **Realistic Scenario**  
+Question based on a real-world scenario requiring knowledge application.
+
+24. **Error Identification**  
+Question presenting a statement with an error to identify.
+
+25. **Characteristic Comparison**  
+Question comparing characteristics between two or more items.
+
+26. **Outcome Selection**  
+Question predicting the result of an experiment or situation.
+
+27. **Pattern Recognition**  
+Question asking to recognize patterns in data.
+
+28. **Process Selection**  
+Question identifying the appropriate process in a situation.
+
+29. **Cause and Effect Analysis**  
+Question analyzing the relationship between a cause and its effect.
+
+30. **Social Impact Selection**  
+Question identifying social impacts of a phenomenon.

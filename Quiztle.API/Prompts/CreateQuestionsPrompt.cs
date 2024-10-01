@@ -31,6 +31,7 @@ namespace Quiztle.API.Prompts
         {
             promptBuilder.AppendLine("As a specialist in constructing exams for the Azure AZ-900 Fundamentals Certification, " +
                                      "create distinct and clear questions based strictly on the provided text. Avoid synonyms, rephrasing, or ambiguity in answer choices.");
+            promptBuilder.Append(QuestionTypeGenerator.GetRandomQuestionType());
         }
 
         private static void AddArticleContent(StringBuilder promptBuilder, string bookArticle)
