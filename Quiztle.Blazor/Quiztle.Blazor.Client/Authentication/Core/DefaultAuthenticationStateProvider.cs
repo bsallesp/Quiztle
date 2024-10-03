@@ -6,25 +6,22 @@ namespace Quiztle.Blazor.Client.Authentication.Core
 {
     public class DefaultAuthenticationStateProvider : AuthenticationStateProvider
     {
-        public User? CurrentUser { get; private set; } = new User { Email = "test@example.com", Password = "hashedPassword" };
+        public User? CurrentUser { get; set; } = new User { Email = "test@example.com", Password = "hashedPassword" };
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var principal = new ClaimsPrincipal();
 
-            if (CurrentUser != null && CurrentUser.Email != null && CurrentUser.Password != null)
+            if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.Email) && !string.IsNullOrWhiteSpace(CurrentUser.Password))
             {
-                // Criar as claims do usuário
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, CurrentUser.Email)
-                    // Adicione outras claims, se necessário
+                    new Claim(ClaimTypes.Name, CurrentUser.Email),
+                    new Claim(ClaimTypes.Role, "User")
                 };
 
-                // Criar uma identidade baseada nas claims
-                var identity = new ClaimsIdentity(claims, "authenticationType");
+                var identity = new ClaimsIdentity(claims, "CustomAuthType");
 
-                // Criar um ClaimsPrincipal baseado na identidade
                 principal = new ClaimsPrincipal(identity);
             }
 
@@ -33,11 +30,35 @@ namespace Quiztle.Blazor.Client.Authentication.Core
 
         public void LogoutAsync()
         {
-            // Limpar os dados do usuário atual
             CurrentUser = null;
 
-            // Notificar sobre a mudança de autenticação
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal())));
+        }
+
+        public void NotifyStateChanged(ClaimsPrincipal principal)
+        {
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
+        }
+
+        public void SetCurrentUser(User user)
+        {
+            CurrentUser = user;
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, "User")
+            };
+
+            var identity = new ClaimsIdentity(claims, "CustomAuthType");
+            var principal = new ClaimsPrincipal(identity);
+
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
+        }
+
+        public bool IsUserAuthenticated()
+        {
+            return CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.Email) && !string.IsNullOrWhiteSpace(CurrentUser.Password);
         }
     }
 }

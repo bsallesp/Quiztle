@@ -1,7 +1,5 @@
-﻿using Quiztle.CoreBusiness.Entities.Tasks;
-using Quiztle.DataContext.DataService.Repository.Tasks;
+﻿using Quiztle.DataContext.DataService.Repository.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Quiztle.API.Controllers.Tasks
 {

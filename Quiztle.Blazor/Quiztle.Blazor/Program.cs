@@ -125,6 +125,7 @@ builder.Services.AddTransient<AddScratchService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<GetQuestionsService>();
+builder.Services.AddTransient<CreateUserService>();
 
 builder.Services.AddTransient<GetAllQuestionsToRegularGame>();
 builder.Services.AddTransient<CheckRenderSide>();

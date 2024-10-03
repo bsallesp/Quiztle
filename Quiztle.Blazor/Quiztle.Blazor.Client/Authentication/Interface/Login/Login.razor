@@ -2,6 +2,8 @@
 
 @rendermode InteractiveAuto
 
+@inject DefaultAuthenticationStateProvider DefaultAuthenticationStateProvider
+
 @inject NavigationManager NavigationManager
 
 <div class="container">
@@ -9,14 +11,14 @@
         Login
     </div>
     <input type="email" id="email" name="email" placeholder="Email">
-    <div class="forgot-links">
+    @* <div class="forgot-links">
         Forgot my email
-    </div>
+    </div> *@
     <input type="password" id="password" name="password" placeholder="password">
     <div class="forgot-links">
         Forgot my password
     </div>
-    <button>
+    <button @onclick="LogIt">
         Login
     </button>
     <button class="google-button">
@@ -32,5 +34,10 @@
     {
         Console.WriteLine("GoToRegister");
         NavigationManager.NavigateTo("/register", true);
+    }
+
+    private async Task LogIt()
+    {
+        await DefaultAuthenticationStateProvider.GetAuthenticationStateAsync();
     }
 }

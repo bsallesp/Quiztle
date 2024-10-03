@@ -1,6 +1,5 @@
 ﻿using Quiztle.CoreBusiness.APIEntities;
 using Quiztle.CoreBusiness.Utils;
-using Quiztle.CoreBusiness.Entities.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Quiztle.DataContext.DataService.Repository.Tasks

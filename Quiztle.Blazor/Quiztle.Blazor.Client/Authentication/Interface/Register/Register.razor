@@ -1,4 +1,7 @@
 ﻿@page "/register"
+@using Quiztle.CoreBusiness
+
+@inject CreateUserService CreateUserService
 
 @rendermode InteractiveAuto
 
@@ -8,15 +11,28 @@
     <div class="display-5">
         Register
     </div>
-    <input type="email" id="email" name="email" placeholder="Email">
+
+    <input type="email" id="email" name="email" placeholder="Email" @bind-value="userEmail" @bind-value:event="oninput">
+
+
 @*     <div class="forgot-links">
         Forgot my email
     </div> *@
-    <input type="password" id="password" name="password" placeholder="password">
+
+    <input type="password"
+        id="password"
+        name="password"
+        placeholder="password"
+           @bind="userPass">
+
 @*     <div class="forgot-links">
         Forgot my password
     </div> *@
-    <button>Submit</button>
+
+    <button @onclick=RegisterUser>
+        Submit
+        </button>
+
     <button class="google-button">
     
         <img src="/svg/google.png"/>
@@ -28,9 +44,24 @@
 </div>
 
 @code{
+    private string userEmail = "teste@teste.com";
+    private string userPass = "";
+
     private void GoToLogin()
     {
         Console.WriteLine("GoToLogin");
         NavigationManager.NavigateTo("/login", true);
+    }
+
+    private async Task RegisterUser()
+    {
+        var newUser = new User
+            {
+                Email = userEmail,
+                Password = userPass,
+                Role = Roles.RegularUser,
+            };
+
+        var result = await CreateUserService.ExecuteAsync(newUser);
     }
 }

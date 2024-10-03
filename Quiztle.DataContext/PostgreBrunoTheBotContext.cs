@@ -2,10 +2,10 @@
 using Quiztle.CoreBusiness.Entities.Quiz;
 using Microsoft.EntityFrameworkCore;
 using Quiztle.CoreBusiness.Log;
-using Quiztle.CoreBusiness.Entities.Tasks;
 using Quiztle.CoreBusiness.Entities.PDFData;
 using Quiztle.CoreBusiness.Entities.Prompts;
 using Quiztle.CoreBusiness.Entities.Scratch;
+using Quiztle.CoreBusiness;
 
 namespace Quiztle.DataContext
 {
@@ -21,7 +21,12 @@ namespace Quiztle.DataContext
 
             modelBuilder.Entity<Book>();
 
-            modelBuilder.Entity<BookTask>();
+            modelBuilder.Entity<BookTask>()
+                .HasOne(bt => bt.User)
+                .WithMany() // Se você não quer uma coleção de `BookTask` em `User`
+                .HasForeignKey(bt => bt.UserId)
+                .OnDelete(DeleteBehavior.SetNull); // Ou `DeleteBehavior.Cascade` se quiser deletar BookTasks quando o User for deletado
+
 
             modelBuilder.Entity<Chapter>();
 
@@ -89,15 +94,17 @@ namespace Quiztle.DataContext
             modelBuilder.Entity<Test>()
                 .HasMany(t => t.TestQuestions)
                 .WithOne(tq => tq.Test)
-                .HasForeignKey(tq => tq.TestId) // Adicionando chave estrangeira
-                .OnDelete(DeleteBehavior.Cascade); // Para exclusão em cascata de TestQuestions
+                .HasForeignKey(tq => tq.TestId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relação entre Question e TestQuestion
             modelBuilder.Entity<Question>()
                 .HasMany(q => q.TestQuestions)
                 .WithOne(tq => tq.Question)
-                .HasForeignKey(tq => tq.QuestionId) // Adicionando chave estrangeira
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata ao remover Questions
+                .HasForeignKey(tq => tq.QuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>();
 
             base.OnModelCreating(modelBuilder);
         }
@@ -120,8 +127,8 @@ namespace Quiztle.DataContext
         public DbSet<Section>? Sections { get; set; }
         public DbSet<Shot>? Shots { get; set; }
         public DbSet<Test>? Tests { get; set; }
+        public DbSet<User>? Users { get; set; }
 
-        
         public DbSet<TestQuestion>? TestsQuestions { get; set; }
     }
 }

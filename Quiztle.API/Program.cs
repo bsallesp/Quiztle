@@ -67,6 +67,7 @@ builder.Services.AddTransient<ScratchRepository>();
 builder.Services.AddTransient<ShotRepository>();
 builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<DraftRepository>();
+builder.Services.AddTransient<UserRepository>();
 
 builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 
