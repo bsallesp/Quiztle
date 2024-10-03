@@ -116,5 +116,29 @@ namespace Quiztle.DataContext.DataService.Repository
         {
             await _context.SaveChangesAsync();
         }
+
+        // Método para obter um usuário por e-mail
+        // Método para obter um usuário por e-mail
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new ArgumentNullException(nameof(email), "Email cannot be null or empty.");
+                }
+
+                return await _context.Users!
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetUserByEmailAsync: An exception occurred while retrieving the user by email:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
     }
 }

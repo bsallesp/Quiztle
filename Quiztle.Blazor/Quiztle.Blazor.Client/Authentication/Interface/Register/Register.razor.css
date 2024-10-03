@@ -13,6 +13,15 @@
     margin: 0 auto;
 }
 
+.error-display {
+    width: 90%;
+    font-size: 1em;
+    margin: 0 auto;
+    color: red;
+    text-align: center;
+}
+
+
 .display-5 {
     margin: 0 auto;
     font-weight: 300;

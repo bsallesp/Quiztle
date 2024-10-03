@@ -1,7 +1,9 @@
 ﻿@page "/register"
 @using Quiztle.CoreBusiness
+@using Quiztle.CoreBusiness.Utils
 
 @inject CreateUserService CreateUserService
+@inject GetUserByEmailService GetUserByEmailService
 
 @rendermode InteractiveAuto
 
@@ -12,7 +14,7 @@
         Register
     </div>
 
-    <input type="email" id="email" name="email" placeholder="Email" @bind-value="userEmail" @bind-value:event="oninput">
+    <input type="email" id="email" name="email" placeholder="Email" @bind-value="_userEmail" @bind-value:event="oninput">
 
 
 @*     <div class="forgot-links">
@@ -23,15 +25,23 @@
         id="password"
         name="password"
         placeholder="password"
-           @bind="userPass">
+           @bind="_userPass">
 
 @*     <div class="forgot-links">
         Forgot my password
     </div> *@
 
-    <button @onclick=RegisterUser>
+
+    <button @onclick=SafeChecks>
         Submit
         </button>
+
+    @if (_showError)
+    {
+        <div class="error-display">
+            @_errorMessage
+        </div>
+    }
 
     <button class="google-button">
     
@@ -44,8 +54,10 @@
 </div>
 
 @code{
-    private string userEmail = "teste@teste.com";
-    private string userPass = "";
+    private string _userEmail = "bsallesp@gmail.com";
+    private string _userPass = "";
+    private bool _showError = false;
+    private string _errorMessage = "";
 
     private void GoToLogin()
     {
@@ -53,15 +65,48 @@
         NavigationManager.NavigateTo("/login", true);
     }
 
+    private async Task SafeChecks()
+    {
+        if (await EmailExists())
+        {
+            ReturnError("An error occurred while processing your request. Please check your email inbox for further instructions.");
+            return;
+        }
+
+        CleanError();
+        await RegisterUser();
+    }
+
     private async Task RegisterUser()
     {
         var newUser = new User
             {
-                Email = userEmail,
-                Password = userPass,
+                Email = _userEmail.ToLower(), 
+                Password = _userPass,
                 Role = Roles.RegularUser,
             };
 
         var result = await CreateUserService.ExecuteAsync(newUser);
+
+        Console.WriteLine(result.Message);
+    }
+
+    private async Task<bool> EmailExists()
+    {
+        var oldUserResult = await GetUserByEmailService.ExecuteAsync(_userEmail);
+        if (oldUserResult.Status == CustomStatusCodes.SuccessStatus) return true;
+        return false;
+    }
+
+    private void ReturnError(string error)
+    {
+        _errorMessage = error;
+        _showError = true;
+    }
+
+    private void CleanError()
+    {
+        _errorMessage = "";
+        _showError = false;
     }
 }
