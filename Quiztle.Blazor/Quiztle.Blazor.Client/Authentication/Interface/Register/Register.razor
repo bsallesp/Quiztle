@@ -43,10 +43,10 @@
         </div>
     }
 
-    <button class="google-button">
+    <button class="google-button" disabled>
     
         <img src="/svg/google.png"/>
-        Register with google
+        Register with google (coming soon)
         
     </button>
     <hr>
@@ -67,13 +67,14 @@
 
     private async Task SafeChecks()
     {
+        if (!IsValidFormat()) return;
+
         if (await EmailExists())
         {
             ReturnError("An error occurred while processing your request. Please check your email inbox for further instructions.");
             return;
         }
 
-        CleanError();
         await RegisterUser();
     }
 
@@ -90,6 +91,41 @@
 
         Console.WriteLine(result.Message);
     }
+
+    private bool IsValidFormat()
+    {
+        var result = Validator.IsValidEmailAndPassword(_userEmail, _userPass);
+
+        var emailValidation = result[0];
+        var passwordValidation = result[1];
+
+        if ((bool)emailValidation["isValid"] && (bool)passwordValidation["isValid"])
+        {
+            ReturnError("Verification OK");
+            return true;
+        }
+
+        var errors = new List<string>();
+
+        if (!(bool)emailValidation["isValid"])
+        {
+            errors.Add((string)emailValidation["error"]);
+        }
+
+        if (!(bool)passwordValidation["isValid"])
+        {
+            errors.Add((string)passwordValidation["error"]);
+        }
+
+        if (errors.Count > 0)
+        {
+            ReturnError(string.Join("\n", errors));
+        }
+
+        return false;
+    }
+
+
 
     private async Task<bool> EmailExists()
     {
