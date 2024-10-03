@@ -1,0 +1,46 @@
+﻿@page "/add-scratch"
+@using Quiztle.CoreBusiness.Entities.Scratch
+@using Quiztle.CoreBusiness.Utils
+@inject AddScratchService AddScratchService
+
+<div class="container">
+
+    <h3>Add Scratch</h3>
+
+    <input placeholder="Scratch Name" @bind="scratch.Name" />
+
+    @foreach (var draft in scratch.Drafts!)
+    {
+        <input placeholder="Content" @bind="draft.Text" />
+    }
+
+    <button @onclick="AddContent">Add Content</button>
+
+    <hr />
+    <button @onclick="Finish">FINISH</button>
+    <hr />
+</div>
+
+@code {
+    private Scratch scratch = new();
+
+    private void AddContent()
+    {
+        scratch.Drafts!.Add(new Draft
+            {
+                Text = ""
+            });
+    }
+
+    private async void Finish()
+    {
+        var result = await AddScratchService.ExecuteAsync(scratch);
+
+        Console.WriteLine(result.Status);
+
+        if (result.Status != CustomStatusCodes.SuccessStatus)
+        {
+            Console.WriteLine("error: " + result.Status);
+        }
+    }
+}

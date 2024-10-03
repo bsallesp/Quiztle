@@ -1,0 +1,122 @@
+﻿@page "/claims-principle-data"
+@using System.Security.Claims
+@using Quiztle.Blazor.Client.Authentication.Core
+@using Quiztle.CoreBusiness
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h1>ClaimsPrincipal Data</h1>
+
+<button @onclick="GetClaimsPrincipalData">Get ClaimsPrincipal Data</button>
+
+<button @onclick="AuthHim">Auth Him!</button>
+
+<button @onclick="Logout">LOGOUT</button>
+
+<p>@authMessage</p>
+
+@if (claims.Any())
+{
+    <ul>
+        @foreach (var claim in claims)
+        {
+            <li>@claim.Type: @claim.Value</li>
+        }
+    </ul>
+}
+
+<p>@surname</p>
+
+@code {
+    private string? authMessage;
+    private string? surname;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            authMessage = $"{user.Identity.Name} is authenticated.";
+            claims = user.Claims;
+            surname = user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value;
+        }
+        else
+        {
+            authMessage = "The user is NOT authenticated.";
+        }
+    }
+
+    private void Logout()
+    {
+        // Obter o provedor de estado de autenticação
+        var authenticationStateProvider = AuthenticationStateProvider as DefaultAuthenticationStateProvider;
+
+        // Verificar se o provedor é do tipo esperado
+        if (authenticationStateProvider != null)
+        {
+            // Chamar o método LogoutAsync
+            authenticationStateProvider.LogoutAsync();
+        }
+    }
+
+    private void AuthHim()
+    {
+        // Defina as claims do usuário
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, "UserName"),
+            new Claim(ClaimTypes.Email, "user@example.com"),
+            new Claim(ClaimTypes.Role, "UserRole")
+        };
+
+        // Crie uma ClaimsIdentity e ClaimsPrincipal
+        var claimsIdentity = new ClaimsIdentity(claims, "authenticationType");
+        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+        // Obtenha o provedor de estado de autenticação
+        var authenticationStateProvider = AuthenticationStateProvider as DefaultAuthenticationStateProvider;
+
+        // Verifique se o provedor é do tipo esperado
+        if (authenticationStateProvider != null)
+        {
+            // Atualize o usuário atual no provedor de autenticação
+            authenticationStateProvider.SetCurrentUser(new User
+            {
+                Email = "user@example.com",
+                Password = "hashedPassword" // Substitua pela lógica de hash de senha real
+            });
+
+            // Notifique sobre a mudança de autenticação
+            authenticationStateProvider.NotifyStateChanged(claimsPrincipal);
+
+            // Atualizar as claims para exibir na interface
+            this.claims = claimsPrincipal.Claims;
+
+            // Atualizar o sobrenome, se existir
+            surname = claimsPrincipal.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value;
+
+            // Atualize a mensagem de autenticação
+            authMessage = $"{claimsPrincipal.Identity!.Name} is authenticated.";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            authMessage = $"{user.Identity.Name} is authenticated.";
+            claims = user.Claims;
+            surname = user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value;
+        }
+        else
+        {
+            authMessage = "The user is NOT authenticated.";
+        }
+    }
+}

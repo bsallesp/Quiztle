@@ -1,0 +1,148 @@
+﻿@page "/register"
+@using Quiztle.CoreBusiness
+@using Quiztle.CoreBusiness.Utils
+
+@inject CreateUserService CreateUserService
+@inject GetUserByEmailService GetUserByEmailService
+
+@rendermode InteractiveAuto
+
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="display-5">
+        Register
+    </div>
+
+    <input type="email" id="email" name="email" placeholder="Email" @bind-value="_userEmail" @bind-value:event="oninput">
+
+
+@*     <div class="forgot-links">
+        Forgot my email
+    </div> *@
+
+    <input type="password"
+        id="password"
+        name="password"
+        placeholder="password"
+           @bind="_userPass">
+
+@*     <div class="forgot-links">
+        Forgot my password
+    </div> *@
+
+
+    <button @onclick=SafeChecks>
+        Submit
+        </button>
+
+    @if (_showError)
+    {
+        <div class="error-display">
+            @_errorMessage
+        </div>
+    }
+
+    <button class="google-button" disabled>
+    
+        <img src="/svg/google.png"/>
+        Register with google (coming soon)
+        
+    </button>
+    <hr>
+    <button @onclick="GoToLogin" class="div-login-link">Already registered? Login</button>
+</div>
+
+@code{
+    private string _userEmail = "bsallesp@gmail.com";
+    private string _userPass = "";
+    private bool _showError = false;
+    private string _errorMessage = "";
+
+    private void GoToLogin()
+    {
+        Console.WriteLine("GoToLogin");
+        NavigationManager.NavigateTo("/login", true);
+    }
+
+    private async Task SafeChecks()
+    {
+        if (!IsValidFormat()) return;
+
+        if (await EmailExists())
+        {
+            ReturnError("An error occurred while processing your request. Please check your email inbox for further instructions.");
+            return;
+        }
+
+        await RegisterUser();
+    }
+
+    private async Task RegisterUser()
+    {
+        var newUser = new User
+            {
+                Email = _userEmail.ToLower(), 
+                Password = _userPass,
+                Role = Roles.RegularUser,
+            };
+
+        var result = await CreateUserService.ExecuteAsync(newUser);
+
+        Console.WriteLine(result.Message);
+    }
+
+    private bool IsValidFormat()
+    {
+        var result = Validator.IsValidEmailAndPassword(_userEmail, _userPass);
+
+        var emailValidation = result[0];
+        var passwordValidation = result[1];
+
+        if ((bool)emailValidation["isValid"] && (bool)passwordValidation["isValid"])
+        {
+            ReturnError("Verification OK");
+            return true;
+        }
+
+        var errors = new List<string>();
+
+        if (!(bool)emailValidation["isValid"])
+        {
+            errors.Add((string)emailValidation["error"]);
+        }
+
+        if (!(bool)passwordValidation["isValid"])
+        {
+            errors.Add((string)passwordValidation["error"]);
+        }
+
+        if (errors.Count > 0)
+        {
+            ReturnError(string.Join("\n", errors));
+        }
+
+        return false;
+    }
+
+
+
+    private async Task<bool> EmailExists()
+    {
+        var oldUserResult = await GetUserByEmailService.ExecuteAsync(_userEmail);
+        if (oldUserResult.Status == CustomStatusCodes.SuccessStatus) return true;
+        return false;
+    }
+
+    private void ReturnError(string error)
+    {
+        _errorMessage = error;
+        _showError = true;
+    }
+
+    private void CleanError()
+    {
+        _errorMessage = "";
+        _showError = false;
+    }
+}

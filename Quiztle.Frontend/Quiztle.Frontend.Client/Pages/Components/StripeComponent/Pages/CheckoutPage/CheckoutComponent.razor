@@ -1,0 +1,236 @@
+﻿@page "/create-order"
+@using MudBlazor
+@using Stripe
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveAuto
+@inject NavigationManager NavigationManager
+
+<div style="height:100px;"></div>
+@* <input @bind-value=_amount type="number" />
+<MudButton Color="Color.Secondary" @onclick=SubmitPayment>Submit </MudButton> *@
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudGrid Justify="Justify.Center">
+        <MudItem>
+            <MudPaper Height="300px" Width="500px">
+                <MudContainer>
+                    <MudText Typo="Typo.h5">
+                        One Time Purchase
+                    </MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+        <MudItem>
+            <MudPaper Height="300px" Width="500px">
+                <MudContainer>
+                    <MudText Typo="Typo.h5">
+                        Subscription
+                    </MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+        <MudItem>
+            <MudPaper Height="300px" Width="500px">
+                <MudContainer>
+                    <MudText Typo="Typo.h5">
+                        Business Partner
+                    </MudText>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@* <div style="height:2px; width:100vh; background-color: black;"></div>
+
+<MudButton Color="Color.Primary" @onclick=CreatePaymentIntent>ADD PAY INTENT</MudButton>
+<MudButton Color="Color.Secondary" @onclick=ListPaymentIntents>LIST INTENTS</MudButton>
+<MudButton Color="Color.Primary" @onclick=CreateSession>CREATE SESSION</MudButton>
+<MudButton Color="Color.Secondary" @onclick=ListPrices>LIST PRICES</MudButton>
+<MudButton Color="Color.Primary" @onclick=ListSessions>LIST SESSIONS</MudButton> *@
+
+@code {
+    private int _amount = 5;
+    private string _sessionId = "";
+    private string _priceId = "";
+    private StripeList<Price> _prices = new StripeList<Price>();
+
+    private async Task SubmitPayment()
+    {
+        var priceId = await CreateOneTimePrice(_amount * 100);
+
+        Console.WriteLine($"PASSING HERE... {priceId}");
+
+        var sessionURL = await CreateSession(priceId);
+
+        Console.WriteLine("PASSING HERE");
+
+        if (!string.IsNullOrEmpty(sessionURL)) NavigationManager.NavigateTo(sessionURL, false);
+        else Console.WriteLine("We got error, sessionURL not in hands.");
+    }
+
+    private async Task<string> CreateOneTimePrice(int price)
+    {
+        StripeConfiguration.ApiKey
+        = "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";
+
+        Console.WriteLine("Getting CreateOneTimePrice...");
+
+        var options = new PriceCreateOptions
+            {
+                UnitAmount = price,
+                Currency = "usd",
+                ProductData = new PriceProductDataOptions
+                {
+                    Name = "One-Time Product",
+                },
+            };
+
+        var service = new PriceService();
+        var priceResult = await service.CreateAsync(options);
+
+        Console.WriteLine($"Price ID: {priceResult.Id}");
+
+        return priceResult.Id;
+    }
+
+    private async Task ListPrices()
+    {
+        StripeConfiguration.ApiKey
+        = "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";
+
+        var options = new PriceListOptions { Limit = 3 };
+        var service = new PriceService();
+        StripeList<Price> prices = await service.ListAsync(options);
+        _prices = prices;
+
+        foreach (var item in prices)
+        {
+            Console.WriteLine(item.Id);
+            Console.WriteLine(item.Type);
+            Console.WriteLine(item.UnitAmount);
+        }
+    }
+
+    private async Task CreatePrice()
+    {
+        StripeConfiguration.ApiKey = "sk_test_51PTQo9DdwVWzSWfTzIlgoipnLLbqtsyET8d222g2VLmBcDKoBv6Zi0QSf8qLr5FBvCyrac5xufAXpWtvm9u3kQpr00BHPL3Fu9";
+
+        var options = new PriceCreateOptions
+            {
+                Currency = "usd",
+                UnitAmount = 1000,
+                Recurring = new PriceRecurringOptions { Interval = "month" },
+                ProductData = new PriceProductDataOptions { Name = "Gold Plan" },
+            };
+        var service = new PriceService();
+        await service.CreateAsync(options);
+    }
+
+    private async Task ListSessions()
+    {
+        StripeConfiguration.ApiKey
+        = "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";
+
+        var options = new Stripe.Checkout.SessionListOptions { Limit = 3 };
+        var service = new Stripe.Checkout.SessionService();
+        StripeList<Stripe.Checkout.Session> sessions = await service.ListAsync(options);
+
+        Console.WriteLine(sessions.Count());
+        foreach (var item in sessions)
+        {
+            Console.WriteLine(item.Id);
+            Console.WriteLine("---");
+            Console.WriteLine(item.Created);
+        }
+    }
+
+    private async Task<string> CreateSession(string priceId)
+    {
+        StripeConfiguration.ApiKey =
+        "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";
+
+        Console.WriteLine("Getting CreateSession...");
+        Console.WriteLine(priceId);
+
+        var options = new Stripe.Checkout.SessionCreateOptions
+        {
+            PaymentMethodTypes = new List<string> { "card" },
+            LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+                {
+                new Stripe.Checkout.SessionLineItemOptions
+                {
+                    Price = priceId,
+                    Quantity = 1,
+                },
+            },
+                    Mode = "payment",
+                    SuccessUrl = "https://localhost:7261/create-order/sucess",
+                    CancelUrl = "https://localhost:7261/create-order/cancel",
+        };
+
+        var service = new Stripe.Checkout.SessionService();
+        var result = await service.CreateAsync(options);
+
+        _sessionId = result.Id;
+
+        Console.WriteLine($"Session ID: {result.Id}");
+        Console.WriteLine($"Session URL: {result.Url}");
+
+        return result.Url;
+    }
+
+    private async Task ListPaymentIntents()
+    {
+        StripeConfiguration.ApiKey
+        = "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";
+
+        Console.WriteLine("Getting ListPaymentIntents...");
+
+        var options = new PaymentIntentListOptions { Limit = 100 };
+        var service = new PaymentIntentService();
+        StripeList<PaymentIntent> paymentIntents = await service.ListAsync(options);
+
+        Console.WriteLine(paymentIntents.Count());
+        foreach (var item in paymentIntents)
+        {
+            Console.WriteLine(item.Id);
+            Console.WriteLine("---");
+            Console.WriteLine(item.Created);
+        }
+    }
+
+    private async Task CreatePaymentIntent()
+    {
+        try
+        {
+            StripeConfiguration.ApiKey =
+            "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";
+
+            Console.WriteLine("Getting CreatePaymentIntent...");
+
+            var options = new PaymentIntentCreateOptions
+                {
+                    Amount = _amount,
+                    Currency = "usd",
+                };
+            var service = new PaymentIntentService();
+            var paymentIntent = await service.CreateAsync(options);
+
+            Console.WriteLine($"Amount: {paymentIntent.Id}");
+            Console.WriteLine($"Amount: {paymentIntent.Amount}");
+            Console.WriteLine($"Currency: {paymentIntent.Currency}");
+            Console.WriteLine($"Status: {paymentIntent.Status}");
+            Console.WriteLine($"Payment Method Types: {string.Join(", ", paymentIntent.PaymentMethodTypes)}");
+            Console.WriteLine($"Client Secret: {paymentIntent.ClientSecret}");
+            Console.WriteLine($"Description: {paymentIntent.Description}");
+            Console.WriteLine($"Receipt Email: {paymentIntent.ReceiptEmail}");
+
+        }
+        catch (Exception e)
+        {
+
+            throw;
+        }
+    }
+}

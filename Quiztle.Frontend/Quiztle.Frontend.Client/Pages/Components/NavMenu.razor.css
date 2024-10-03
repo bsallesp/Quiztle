@@ -1,0 +1,58 @@
+﻿.main-menu-div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #1E3A8A;
+    display: flex;
+    align-items: center;
+}
+
+.logo-div {
+    display: flex;
+    align-items: center;
+    font-family: Rajdhani;
+    color: white;
+    padding: 10px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.logo-svg {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.logo-svg img {
+    filter: brightness(0) invert(1);
+}
+
+#wide-menu, a {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #1E3A8A;
+    color: white;
+    font-family: Roboto;
+    font-size: 1.2rem;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.menu-item {
+    padding: 10px 20px;
+    text-align: center;
+}
+
+#hamburger-menu {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.mud-icon {
+    font-size: 48px;
+    color: white;
+}

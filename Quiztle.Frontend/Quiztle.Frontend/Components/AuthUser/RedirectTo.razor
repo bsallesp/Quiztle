@@ -1,0 +1,15 @@
+﻿@inject NavigationManager Nav
+
+@code {
+    [Parameter]
+    public string? url { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(url))
+        {
+            Nav.NavigateTo(url, true);
+        }
+        return base.OnInitializedAsync();
+    }
+}
