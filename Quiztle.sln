@@ -53,7 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quiztle.Flask.HomeLLM", "Qu
 		Quiztle.Flask.HomeLLM\requirements.txt = Quiztle.Flask.HomeLLM\requirements.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiztle.API.LocalLLM", "Quiztle.API.LocalLLM\Quiztle.API.LocalLLM.csproj", "{975A879E-1477-4828-814B-600648ED89B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.API.LocalLLM", "Quiztle.API.LocalLLM\Quiztle.API.LocalLLM.csproj", "{975A879E-1477-4828-814B-600648ED89B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

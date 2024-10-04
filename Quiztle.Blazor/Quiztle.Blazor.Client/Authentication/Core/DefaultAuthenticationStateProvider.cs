@@ -6,7 +6,7 @@ namespace Quiztle.Blazor.Client.Authentication.Core
 {
     public class DefaultAuthenticationStateProvider : AuthenticationStateProvider
     {
-        public User? CurrentUser { get; set; } = new User { Email = "test@example.com", Password = "hashedPassword" };
+        public User? CurrentUser { get; set; }
 
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -16,8 +16,9 @@ namespace Quiztle.Blazor.Client.Authentication.Core
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, CurrentUser.Email),
-                    new Claim(ClaimTypes.Role, "User")
+                    new(ClaimTypes.Name, CurrentUser.Name),
+                    new(ClaimTypes.Role, CurrentUser.Role),
+                    new(ClaimTypes.Email, CurrentUser.Email)
                 };
 
                 var identity = new ClaimsIdentity(claims, "CustomAuthType");
@@ -46,8 +47,9 @@ namespace Quiztle.Blazor.Client.Authentication.Core
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, "User")
+                new(ClaimTypes.Name, CurrentUser.Name),
+                new(ClaimTypes.Role, CurrentUser.Role),
+                new(ClaimTypes.Email, CurrentUser.Email)
             };
 
             var identity = new ClaimsIdentity(claims, "CustomAuthType");

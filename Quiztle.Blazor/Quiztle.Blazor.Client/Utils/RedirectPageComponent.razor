@@ -1,0 +1,16 @@
+﻿@inject NavigationManager NavigationManager
+
+
+@code {
+    [Parameter]
+    public string address { get; set; } = "/home";
+    [Parameter]
+    public bool force { get; set; } = false;
+
+    protected override Task OnParametersSetAsync()
+    {
+        NavigationManager.NavigateTo(address, force);
+
+        return base.OnParametersSetAsync();
+    }
+}

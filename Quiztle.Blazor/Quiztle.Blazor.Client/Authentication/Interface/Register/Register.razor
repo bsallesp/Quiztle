@@ -1,13 +1,26 @@
 ﻿@page "/register"
 @using Quiztle.CoreBusiness
 @using Quiztle.CoreBusiness.Utils
+@using Microsoft.AspNetCore.Authorization
 
 @inject CreateUserService CreateUserService
 @inject GetUserByEmailService GetUserByEmailService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject DefaultAuthenticationStateProvider DefaultAuthenticationStateProvider
 
 @rendermode InteractiveAuto
 
 @inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <RedirectPageComponent address="/profile" force="false"></RedirectPageComponent>
+    </Authorized>
+
+    <NotAuthorized>
+
+    </NotAuthorized>
+</AuthorizeView>
 
 <div class="container">
     <div class="display-5">
@@ -32,7 +45,7 @@
     </div> *@
 
 
-    <button @onclick=SafeChecks>
+    <button @onclick=Submit>
         Submit
         </button>
 
@@ -59,37 +72,66 @@
     private bool _showError = false;
     private string _errorMessage = "";
 
+    private User _newUser = new();
+
+    protected override Task OnInitializedAsync()
+    {
+
+
+        return base.OnInitializedAsync();
+    }
+
     private void GoToLogin()
     {
         Console.WriteLine("GoToLogin");
-        NavigationManager.NavigateTo("/login", true);
+        NavigationManager.NavigateTo("/login", false);
     }
 
-    private async Task SafeChecks()
+    private async Task Submit()
     {
-        if (!IsValidFormat()) return;
+        if (await SafeChecks()) AuthenticateHim();
+    }
 
-        if (await EmailExists())
+    private void AuthenticateHim()
+    {
+        DefaultAuthenticationStateProvider.SetCurrentUser(_newUser);
+    }
+
+    private async Task<bool> SafeChecks()
+    {
+        if (!IsValidFormat()) return false;
+
+        if (await EmailExists()) return false;
+
+        if (!await RegisterUser()) return false;
+
+        return true;
+    }
+
+    private async Task<bool> LoginIntegrityTest()
+    {
+        var user = await GetUserByEmailService.ExecuteAsync(_userEmail);
+        if (user.Data.ValidateCredentials(_userEmail, _userPass)) return true;
+        else return false;
+    }
+
+    private async Task<bool> RegisterUser()
+    {
+        _newUser = new User
         {
-            ReturnError("An error occurred while processing your request. Please check your email inbox for further instructions.");
-            return;
-        }
+            Email = _userEmail.ToLower(), 
+            Password = _userPass,
+            Role = Roles.RegularUser,
+        };
 
-        await RegisterUser();
-    }
+        var result = await CreateUserService.ExecuteAsync(_newUser);
 
-    private async Task RegisterUser()
-    {
-        var newUser = new User
-            {
-                Email = _userEmail.ToLower(), 
-                Password = _userPass,
-                Role = Roles.RegularUser,
-            };
-
-        var result = await CreateUserService.ExecuteAsync(newUser);
-
-        Console.WriteLine(result.Message);
+        if (result.Status != CustomStatusCodes.SuccessStatus)
+        {
+            ReturnError("An error occured during registering user.");
+            return false;
+        } 
+        return true;
     }
 
     private bool IsValidFormat()
@@ -101,7 +143,6 @@
 
         if ((bool)emailValidation["isValid"] && (bool)passwordValidation["isValid"])
         {
-            ReturnError("Verification OK");
             return true;
         }
 
@@ -125,12 +166,16 @@
         return false;
     }
 
-
-
     private async Task<bool> EmailExists()
     {
         var oldUserResult = await GetUserByEmailService.ExecuteAsync(_userEmail);
-        if (oldUserResult.Status == CustomStatusCodes.SuccessStatus) return true;
+        if (oldUserResult.Status == CustomStatusCodes.SuccessStatus)
+        {
+            ReturnError("It looks like you may already be registered. Please check your email inbox for further instructions, or try resetting your password.");
+            return true;
+
+        }
+
         return false;
     }
 

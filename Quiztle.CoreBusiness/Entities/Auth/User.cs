@@ -29,5 +29,12 @@ namespace Quiztle.CoreBusiness
         [JsonIgnore]
         public List<Claim> Claims { get; set; }
         public string Role { get; set; } = Roles.RegularUser;
+
+        public bool ValidateCredentials(string email, string password)
+        {
+            // Verifica se o email e a senha fornecidos correspondem aos do usuário
+            return Email.Equals(email, StringComparison.OrdinalIgnoreCase) && Password == password;
+        }
+
     }
 }
