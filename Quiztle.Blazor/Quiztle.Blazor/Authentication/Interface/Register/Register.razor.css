@@ -1,0 +1,103 @@
+﻿.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 95%;
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 15px;
+}
+
+
+.forgot-links {
+    font-size: 0.9em;
+    margin: 0 auto;
+}
+
+.error-display {
+    padding-top: 10px;
+    width: 90%;
+    font-size: 1em;
+    margin: 0 auto;
+    color: red;
+    text-align: center;
+}
+
+
+.display-5 {
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+button {
+    width: 90%;
+    height: 50px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    margin: 20px auto;
+    margin-bottom: 0;
+    background-color: #7a7966;
+    color: white;
+    font-weight: 500;
+    align-items: center;
+}
+
+input[type=email] {
+    width: 90%;
+    height: 50px;
+    padding: 12px 20px;
+    margin-top: 0;
+    margin: 8px 0;
+    box-sizing: border-box;
+    margin: 20px auto;
+    margin-bottom: 0;
+}
+
+input[type=password] {
+    width: 90%;
+    height: 50px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    margin: 20px auto;
+    margin-bottom: 0;
+}
+
+.google-button {
+    width: 90%;
+    height: 80px;
+    padding: 12px 20px;
+    margin: 0;
+    box-sizing: border-box;
+    margin: 20px auto;
+    margin-bottom: 0;
+    background-color: white;
+    color: black;
+    font-weight: 500;
+}
+
+img {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px
+}
+
+.div-login-link {
+    width: 90%;
+    height: 50px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    margin: 20px auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    background-color: #6d80f3;
+    color: white;
+    font-weight: 500;
+}
+
+@media (min-width: 695px){
+    .container {
+        width: 600px;
+    }
+}
