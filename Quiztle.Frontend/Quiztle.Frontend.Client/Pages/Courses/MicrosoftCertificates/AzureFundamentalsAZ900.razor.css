@@ -1,0 +1,97 @@
+﻿.container {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    padding: 10px;
+    width: 400px;
+}
+
+
+@keyframes gradientAnimation {
+    0% {
+        background: linear-gradient(to bottom right, #001f3f, #ffffff);
+    }
+
+    50% {
+        background: linear-gradient(to bottom right, #0074D9, #050e16);
+    }
+
+    100% {
+        background: linear-gradient(to bottom right, #001f3f, #31d900);
+    }
+}
+
+.bg-fx {
+    background: radial-gradient(circle at top left, #004B87, transparent 60%), linear-gradient(to bottom right, #003366, #173951);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.card-title {
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 2rem;
+    color: whitesmoke;
+    font-weight: 800;
+}
+
+img{
+    width: 100px;
+    height: 100px;
+}
+
+.card-description {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 0.75rem;
+    color: whitesmoke;
+    font-weight: 500;
+}
+
+.description-item {
+    margin-right: 15px;
+}
+
+.transparent-chip {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 10px auto;
+}
+
+.questions-container {
+    position: relative;
+    align-content: flex-start;
+    justify-content: initial;
+}
+
+.questions-amount {
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 6rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #d7ef00, #c6a127);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -10px;
+    padding: 15px;
+}
+
+.questions-literal {
+    position: absolute;
+    bottom: 20px;
+    right: -30px;
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 1.5rem;
+    color: aliceblue;
+    font-weight: 700;
+    position: absolute;
+    letter-spacing: 0px;
+    background: linear-gradient(130deg, #ffffff, #d8d1ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
