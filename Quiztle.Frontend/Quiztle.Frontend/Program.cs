@@ -86,10 +86,10 @@ builder.Services.AddScoped(sp => new HttpClient
 
 try
 {
-    Console.WriteLine("Testing API URL...");
+    Console.WriteLine($"Testing API URL...{QuiztleAPIURL}");
     using (var httpClient = new HttpClient())
     {
-        var response = await httpClient.GetAsync(QuiztleAPIURL);
+        var response = await httpClient.PostAsync(QuiztleAPIURL + "api/TestConn/TestConnection", null);
         Console.WriteLine(response.IsSuccessStatusCode ? "API Connection Successful" : "API Connection Failed: " + response.ReasonPhrase);
     }
 }
