@@ -7,6 +7,9 @@ using Quiztle.Frontend.Data;
 using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Server;
 using Stripe;
+using Npgsql;
+using Quiztle.Blazor.Client.APIServices;
+using System.Security.Policy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +29,77 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
+builder.Services.AddTransient<GetQuestionsService>();
+
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
+
+#region Postgresql Connection
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("PROD_POSTGRES_CONNECTION_STRING")
+    ?? throw new InvalidOperationException("DB CONNECTION NOT FOUND");
+
+try
+{
+    using (var connection = new NpgsqlConnection(connectionString))
+    {
+        connection.Open();
+        Console.WriteLine("Database Connection Successful");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Database Connection Failed: " + ex.Message);
+}
+
+if (string.IsNullOrEmpty(connectionString)) throw new Exception("Cant get connections at blazor server:");
+Console.WriteLine("Connection adquired: " + connectionString);
+#endregion
+
+#region QuiztleAPIURL
+var QuiztleAPIURL = "";
+if (builder.Environment.IsProduction()) QuiztleAPIURL = Environment.GetEnvironmentVariable("PROD_API_URL") ?? string.Empty;
+if (builder.Environment.IsDevelopment()) QuiztleAPIURL = builder.Configuration["DEV_API_URL"] ?? string.Empty;
+
+if (string.IsNullOrEmpty(QuiztleAPIURL)) throw new Exception($"Blazor Server ERROR: No envirovment variable found for {nameof(QuiztleAPIURL)}");
+Console.WriteLine($"{nameof(QuiztleAPIURL)}: URL Adquired - {QuiztleAPIURL}");
+Console.WriteLine($"URL gotten of: {(builder.Environment.IsProduction() ? "Production" : "Development")}");
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(QuiztleAPIURL),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+
+try
+{
+    Console.WriteLine("Testing API URL...");
+    using (var httpClient = new HttpClient())
+    {
+        var response = await httpClient.GetAsync(QuiztleAPIURL);
+        Console.WriteLine(response.IsSuccessStatusCode ? "API Connection Successful" : "API Connection Failed: " + response.ReasonPhrase);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("API Connection Failed: " + ex.Message);
+}
+#endregion
+
+#region Identity / Authentication
 
 builder.Services.AddAuthentication(options =>
 {
@@ -44,7 +114,11 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 }).AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+#endregion
+
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+#region DataContext
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -54,12 +128,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+#endregion
+
+#region AddIdentityCore
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+#endregion
 
 StripeConfiguration.ApiKey = "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";
 
@@ -84,6 +162,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAllOrigins");
 
 app.UseAntiforgery();
 
