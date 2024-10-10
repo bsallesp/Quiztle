@@ -73,7 +73,6 @@
         <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
     </MudNavMenu>
-    <LoginProfileComponent></LoginProfileComponent>
 </MudDrawer>
 
 @code {
@@ -112,7 +111,7 @@
         // Reagir à redimensionamentos da janela
         window.addEventListener('resize', function () {
             const width = window.innerWidth;
-            if (width <= 770) {
+            if (width <= 870) {
                 menu1.style.display = 'none';
                 menu2.style.display = 'flex';
             } else {
