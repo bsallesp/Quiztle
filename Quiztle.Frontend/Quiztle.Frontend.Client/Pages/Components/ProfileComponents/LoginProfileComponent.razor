@@ -1,0 +1,27 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="menu-item">
+    <a href="/AuthUser/Login">
+        @if (isSignedIn)
+        {
+            <img src="svg/user.svg" style="height:50px; width:50px" alt="User Profile" />
+        }
+        else
+        {
+            <div>Login</div>
+        }
+    </a>
+</div>
+
+@code{
+    private bool isSignedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated) isSignedIn = true;
+        else isSignedIn = false;
+    }
+}

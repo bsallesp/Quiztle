@@ -6,36 +6,30 @@
     z-index: 1000;
     background-color: #1E3A8A;
     display: flex;
+    justify-content: center; /* Centraliza a logo no menu expandido (menu1) */
     align-items: center;
+    padding: 10px;
 }
 
 .logo-div {
     display: flex;
     align-items: center;
-    font-family: Rajdhani;
+    font-family: 'Rajdhani', sans-serif;
     color: white;
-    padding: 10px;
     font-size: 2.5rem;
     font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
 }
 
-.logo-svg {
+#wide-menu {
     display: flex;
-    align-items: center;
-    margin-right: 10px;
-}
-
-.logo-svg img {
-    filter: brightness(0) invert(1);
-}
-
-#wide-menu, a {
-    display: flex;
+    gap: 10px;
     justify-content: space-around;
     align-items: center;
     background-color: #1E3A8A;
     color: white;
-    font-family: Roboto;
+    font-family: 'Roboto', sans-serif;
     font-size: 1.2rem;
     font-weight: 600;
     flex-grow: 1;
@@ -46,13 +40,34 @@
     text-align: center;
 }
 
-#hamburger-menu {
-    position: fixed;
-    top: 10px;
-    right: 10px;
+a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
 }
 
-.mud-icon {
-    font-size: 48px;
-    color: white;
+/* Estilo para o menu comprimido (menu2) */
+#menu2 {
+    justify-content: space-between; /* Espaço entre hambúrguer, logo e login */
+    align-items: center;
+    width: 100%;
+    padding: 0 10px; /* Espaço interno para garantir que os elementos não toquem nas bordas */
+}
+
+#hamburger-menu {
+    justify-content: flex-start; /* Alinha o hambúrguer à esquerda */
+    align-items: center;
+}
+
+.logo-div {
+    text-align: center;
+    flex-grow: 1; /* Faz a logo ocupar o espaço central */
+}
+
+.login-profile {
+    justify-content: flex-end; /* Alinha o login à direita */
+    align-items: center;
 }

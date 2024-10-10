@@ -1,26 +1,19 @@
 ﻿@inject IJSRuntime JSRuntime
 @rendermode InteractiveAuto
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Quiztle.Frontend.Client.Pages.Components.ProfileComponents
+
 @inject NavigationManager NavigationManager
 
-<div class="main-menu-div">
-    <a href="/">
+<!-- Menu Expandido -->
+<div id="menu1" class="main-menu-div">
+    <a href="/" class="logo-link">
         <div class="logo-div">
-            <div class="logo-svg">
-                <img src="img/logo/logo2.svg" width="40" height="40" alt="Logo">
-            </div>
             quiztle
         </div>
     </a>
 
-    <div id="hamburger-menu" style="display: none;">
-        <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Start))">
-            <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" />
-        </MudButton>
-    </div>
-
-    <div id="wide-menu" style="display: none;">
+    <div id="wide-menu">
         <div class="menu-item">
             <a href="/">
                 Home
@@ -46,19 +39,26 @@
                 Company
             </a>
         </div>
-        <div class="menu-item">
-            <a href="/AuthUser/Login">
-                @if (isSignedIn)
-                {
-                        <img src="svg/user.svg" style="height:50px; width:50px" alt="User Profile" />
-                }
-                else
-                {
-                    <div>Login</div>
-                }
-            </a>
-        </div>
+        <LoginProfileComponent></LoginProfileComponent>
     </div>
+</div>
+
+<!-- Menu Comprimido -->
+<div id="menu2" class="main-menu-div" style="display: none;">
+    
+    <div id="hamburger-menu">
+        <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Start))">
+            <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" />
+        </MudButton>
+    </div>
+
+    <a href="/" class="logo-link">
+        <div class="logo-div">
+            quiztle
+        </div>
+    </a>
+
+    <LoginProfileComponent></LoginProfileComponent>
 </div>
 
 <MudDrawer @bind-Open="@open" Anchor="@anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
@@ -73,27 +73,18 @@
         <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
     </MudNavMenu>
+    <LoginProfileComponent></LoginProfileComponent>
 </MudDrawer>
 
 @code {
     bool open;
     Anchor anchor;
-    private bool isSignedIn = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity != null && user.Identity.IsAuthenticated) isSignedIn = true;
-        else isSignedIn = false;
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("showDivBasedOnWidth");
+            await JSRuntime.InvokeVoidAsync("toggleMenuBasedOnWidth");
         }
     }
 
@@ -105,28 +96,28 @@
 }
 
 <script>
-    window.showDivBasedOnWidth = function () {
+    window.toggleMenuBasedOnWidth = function () {
         const width = window.innerWidth;
-        const divA = document.getElementById('hamburger-menu');
-        const divB = document.getElementById('wide-menu');
+        const menu1 = document.getElementById('menu1');
+        const menu2 = document.getElementById('menu2');
 
         if (width <= 770) {
-            divA.style.display = 'block';
-            divB.style.display = 'none';
+            menu1.style.display = 'none';
+            menu2.style.display = 'flex';
         } else {
-            divA.style.display = 'none';
-            divB.style.display = 'flex';
+            menu1.style.display = 'flex';
+            menu2.style.display = 'none';
         }
 
-        // Run the function on window resize
+        // Reagir à redimensionamentos da janela
         window.addEventListener('resize', function () {
             const width = window.innerWidth;
             if (width <= 770) {
-                divA.style.display = 'block';
-                divB.style.display = 'none';
+                menu1.style.display = 'none';
+                menu2.style.display = 'flex';
             } else {
-                divA.style.display = 'none';
-                divB.style.display = 'flex';
+                menu1.style.display = 'flex';
+                menu2.style.display = 'none';
             }
         });
     }
