@@ -1,11 +1,23 @@
 ﻿.container {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     align-items: center;
     margin: 20px;
     padding: 10px;
     width: 400px;
+    position: relative;
 }
+
+.crown {
+    position: absolute;
+    top: -65px;
+    left: -22px;
+}
+
+    .crown img {
+        width: 75px;
+        transform: rotate(-25deg);
+    }
 
 
 @keyframes gradientAnimation {

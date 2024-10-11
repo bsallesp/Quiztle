@@ -6,9 +6,10 @@
     z-index: 1000;
     background-color: #1E3A8A;
     display: flex;
-    justify-content: center; /* Centraliza a logo no menu expandido (menu1) */
+    justify-content: center;
     align-items: center;
     padding: 10px;
+    
 }
 
 .logo-div {

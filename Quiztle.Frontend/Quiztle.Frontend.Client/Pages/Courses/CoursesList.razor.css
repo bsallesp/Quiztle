@@ -1,0 +1,16 @@
+
+.main-div {
+    margin-top: 70px;
+}
+
+@media (max-width: 980px) {
+    .main-div {
+        margin-top: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-div {
+        margin-top: 40px;
+    }
+}

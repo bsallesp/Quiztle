@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\svg\" />
+    <Folder Include="wwwroot\svg\courses\" />
   </ItemGroup>
 
 </Project>
