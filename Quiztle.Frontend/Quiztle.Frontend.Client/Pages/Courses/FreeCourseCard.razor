@@ -1,0 +1,52 @@
+﻿
+<div class="container bg-fx">
+    <img src="img/courses/@Image" />
+
+    <div class="card-title text-center">
+        @Title
+    </div>
+
+    <div class="questions-container">
+        <div class="questions-amount">
+            @QuestionsAmount
+        </div>
+        <div class="questions-literal">
+            questions
+        </div>
+    </div>
+
+    <div class="card-description">
+        @foreach (var item in Contents)
+        {
+            <div class="transparent-chip">
+                @item
+            </div>
+        }
+    </div>
+
+    <div class="card-buttons">
+        <a href="/signup" class="btn btn-secondary">PLAY NOW</a>
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public required string Image { get; set; }
+
+    [Parameter]
+    public required string Title { get; set; }
+
+    [Parameter]
+    public required int QuestionsAmount { get; set; }
+
+    [Parameter]
+    public required string[] Contents { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        
+        
+        return base.OnParametersSetAsync();
+    }
+}
