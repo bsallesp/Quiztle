@@ -1,0 +1,101 @@
+﻿@page "/Courses"
+
+<div class="container d-flex flex-wrap justify-content-evenly main-div">
+
+    <FreeCourseCard Title="Azure AZ-900 Fundamentals"
+                    Image="microsoft-certified-fundamentals-badge.svg"
+                    QuestionsAmount="20"
+                    Contents="Az900Contents">
+    </FreeCourseCard>
+
+    <PremiumCourseCard Title="Azure AZ-900 Fundamentals"
+                       Image="microsoft-certified-fundamentals-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Az900Contents">
+    </PremiumCourseCard>
+
+    <PremiumCourseCard Title="Azure AZ-204 Developer Associate"
+                       Image="microsoft-certified-associate-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Az204Contents">
+    </PremiumCourseCard>
+
+    <PremiumCourseCard Title="Azure AZ-104 Administrator Associate"
+                       Image="microsoft-certified-associate-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Az104Contents">
+    </PremiumCourseCard>
+
+    <PremiumCourseCard Title="Azure AI-102 AI Engineer Associate"
+                       Image="microsoft-certified-associate-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Ai102Contents">
+    </PremiumCourseCard>
+
+    <PremiumCourseCard Title="Azure DP-203 Data Engineer Associate"
+                       Image="microsoft-certified-associate-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Dp203Contents">
+    </PremiumCourseCard>
+
+    <PremiumCourseCard Title="Azure AZ-305 Solutions Architect Expert"
+                       Image="microsoft-certified-expert-badge.svg"
+                       QuestionsAmount="200"
+                       Contents="Az305Contents">
+    </PremiumCourseCard>
+
+</div>
+
+@code {
+    private string[] Az900Contents =
+    {
+        "Azure cloud concepts",
+        "Azure architecture and services",
+        "Azure management and governance"
+    };
+
+    private string[] Az204Contents =
+    {
+        "Develop Azure compute solutions",
+        "Develop for Azure storage",
+        "Implement Azure security",
+        "Monitor, troubleshoot, and optimize Azure solutions",
+        "Connect to and consume Azure services"
+    };
+
+    private string[] Az104Contents =
+    {
+        "Manage Azure identities and governance",
+        "Implement and manage storage",
+        "Deploy and manage Azure compute resources",
+        "Implement and manage virtual networking",
+        "Monitor and maintain Azure resources"
+    };
+
+    private string[] Ai102Contents =
+    {
+        "Plan and manage an Azure AI solution",
+        "Implement image and video processing solutions",
+        "Implement natural language processing solutions",
+        "Implement knowledge mining solutions",
+        "Implement conversational AI solutions"
+    };
+
+    private string[] Dp203Contents =
+    {
+        "Design and implement data storage",
+        "Design and develop data processing",
+        "Design and implement data security",
+        "Monitor and optimize data solutions",
+        "Design data integration"
+    };
+
+    private string[] Az305Contents =
+    {
+        "Design identity, governance, and monitoring solutions",
+        "Design data storage solutions",
+        "Design business continuity solutions",
+        "Design infrastructure solutions",
+        "Design solutions for applications"
+    };
+}
