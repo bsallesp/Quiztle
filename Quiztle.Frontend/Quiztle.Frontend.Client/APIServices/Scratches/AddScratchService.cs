@@ -3,7 +3,7 @@ using Quiztle.CoreBusiness.Utils;
 using Quiztle.CoreBusiness.Entities.Scratch;
 using System.Net.Http.Json;
 
-namespace Quiztle.Blazor.Client.APIServices.Tests
+namespace Quiztle.Blazor.Client.APIServices
 {
     public class AddScratchService
     {

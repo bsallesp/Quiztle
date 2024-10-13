@@ -155,6 +155,81 @@ namespace Quiztle.DataContext.DataService.Repository
             }
         }
 
+        public async Task<IEnumerable<Scratch>> SearchScratchesAndDraftsByKeywordsAsync(string[] keywords)
+        {
+            try
+            {
+                // Verifica se as palavras-chave estão vazias ou nulas
+                if (keywords == null || keywords.Length == 0)
+                    return Enumerable.Empty<Scratch>();
+
+                EnsureScratchNotNull();
+
+                // Converte as palavras-chave para minúsculas para a busca
+                var keywordLowered = keywords.Select(k => k.ToLower()).ToList();
+
+                // Obtém todos os scratches que podem conter as palavras-chave
+                var scratches = await _context.Scratches!
+                    .Include(s => s.Drafts!)
+                        .ThenInclude(d => d.Questions!)
+                            .ThenInclude(q => q.Options)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                // Filtra os scratches com base nas palavras-chave
+                var filteredScratches = scratches
+                    .Where(s =>
+                        // Verifica se o nome do Scratch contém alguma palavra-chave
+                        (s.Name != null && keywordLowered.Any(k => s.Name.Contains(k, StringComparison.CurrentCultureIgnoreCase))) ||
+                        s.Drafts!.Any(d =>
+                            // Verifica se o texto do Draft contém alguma palavra-chave
+                            keywordLowered.Any(k => d.Text.Contains(k, StringComparison.CurrentCultureIgnoreCase)) ||
+                            d.Questions!.Any(q =>
+                                // Verifica se o nome da Question contém alguma palavra-chave
+                                keywordLowered.Any(k => q.Name.Contains(k, StringComparison.CurrentCultureIgnoreCase)) ||
+                                // Verifica se o Hint ou Resolution contém alguma palavra-chave
+                                (q.Hint != null && keywordLowered.Any(k => q.Hint.Contains(k, StringComparison.CurrentCultureIgnoreCase))) ||
+                                (q.Resolution != null && keywordLowered.Any(k => q.Resolution.Contains(k, StringComparison.CurrentCultureIgnoreCase))) ||
+                                q.Options!.Any(o =>
+                                    // Verifica se o nome da Option contém alguma palavra-chave
+                                    keywordLowered.Any(k => o.Name.Contains(k, StringComparison.CurrentCultureIgnoreCase))))))
+            .ToList();
+
+                return filteredScratches;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SearchScratchesAndDraftsByKeywordsAsync: An exception occurred while searching scratches and drafts:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Scratch>> SearchScratchesAndDraftsAsync()
+        {
+            try
+            {
+                EnsureScratchNotNull();
+
+                // Retorna todos os scratches com seus drafts, questions e options
+                var scratches = await _context.Scratches!
+                    .Include(s => s.Drafts!)
+                        .ThenInclude(d => d.Questions!)
+                            .ThenInclude(q => q.Options)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return scratches;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SearchScratchesAndDraftsAsync: An exception occurred while retrieving all scratches:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+
         private void EnsureScratchNotNull()
         {
             if (_context.Scratches == null)

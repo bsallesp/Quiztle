@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Quiztle.Frontend.Client;
 using MudBlazor.Services;
 using Quiztle.Blazor.Client.APIServices;
+using Quiztle.Blazor.Client.APIServices.Tests;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddMudServices();
 
 builder.Services.AddTransient<GetQuestionsService>();
+builder.Services.AddTransient<GetAllScratchesService>();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();

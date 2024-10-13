@@ -1,0 +1,111 @@
+﻿@page "/Admin"
+@using Quiztle.CoreBusiness.Entities.Scratch
+@using Quiztle.CoreBusiness.Utils
+
+@inject GetAllScratchesService GetAllScratchesService
+
+@rendermode InteractiveAuto
+
+<div style="height: 50px"></div>
+
+<input type="text" id="filterInput" class="form-control mb-2" placeholder="Search scratches..." />
+<button class="btn btn-primary" onclick="filterScratches()">Search</button>
+
+<div id="scratchesList">
+    @foreach (var itemScratch in _scratches)
+    {
+        <div class="scratch-item">
+
+            <MudPaper Class="pa-4">
+                <MudStack Spacing="2">
+                    <MudButton style="background-color: gray; color: white" OnClick="() => OnExpandCollapseClick(itemScratch.Id)">
+                        @(itemScratch.Name)
+                    </MudButton>
+                    <MudDivider />
+                    <MudCollapse Expanded="@IsExpanded(itemScratch.Id)">
+                        <ScratchesAdminComponent scratch="itemScratch"></ScratchesAdminComponent>
+                    </MudCollapse>
+                </MudStack>
+            </MudPaper>
+
+        </div>
+    }
+</div>
+
+
+<h5>
+    @_message
+</h5>
+<h6>
+    Total scratches: @_scratches.Count()
+</h6>
+
+
+@code {
+    private IEnumerable<Scratch> _scratches = [];
+
+    private string _message = "";
+
+    private Dictionary<Guid, bool> _expandedStates = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        if (firstRender) _message = "Likely Loading..."; else _message = "";
+
+        var response = await GetAllScratchesService.ExecuteAsync();
+
+        if (response.Status == CustomStatusCodes.SuccessStatus && response.Data != null)
+        {
+            _scratches = response.Data.AsEnumerable();
+
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine($"Erro: {response.Message}");
+        }
+    }
+
+    private void OnExpandCollapseClick(Guid scratchId)
+    {
+        if (_expandedStates.ContainsKey(scratchId))
+        {
+            _expandedStates[scratchId] = !_expandedStates[scratchId];
+        }
+        else
+        {
+            _expandedStates[scratchId] = true;
+        }
+    }
+
+    private bool IsExpanded(Guid scratchId)
+    {
+        return _expandedStates.ContainsKey(scratchId) && _expandedStates[scratchId];
+    }
+}
+
+<!-- JavaScript para Filtragem -->
+<script>
+    function filterScratches() {
+        var input, filter, scratchesList, items, name, i, txtValue;
+        input = document.getElementById('filterInput');
+        filter = input.value.toLowerCase(); // Converte o input para lowercase para fazer a busca sem case-sensitive
+        scratchesList = document.getElementById('scratchesList');
+        items = scratchesList.getElementsByClassName('scratch-item'); // Captura todos os items com a classe 'scratch-item'
+
+        // Loop por todos os scratches e esconde aqueles que não correspondem ao filtro
+        for (i = 0; i < items.length; i++) {
+            name = items[i].getElementsByTagName("button")[0]; // Assume que o nome do scratch está no botão
+            if (name) {
+                txtValue = name.textContent || name.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    items[i].style.display = ""; // Mostra o item que corresponde ao filtro
+                } else {
+                    items[i].style.display = "none"; // Esconde o item que não corresponde ao filtro
+                }
+            }
+        }
+    }
+</script>

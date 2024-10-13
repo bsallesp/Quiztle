@@ -1,0 +1,32 @@
+﻿@using Quiztle.CoreBusiness.Entities.Scratch
+
+<MudPaper Class="pa-4">
+    <MudStack Spacing="2">
+        <MudButton OnClick="OnExpandCollapseClick" style="background-color: yellow">
+
+            @question.Name
+
+        </MudButton>
+
+        <MudDivider />
+        <MudCollapse Expanded="_expanded">
+
+            @foreach (var itemOption in question.Options)
+            {
+                <div>
+                    @itemOption.Name
+                </div>
+            }
+
+        </MudCollapse>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public Question? question { get; set; } = new();
+
+    bool _expanded = false;
+
+    private void OnExpandCollapseClick() => _expanded = !_expanded;
+}

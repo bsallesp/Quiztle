@@ -5,11 +5,16 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
     public class Draft
     {
         public Guid Id { get; set; }
-        public required string Text { get; set; }
-        public List<Question>? Questions { get; set; } = new List<Question>();
+        public string Text { get; set; } = "";
+        public List<Question>? Questions { get; set; } = [];
         public int QuestionsAmountTarget { get; set; } = 10;
 
-        public bool NeedMoreQuestions()
+        public Draft()
+        {
+
+        }
+
+        public bool IsNeededMoreQuestions()
         {
             return Questions == null || Questions.Count < QuestionsAmountTarget;
         }

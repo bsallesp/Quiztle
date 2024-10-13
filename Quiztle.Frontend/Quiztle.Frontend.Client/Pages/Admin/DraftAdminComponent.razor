@@ -1,0 +1,31 @@
+﻿@using Quiztle.CoreBusiness.Entities.Scratch
+<MudPaper Class="pa-4">
+    <MudStack Spacing="2">
+        <MudButton OnClick="OnExpandCollapseClick" style="background-color: #66b3ff;">
+
+            @((draft!.Text != null && draft.Text.Length > 300) ? draft.Text.Substring(0, 300) : draft.Text)
+
+        </MudButton>
+
+        <MudDivider />
+        <MudCollapse Expanded="_expanded">
+
+            @foreach (var itemQuestion in draft!.Questions!)
+            {
+                <div>
+                    <QuestionAdminComponent question="@itemQuestion"></QuestionAdminComponent>
+                </div>
+            }
+
+        </MudCollapse>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public Draft? draft { get; set; } = new();
+
+    bool _expanded = false;
+
+    private void OnExpandCollapseClick() => _expanded = !_expanded;
+}

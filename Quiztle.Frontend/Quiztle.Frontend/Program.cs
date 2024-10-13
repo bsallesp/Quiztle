@@ -10,6 +10,7 @@ using Stripe;
 using Npgsql;
 using Quiztle.Blazor.Client.APIServices;
 using System.Security.Policy;
+using Quiztle.Blazor.Client.APIServices.Tests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddTransient<GetQuestionsService>();
+builder.Services.AddTransient<GetAllScratchesService>();
 
 builder.Services.AddAntiforgery(options =>
 {

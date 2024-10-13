@@ -1,0 +1,17 @@
+﻿@using Quiztle.CoreBusiness.Entities.Scratch
+
+<div style="height: 50px"></div>
+
+@foreach (var draft in scratch!.Drafts!)
+{
+    <DraftAdminComponent draft="draft"></DraftAdminComponent>
+}
+
+<h5>
+    Total Drafts: @scratch.Drafts.Count()
+</h5>
+
+@code {
+    [Parameter]
+    public Scratch? scratch { get; set; }
+}

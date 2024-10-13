@@ -48,6 +48,7 @@ builder.Services.AddTransient<CreateQuestionsFromBookController>();
 builder.Services.AddTransient<CreateAllTestsByScratchController>();
 builder.Services.AddTransient<CreateTestByDraftController>();
 builder.Services.AddTransient<CreateTestByScratchController>();
+builder.Services.AddTransient<GetAllScratchesController>();
 
 builder.Services.AddTransient<GetChaptersFromLLM>();
 builder.Services.AddTransient<GetContentFromLLLM>();
