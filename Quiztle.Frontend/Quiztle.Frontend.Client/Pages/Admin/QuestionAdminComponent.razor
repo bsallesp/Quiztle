@@ -2,21 +2,31 @@
 
 <MudPaper Class="pa-4">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick" style="background-color: yellow">
-
-            @question.Name
-
-        </MudButton>
+        <div @onclick="OnExpandCollapseClick" style="background-color: yellow">
+            <h5>
+                @question!.Name
+            </h5>
+        </div>
 
         <MudDivider />
         <MudCollapse Expanded="_expanded">
-
-            @foreach (var itemOption in question.Options)
+            @foreach (var itemOption in question!.Options)
             {
-                <div>
-                    @itemOption.Name
-                </div>
+                <h6>
+                    <span style="font-weight: @(itemOption.IsCorrect ? "bold" : "normal")">
+                        @itemOption.Name
+                    </span>
+                </h6>
             }
+            <hr />
+
+            <div>
+                @question.Hint
+            </div>
+            <hr />
+            <div>
+                @question.Resolution
+            </div>
 
         </MudCollapse>
     </MudStack>
@@ -29,4 +39,11 @@
     bool _expanded = false;
 
     private void OnExpandCollapseClick() => _expanded = !_expanded;
+
+    private bool _open = false;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
 }

@@ -19,7 +19,13 @@
             <MudPaper Class="pa-4">
                 <MudStack Spacing="2">
                     <MudButton style="background-color: gray; color: white" OnClick="() => OnExpandCollapseClick(itemScratch.Id)">
-                        @(itemScratch.Name)
+                        
+                        <h5>
+
+                            @(itemScratch.Name + " - " + itemScratch!.Drafts!.Count() + " Drafts")
+
+                        </h5>
+                        
                     </MudButton>
                     <MudDivider />
                     <MudCollapse Expanded="@IsExpanded(itemScratch.Id)">
@@ -32,7 +38,6 @@
     }
 </div>
 
-
 <h5>
     @_message
 </h5>
@@ -40,19 +45,17 @@
     Total scratches: @_scratches.Count()
 </h6>
 
-
 @code {
     private IEnumerable<Scratch> _scratches = [];
 
-    private string _message = "";
+    private string _message = "Likely Loading...";
 
     private Dictionary<Guid, bool> _expandedStates = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-
-        if (firstRender) _message = "Likely Loading..."; else _message = "";
+        if (firstRender) _message = "";
 
         var response = await GetAllScratchesService.ExecuteAsync();
 
@@ -86,18 +89,16 @@
     }
 }
 
-<!-- JavaScript para Filtragem -->
 <script>
     function filterScratches() {
         var input, filter, scratchesList, items, name, i, txtValue;
         input = document.getElementById('filterInput');
-        filter = input.value.toLowerCase(); // Converte o input para lowercase para fazer a busca sem case-sensitive
+        filter = input.value.toLowerCase();
         scratchesList = document.getElementById('scratchesList');
-        items = scratchesList.getElementsByClassName('scratch-item'); // Captura todos os items com a classe 'scratch-item'
+        items = scratchesList.getElementsByClassName('scratch-item');
 
-        // Loop por todos os scratches e esconde aqueles que não correspondem ao filtro
         for (i = 0; i < items.length; i++) {
-            name = items[i].getElementsByTagName("button")[0]; // Assume que o nome do scratch está no botão
+            name = items[i].getElementsByTagName("button")[0];
             if (name) {
                 txtValue = name.textContent || name.innerText;
                 if (txtValue.toLowerCase().indexOf(filter) > -1) {
