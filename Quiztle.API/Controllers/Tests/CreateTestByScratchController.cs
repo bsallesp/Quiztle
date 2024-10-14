@@ -58,5 +58,69 @@ namespace Quiztle.API.Controllers
 
             throw new ArgumentNullException(nameof(testName));
         }
+
+        [HttpPost("{scratchId}/total")]
+        public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName, int totalQuestions, bool distributeEvenly)
+        {
+            if (string.IsNullOrWhiteSpace(testName))
+                return BadRequest("Test name is required.");
+
+            try
+            {
+                var scratch = await _scratchRepository.GetScratchByIdAsync(scratchId);
+                if (scratch == null)
+                    return NotFound($"Scratch with ID {scratchId} not found.");
+
+                if (scratch.Drafts == null || scratch.Drafts.Count == 0)
+                    return NotFound("No drafts available.");
+
+                var totalDrafts = scratch.Drafts.Count;
+                var questionsPerDraft = totalQuestions / totalDrafts;
+                var remainingQuestions = totalQuestions % totalDrafts;
+
+                var questions = new List<Question>();
+                foreach (var draft in scratch.Drafts)
+                {
+                    var draftQuestions = draft.GetRandomQuestions(questionsPerDraft);
+
+                    // Distribute remaining questions evenly
+                    if (remainingQuestions > 0)
+                    {
+                        draftQuestions.AddRange(draft.GetRandomQuestions(1));
+                        remainingQuestions--;
+                    }
+
+                    questions.AddRange(draftQuestions);
+                }
+
+                // Ensure we do not exceed the total number of questions requested
+                while (questions.Count > totalQuestions)
+                {
+                    questions.RemoveAt(new Random().Next(questions.Count));
+                }
+
+                // Ensure all questions are verified
+                questions = questions.Where(v => v.Verified).ToList();
+                if (questions.Count < totalQuestions)
+                {
+                    return BadRequest($"Total questions collected: {questions.Count}. {totalQuestions} are required.");
+                }
+
+                var test = new Test
+                {
+                    Id = Guid.NewGuid(),
+                    Name = testName,
+                    Questions = questions,
+                    Created = DateTime.UtcNow
+                };
+
+                await _testRepository.SaveChangesAsync();
+                return Ok(test);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error creating test from draft: {ex.Message}");
+            }
+        }
     }
 }

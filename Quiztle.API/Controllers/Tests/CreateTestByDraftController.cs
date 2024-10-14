@@ -30,7 +30,7 @@ namespace Quiztle.API.Controllers
                     return NotFound($"Draft with ID {draftId} not found.");
                 }
 
-                if (draft.Questions == null || !draft.Questions.Any())
+                if (draft.Questions == null || draft.Questions.Count == 0)
                 {
                     return BadRequest("The draft has no questions to create a test.");
                 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Quiztle.CoreBusiness.Entities.Quiz;
 using Quiztle.DataContext.DataService.Repository;
 using Quiztle.DataContext.DataService.Repository.Quiz;
 using System.Collections.Immutable;

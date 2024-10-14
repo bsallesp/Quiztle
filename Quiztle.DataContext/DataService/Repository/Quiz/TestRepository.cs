@@ -1,6 +1,7 @@
 ﻿using Quiztle.CoreBusiness.Entities.Quiz;
 using Microsoft.EntityFrameworkCore;
 using Quiztle.CoreBusiness.Entities.Scratch;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Quiztle.DataContext.DataService.Repository.Quiz
 {
@@ -92,6 +93,11 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
             }
         }
 
+        public async Task SaveChangesAsync()
+        {
+            EnsureTestNotNull();
+            await _context.SaveChangesAsync();
+        }
 
         public async Task CreateTestAsync(Test test)
         {
