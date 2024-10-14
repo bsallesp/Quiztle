@@ -27,7 +27,6 @@ namespace Quiztle.DataContext
                 .HasForeignKey(bt => bt.UserId)
                 .OnDelete(DeleteBehavior.SetNull); // Ou `DeleteBehavior.Cascade` se quiser deletar BookTasks quando o User for deletado
 
-
             modelBuilder.Entity<Chapter>();
 
             modelBuilder.Entity<Content>();
@@ -104,11 +103,17 @@ namespace Quiztle.DataContext
                 .HasForeignKey(tq => tq.QuestionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Relação entre Test e Question para habilitar exclusão em cascata
+            modelBuilder.Entity<Test>()
+                .HasMany(t => t.Questions) // Supondo que você tenha uma coleção de Questions em Test
+                .WithOne(q => q.Test) // Adicione a propriedade Test em Question
+                .HasForeignKey(q => q.TestId) // Defina o campo que representa a chave estrangeira
+                .OnDelete(DeleteBehavior.Cascade); // Permite a exclusão em cascata
+
             modelBuilder.Entity<User>();
 
             base.OnModelCreating(modelBuilder);
         }
-
 
         public DbSet<AILog>? AILogs { get; set; }
         public DbSet<Book>? Books { get; set; }

@@ -37,6 +37,12 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Draft")]
         public Draft? Draft { get; set; }
 
+        [JsonPropertyName("TestId")]  // Adicione esta propriedade
+        public Guid? TestId { get; set; }  // Chave estrangeira para o Teste
+
+        [JsonPropertyName("Test")]  // Adicione esta navegação
+        public Test? Test { get; set; }  // Navegação para a classe Test
+
         [JsonPropertyName("Verified")]
         public bool Verified { get; set; } = false;
 
@@ -47,7 +53,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public int Rate { get; set; } = 0;
 
         [JsonPropertyName("TestQuestions")]
-        public ICollection<TestQuestion> TestQuestions { get; set; } = [];
+        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
 
         public Question GetQuestionSample() => QuestionFactory.CreateFilledQuestion();
 

@@ -2,6 +2,7 @@
 using Quiztle.CoreBusiness.Entities.Quiz;
 using Quiztle.DataContext.DataService.Repository;
 using Quiztle.DataContext.DataService.Repository.Quiz;
+using System.Diagnostics;
 
 namespace Quiztle.API.Controllers
 {
@@ -25,48 +26,64 @@ namespace Quiztle.API.Controllers
             if (string.IsNullOrWhiteSpace(testName))
                 return BadRequest("Test name is required.");
 
+            var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 var scratch = await _scratchRepository.GetScratchByIdAsync(scratchId);
                 if (scratch == null)
-                    throw new Exception($"Scratch with ID {scratchId} not found.");
+                    return BadRequest($"Scratch with ID {scratchId} not found.");
 
-                if (scratch.Drafts == null || !scratch.Drafts.Any())
-                    throw new Exception("No drafts available.");
+                var drafts = scratch.Drafts?.ToArray();
+                if (drafts == null || drafts.Length == 0)
+                    return BadRequest("No drafts available.");
 
                 var test = new Test
                 {
                     Id = Guid.NewGuid(),
                     Name = testName,
-                    Questions = new List<Question>(),
+                    Questions = new List<Question>(totalQuestions),
                     Created = DateTime.UtcNow
                 };
 
-                var drafts = scratch.Drafts.ToList();
-                int draftCount = drafts.Count;
+                int draftCount = drafts.Length;
+                int addedQuestions = 0;
 
-                for (int i = 0; i < totalQuestions; i++)
+                var addedQuestionIds = new HashSet<Guid>();
+
+                for (int i = 0; i < totalQuestions && addedQuestions < totalQuestions; i++)
                 {
-                    int currentDraftIndex = i % draftCount;
-                    var draft = drafts[currentDraftIndex];
+                    var draft = drafts[i % draftCount];
                     var question = draft.GetRandomQuestions(1).FirstOrDefault();
 
-                    if (question != null)
+                    if (question != null && (!verifyQuestion || question.Verified))
                     {
-                        if (!verifyQuestion || question.Verified)
+                        if (!addedQuestionIds.Contains(question.Id))
                         {
                             test.Questions.Add(question);
+                            addedQuestionIds.Add(question.Id);
+                            addedQuestions++;
                         }
                     }
                 }
 
-                if (test.Questions.Count < totalQuestions)
-                {
-                    return BadRequest($"Total questions collected: {test.Questions.Count}. {totalQuestions} are required.");
-                }
+                if (addedQuestions < totalQuestions)
+                    return BadRequest($"Total questions collected: {addedQuestions}. {totalQuestions} are required.");
 
                 await _testRepository.CreateTestAsync(test);
-                return Ok(test);
+
+                stopwatch.Stop();
+                var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+                return Ok(new
+                {
+                    Test = test,
+                    Metrics = new
+                    {
+                        TotalQuestionsAdded = addedQuestions,
+                        TimeTakenMilliseconds = elapsedMilliseconds
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -77,42 +94,43 @@ namespace Quiztle.API.Controllers
         [HttpPost("{scratchId}/allquestions")]
         public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName = "Teste1", bool verifyQuestion = false)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 var scratch = await _scratchRepository.GetScratchByIdAsync(scratchId);
                 if (scratch == null)
-                    throw new Exception($"Scratch with ID {scratchId} not found.");
+                    return BadRequest($"Scratch with ID {scratchId} not found.");
 
-                if (scratch.Drafts == null || !scratch.Drafts.Any())
-                    throw new Exception("No drafts available.");
+                var allQuestions = scratch.Drafts?
+                    .SelectMany(d => verifyQuestion ? d.Questions.Where(q => q.Verified) : d.Questions)
+                    .ToList();
 
-                var allQuestions = new List<Question>();
-
-                foreach (var draft in scratch.Drafts)
-                {
-                    var questions = draft!.Questions!.ToList();
-                    if (verifyQuestion)
-                    {
-                        questions = questions.Where(q => q.Verified).ToList();
-                    }
-                    allQuestions.AddRange(questions);
-                }
-
-                if (!allQuestions.Any())
-                {
+                if (allQuestions == null || allQuestions.Count == 0)
                     return BadRequest("No questions available.");
-                }
 
                 var test = new Test
                 {
                     Id = Guid.NewGuid(),
                     Name = testName,
-                    Questions = allQuestions,
+                    Questions = allQuestions.DistinctBy(q => q.Id).ToList(),
                     Created = DateTime.UtcNow
                 };
 
                 await _testRepository.CreateTestAsync(test);
-                return Ok(test);
+
+                stopwatch.Stop();
+                var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+                return Ok(new
+                {
+                    Test = test,
+                    Metrics = new
+                    {
+                        TotalQuestions = test.Questions.Count,
+                        TimeTakenMilliseconds = elapsedMilliseconds
+                    }
+                });
             }
             catch (Exception ex)
             {
