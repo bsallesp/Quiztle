@@ -29,7 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Games\" />
+    <Content Update="Pages\Games\ArcadeGame.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Pages\Games\QuestionDTOArcadeComponent.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>

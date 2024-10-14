@@ -1,0 +1,50 @@
+﻿.main-div {
+    background-color: rgba(0, 0, 0, 0.1); /* Preto com 10% de opacidade */
+    border-radius: 7.5px;
+    margin-bottom: 15px;
+    padding: 10px 10px;
+}
+
+.hint-button {
+    background-color: cornflowerblue;
+    color: white;
+}
+
+.hint-text{
+    padding: 10px 10px;
+}
+
+.btn {
+    margin: 5px; /* Margem opcional entre os botões */
+}
+
+.w-50 {
+    width: 50%; /* Define a largura de cada botão para 50% */
+}
+
+.option {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.selected {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.correct {
+    border: 3px solid blue;
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.incorrect {
+    border: 3px solid red;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.not-selected-correct {
+    border: 3px solid blue;
+}

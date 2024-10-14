@@ -17,6 +17,9 @@ builder.Services.AddMudServices();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
+builder.Services.AddTransient<GetTestByIdService>();
+builder.Services.AddTransient<RemoveQuestionService>();
+builder.Services.AddTransient<UpdateQuestionService>();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
