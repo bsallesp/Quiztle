@@ -5,17 +5,11 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
     public class TestDTO
     {
         public Guid Id { get; set; }
-
         public string Name { get; set; } = "";
-
         public List<QuestionDTO> QuestionsDTO { get; set; } = new List<QuestionDTO>();
-
         public Guid PDFDataId { get; set; }
-
         public DateTime Created { get; set; } = DateTime.UtcNow;
-
         public int TotalCorrectAnswers = 0;
-
         public void FromTest(Test test)
         {
             Id = test.Id;
@@ -92,6 +86,11 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 .Where(x => indicesToKeep.Contains(x.index))
                 .Select(x => x.q)
                 .ToList();
+        }
+
+        public int GetTotalFinishedQuestions()
+        {
+            return QuestionsDTO.Count(q => q.IsFinished);
         }
     }
 }

@@ -6,12 +6,23 @@
         public string Number { get; set; } = "";
         public Question? Question { get; set; }
         public List<OptionDTO> OptionsDTO { get; private set; }
+        private bool isFinished;
+        public bool IsFinished
+        {
+            get => isFinished;
+            set
+            {
+                if (!isFinished)
+                {
+                    isFinished = value;
+                }
+            }
+        }
 
         public QuestionDTO(Question question)
         {
             Id = question.Id;
             Question = question;
-
             OptionsDTO = question.Options?.Select(option => new OptionDTO
             {
                 Id = option.Id,
@@ -23,9 +34,10 @@
 
         public void ShuffleOptions()
         {
-            Random rng = new Random();
-            int n = OptionsDTO.Count;
+            if (IsFinished) return;
 
+            Random rng = new();
+            int n = OptionsDTO.Count;
             while (n > 1)
             {
                 n--;
@@ -35,6 +47,5 @@
                 OptionsDTO[n] = value;
             }
         }
-
     }
 }

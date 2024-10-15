@@ -9,7 +9,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-    
+    z-index: 90;
 }
 
 .logo-div {
@@ -50,25 +50,24 @@ a {
     padding: 10px;
 }
 
-/* Estilo para o menu comprimido (menu2) */
 #menu2 {
-    justify-content: space-between; /* Espaço entre hambúrguer, logo e login */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 0 10px; /* Espaço interno para garantir que os elementos não toquem nas bordas */
+    padding: 0 10px;
 }
 
 #hamburger-menu {
-    justify-content: flex-start; /* Alinha o hambúrguer à esquerda */
+    justify-content: flex-start;
     align-items: center;
 }
 
 .logo-div {
     text-align: center;
-    flex-grow: 1; /* Faz a logo ocupar o espaço central */
+    flex-grow: 1;
 }
 
 .login-profile {
-    justify-content: flex-end; /* Alinha o login à direita */
+    justify-content: flex-end;
     align-items: center;
 }

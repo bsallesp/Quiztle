@@ -7,13 +7,12 @@
 
 @inject UpdateQuestionService UpdateQuestionService
 @inject RemoveQuestionService RemoveQuestionService
+
 @rendermode InteractiveAuto
 
 <div class="main-div">
     @if (questionDTO != null)
     {
-        @* @questionDTO!.Question!.Id *@
-
         <h4 style="padding: 10px;">
             @(1 + Number) - @questionDTO.Question!.Name
         </h4>
@@ -90,6 +89,10 @@
     public Guid responseGuid { get; set; }
     [Parameter]
     public bool Admin { get; set; } = false;
+    [Parameter]
+    public required bool IsFinished { get; set; } = false;
+    [Parameter]
+    public Action? OnGetAnswer { get; set; }
 
     private bool _showHint;
     private bool _showResolution;
@@ -112,6 +115,10 @@
                 _showResults = value;
                 if (_showResults)
                 {
+                    _disableGetAnswerButton = true;
+                    _disableHintButton = true;
+                    _showHint = false;
+                    _showResolution = true;
                     PreserveSelections();
                 }
             }
@@ -132,32 +139,23 @@
         _showResolution = true;
         _disableHintButton = true;
         _disableGetAnswerButton = true;
+        IsFinished = true;
+
+        OnGetAnswer?.Invoke();
     }
 
     private async void DeleteQuestion()
     {
         var id = questionDTO!.Question!.Id;
-        Console.WriteLine(id);
-
         questionDTO.Question.Rate = _rate;
-        Console.WriteLine("New Rate: " + _rate);
-
         var update = await RemoveQuestionService.ExecuteAsync(id);
-
-        Console.WriteLine(update.Data);
     }
 
     private async void RateIt()
     {
         var id = questionDTO!.Question!.Id;
-        Console.WriteLine(id);
-
         questionDTO.Question.Rate = _rate;
-        Console.WriteLine("New Rate: " + _rate);
-
         var update = await UpdateQuestionService.ExecuteAsync(id, questionDTO.Question);
-
-        Console.WriteLine(update.Data);
     }
 
     private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };

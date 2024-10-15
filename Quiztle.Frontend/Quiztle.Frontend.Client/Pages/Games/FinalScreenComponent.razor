@@ -1,0 +1,72 @@
+﻿@if (_isVisible)
+{
+    <div class="full-screen-div">
+        <div class="container bg-fx">
+
+            <div class="close-btn">
+
+                <button @onclick="CloseBtn">
+                    <img src="svg/utils/close-bold.svg" />
+                </button>
+            </div>
+
+            <img src="svg/test-rating/@Image" />
+
+            <div class="card-title text-center">
+                @Title
+            </div>
+
+            <div class="card-title text-center">
+                Score:
+            </div>
+
+            <div class="questions-container">
+                <div class="questions-amount">
+                    @Score
+                </div>
+                <div class="questions-literal">
+                    of @TotalQuestions
+                </div>
+            </div>
+
+            <div class="card-buttons">
+                <a href="/signup" class="btn btn-primary">Next Game</a>
+            </div>
+
+            <div class="crown">
+                <img src="svg/courses/crown.svg" />
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public required string Title { get; set; }
+    [Parameter]
+    public required int Score { get; set; }
+    [Parameter]
+    public required int QuestionsAmount { get; set; }
+    [Parameter]
+    public required int TotalQuestions { get; set; }
+
+    private bool _isVisible = true;
+
+    public required string Image { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Score < 50) Image = "less-50-shield.svg";
+        if (Score >= 50) Image = "50-shield.svg";
+        if (Score >= 80) Image = "80-shield.svg";
+
+        base.OnInitialized();
+    }
+
+    private void CloseBtn()
+    {
+        _isVisible = false;
+    }
+}

@@ -15,9 +15,20 @@
 <title>
     @if (_title != null)
         @("Quiztle: " + _title)
+
+
 </title>
 
 <div class="gap"></div>
+
+@if (_showFinalScreen)
+{
+    <FinalScreenComponent Title="Azure AZ-900 Fundamentals"
+                          Score="@_testDTO.GetTotalCorrectAnswers()"
+                          QuestionsAmount="200"
+                          TotalQuestions="@_testDTO.QuestionsDTO.Count()">
+    </FinalScreenComponent>
+}
 
 @if (_testDTO.QuestionsDTO.Count >= 1)
 {
@@ -27,33 +38,42 @@
             {
                 <div class="text-center">
                     <h1>
-                        @(_testDTO.Name + "Total Questions: " + _testDTO.QuestionsDTO.Count)
+                        @_testDTO.Name
                     </h1>
+                    <h2>
+                        @(_testDTO.QuestionsDTO.Count + " questions")
+                    </h2>
                 </div>
 
                 @foreach (var questionDTO in _testDTO.QuestionsDTO)
                 {
+                    var index = _testDTO.QuestionsDTO.IndexOf(questionDTO);
                     <QuestionDTOArcadeComponent ShowResults="ShowResults"
                                                 questionDTO="questionDTO"
-                                                Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"
-                                                Admin="@Admin">
+                                                Number="@index"
+                                                Admin="@Admin"
+                                                IsFinished="questionDTO.IsFinished"
+                                                OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
                     </QuestionDTOArcadeComponent>
                 }
             }
         </div>
         <div class="fixed-bottom-container">
+
+            <ProgressBar TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
+                         AnsweredQuestions="@_testDTO.GetTotalFinishedQuestions()" />
+
             @if (!ShowResults)
             {
                 <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
                     <h3 class="mb-0">
-                        @_buttonText
+                        FINISH
                     </h3>
                 </button>
             }
             @if (ShowResults)
             {
                 <div style="background-color: mintcream;">
-
                     @if (_testDTO.QuestionsDTO!.Count > 1)
                     {
                         <h4>
@@ -62,7 +82,7 @@
                     }
                     <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
                         <h3 class="mb-0">
-                            Next
+                            Next Game
                         </h3>
                     </button>
                 </div>
@@ -70,13 +90,13 @@
         </div>
     </div>
 }
+
 @if (_testDTO!.QuestionsDTO!.Count < 1)
 {
     <h4 class="text-center">
         LOADING...
     </h4>
 }
-
 
 @code {
     private string _title = "Quiztle";
@@ -89,9 +109,8 @@
     public bool Admin { get; set; } = false;
 
     private TestDTO _testDTO = new();
-    private Response? _response;
     private Guid _testGuid = new Guid();
-    private string _buttonText = "FINISH";
+    private bool _showFinalScreen = false;
 
     private bool _showResults = false;
     public bool ShowResults
@@ -106,6 +125,14 @@
         }
     }
 
+    private void HandleGetAnswer(QuestionDTO questionDTO)
+    {
+        Console.WriteLine("Getting here.............");
+
+        questionDTO.IsFinished = true;
+        StateHasChanged();
+    }
+
     private void NextQuestion()
     {
         Nav.NavigateTo($"/Games/Arcade/{_testGuid}/{_testDTO.QuestionsDTO!.Count}/{Admin}", true);
@@ -113,14 +140,8 @@
 
     private void FinalizeTestResponse()
     {
-        if (IsAllQuestionsAnswered()) ShowResults = true;
-        if (!IsAllQuestionsAnswered()) _buttonText = $"Complete all questions";
-    }
-
-    private bool IsAllQuestionsAnswered()
-    {
-        if (_testDTO.QuestionsDTO.Count == _testDTO.GetTotalSelectedAnswers()) return true;
-        return false;
+        ShowResults = true;
+        _showFinalScreen = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -154,16 +175,13 @@
                 _testGuid = Guid.Parse(TestId);
                 var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
 
-                Console.WriteLine(testAPIReponse.Data.Questions.Count);
-
                 if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
                     throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
                 _testDTO.FromTest(testAPIReponse.Data);
                 _title = testAPIReponse.Data.Name;
 
-                var amount = 0;
-                if (int.TryParse(this.amount, out amount))
+                if (int.TryParse(this.amount, out int amount))
                 {
                     _testDTO.SetQuestionsAmount(amount);
                 }
