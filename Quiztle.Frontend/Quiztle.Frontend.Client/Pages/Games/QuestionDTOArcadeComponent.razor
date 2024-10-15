@@ -4,10 +4,8 @@
 @using Quiztle.CoreBusiness.Entities.Quiz
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Microsoft.AspNetCore.Components
-
 @inject UpdateQuestionService UpdateQuestionService
 @inject RemoveQuestionService RemoveQuestionService
-
 @rendermode InteractiveAuto
 
 <div class="main-div">
@@ -19,12 +17,29 @@
 
         @foreach (var option in questionDTO.OptionsDTO)
         {
-            <h6 @onclick="() => SelectOption(option)" class="option @GetOptionStyle(option)">
-                @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-            </h6>
+            if (!IsFinished)
+            {
+                <h6 @onclick="() => SelectOption(option)"
+                    class="@($"option {GetOptionStyle(option)}")">
+                    @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+                </h6>
+            }
+            else
+            {
+                var isCorrect = option.IsCorrect;
+                var isSelected = option.IsSelected;
+
+                var cssClass = isSelected
+                ? (isCorrect ? "correct" : "incorrect")
+                : (isCorrect ? "correct" : "");
+
+                <h6 class="option @cssClass">
+                    @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+                </h6>
+            }
+
         }
     }
-
     <div class="d-flex justify-content-between">
         <button disabled="@_disableHintButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
                 @onclick="ShowHint">
@@ -32,7 +47,6 @@
                 Hint
             </h3>
         </button>
-
         <button disabled="@_disableGetAnswerButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
                 @onclick="() => GetAnswer()">
             <h3 class="mb-0">
@@ -40,7 +54,6 @@
             </h3>
         </button>
     </div>
-
     @if (_showHint)
     {
         <div class="hint-text text-center">
@@ -49,7 +62,6 @@
             </h6>
         </div>
     }
-
     @if (_showResolution)
     {
         <div class="hint-text text-center">
@@ -58,7 +70,6 @@
             </h6>
         </div>
     }
-
     @if (Admin)
     {
         <input class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="font-size: 30px" type="number" @bind="_rate" />
@@ -79,8 +90,7 @@
     }
 </div>
 
-@code
-{
+@code {
     [Parameter]
     public QuestionDTO? questionDTO { get; set; }
     [Parameter]
@@ -90,7 +100,7 @@
     [Parameter]
     public bool Admin { get; set; } = false;
     [Parameter]
-    public required bool IsFinished { get; set; } = false;
+    public bool IsFinished { get; set; } = false;
     [Parameter]
     public Action? OnGetAnswer { get; set; }
 
@@ -98,9 +108,7 @@
     private bool _showResolution;
     private bool _disableHintButton = false;
     private bool _disableGetAnswerButton = false;
-
     private int _rate;
-
     private bool _showResults;
     private HashSet<Guid> _selectedOptionIds = new HashSet<Guid>();
 
@@ -120,6 +128,7 @@
                     _showHint = false;
                     _showResolution = true;
                     PreserveSelections();
+                    StateHasChanged();
                 }
             }
         }
@@ -130,18 +139,6 @@
         if (_showResults || _showHint) return;
         _showHint = !_showHint;
         _disableHintButton = true;
-    }
-
-    private void GetAnswer()
-    {
-        if (_showResults) return;
-        ShowResults = true;
-        _showResolution = true;
-        _disableHintButton = true;
-        _disableGetAnswerButton = true;
-        IsFinished = true;
-
-        OnGetAnswer?.Invoke();
     }
 
     private async void DeleteQuestion()
@@ -162,15 +159,42 @@
 
     protected override Task OnParametersSetAsync()
     {
-
         return base.OnParametersSetAsync();
     }
 
     protected override Task OnInitializedAsync()
     {
-        // questionDTO!.ShuffleOptions();
         if (questionDTO != null) _rate = questionDTO.Question!.Rate;
         return base.OnInitializedAsync();
+    }
+
+    private void GetAnswer()
+    {
+        ShowResults = true;
+        _showResolution = true;
+        _disableHintButton = true;
+        _disableGetAnswerButton = true;
+        IsFinished = true;
+
+        OnGetAnswer?.Invoke();
+        PreserveSelections();
+        StateHasChanged();
+    }
+
+    private string GetOptionStyle(OptionDTO option)
+    {
+        if (ShowResults)
+        {
+            if (_selectedOptionIds.Contains(option.Id) && !option.IsCorrect)
+            {
+                return "incorrect";
+            }
+            if (!_selectedOptionIds.Contains(option.Id) && option.IsCorrect)
+            {
+                return "correct";
+            }
+        }
+        return _selectedOptionIds.Contains(option.Id) ? "selected" : "";
     }
 
     private void PreserveSelections()
@@ -182,33 +206,15 @@
         }
     }
 
-    private string GetOptionStyle(OptionDTO option)
-    {
-        if (ShowResults)
-        {
-            if (_selectedOptionIds.Contains(option.Id) && option.IsCorrect)
-            {
-                return "correct";
-            }
-            if (_selectedOptionIds.Contains(option.Id) && !option.IsCorrect)
-            {
-                return "incorrect";
-            }
-            if (!_selectedOptionIds.Contains(option.Id) && option.IsCorrect)
-            {
-                return "not-selected-correct";
-            }
-        }
-        return _selectedOptionIds.Contains(option.Id) ? "selected" : "";
-    }
-
     private void SelectOption(OptionDTO selectedOption)
     {
-        if (ShowResults) return;
+        if (ShowResults || IsFinished) return;
         UnselectAll();
         selectedOption.IsSelected = true;
         _selectedOptionIds.Add(selectedOption.Id);
+        StateHasChanged();
     }
+
 
     private void UnselectAll()
     {
