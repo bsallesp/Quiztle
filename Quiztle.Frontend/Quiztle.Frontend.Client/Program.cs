@@ -22,6 +22,24 @@ builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 
 builder.Services.AddAuthorizationCore();
+
+Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
+
+#region Configuração da API
+var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
+if (string.IsNullOrEmpty(QuiztleAPIURL))
+    throw new Exception("API URL is not configured in appsettings.json");
+
+Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {QuiztleAPIURL}");
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(QuiztleAPIURL),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+
+#endregion
+
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 

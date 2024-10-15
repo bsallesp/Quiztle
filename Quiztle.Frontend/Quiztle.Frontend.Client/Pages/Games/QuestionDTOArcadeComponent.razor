@@ -27,14 +27,14 @@
     }
 
     <div class="d-flex justify-content-between">
-        <button class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
-                @onclick="() => ShowHint()">
+        <button disabled="@_disableHintButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
+                @onclick="ShowHint">
             <h3 class="mb-0">
                 Hint
             </h3>
         </button>
 
-        <button class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
+        <button disabled="@_disableGetAnswerButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
                 @onclick="() => GetAnswer()">
             <h3 class="mb-0">
                 Get Answer
@@ -42,7 +42,7 @@
         </button>
     </div>
 
-    @if (_showTips)
+    @if (_showHint)
     {
         <div class="hint-text text-center">
             <h6>
@@ -91,8 +91,10 @@
     [Parameter]
     public bool Admin { get; set; } = false;
 
-    private bool _showTips;
+    private bool _showHint;
     private bool _showResolution;
+    private bool _disableHintButton = false;
+    private bool _disableGetAnswerButton = false;
 
     private int _rate;
 
@@ -118,14 +120,18 @@
 
     private void ShowHint()
     {
-        if (_showResults) return;
-        _showTips = !_showTips;
+        if (_showResults || _showHint) return;
+        _showHint = !_showHint;
+        _disableHintButton = true;
     }
 
     private void GetAnswer()
     {
+        if (_showResults) return;
         ShowResults = true;
         _showResolution = true;
+        _disableHintButton = true;
+        _disableGetAnswerButton = true;
     }
 
     private async void DeleteQuestion()

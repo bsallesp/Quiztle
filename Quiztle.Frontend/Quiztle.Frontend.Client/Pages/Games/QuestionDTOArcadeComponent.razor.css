@@ -1,5 +1,12 @@
-﻿.main-div {
-    background-color: rgba(0, 0, 0, 0.1); /* Preto com 10% de opacidade */
+﻿:root {
+    --color1: #FF5733; /* Cor 1 em hexadecimal */
+    --color2: #33FF57; /* Cor 2 em hexadecimal */
+    --color3: #3357FF; /* Cor 3 em hexadecimal */
+    --opacidade: 0.1; /* Opacidade */
+}
+
+.main-div {
+    background-color: rgba( --color1, --color2, --color3, var(--opacidade));
     border-radius: 7.5px;
     margin-bottom: 15px;
     padding: 10px 10px;

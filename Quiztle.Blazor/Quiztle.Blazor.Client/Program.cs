@@ -54,7 +54,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-// Configuração da API
+#region Configuração da API
 var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
 if (string.IsNullOrEmpty(QuiztleAPIURL))
     throw new Exception("API URL is not configured in appsettings.json");
@@ -66,6 +66,8 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(QuiztleAPIURL),
     Timeout = Timeout.InfiniteTimeSpan
 });
+
+#endregion
 
 builder.Services.AddScoped(sp => builder.HostEnvironment);
 
