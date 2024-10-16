@@ -1,0 +1,41 @@
+Here are the official names of the AWS certification exams:
+
+1. Foundational Level
+AWS Certified Cloud Practitioner
+Exam Code: CLF-C02 (current version)
+2. Associate Level
+AWS Certified Solutions Architect – Associate
+
+Exam Code: SAA-C03 (current version)
+AWS Certified Developer – Associate
+
+Exam Code: DVA-C02 (current version)
+AWS Certified SysOps Administrator – Associate
+
+Exam Code: SOA-C02 (current version)
+3. Professional Level
+AWS Certified Solutions Architect – Professional
+
+Exam Code: SAP-C02 (current version)
+AWS Certified DevOps Engineer – Professional
+
+Exam Code: DOP-C02 (current version)
+4. Specialty Certifications
+AWS Certified Advanced Networking – Specialty
+
+Exam Code: ANS-C01 (current version)
+AWS Certified Data Analytics – Specialty (formerly AWS Certified Big Data – Specialty)
+
+Exam Code: DAS-C01 (current version)
+AWS Certified Security – Specialty
+
+Exam Code: SCS-C02 (current version)
+AWS Certified Machine Learning – Specialty
+
+Exam Code: MLS-C02 (current version)
+AWS Certified Database – Specialty
+
+Exam Code: DBS-C01 (current version)
+AWS Certified SAP on AWS – Specialty
+
+Exam Code: PAS-C01 (current version)

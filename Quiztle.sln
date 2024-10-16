@@ -55,6 +55,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quiztle.Flask.HomeLLM", "Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.API.LocalLLM", "Quiztle.API.LocalLLM\Quiztle.API.LocalLLM.csproj", "{975A879E-1477-4828-814B-600648ED89B8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS", "AWS", "{9B6A241F-95A1-49E9-8A8A-88FC5001BA14}"
+	ProjectSection(SolutionItems) = preProject
+		AWS.txt = AWS.txt
+		1 - AWS Certified Cloud PractitionerCLF-C02.md = 1 - AWS Certified Cloud PractitionerCLF-C02.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comptia", "Comptia", "{D2F058ED-DC1F-4536-9342-1AA7579E38F8}"
+	ProjectSection(SolutionItems) = preProject
+		A+ 220-1101.MD = A+ 220-1101.MD
+		A+ 220-1102.MD = A+ 220-1102.MD
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +108,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B6A241F-95A1-49E9-8A8A-88FC5001BA14} = {68A2E442-191C-4CDC-98F6-9961F042EE19}
+		{D2F058ED-DC1F-4536-9342-1AA7579E38F8} = {68A2E442-191C-4CDC-98F6-9961F042EE19}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FCAC457D-A1BC-4F97-8789-2CDA6A5416A5}
