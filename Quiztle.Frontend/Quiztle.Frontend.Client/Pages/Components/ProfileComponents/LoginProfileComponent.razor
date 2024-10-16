@@ -8,12 +8,12 @@
         }
         else
         {
-            <div>Login</div>
+            <img src="svg/login.svg" style="height:50px; width:50px;" alt="Login" /> 
         }
     </a>
 </div>
 
-@code{
+@code {
     private bool isSignedIn = false;
 
     protected override async Task OnInitializedAsync()
@@ -21,7 +21,9 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity != null && user.Identity.IsAuthenticated) isSignedIn = true;
-        else isSignedIn = false;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+            isSignedIn = true;
+        else
+            isSignedIn = false;
     }
 }

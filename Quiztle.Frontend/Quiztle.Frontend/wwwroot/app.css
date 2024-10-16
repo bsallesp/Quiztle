@@ -110,15 +110,3 @@ p, h1, h2, h3, h4, h5, h6 {
     font-family: 'Rajdhani', sans-serif;
     font-weight: normal;
 }
-
-a {
-    color: white; /* Cor padrão dos links */
-}
-
-    a:visited {
-        color: white; /* Cor após o link ser clicado */
-    }
-
-    a:hover{
-        color: white;
-    }

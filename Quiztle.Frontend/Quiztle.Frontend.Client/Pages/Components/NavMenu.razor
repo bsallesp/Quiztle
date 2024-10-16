@@ -66,21 +66,23 @@
         <MudText Typo="Typo.h6">CertCool</MudText>
     </MudDrawerHeader>
     <MudNavMenu>
-        <MudNavLink Match="NavLinkMatch.All">Home</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">About</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Pricing</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Support</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/about">About</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/create-order">Pricing</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/support">Support</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="/company">Company</MudNavLink>
         <AuthorizeView>
             <Authorized>
-
+                <MudNavLink Match="NavLinkMatch.All" Href="/profile">Profile</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/logout">Logout</MudNavLink>
             </Authorized>
             <NotAuthorized>
-                <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/Account/Login">Login</MudNavLink>
             </NotAuthorized>
         </AuthorizeView>
     </MudNavMenu>
 </MudDrawer>
+
 
 @code {
     bool open;
@@ -107,24 +109,18 @@
         const menu1 = document.getElementById('menu1');
         const menu2 = document.getElementById('menu2');
 
-        if (width <= 770) {
+        if (width <= 900) {
             menu1.style.display = 'none';
             menu2.style.display = 'flex';
         } else {
             menu1.style.display = 'flex';
             menu2.style.display = 'none';
         }
-
-        // Reagir à redimensionamentos da janela
-        window.addEventListener('resize', function () {
-            const width = window.innerWidth;
-            if (width <= 870) {
-                menu1.style.display = 'none';
-                menu2.style.display = 'flex';
-            } else {
-                menu1.style.display = 'flex';
-                menu2.style.display = 'none';
-            }
-        });
     }
+
+    // Adicionar evento de resize
+    window.addEventListener('resize', toggleMenuBasedOnWidth);
+
+    // Chamar a função imediatamente ao carregar a página
+    document.addEventListener('DOMContentLoaded', toggleMenuBasedOnWidth);
 </script>
