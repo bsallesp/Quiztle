@@ -1,4 +1,5 @@
-﻿@page "/AuthUser/Login"
+﻿@* @page "/AuthUser/Login" *@
+@page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -25,7 +26,7 @@
             <div>
                 <section>
                     <StatusMessage Message="@errorMessage" />
-                    <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+@*                     <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                         <DataAnnotationsValidator />
                         <h2>Use a local account to log in.</h2>
                         <hr />
@@ -49,24 +50,25 @@
                         <div>
                             <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                         </div>
-                        <div>
-                            <p>
-                                <a href="Account/ForgotPassword">Forgot your password?</a>
-                            </p>
-                            <p>
-                                <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                            </p>
-                            <p>
-                                <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                            </p>
-                        </div>
-                    </EditForm>
+
+                    </EditForm> *@
                 </section>
             </div>
             <div>
                 <section>
                     <ExternalLoginPicker />
                 </section>
+                <div>
+                    @*                             <p>
+                    <a href="Account/ForgotPassword">Forgot your password?</a>
+                    </p> *@
+                    <p>
+                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+                    </p>
+                    @*                             <p>
+                    <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                    </p> *@
+                </div>
             </div>
         </MudContainer>
     </NotAuthorized>

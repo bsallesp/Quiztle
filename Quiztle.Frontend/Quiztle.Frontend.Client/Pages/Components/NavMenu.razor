@@ -63,7 +63,7 @@
 
 <MudDrawer @bind-Open="@open" Anchor="@anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
     <MudDrawerHeader>
-        <MudText Typo="Typo.h6">My App</MudText>
+        <MudText Typo="Typo.h6">CertCool</MudText>
     </MudDrawerHeader>
     <MudNavMenu>
         <MudNavLink Match="NavLinkMatch.All">Home</MudNavLink>
@@ -71,7 +71,14 @@
         <MudNavLink Match="NavLinkMatch.All">Pricing</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Support</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All">Company</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
+        <AuthorizeView>
+            <Authorized>
+
+            </Authorized>
+            <NotAuthorized>
+                <MudNavLink Match="NavLinkMatch.All">Login</MudNavLink>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudNavMenu>
 </MudDrawer>
 
