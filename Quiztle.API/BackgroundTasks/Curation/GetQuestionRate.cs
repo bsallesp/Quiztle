@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Quiztle.DataContext.Repositories.Quiz;
@@ -26,21 +28,14 @@ namespace Quiztle.API.BackgroundTasks.Curation
             }
 
             var questions = await _questionRepository.GetRandomQuestionsToRateAsync(false, 5);
-            if (questions == null)
+            if (questions == null || !questions.Any())
             {
                 Console.WriteLine("No questions found to rate.");
                 return;
             }
 
-            var stringOfQuestions = "";
+            var stringOfQuestions = string.Join(", ", questions.Select(q => q.ToFormattedString()));
 
-            foreach (var question in questions)
-            {
-                stringOfQuestions += question.ToFormattedString();
-
-                Console.WriteLine(question.ToFormattedString());
-            }
-            
             var resultJson = await _curationBackground.ExecuteAsync(questions);
             Console.WriteLine("Raw JSON result: " + resultJson);
 
@@ -52,15 +47,49 @@ namespace Quiztle.API.BackgroundTasks.Curation
                     PropertyNameCaseInsensitive = true
                 };
 
-                var result = JsonSerializer.Deserialize<AnswerValidation>(resultJson, options);
+                var result = JsonSerializer.Deserialize<Dictionary<string, string>>(resultJson, options);
 
                 if (result != null)
                 {
-                    Console.WriteLine(result);
+                    var answers = result.ToDictionary(kv => kv.Key, kv => kv.Value == "t");
+                    Console.WriteLine("Deserialization successful. Answers: " + (answers != null ? string.Join(", ", answers.Keys) : "None"));
+
+                    if (answers != null && answers.Any())
+                    {
+                        Console.WriteLine("Answers:");
+                        foreach (var answer in answers)
+                        {
+                            Console.WriteLine($"Key: {answer.Key}, Value: {answer.Value}");
+                        }
+
+                        var validatedQuestions = await _questionRepository.GetQuestionsByIdsAsync(answers.Keys.Select(Guid.Parse).ToArray());
+
+                        foreach (var question in validatedQuestions)
+                        {
+                            question.Verified = true;
+
+                            foreach (var answer in answers)
+                            {
+                                if (question.Id.ToString() == answer.Key)
+                                {
+                                    question.ConfidenceLevel += answer.Value ? 1 : -1;
+                                    break;
+                                }
+                            }
+
+                            Console.WriteLine($"Question {question.Id} verified: {question.Verified}");
+                        }
+
+                        await _questionRepository.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine("No answers found in the result.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Failed to parse the evaluation result.");
+                    Console.WriteLine("Deserialization resulted in null.");
                 }
             }
             catch (JsonException ex)
@@ -78,7 +107,6 @@ namespace Quiztle.API.BackgroundTasks.Curation
 
     public class AnswerValidation
     {
-        public Dictionary<int, bool>? Answers { get; set; }
+        public Dictionary<string, bool> Answers { get; set; } = new Dictionary<string, bool>();
     }
-
 }

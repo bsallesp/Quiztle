@@ -12,10 +12,6 @@ namespace Quiztle.DataContext.Repositories.Quiz
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public QuestionRepository()
-        {
-        }
-
         public async Task<Question?> GetARandomQuestionToRate()
         {
             EnsureQuestionsNotNull();
@@ -31,10 +27,12 @@ namespace Quiztle.DataContext.Repositories.Quiz
 
         }
 
+
         public async Task<List<Question>> GetRandomQuestionsToRateAsync(bool isVerified, int questionsAmount)
         {
             return await GetRandomQuestionsToRateAsync(isVerified, questionsAmount, null);
         }
+
 
         public async Task<List<Question>> GetRandomQuestionsToRateAsync(bool isVerified, int questionsAmount, int[]? confidenceLevel)
         {
@@ -81,17 +79,35 @@ namespace Quiztle.DataContext.Repositories.Quiz
             }
         }
 
+
         public async Task<Question?> GetQuestionByIdAsync(Guid id)
         {
             EnsureQuestionsNotNull();
             return await _context.Questions!.FindAsync(id);
         }
 
+
+        public async Task<List<Question>> GetQuestionsByIdsAsync(Guid[] ids)
+        {
+            EnsureQuestionsNotNull();
+
+            // Buscar as questões cujos IDs estão na lista fornecida
+            var questions = await _context.Questions!
+                .Where(q => ids.Contains(q.Id))
+                .Include(o => o.Options) // Incluir as opções associadas (se necessário)
+                .Include(d => d.Draft)   // Incluir o draft associado (se necessário)
+                .ToListAsync();
+
+            return questions;
+        }
+
+
         public async Task<IEnumerable<Question?>> GetQuestionByDraftAsync(Guid id)
         {
             EnsureQuestionsNotNull();
             return await _context.Questions!.Where(q => q.Draft!.Id == id).ToListAsync();
         }
+
 
         public async Task<IQueryable<Question>> GetAllQuestionsAsync()
         {
@@ -102,12 +118,14 @@ namespace Quiztle.DataContext.Repositories.Quiz
             return questions.AsQueryable();
         }
 
+
         public async Task UpdateQuestionAsync(Question question)
         {
             EnsureQuestionsNotNull();
             _context.Entry(question).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<bool> UpdateQuestionAsync(Guid id, Question question)
         {
@@ -121,12 +139,13 @@ namespace Quiztle.DataContext.Repositories.Quiz
                 Console.WriteLine("Updating done.");
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Updating error: " + ex);
                 return false;
             }
         }
+
 
         public async Task<bool> DeleteQuestionAsync(Guid id)
         {
@@ -141,6 +160,8 @@ namespace Quiztle.DataContext.Repositories.Quiz
             }
             return false;
         }
+
+
         public async Task<IEnumerable<Question>> SearchQuestionsByKeywordsAsync(string[] keywords)
         {
             EnsureQuestionsNotNull();
@@ -161,6 +182,13 @@ namespace Quiztle.DataContext.Repositories.Quiz
 
             return questions;
         }
+
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
 
         private void EnsureQuestionsNotNull()
         {

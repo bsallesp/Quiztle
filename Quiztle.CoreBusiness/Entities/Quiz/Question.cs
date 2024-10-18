@@ -46,9 +46,6 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Verified")]
         public bool Verified { get; set; } = false;
 
-        [JsonPropertyName("Consistency")]
-        public bool Consistency { get; set; } = false;
-
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
         [JsonPropertyName("Rate")]

@@ -13,9 +13,6 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
         public async Task ExecuteAsync()
         {
-
-
-
             // Obter todas as perguntas
             var allQuestions = await _questionRepository.GetAllQuestionsAsync();
 
@@ -27,7 +24,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
             {
                 Console.WriteLine("Deleting question: " + question.Id + "with score: " + question.Rate.ToString());
                 // Use DeleteQuestionAsync para remover a pergunta
-                await _questionRepository.DeleteQuestionAsync(question.Id);
+                //await _questionRepository.DeleteQuestionAsync(question.Id);
             }
 
             Console.WriteLine("Questions with rate less than 3 removed.");

@@ -36,7 +36,7 @@ namespace Quiztle.API.BackgroundTasks.Curation
 
                 string response = await _llmRequest.ExecuteAsync(prompt);
 
-                await _answerValidateQuestions.ExecuteAsync();
+                //await _answerValidateQuestions.ExecuteAsync();
                 
                 //await _removeBadQuestions.ExecuteAsync();
 

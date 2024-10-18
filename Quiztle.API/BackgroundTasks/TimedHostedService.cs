@@ -26,8 +26,8 @@ namespace Quiztle.API.BackgroundTasks
         {
             if (_hostEnvironment.IsDevelopment())
             {
-                _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
-                //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+                //_timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+                _timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             }
 
             return Task.CompletedTask;
@@ -44,11 +44,9 @@ namespace Quiztle.API.BackgroundTasks
                     var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMChatGPTRequest>();
                     var answerValidateQuestions = scope.ServiceProvider.GetRequiredService<AnswerValidateQuestions>();
 
-                    // Agora, crie a instância de curationBackground antes de usá-la.
                     var curationBackground = new CurationBackground(
                         llmRequest, CancellationToken.None, answerValidateQuestions);
 
-                    // Agora, você pode criar a instância de GetQuestionRate e passar curationBackground.
                     var getQuestionRate = new GetQuestionRate(questionRepository, curationBackground);
 
                     await getQuestionRate.ExecuteAsync();

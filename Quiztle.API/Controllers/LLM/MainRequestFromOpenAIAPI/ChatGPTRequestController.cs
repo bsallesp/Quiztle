@@ -18,7 +18,8 @@ namespace Quiztle.API
         public ChatGPTRequestController(HttpClient client, AILogRepository aILogRepository)
         {
             _client = client;
-            _apiKey = "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";
+            //_apiKey = "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";
+            _apiKey = "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";
             _logRepository = aILogRepository;
         }
 
@@ -72,7 +73,7 @@ namespace Quiztle.API
                         .ToString();
 
                     // Retorna apenas as perguntas
-                    Console.WriteLine(questions);
+                    //Console.WriteLine(questions);
 
                     return questions;
                 }
