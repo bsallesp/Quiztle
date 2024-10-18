@@ -8,12 +8,12 @@ using Quiztle.API.BackgroundTasks.Curation;
 
 namespace Quiztle.API.BackgroundTasks.Curation
 {
-    public class GetQuestionRate
+    public class GetQuestionConfidency
     {
         private readonly QuestionRepository _questionRepository;
         private readonly CurationBackground _curationBackground;
 
-        public GetQuestionRate(QuestionRepository questionRepository, CurationBackground curationBackground)
+        public GetQuestionConfidency(QuestionRepository questionRepository, CurationBackground curationBackground)
         {
             _questionRepository = questionRepository;
             _curationBackground = curationBackground;
@@ -47,45 +47,39 @@ namespace Quiztle.API.BackgroundTasks.Curation
                     PropertyNameCaseInsensitive = true
                 };
 
-                var result = JsonSerializer.Deserialize<Dictionary<string, string>>(resultJson, options);
+                // Modificado para usar um dicionário com valores que são também dicionários
+                var result = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, bool>>>(resultJson, options);
 
                 if (result != null)
                 {
-                    var answers = result.ToDictionary(kv => kv.Key, kv => kv.Value == "t");
-                    Console.WriteLine("Deserialization successful. Answers: " + (answers != null ? string.Join(", ", answers.Keys) : "None"));
+                    Console.WriteLine("Deserialization successful.");
 
-                    if (answers != null && answers.Any())
+                    foreach (var questionResult in result)
                     {
-                        Console.WriteLine("Answers:");
+                        string questionId = questionResult.Key;
+                        var answers = questionResult.Value;
+
+                        Console.WriteLine($"Question ID: {questionId}");
                         foreach (var answer in answers)
                         {
                             Console.WriteLine($"Key: {answer.Key}, Value: {answer.Value}");
                         }
 
-                        var validatedQuestions = await _questionRepository.GetQuestionsByIdsAsync(answers.Keys.Select(Guid.Parse).ToArray());
+                        // Aqui você pode pegar o validatedQuestions com base na questionId
+                        var validatedQuestions = await _questionRepository.GetQuestionsByIdsAsync(new[] { Guid.Parse(questionId) });
 
                         foreach (var question in validatedQuestions)
                         {
                             question.Verified = true;
 
-                            foreach (var answer in answers)
-                            {
-                                if (question.Id.ToString() == answer.Key)
-                                {
-                                    question.ConfidenceLevel += answer.Value ? 1 : -1;
-                                    break;
-                                }
-                            }
+                            // Atualiza ConfidenceLevel
+                            question.ConfidenceLevel += answers.Any(a => a.Key == question.ToFormattedString() && a.Value) ? 1 : -1;
 
                             Console.WriteLine($"Question {question.Id} verified: {question.Verified}");
                         }
+                    }
 
-                        await _questionRepository.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        Console.WriteLine("No answers found in the result.");
-                    }
+                    await _questionRepository.SaveChangesAsync();
                 }
                 else
                 {
@@ -96,6 +90,8 @@ namespace Quiztle.API.BackgroundTasks.Curation
             {
                 Console.WriteLine($"JSON deserialization error: {ex.Message}");
             }
+
+
         }
     }
 
@@ -110,3 +106,11 @@ namespace Quiztle.API.BackgroundTasks.Curation
         public Dictionary<string, bool> Answers { get; set; } = new Dictionary<string, bool>();
     }
 }
+
+
+/*
+SELECT
+    SUM(CASE WHEN "ConfidenceLevel" = 1 THEN 1 ELSE 0 END) AS "CountConfidenceLevel1",
+    SUM(CASE WHEN "ConfidenceLevel" = -1 THEN 1 ELSE 0 END) AS "CountConfidenceLevelMinus1"
+FROM "Questions";
+*/

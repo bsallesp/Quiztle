@@ -21,7 +21,11 @@ namespace Quiztle.API.Controllers
         }
 
         [HttpPost("{scratchId}/total")]
-        public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName = "test1", int totalQuestions = 20, bool verifyQuestion = false)
+        public async Task<IActionResult> ExecuteAsync(Guid scratchId,
+            string testName = "test1",
+            int totalQuestions = 40,
+            bool onlyVerified = true,
+            int minimimConfidenceRate = 0)
         {
             if (string.IsNullOrWhiteSpace(testName))
                 return BadRequest("Test name is required.");
@@ -51,13 +55,14 @@ namespace Quiztle.API.Controllers
                 int addedQuestions = 0;
                 int draftIndex = 0;
 
-                // Continua até atingir o número total de perguntas desejado
                 while (addedQuestions < totalQuestions)
                 {
-                    var draft = drafts[draftIndex % draftCount];  // Circula pelos drafts
+                    var draft = drafts[draftIndex % draftCount];
                     var question = draft.GetRandomQuestions(1).FirstOrDefault();
 
-                    if (question != null && (!verifyQuestion || question.Verified))
+                    if (question != null &&
+                        (!onlyVerified || question.Verified) &&
+                        question.ConfidenceLevel >= minimimConfidenceRate)
                     {
                         if (!addedQuestionIds.Contains(question.Id))
                         {
@@ -67,9 +72,8 @@ namespace Quiztle.API.Controllers
                         }
                     }
 
-                    draftIndex++;  // Move para o próximo draft
+                    draftIndex++;
 
-                    // Verifica se circulamos por todos os drafts e não temos mais perguntas únicas para adicionar
                     if (draftIndex >= draftCount * totalQuestions && addedQuestions < totalQuestions)
                         return BadRequest($"Total questions collected: {addedQuestions}. {totalQuestions} are required.");
                 }
@@ -96,7 +100,10 @@ namespace Quiztle.API.Controllers
         }
 
         [HttpPost("{scratchId}/allquestions")]
-        public async Task<IActionResult> ExecuteAsync(Guid scratchId, string testName = "Teste1", bool verifyQuestion = false)
+        public async Task<IActionResult> ExecuteAsync(Guid scratchId,
+            string testName = "Teste1",
+            bool onlyVerified = true,
+            int minimimConfidenceRate = 0)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -107,7 +114,9 @@ namespace Quiztle.API.Controllers
                     return BadRequest($"Scratch with ID {scratchId} not found.");
 
                 var allQuestions = scratch.Drafts?
-                    .SelectMany(d => verifyQuestion ? d.Questions.Where(q => q.Verified) : d.Questions)
+                    .SelectMany(d => onlyVerified ? d.Questions!.Where(
+                        q => q.Verified && q.ConfidenceLevel >= minimimConfidenceRate) : d.Questions!.Where(
+                            q => q.ConfidenceLevel >= minimimConfidenceRate))
                     .ToList();
 
                 if (allQuestions == null || allQuestions.Count == 0)

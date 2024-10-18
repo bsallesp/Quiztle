@@ -48,7 +48,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
-        [JsonPropertyName("Rate")]
+        [JsonPropertyName("ConfidenceLevel")]
         public int ConfidenceLevel { get; set; } = 0;
 
         [JsonPropertyName("TestQuestions")]

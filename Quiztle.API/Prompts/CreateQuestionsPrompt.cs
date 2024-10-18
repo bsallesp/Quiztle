@@ -1,10 +1,15 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Quiztle.API.Prompts
 {
     public static class CreateQuestionsPrompt
     {
-        public static string GetNewQuestionFromPages(string bookArticle, IEnumerable<string>? questionsAlreadyMade = null, int questionsAmount = 5, int incorrectOptionsAmount = 4)
+        public static string GetNewQuestionFromPages(string bookArticle,
+            IEnumerable<string>? questionsAlreadyMade = null,
+            int questionsAmount = 5,
+            int incorrectOptionsAmount = 4)
         {
             if (string.IsNullOrEmpty(bookArticle))
             {
@@ -15,6 +20,7 @@ namespace Quiztle.API.Prompts
 
             AddHeader(promptBuilder);
             AddArticleContent(promptBuilder, bookArticle);
+            AddSummaryInstruction(promptBuilder);
             AddJsonStructure(promptBuilder, incorrectOptionsAmount);
 
             if (questionsAlreadyMade?.Any() == true)
@@ -29,9 +35,17 @@ namespace Quiztle.API.Prompts
 
         private static void AddHeader(StringBuilder promptBuilder)
         {
-            promptBuilder.AppendLine("As a specialist in constructing exams for the Azure AZ-900 Fundamentals Certification, " +
-                                     "create distinct and unambiguous questions based strictly on the provided text. Ensure there is only one correct answer per question, and the incorrect options are plausible but clearly distinguishable as incorrect.");
-            promptBuilder.Append(QuestionTypeGenerator.GetRandomQuestionType());
+            promptBuilder.AppendLine("As a specialist in constructing exams for official certification exams, " +
+                                     "create distinct and unambiguous questions based strictly on the provided text. " +
+                                     "Ensure there is only one correct answer per question, and that the incorrect options " +
+                                     "are plausible yet clearly distinguishable as incorrect. " +
+                                     "Use specific examples from the text to create the questions.");
+        }
+
+        private static void AddSummaryInstruction(StringBuilder promptBuilder)
+        {
+            promptBuilder.AppendLine("Before generating the questions, summarize the key points from the article. " +
+                                     "Identify crucial facts or concepts that can serve as the basis for your questions.");
         }
 
         private static void AddArticleContent(StringBuilder promptBuilder, string bookArticle)
@@ -73,6 +87,7 @@ namespace Quiztle.API.Prompts
 
         private static string GetJsonStructure(int incorrectOptionsAmount)
         {
+            // Aqui estamos apenas definindo a estrutura JSON
             return $@"{{
             ""Questions"": [
                 {{
@@ -89,6 +104,20 @@ namespace Quiztle.API.Prompts
                 }}
             ]
         }}";
+        }
+
+        public static List<string> GetQuestionTypesWithText(int questionsAmount)
+        {
+            var questionTypes = QuestionTypeGenerator.GetRandomQuestionTypes(questionsAmount);
+            var questions = new List<string>();
+
+            foreach (var type in questionTypes)
+            {
+                // Aqui você deve adicionar a lógica para gerar a pergunta baseada no tipo
+                questions.Add($"{type}: <Question Text>");
+            }
+
+            return questions;
         }
     }
 }

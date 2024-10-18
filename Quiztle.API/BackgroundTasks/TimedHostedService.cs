@@ -26,9 +26,11 @@ namespace Quiztle.API.BackgroundTasks
         {
             if (_hostEnvironment.IsDevelopment())
             {
-                //_timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
-                _timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+                _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+                //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
             }
+
+            //01:55pm
 
             return Task.CompletedTask;
         }
@@ -47,7 +49,7 @@ namespace Quiztle.API.BackgroundTasks
                     var curationBackground = new CurationBackground(
                         llmRequest, CancellationToken.None, answerValidateQuestions);
 
-                    var getQuestionRate = new GetQuestionRate(questionRepository, curationBackground);
+                    var getQuestionRate = new GetQuestionConfidency(questionRepository, curationBackground);
 
                     await getQuestionRate.ExecuteAsync();
                 }
