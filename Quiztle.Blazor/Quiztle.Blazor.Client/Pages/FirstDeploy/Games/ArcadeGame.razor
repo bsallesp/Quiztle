@@ -1,8 +1,7 @@
 ﻿@page "/Games/Arcade/{TestId}"
-@page "/Games/Arcade/{TestId}/{admin:bool?}"
+@* @page "/Games/Arcade/{TestId}/{admin:bool?}"
 @page "/Games/Arcade/{TestId}/{amount}"
-@page "/Games/Arcade/{TestId}/{amount}/{admin:bool?}"
-
+@page "/Games/Arcade/{TestId}/{amount}/{admin:bool?}" *@
 
 @using Quiztle.Blazor.Client.Pages.Games.Components
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
@@ -13,53 +12,52 @@
 <title>
     @if (_title != null)
         @_title
-
 </title>
 
-<div>
-    <div style="padding-bottom:80px;">
-        @if (_testDTO.QuestionsDTO != null)
-        {
-            <h1>@_testDTO.Name</h1>
+<div class="container">
+    @if (_testDTO.QuestionsDTO != null)
+    {
+        <h1>@_testDTO.Name</h1>
 
-            @foreach (var questionDTO in _testDTO.QuestionsDTO)
+        @foreach (var questionDTO in _testDTO.QuestionsDTO)
+        {
+            <QuestionDTOArcadeComponent ShowResults="ShowResults"
+                                        questionDTO="questionDTO"
+                                        Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"
+                                        Admin="@Admin">
+            </QuestionDTOArcadeComponent>
+        }
+
+        <div class="fixed-bottom-container">
+            @if (!ShowResults)
             {
-                <QuestionDTOArcadeComponent ShowResults="ShowResults"
-                                            questionDTO="questionDTO"
-                                            Number="@_testDTO.QuestionsDTO.IndexOf(questionDTO)"
-                                            Admin="@Admin">
-                </QuestionDTOArcadeComponent>
-            }
-        }
-    </div>
-    <div class="fixed-bottom-container">
-        @if (!ShowResults)
-        {
-            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
-                <h3 class="mb-0">
-                    @_buttonText
-                </h3>
-            </button>
-        }
-        @if (ShowResults)
-        {
-            <div style="background-color: mintcream;">
-
-                @if (_testDTO.QuestionsDTO!.Count > 1)
-                {
-                    <h4>
-                        You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
-                    </h4>
-                }
-                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
+                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
                     <h3 class="mb-0">
-                        Next
+                        @_buttonText
                     </h3>
                 </button>
-            </div>
-        }
-    </div>
+            }
+            @if (ShowResults)
+            {
+                <div style="background-color: mintcream;">
+
+                    @if (_testDTO.QuestionsDTO!.Count > 1)
+                    {
+                        <h4>
+                            You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
+                        </h4>
+                    }
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
+                        <h3 class="mb-0">
+                            Next
+                        </h3>
+                    </button>
+                </div>
+            }
+        </div>
+    }
 </div>
+
 
 @code {
     private int _totalSelectedAnswers = 0;
@@ -156,20 +154,3 @@
         }
     }
 }
-
-<style>
-    .fixed-bottom-container {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        padding: 10px; /* Ajuste conforme necessário para o espaçamento */
-        background-color: #fff; /* Opcional: Adiciona um fundo branco para o botão */
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Opcional: Adiciona uma sombra para destaque */
-    }
-
-    .btn {
-        border-radius: 0; /* Opcional: Remove a borda arredondada para um estilo mais reto */
-    }
-
-</style>

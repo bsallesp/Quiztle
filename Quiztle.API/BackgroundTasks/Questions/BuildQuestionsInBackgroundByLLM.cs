@@ -13,7 +13,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 {
     public class BuildQuestionsInBackgroundByLLM
     {
-        private readonly ILLMRequest _llmRequest;
+        private readonly ILLMChatGPTRequest _llmRequest;
         private readonly AILogRepository _aILogRepository;
         private readonly TestRepository _testRepository;
         private readonly DraftRepository _draftRepository;
@@ -26,7 +26,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
         private static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         public BuildQuestionsInBackgroundByLLM(
-            ILLMRequest llmRequest,
+            ILLMChatGPTRequest llmRequest,
             AILogRepository aILogRepository,
             TestRepository testRepository,
             DraftRepository draftRepository
@@ -85,7 +85,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
                     Name = "BuildQuestionsInBackgroundByLLM - " + "llmInput"
                 });
 
-                var llmRequestResult = await _llmRequest.ExecuteAsync(llmInput, cancellationToken);
+                var llmRequestResult = await _llmRequest.ExecuteAsync(llmInput);
                 await _aILogRepository.CreateAILogAsync(new CoreBusiness.Log.AILog
                 {
                     JSON = llmRequestResult,

@@ -24,8 +24,6 @@ namespace Quiztle.API.BackgroundTasks
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // Ajuste os intervalos dos timers conforme necessário
-
             if (_hostEnvironment.IsDevelopment())
             {
                 _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
@@ -43,13 +41,16 @@ namespace Quiztle.API.BackgroundTasks
                 {
                     Console.WriteLine("Launching CurationWork... ");
                     var questionRepository = scope.ServiceProvider.GetRequiredService<QuestionRepository>();
-                    var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMRequest>();
-                    var removeBadQuestions = scope.ServiceProvider.GetService<RemoveBadQuestions>();
+                    var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMChatGPTRequest>();
+                    var answerValidateQuestions = scope.ServiceProvider.GetRequiredService<AnswerValidateQuestions>();
 
+                    // Agora, crie a instância de curationBackground antes de usá-la.
                     var curationBackground = new CurationBackground(
-                        llmRequest, CancellationToken.None, removeBadQuestions!);
+                        llmRequest, CancellationToken.None, answerValidateQuestions);
 
+                    // Agora, você pode criar a instância de GetQuestionRate e passar curationBackground.
                     var getQuestionRate = new GetQuestionRate(questionRepository, curationBackground);
+
                     await getQuestionRate.ExecuteAsync();
                 }
                 catch (Exception ex)
@@ -66,7 +67,7 @@ namespace Quiztle.API.BackgroundTasks
             {
                 try
                 {
-                    var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMRequest>();
+                    var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMChatGPTRequest>();
                     var aILogRepository = scope.ServiceProvider.GetRequiredService<AILogRepository>();
                     var testRepository = scope.ServiceProvider.GetRequiredService<TestRepository>();
                     var draftRepository = scope.ServiceProvider.GetRequiredService<DraftRepository>();
@@ -81,14 +82,6 @@ namespace Quiztle.API.BackgroundTasks
                     );
 
                     await buildQuestions.ExecuteAsync();
-
-                    //// Após a criação das perguntas, remova duplicatas
-                    //var removeDuplicates = new RemoveDuplicates(questionRepository);
-                    //await removeDuplicates.ExecuteAsync();
-
-                    //// Remover perguntas com rate < 3
-                    //var removeBadQuestions = new RemoveBadQuestions(questionRepository);
-                    //await removeBadQuestions.ExecuteAsync();
                 }
                 catch (Exception ex)
                 {
@@ -97,7 +90,6 @@ namespace Quiztle.API.BackgroundTasks
                 }
             }
         }
-
 
         public Task StopAsync(CancellationToken cancellationToken)
         {

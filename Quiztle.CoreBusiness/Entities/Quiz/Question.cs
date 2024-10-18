@@ -51,6 +51,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
+        [JsonPropertyName("Rate")]
+        public int ConfidenceLevel { get; set; } = 0;
 
         [JsonPropertyName("TestQuestions")]
         public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();

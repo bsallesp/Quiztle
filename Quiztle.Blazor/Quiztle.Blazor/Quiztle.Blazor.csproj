@@ -30,4 +30,8 @@
 	  <Folder Include="wwwroot\svg\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="..\Quiztle.Blazor.Client\Pages\FirstDeploy\Games\MudContainer.razor" Link="MudContainer.razor" />
+	</ItemGroup>
+
 </Project>

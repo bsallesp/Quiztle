@@ -31,11 +31,13 @@ builder.Services.AddHttpClient<OllamaRequest>(client =>
 
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 
-builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequest>();
+builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequestController>();
 builder.Services.AddTransient<IEndpointProvider, NgrokEndpointProvider>();
 builder.Services.AddTransient<ILLMRequest, OllamaRequest>();
+builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequestController>();
 
 builder.Services.AddTransient<RemoveBadQuestions>();
+builder.Services.AddTransient<AnswerValidateQuestions>();
 
 builder.Services.AddTransient(typeof(LogService<>));
 

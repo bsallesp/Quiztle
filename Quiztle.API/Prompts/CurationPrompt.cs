@@ -1,10 +1,11 @@
 ﻿using Quiztle.CoreBusiness.Entities.Quiz;
+using System.Text;
 
 namespace Quiztle.API.Prompts
 {
     public static class CurationPrompt
     {
-        public static string GeneratePrompt(Question question)
+        public static string GenerateScorePrompt(Question question)
         {
             var result = $@"
                 I will provide you with a question and answers intended to help study for the AZ-900 Microsoft Azure Fundamentals exam.
@@ -47,6 +48,45 @@ namespace Quiztle.API.Prompts
             
             return result;
         }
+
+        public static string GenerateAnswerValidationPrompt(IEnumerable<Question> questions)
+        {
+            var result = new StringBuilder();
+            result.AppendLine("I will provide you with a list of questions and their corresponding answers, with one or more correct answers.");
+            result.AppendLine("Your task is to confirm which answers are correct.");
+            result.AppendLine();
+            result.AppendLine("Here are the quizzes for your evaluation:");
+
+            // Build the question string
+            foreach (var question in questions)
+            {
+                result.AppendLine($"{question.Id}: {question.Name}");
+                foreach (var option in question.Options)
+                {
+                    result.AppendLine($"- {option.Name} (Correct: {option.IsCorrect})");
+                }
+                result.AppendLine(); // Add a newline for separation
+            }
+
+            result.AppendLine("If any answer marked as correct is actually incorrect, or if any answer marked as incorrect is actually correct, please indicate so.");
+            result.AppendLine("If you agree with all the answers as demonstrated, return \"t\" (true). If any of the answers are wrong, return \"f\" (false).");
+            result.AppendLine();
+            result.AppendLine("Please confirm the correctness of the answers using the following format:");
+
+            // Construct the JSON format using UUIDs as keys
+            var jsonFormat = new StringBuilder();
+            jsonFormat.AppendLine("{");
+            foreach (var question in questions)
+            {
+                jsonFormat.AppendLine($"  \"{question.Id}\": t,  // answer is correct"); // Default to correct; adjust as necessary
+            }
+            jsonFormat.AppendLine("}");
+
+            result.AppendLine(jsonFormat.ToString());
+
+            return result.ToString();
+        }
+
 
         private static string QuestionString(Question question)
         {

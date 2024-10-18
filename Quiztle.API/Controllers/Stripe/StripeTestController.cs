@@ -1,41 +1,85 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Stripe;
+﻿//using Microsoft.AspNetCore.Mvc;
+//using Stripe;
 
-namespace Quiztle.API.Controllers.Stripe
-{
-    [Route("api/webhooks/stripe")]
-    public class StripeTestController : Controller
-    {
-        public StripeTestController()
-        {
-            StripeConfiguration.ApiKey = "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"; // Replace with your key
-        }
+//namespace Quiztle.API.Controllers.Stripe
+//{
+//    [Route("api/webhooks/stripe")]
+//    public class StripeTestController : Controller
+//    {
+//        private readonly IConfiguration _configuration;
 
-        [HttpGet("create")]
-        public IActionResult CreateResource(string customerId)
-        {
-            var options = new CustomerCreateOptions
-            {
-                Email = customerId
-            };
+//        public StripeTestController(IConfiguration configuration)
+//        {
+//            _configuration = configuration;
+//            StripeConfiguration.ApiKey = _configuration["Stripe:ApiKey"];
+//        }
 
-            var service = new CustomerService();
-            Customer customer = service.Create(options);
+//        [HttpGet("create")]
+//        public IActionResult CreateResource(string customerId)
+//        {
+//            var options = new CustomerCreateOptions
+//            {
+//                Email = customerId
+//            };
 
-            Console.WriteLine(customer.Email);
+//            var service = new global::Stripe.CustomerService();
+//            Customer customer = service.Create(options);
 
-            return Ok(customer);
-        }
+//            Console.WriteLine(customer.Email);
 
-        [HttpGet("check/{customerId}")]
-        public IActionResult CheckResource(string customerId)
-        {
-            var service = new CustomerService();
-            Customer customer = service.Get(customerId);
+//            return Ok(customer);
+//        }
 
-            Console.WriteLine(customer.Email);
+//        [HttpGet("check/{customerId}")]
+//        public IActionResult CheckResource(string customerId)
+//        {
+//            var service = new global::Stripe.CustomerService();
+//            Customer customer = service.Get(customerId);
 
-            return Ok(customer);
-        }
-    }
-}
+//            Console.WriteLine(customer.Email);
+
+//            return Ok(customer);
+//        }
+
+//        [HttpGet("list")]
+//        public IActionResult ListResources()
+//        {
+//            var service = new global::Stripe.CustomerService();
+//            var customers = service.List();
+
+//            string lastId = "";
+
+//            // Enumerate the first page of the list
+//            foreach (Customer customer in customers)
+//            {
+//                lastId = customer.Id;
+//                Console.WriteLine(customer.Email);
+//            }
+
+//            customers = service.List(new CustomerListOptions()
+//            {
+//                StartingAfter = lastId,
+//            });
+
+//            // Enumerate the subsequent page
+//            foreach (Customer customer in customers)
+//            {
+//                lastId = customer.Id;
+//                Console.WriteLine(customer.Email);
+//            }
+
+//            return Ok(customers);
+//        }
+
+//        [HttpGet("delete")]
+//        public IActionResult DeleteResources(string customerId)
+//        {
+//            var service = new global::Stripe.CustomerService();
+//            var customer = service.Delete(customerId);
+
+//            Console.WriteLine(customer.Email);
+
+//            return Ok(customer);
+//        }
+//    }
+//}

@@ -19,48 +19,44 @@ namespace Quiztle.API.BackgroundTasks.Curation
 
         public async Task ExecuteAsync()
         {
-            // Check the semaphore state before proceeding
             if (!await _curationBackground.CanExecuteAsync())
             {
                 Console.WriteLine("Semaphore is red. Exiting execution.");
                 return;
             }
 
-            var question = await _questionRepository.GetARandomQuestionToRate();
-            if (question == null)
+            var questions = await _questionRepository.GetRandomQuestionsToRateAsync(false, 5);
+            if (questions == null)
             {
                 Console.WriteLine("No questions found to rate.");
                 return;
             }
 
-            Console.WriteLine(question.ToFormattedString());
+            var stringOfQuestions = "";
 
-            var resultJson = await _curationBackground.ExecuteAsync(question);
+            foreach (var question in questions)
+            {
+                stringOfQuestions += question.ToFormattedString();
 
-            // Log the raw JSON result
+                Console.WriteLine(question.ToFormattedString());
+            }
+            
+            var resultJson = await _curationBackground.ExecuteAsync(questions);
             Console.WriteLine("Raw JSON result: " + resultJson);
 
             try
             {
-                // Ensure correct JSON format and deserialization
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     PropertyNameCaseInsensitive = true
                 };
 
-                var result = JsonSerializer.Deserialize<QuizEvaluationResult>(resultJson, options);
+                var result = JsonSerializer.Deserialize<AnswerValidation>(resultJson, options);
 
                 if (result != null)
                 {
-                    // Update the question's rating based on the evaluation
-                    question.Verified = true;
-                    question.Consistency = result.Consistency != 0;
-                    question.Rate = result.Score;
-
-                    await _questionRepository.UpdateQuestionAsync(question);
-                    Console.WriteLine($"Question rated with score: {result.Score}");
-                    Console.WriteLine($"Question consistencty is: {result.Consistency}");
+                    Console.WriteLine(result);
                 }
                 else
                 {
@@ -79,4 +75,10 @@ namespace Quiztle.API.BackgroundTasks.Curation
         public int Score { get; set; }
         public int Consistency { get; set; }
     }
+
+    public class AnswerValidation
+    {
+        public Dictionary<int, bool>? Answers { get; set; }
+    }
+
 }

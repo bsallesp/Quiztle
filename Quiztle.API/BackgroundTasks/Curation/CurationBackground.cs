@@ -8,33 +8,37 @@ namespace Quiztle.API.BackgroundTasks.Curation
     public class CurationBackground
     {
         private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private readonly ILLMRequest _llmRequest;
+        private readonly ILLMChatGPTRequest _llmRequest;
         private readonly CancellationToken _cancellationToken;
-        private readonly RemoveBadQuestions _removeBadQuestions;
+        private readonly AnswerValidateQuestions _answerValidateQuestions;
 
-        public CurationBackground(ILLMRequest llmRequest, CancellationToken cancellationToken, RemoveBadQuestions removeBadQuestions)
+        public CurationBackground(ILLMChatGPTRequest llmRequest,
+            CancellationToken cancellationToken,
+            AnswerValidateQuestions answerValidateQuestions)
         {
             _llmRequest = llmRequest;
             _cancellationToken = cancellationToken;
-            _removeBadQuestions = removeBadQuestions;
+            _answerValidateQuestions = answerValidateQuestions;
         }
 
-        public async Task<string> ExecuteAsync(Question question)
+        public async Task<string> ExecuteAsync(IEnumerable<Question> questions)
         {
             await _semaphore.WaitAsync(_cancellationToken);
             try
             {
-                string prompt = Prompts.CurationPrompt.GeneratePrompt(question);
+                string prompt = Prompts.CurationPrompt.GenerateAnswerValidationPrompt(questions);
 
-                // Check if the operation has been canceled
                 if (_cancellationToken.IsCancellationRequested)
                 {
                     Console.WriteLine("Operation canceled.");
                     return string.Empty;
                 }
 
-                string response = await _llmRequest.ExecuteAsync(prompt, _cancellationToken);
-                await _removeBadQuestions.ExecuteAsync();
+                string response = await _llmRequest.ExecuteAsync(prompt);
+
+                await _answerValidateQuestions.ExecuteAsync();
+                
+                //await _removeBadQuestions.ExecuteAsync();
 
                 return response;
             }

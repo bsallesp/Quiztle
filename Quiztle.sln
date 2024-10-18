@@ -57,8 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quiztle.API.LocalLLM", "Qui
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS", "AWS", "{9B6A241F-95A1-49E9-8A8A-88FC5001BA14}"
 	ProjectSection(SolutionItems) = preProject
-		AWS.txt = AWS.txt
 		1 - AWS Certified Cloud PractitionerCLF-C02.md = 1 - AWS Certified Cloud PractitionerCLF-C02.md
+		AWS.txt = AWS.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comptia", "Comptia", "{D2F058ED-DC1F-4536-9342-1AA7579E38F8}"

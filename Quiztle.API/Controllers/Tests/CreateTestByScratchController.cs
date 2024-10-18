@@ -42,18 +42,19 @@ namespace Quiztle.API.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = testName,
-                    Questions = new List<Question>(totalQuestions),
+                    Questions = new List<Question>(),
                     Created = DateTime.UtcNow
                 };
 
                 int draftCount = drafts.Length;
-                int addedQuestions = 0;
-
                 var addedQuestionIds = new HashSet<Guid>();
+                int addedQuestions = 0;
+                int draftIndex = 0;
 
-                for (int i = 0; i < totalQuestions && addedQuestions < totalQuestions; i++)
+                // Continua até atingir o número total de perguntas desejado
+                while (addedQuestions < totalQuestions)
                 {
-                    var draft = drafts[i % draftCount];
+                    var draft = drafts[draftIndex % draftCount];  // Circula pelos drafts
                     var question = draft.GetRandomQuestions(1).FirstOrDefault();
 
                     if (question != null && (!verifyQuestion || question.Verified))
@@ -65,10 +66,13 @@ namespace Quiztle.API.Controllers
                             addedQuestions++;
                         }
                     }
-                }
 
-                if (addedQuestions < totalQuestions)
-                    return BadRequest($"Total questions collected: {addedQuestions}. {totalQuestions} are required.");
+                    draftIndex++;  // Move para o próximo draft
+
+                    // Verifica se circulamos por todos os drafts e não temos mais perguntas únicas para adicionar
+                    if (draftIndex >= draftCount * totalQuestions && addedQuestions < totalQuestions)
+                        return BadRequest($"Total questions collected: {addedQuestions}. {totalQuestions} are required.");
+                }
 
                 await _testRepository.CreateTestAsync(test);
 

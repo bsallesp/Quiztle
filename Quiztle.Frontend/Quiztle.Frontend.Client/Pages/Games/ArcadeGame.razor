@@ -19,6 +19,7 @@
         @("Quiztle: " + _title)
 
 
+
 </title>
 
 <div class="gap"></div>
@@ -34,63 +35,65 @@
 
 @if (_testDTO.QuestionsDTO.Count >= 1)
 {
-    <div class="main-div">
-        <div style="padding-bottom:80px;">
-            @if (_testDTO.QuestionsDTO != null)
-            {
-                <div class="text-center">
-                    <h1>
-                        @_testDTO.Name
-                    </h1>
-                    <h2>
-                        @(_testDTO.QuestionsDTO.Count + " questions")
-                    </h2>
-                </div>
-
-                @foreach (var questionDTO in _testDTO.QuestionsDTO)
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <div class="main-div">
+            <div style="padding-bottom:80px;">
+                @if (_testDTO.QuestionsDTO != null)
                 {
-                    var index = _testDTO.QuestionsDTO.IndexOf(questionDTO);
-                    <QuestionDTOArcadeComponent ShowResults="ShowResults"
-                                                questionDTO="questionDTO"
-                                                Number="@index"
-                                                Admin="@Admin"
-                                                IsFinished="questionDTO.IsFinished"
-                                                OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
-                    </QuestionDTOArcadeComponent>
-                }
-            }
-        </div>
-        <div class="fixed-bottom-container">
+                    <div class="text-center">
+                        <h1>
+                            @_testDTO.Name
+                        </h1>
+                        <h2>
+                            @(_testDTO.QuestionsDTO.Count + " questions")
+                        </h2>
+                    </div>
 
-            <ProgressBar TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
-                         AnsweredQuestions="@_testDTO.GetTotalFinishedQuestions()" />
-
-            @if (!ShowResults)
-            {
-                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
-                    <h3 class="mb-0">
-                        FINISH
-                    </h3>
-                </button>
-            }
-            @if (ShowResults)
-            {
-                <div style="background-color: mintcream;">
-                    @if (_testDTO.QuestionsDTO!.Count > 1)
+                    @foreach (var questionDTO in _testDTO.QuestionsDTO)
                     {
-                        <h4>
-                            You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
-                        </h4>
+                        var index = _testDTO.QuestionsDTO.IndexOf(questionDTO);
+                        <QuestionDTOArcadeComponent ShowResults="ShowResults"
+                                                    questionDTO="questionDTO"
+                                                    Number="@index"
+                                                    Admin="@Admin"
+                                                    IsFinished="questionDTO.IsFinished"
+                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
+                        </QuestionDTOArcadeComponent>
                     }
-                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
+                }
+            </div>
+            <div class="fixed-bottom-container">
+
+                <ProgressBar TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
+                             AnsweredQuestions="@_testDTO.GetTotalFinishedQuestions()" />
+
+                @if (!ShowResults)
+                {
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
                         <h3 class="mb-0">
-                            Next Game
+                            FINISH
                         </h3>
                     </button>
-                </div>
-            }
+                }
+                @if (ShowResults)
+                {
+                    <div style="background-color: mintcream;">
+                        @if (_testDTO.QuestionsDTO!.Count > 1)
+                        {
+                            <h4>
+                                You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
+                            </h4>
+                        }
+                        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
+                            <h3 class="mb-0">
+                                Next Game
+                            </h3>
+                        </button>
+                    </div>
+                }
+            </div>
         </div>
-    </div>
+    </MudContainer>
 }
 
 @if (_testDTO!.QuestionsDTO!.Count < 1)

@@ -30,7 +30,7 @@ namespace Quiztle.API.Prompts
         private static void AddHeader(StringBuilder promptBuilder)
         {
             promptBuilder.AppendLine("As a specialist in constructing exams for the Azure AZ-900 Fundamentals Certification, " +
-                                     "create distinct and clear questions based strictly on the provided text. Avoid synonyms, rephrasing, or ambiguity in answer choices.");
+                                     "create distinct and unambiguous questions based strictly on the provided text. Ensure there is only one correct answer per question, and the incorrect options are plausible but clearly distinguishable as incorrect.");
             promptBuilder.Append(QuestionTypeGenerator.GetRandomQuestionType());
         }
 
@@ -46,7 +46,7 @@ namespace Quiztle.API.Prompts
             promptBuilder.AppendLine("Provide questions and answers in the JSON structure below:");
             promptBuilder.AppendLine(GetJsonStructure(incorrectOptionsAmount));
             promptBuilder.AppendLine("Only use the information provided above. Do not add any content.");
-            promptBuilder.AppendLine("Ensure answers are similar in length and style, and that incorrect answers are plausible but clearly distinguishable from the correct answer.");
+            promptBuilder.AppendLine("Ensure answers are similar in length and style. Incorrect answers must be plausible but clearly wrong compared to the correct answer.");
         }
 
         private static void AddPreviousQuestions(StringBuilder promptBuilder, IEnumerable<string> questionsAlreadyMade)
@@ -68,27 +68,27 @@ namespace Quiztle.API.Prompts
             promptBuilder.AppendLine("Make sure the hint provides a useful clue for arriving at the correct answer, but avoid making it too obvious.");
             promptBuilder.AppendLine("Ensure the explanation is at least 50 words long, providing detailed reasoning to justify why the given answer is correct.");
             promptBuilder.AppendLine("When creating incorrect options, ensure they are plausible but have clear differences that highlight why they are incorrect compared to the correct answer.");
-            promptBuilder.AppendLine("In Rate field, rate it form 0 to 5 (where 0 the resolution is totally easy, 5 is completely hard)");
+            promptBuilder.AppendLine("In Rate field, rate it from 0 to 5 (where 0 is totally easy, and 5 is completely hard).");
         }
 
         private static string GetJsonStructure(int incorrectOptionsAmount)
         {
             return $@"{{
-                ""Questions"": [
-                    {{
-                        ""Name"": ""<Question Text>"",
-                        ""Options"": [
-                            {{ ""Name"": ""<Correct Option>"", ""IsCorrect"": true }},
-                            {{ ""Name"": ""<Distinct Incorrect Option 1>"", ""IsCorrect"": false }},
-                            {{ ""Name"": ""<Distinct Incorrect Option 2>"", ""IsCorrect"": false }},
-                            {{ ""Name"": ""<Distinct Incorrect Option 3>"", ""IsCorrect"": false }}
-                        ],
-                        ""Hint"": ""<Hint Text>"",
-                        ""Resolution"": ""<Resolution Text>"",
-                        ""Rate"": ""Rate integer""
-                    }}
-                ]
-            }}";
+            ""Questions"": [
+                {{
+                    ""Name"": ""<Question Text>"",
+                    ""Options"": [
+                        {{ ""Name"": ""<Correct Option>"", ""IsCorrect"": true }},
+                        {{ ""Name"": ""<Distinct Incorrect Option 1>"", ""IsCorrect"": false }},
+                        {{ ""Name"": ""<Distinct Incorrect Option 2>"", ""IsCorrect"": false }},
+                        {{ ""Name"": ""<Distinct Incorrect Option 3>"", ""IsCorrect"": false }}
+                    ],
+                    ""Hint"": ""<Hint Text>"",
+                    ""Resolution"": ""<Resolution Text>"",
+                    ""Rate"": ""Rate integer""
+                }}
+            ]
+        }}";
         }
     }
 }
