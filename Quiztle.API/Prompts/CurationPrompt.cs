@@ -49,15 +49,18 @@ namespace Quiztle.API.Prompts
             return result;
         }
 
+
         public static string GenerateAnswerValidationPrompt(IEnumerable<Question> questions)
         {
             var result = new StringBuilder();
-            result.AppendLine("I will provide you with a list of questions and their corresponding answers, with one or more correct answers.");
-            result.AppendLine("Your task is to confirm which answers are correct.");
+
+            // Introduction
+            result.AppendLine("I will provide you with a list of questions and their corresponding answers.");
+            result.AppendLine("Your task is to confirm the correctness of each answer.");
             result.AppendLine();
             result.AppendLine("Here are the quizzes for your evaluation:");
 
-            // Build the question string
+            // List questions and options
             foreach (var question in questions)
             {
                 result.AppendLine($"{question.Id}: {question.Name}");
@@ -68,24 +71,40 @@ namespace Quiztle.API.Prompts
                 result.AppendLine(); // Add a newline for separation
             }
 
-            result.AppendLine("If any answer marked as correct is actually incorrect, or if any answer marked as incorrect is actually correct, please indicate so.");
-            result.AppendLine("If you agree with all the answers as demonstrated, return \"t\" (true). If any of the answers are wrong, return \"f\" (false).");
-            result.AppendLine();
-            result.AppendLine("Please confirm the correctness of the answers using the following format:");
+            // Instructions for JSON format
+            result.AppendLine("For each question, confirm the correctness of the options in the following JSON format:");
 
-            // Construct the JSON format using UUIDs as keys
+            // JSON format template
             var jsonFormat = new StringBuilder();
             jsonFormat.AppendLine("{");
+
             foreach (var question in questions)
             {
-                jsonFormat.AppendLine($"  \"{question.Id}\": t,  // answer is correct"); // Default to correct; adjust as necessary
+                jsonFormat.AppendLine($"  \"{question.Id}\": {{");
+                jsonFormat.AppendLine("    \"OptionsDTO\": [");
+
+                foreach (var option in question.Options)
+                {
+                    jsonFormat.AppendLine($"      {{ \"Id\": \"{option.Id}\", \"IsCorrect\": true | false }} // {option.Name} (Indicate true or false)");
+                }
+
+                jsonFormat.AppendLine("    ]");
+                jsonFormat.AppendLine("  },");
             }
+
+            // Remove the last comma and space
+            if (questions.Any())
+            {
+                jsonFormat.Length -= 3; // Remove the last comma and space
+            }
+
             jsonFormat.AppendLine("}");
 
             result.AppendLine(jsonFormat.ToString());
 
             return result.ToString();
         }
+
 
 
         private static string QuestionString(Question question)

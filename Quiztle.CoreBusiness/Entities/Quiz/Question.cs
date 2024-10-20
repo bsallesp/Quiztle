@@ -1,5 +1,4 @@
-﻿using Quiztle.CoreBusiness.Entities.Course;
-using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+﻿using Quiztle.CoreBusiness.Entities.Quiz.DTO;
 using Quiztle.CoreBusiness.Entities.Scratch;
 using System.Text.Json.Serialization;
 
@@ -37,14 +36,16 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Draft")]
         public Draft? Draft { get; set; }
 
-        [JsonPropertyName("TestId")]  // Adicione esta propriedade
-        public Guid? TestId { get; set; }  // Chave estrangeira para o Teste
+        [JsonPropertyName("TestId")]
+        public Guid? TestId { get; set; }
 
-        [JsonPropertyName("Test")]  // Adicione esta navegação
-        public Test? Test { get; set; }  // Navegação para a classe Test
+        [JsonPropertyName("Test")]
+        public Test? Test { get; set; }
 
         [JsonPropertyName("Verified")]
         public bool Verified { get; set; } = false;
+        [JsonPropertyName("VerifiedTimes")]
+        public int VerifiedTimes { get; set; } = 0;
 
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
@@ -52,7 +53,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public int ConfidenceLevel { get; set; } = 0;
 
         [JsonPropertyName("TestQuestions")]
-        public ICollection<TestQuestion> TestQuestions { get; set; } = new List<TestQuestion>();
+        public ICollection<TestQuestion> TestQuestions { get; set; } = [];
 
         public Question GetQuestionSample() => QuestionFactory.CreateFilledQuestion();
 
@@ -64,7 +65,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         private static void Shuffle<T>(List<T> list)
         {
-            Random rng = new Random();
+            Random rng = new();
             int n = list.Count;
             while (n > 1)
             {

@@ -28,29 +28,18 @@ namespace Quiztle.DataContext.Repositories.Quiz
         }
 
 
-        public async Task<List<Question>> GetRandomQuestionsToRateAsync(bool isVerified, int questionsAmount)
-        {
-            return await GetRandomQuestionsToRateAsync(isVerified, questionsAmount, null);
-        }
-
-
-        public async Task<List<Question>> GetRandomQuestionsToRateAsync(bool isVerified, int questionsAmount, int[]? confidenceLevel)
+        public async Task<List<Question>> GetRandomQuestionsToRateAsync(
+            Guid draftId,
+            int maximumVerifiedTimes = 0,
+            int questionsAmount = 5)
         {
             EnsureQuestionsNotNull();
 
-            if (confidenceLevel != null && confidenceLevel.Length != 2)
-                throw new ArgumentException("The confidence level array must contain exactly two elements: minimum and maximum values.");
-
             var query = _context.Questions!
-                .Where(q => q.Verified == isVerified);
+                .Where(q => q.VerifiedTimes <= maximumVerifiedTimes);
 
-            if (confidenceLevel != null)
-            {
-                int minConfidence = confidenceLevel[0];
-                int maxConfidence = confidenceLevel[1];
-
-                query = query.Where(q => q.ConfidenceLevel >= minConfidence && q.ConfidenceLevel <= maxConfidence);
-            }
+            if (draftId != Guid.Empty)
+                query = query.Where(d => d.Draft!.Id == draftId);
 
             query = query.OrderBy(q => Guid.NewGuid())
                          .Include(o => o.Options)
@@ -59,6 +48,7 @@ namespace Quiztle.DataContext.Repositories.Quiz
 
             return await query.ToListAsync();
         }
+
 
 
         public async Task CreateQuestionAsync(Question question)

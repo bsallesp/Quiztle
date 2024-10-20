@@ -26,8 +26,8 @@ namespace Quiztle.API.BackgroundTasks
         {
             if (_hostEnvironment.IsDevelopment())
             {
-                _timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
-                //_timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+                //_timer = new Timer(DoCreateQuestionsWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+                _timer = new Timer(DoCurationWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
             }
 
             //01:55pm
@@ -45,11 +45,13 @@ namespace Quiztle.API.BackgroundTasks
                     var questionRepository = scope.ServiceProvider.GetRequiredService<QuestionRepository>();
                     var llmRequest = scope.ServiceProvider.GetRequiredService<ILLMChatGPTRequest>();
                     var answerValidateQuestions = scope.ServiceProvider.GetRequiredService<AnswerValidateQuestions>();
+                    var aiLogRepository = scope.ServiceProvider.GetRequiredService<AILogRepository>();
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<GetQuestionConfidency>>();
 
                     var curationBackground = new CurationBackground(
                         llmRequest, CancellationToken.None, answerValidateQuestions);
 
-                    var getQuestionRate = new GetQuestionConfidency(questionRepository, curationBackground);
+                    var getQuestionRate = new GetQuestionConfidency(questionRepository, curationBackground, aiLogRepository, logger);
 
                     await getQuestionRate.ExecuteAsync();
                 }
