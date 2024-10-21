@@ -8,6 +8,7 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
         public string? Title { get; set; } = "";
         public string? OriginalContent { get; set; } = "";
         public string? MadeByAiContent { get; set; } = "";
+        public string? Tag { get; set; } = "";
         public List<Question>? Questions { get; set; } = [];
         public int QuestionsAmountTarget { get; set; } = 10;
 

@@ -13,6 +13,7 @@
     {
         <h4 style="padding: 10px;">
             @(1 + Number) - @questionDTO.Question!.Name
+            @* <MudChip T="string" Color="Color.Primary">@Tag</MudChip> *@
         </h4>
 
         @foreach (var option in questionDTO.OptionsDTO)
@@ -37,7 +38,6 @@
                     @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
                 </h6>
             }
-
         }
     }
     <div class="d-flex justify-content-between">
@@ -103,6 +103,8 @@
     public bool IsFinished { get; set; } = false;
     [Parameter]
     public Action? OnGetAnswer { get; set; }
+    [Parameter]
+    public string Tag { get; set; } = "";
 
     private bool _showHint;
     private bool _showResolution;

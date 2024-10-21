@@ -56,6 +56,7 @@ namespace Quiztle.API.Prompts
                 ""Draft"": {{
                     ""Title"": ""<Create a nice title for the current draft>"",
                     ""MadeByAiContent"": ""<create a didactic and reliable summary here. Avoid the ""crucial"" word.>"",
+                    ""Tag"": ""<Create a tag, like a short Title. Try to make beetween from 3 to 5 words. As shorter as better.>"",
                 }}
             }}";
         }

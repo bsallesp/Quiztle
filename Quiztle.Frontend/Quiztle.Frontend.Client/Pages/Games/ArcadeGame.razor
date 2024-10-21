@@ -6,7 +6,7 @@
 @using Quiztle.CoreBusiness.Utils
 
 @inject GetQuestionsService GetQuestionsService
-@inject GetTestByIdService GetTestByIdService
+@inject GetDraftByIdService GetTestByIdService
 
 @rendermode InteractiveAuto
 @attribute [Authorize]
@@ -14,9 +14,6 @@
 <title>
     @if (_title != null)
         @("Quiztle: " + _title)
-
-
-
 
 </title>
 
@@ -54,7 +51,9 @@
                                                     questionDTO="questionDTO"
                                                     Number="@index"
                                                     IsFinished="questionDTO.IsFinished"
-                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
+                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))"
+                                                    Tag=""
+                        >
                         </QuestionDTOArcadeComponent>
                     }
                 }

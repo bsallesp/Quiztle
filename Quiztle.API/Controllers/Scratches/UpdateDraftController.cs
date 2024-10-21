@@ -52,6 +52,7 @@ namespace Quiztle.API.Controllers.Scratches
 
                 draft.MadeByAiContent = newDraft.Draft!.MadeByAiContent;
                 draft.Title = newDraft.Draft.Title;
+                draft.Tag = newDraft.Draft.Tag;
 
                 Console.WriteLine("Draft updated successfully.");
 
@@ -73,8 +74,11 @@ namespace Quiztle.API.Controllers.Scratches
             var scratch = await _scratchRepository.GetScratchByIdAsync(scratchGuid);
             if (scratch == null) return NotFound();
 
-            foreach (var draft in scratch.Drafts!) await UpdateDraftByDraftAsync(draft.Id);
-            
+            foreach (var draft in scratch.Drafts!)
+            {
+                await UpdateDraftByDraftAsync(draft.Id);
+            }
+
             return Ok();
         }
 
@@ -82,12 +86,12 @@ namespace Quiztle.API.Controllers.Scratches
         {
             public string? Title { get; set; }
             public string? MadeByAiContent { get; set; }
+            public string? Tag { get; set; }
         }
 
         public class DraftJson
         {
             public Draft? Draft { get; set; }
         }
-
     }
 }
