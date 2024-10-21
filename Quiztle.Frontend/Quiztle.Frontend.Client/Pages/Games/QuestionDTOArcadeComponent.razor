@@ -13,7 +13,7 @@
     {
         <h4 style="padding: 10px;">
             @(1 + Number) - @questionDTO.Question!.Name
-            @* <MudChip T="string" Color="Color.Primary">@Tag</MudChip> *@
+            <MudChip Size="Size.Small" T="string" Color="Color.Secondary">@questionDTO.Tag</MudChip>
         </h4>
 
         @foreach (var option in questionDTO.OptionsDTO)

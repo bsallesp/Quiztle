@@ -7,6 +7,8 @@
         public Question? Question { get; set; }
         public List<OptionDTO> OptionsDTO { get; private set; }
         private bool isFinished;
+        public string Tag { get; set; } = "";
+
         public bool IsFinished
         {
             get => isFinished;
@@ -23,6 +25,7 @@
         {
             Id = question.Id;
             Question = question;
+            Tag = question.Tag ?? "";
             OptionsDTO = question.Options?.Select(option => new OptionDTO
             {
                 Id = option.Id,

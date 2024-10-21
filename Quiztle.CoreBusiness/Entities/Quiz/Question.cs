@@ -46,7 +46,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public bool Verified { get; set; } = false;
         [JsonPropertyName("VerifiedTimes")]
         public int VerifiedTimes { get; set; } = 0;
-
+        [JsonPropertyName("Tag")]
+        public string? Tag { get; set; }
         [JsonPropertyName("Rate")]
         public int Rate { get; set; } = 0;
         [JsonPropertyName("ConfidenceLevel")]

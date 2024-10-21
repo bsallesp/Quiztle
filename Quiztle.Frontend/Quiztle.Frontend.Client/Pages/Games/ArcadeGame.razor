@@ -51,9 +51,7 @@
                                                     questionDTO="questionDTO"
                                                     Number="@index"
                                                     IsFinished="questionDTO.IsFinished"
-                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))"
-                                                    Tag=""
-                        >
+                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
                         </QuestionDTOArcadeComponent>
                     }
                 }
