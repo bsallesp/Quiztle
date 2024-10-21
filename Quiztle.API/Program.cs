@@ -39,6 +39,7 @@ builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequestController>();
 builder.Services.AddTransient<RemoveBadQuestions>();
 builder.Services.AddTransient<AnswerValidateQuestions>();
 
+
 builder.Services.AddTransient(typeof(LogService<>));
 
 //builder.Services.AddTransient<SaveAILogController>();

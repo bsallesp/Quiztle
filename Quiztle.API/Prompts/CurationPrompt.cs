@@ -105,7 +105,27 @@ namespace Quiztle.API.Prompts
             return result.ToString();
         }
 
+        public static string AIPlayQuestionsPrompt(string draft, Question question)
+        {
+            var result = new StringBuilder();
 
+            //result.AppendLine("Read the text below: ");
+
+            //result.AppendLine(draft);
+
+            result.AppendLine("Read the question and answer: Whats the correct option? I just need to now the guid that belongs the correct option:");
+
+            result.AppendLine(question.Name);
+            foreach(var option in question.Options)
+            {
+                result.AppendLine("Option guid: " + option.Id + " - " + option.Name);
+            }
+
+            result.AppendLine("Return ony the guid of the correct option. Dont return anything else.");
+            result.AppendLine("Totally ignore incorrect Options");
+
+            return result.ToString();
+        }
 
         private static string QuestionString(Question question)
         {

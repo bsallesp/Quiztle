@@ -107,5 +107,26 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return questionString;
         }
+
+        public void AddAIAnswer(bool isCorrect)
+        {
+            VerifiedTimes++;
+
+            if (isCorrect)
+            {
+                ConfidenceLevel++;
+            }
+            else
+            {
+                ConfidenceLevel--;
+            }
+        }
+
+        public (int verifiedTimes, int confidenceLevel, double accuracy) GetResults()
+        {
+            double accuracy = VerifiedTimes > 0 ? (double)ConfidenceLevel / VerifiedTimes : 0.0;
+
+            return (VerifiedTimes, ConfidenceLevel, accuracy);
+        }
     }
 }

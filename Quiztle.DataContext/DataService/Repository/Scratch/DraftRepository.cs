@@ -34,7 +34,8 @@ namespace Quiztle.DataContext.DataService.Repository
             {
                 EnsureDraftNotNull();
                 return await _context.Drafts!
-                    .AsNoTracking()
+                    .Include(q => q.Questions!)
+                    .ThenInclude(o => o.Options)
                     .FirstOrDefaultAsync(d => d.Id == id);
             }
             catch (Exception ex)

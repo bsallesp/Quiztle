@@ -37,5 +37,74 @@ namespace Quiztle.CoreBusiness.Utils
 
             return jsonPart;
         }
+
+        public static bool TryFindGuidInJson(string json, out Guid foundGuid)
+        {
+            foundGuid = Guid.Empty; // Valor padrão
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(json);
+                return SearchForGuid(document.RootElement, out foundGuid);
+            }
+            catch (JsonException jsonEx)
+            {
+                Console.WriteLine($"JSON parsing error: {jsonEx.Message}");
+                return false; // Indica que a busca não foi bem-sucedida
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                return false; // Indica que a busca não foi bem-sucedida
+            }
+        }
+
+        private static bool SearchForGuid(JsonElement element, out Guid foundGuid)
+        {
+            // Inicializa o GUID encontrado
+            foundGuid = Guid.Empty;
+
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    foreach (var property in element.EnumerateObject())
+                    {
+                        // Verifica a chave da propriedade como uma string
+                        if (Guid.TryParse(property.Name, out foundGuid) ||
+                            SearchForGuid(property.Value, out foundGuid))
+                        {
+                            return true; // GUID encontrado
+                        }
+                    }
+                    break;
+
+                case JsonValueKind.Array:
+                    foreach (var item in element.EnumerateArray())
+                    {
+                        if (SearchForGuid(item, out foundGuid))
+                        {
+                            return true; // GUID encontrado
+                        }
+                    }
+                    break;
+
+                case JsonValueKind.String:
+                    if (Guid.TryParse(element.GetString(), out foundGuid))
+                    {
+                        return true; // GUID encontrado
+                    }
+                    break;
+
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                    break; // Não faz nada para esses tipos
+
+                default:
+                    break;
+            }
+
+            return false; // GUID não encontrado
+        }
     }
 }
