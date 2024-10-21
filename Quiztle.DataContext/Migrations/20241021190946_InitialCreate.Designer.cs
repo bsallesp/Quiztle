@@ -12,18 +12,43 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    [Migration("20240914221220_someVars3")]
-    partial class someVars3
+    [Migration("20241021190946_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BookTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookTasks");
+                });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Course.Book", b =>
                 {
@@ -86,7 +111,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.Property<string>("Text")
                         .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "Text");
+                        .HasAnnotation("Relational:JsonPropertyName", "OriginalContent");
 
                     b.HasKey("Id");
 
@@ -289,11 +314,15 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("uuid")
                         .HasAnnotation("Relational:JsonPropertyName", "Id");
 
+                    b.Property<int>("ConfidenceLevel")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "ConfidenceLevel");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
-                    b.Property<Guid>("DraftId")
+                    b.Property<Guid?>("DraftId")
                         .HasColumnType("uuid")
                         .HasAnnotation("Relational:JsonPropertyName", "DraftId");
 
@@ -306,6 +335,10 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Name");
 
+                    b.Property<int>("Rate")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "Rate");
+
                     b.Property<string>("Resolution")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "Resolution");
@@ -314,7 +347,16 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("TestId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasAnnotation("Relational:JsonPropertyName", "TestId");
+
+                    b.Property<bool>("Verified")
+                        .HasColumnType("boolean")
+                        .HasAnnotation("Relational:JsonPropertyName", "Verified");
+
+                    b.Property<int>("VerifiedTimes")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "VerifiedTimes");
 
                     b.HasKey("Id");
 
@@ -326,7 +368,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.ToTable("Questions");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "QuestionsDTO");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Questions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>
@@ -409,6 +451,10 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "Created");
 
+                    b.Property<bool>("IsAvaiable")
+                        .HasColumnType("boolean")
+                        .HasAnnotation("Relational:JsonPropertyName", "IsAvaiable");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
@@ -424,7 +470,24 @@ namespace Quiztle.DataContext.Migrations
 
                     b.ToTable("Tests");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "Tests");
+                    b.HasAnnotation("Relational:JsonPropertyName", "Test");
+                });
+
+            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.TestQuestion", b =>
+                {
+                    b.Property<Guid>("TestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TestId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("TestsQuestions");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>
@@ -433,13 +496,21 @@ namespace Quiztle.DataContext.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("QuestionsDesiredAmount")
+                    b.Property<string>("MadeByAiContent")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginalContent")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuestionsAmountTarget")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("ScratchId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Text")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -469,31 +540,6 @@ namespace Quiztle.DataContext.Migrations
                     b.ToTable("Scratches");
                 });
 
-            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Tasks.BookTask", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("BookTasks");
-                });
-
             modelBuilder.Entity("Quiztle.CoreBusiness.Log.AILog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -518,11 +564,9 @@ namespace Quiztle.DataContext.Migrations
 
             modelBuilder.Entity("Quiztle.CoreBusiness.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -536,12 +580,30 @@ namespace Quiztle.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("integer");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BookTask", b =>
+                {
+                    b.HasOne("Quiztle.CoreBusiness.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Course.Chapter", b =>
@@ -614,18 +676,20 @@ namespace Quiztle.DataContext.Migrations
                     b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Draft", "Draft")
                         .WithMany("Questions")
                         .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Quiztle.CoreBusiness.Entities.Course.Section", null)
                         .WithMany("Questions")
                         .HasForeignKey("SectionId");
 
-                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", null)
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", "Test")
                         .WithMany("Questions")
-                        .HasForeignKey("TestId");
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Draft");
+
+                    b.Navigation("Test");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>
@@ -653,21 +717,31 @@ namespace Quiztle.DataContext.Migrations
                         .HasForeignKey("PDFDataId");
                 });
 
+            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.TestQuestion", b =>
+                {
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Question", "Question")
+                        .WithMany("TestQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Quiztle.CoreBusiness.Entities.Quiz.Test", "Test")
+                        .WithMany("TestQuestions")
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Test");
+                });
+
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>
                 {
                     b.HasOne("Quiztle.CoreBusiness.Entities.Scratch.Scratch", null)
                         .WithMany("Drafts")
                         .HasForeignKey("ScratchId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Tasks.BookTask", b =>
-                {
-                    b.HasOne("Quiztle.CoreBusiness.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Course.Book", b =>
@@ -700,6 +774,8 @@ namespace Quiztle.DataContext.Migrations
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Question", b =>
                 {
                     b.Navigation("Options");
+
+                    b.Navigation("TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Quiz.Response", b =>
@@ -712,6 +788,8 @@ namespace Quiztle.DataContext.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Responses");
+
+                    b.Navigation("TestQuestions");
                 });
 
             modelBuilder.Entity("Quiztle.CoreBusiness.Entities.Scratch.Draft", b =>

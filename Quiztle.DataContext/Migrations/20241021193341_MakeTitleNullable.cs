@@ -5,29 +5,29 @@
 namespace Quiztle.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class migration0017 : Migration
+    public partial class MakeTitleNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "PhoneNumber",
-                table: "User",
+                name: "Title",
+                table: "Drafts",
                 type: "text",
                 nullable: true,
-                oldClrType: typeof(int),
-                oldType: "integer");
+                oldClrType: typeof(string),
+                oldType: "text");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
-                name: "PhoneNumber",
-                table: "User",
-                type: "integer",
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
+                table: "Drafts",
+                type: "text",
                 nullable: false,
-                defaultValue: 0,
+                defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "text",
                 oldNullable: true);

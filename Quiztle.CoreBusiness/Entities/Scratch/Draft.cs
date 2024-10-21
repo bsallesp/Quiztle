@@ -5,7 +5,9 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
     public class Draft
     {
         public Guid Id { get; set; }
-        public string Text { get; set; } = "";
+        public string? Title { get; set; } = "";
+        public string? OriginalContent { get; set; } = "";
+        public string? MadeByAiContent { get; set; } = "";
         public List<Question>? Questions { get; set; } = [];
         public int QuestionsAmountTarget { get; set; } = 10;
 
@@ -38,7 +40,7 @@ namespace Quiztle.CoreBusiness.Entities.Scratch
             return new Draft
             {
                 Id = Guid.NewGuid(),
-                Text = "Sample Draft",
+                OriginalContent = "Sample Draft",
                 Questions = new List<Question> { QuestionFactory.CreateFilledQuestion() },
                 QuestionsAmountTarget = 10
             };

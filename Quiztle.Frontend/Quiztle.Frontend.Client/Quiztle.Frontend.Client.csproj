@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\Games\ArcadeGameAdmin.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Pages\Games\ArcadeGame.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

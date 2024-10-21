@@ -11,7 +11,7 @@
 
     @foreach (var draft in scratch.Drafts!)
     {
-        <input placeholder="Content" @bind="draft.Text" />
+        <input placeholder="Content" @bind="draft.OriginalContent" />
     }
 
     <button @onclick="AddContent">Add Content</button>
@@ -28,7 +28,7 @@
     {
         scratch.Drafts!.Add(new Draft
             {
-                Text = ""
+                OriginalContent = ""
             });
     }
 

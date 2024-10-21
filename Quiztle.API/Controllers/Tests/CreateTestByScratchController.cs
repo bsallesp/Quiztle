@@ -21,11 +21,12 @@ namespace Quiztle.API.Controllers
         }
 
         [HttpPost("{scratchId}/total")]
-        public async Task<IActionResult> ExecuteAsync(Guid scratchId,
+        public async Task<IActionResult> ExecuteAsync(
+            Guid scratchId,
             string testName = "test1",
             int totalQuestions = 40,
-            bool onlyVerified = true,
-            int minimimConfidenceRate = 0)
+            int minimumConfidenceRate = 3,
+            int minimumVerifiedTimes = 3)
         {
             if (string.IsNullOrWhiteSpace(testName))
                 return BadRequest("Test name is required.");
@@ -61,8 +62,9 @@ namespace Quiztle.API.Controllers
                     var question = draft.GetRandomQuestions(1).FirstOrDefault();
 
                     if (question != null &&
-                        (!onlyVerified || question.Verified) &&
-                        question.ConfidenceLevel >= minimimConfidenceRate)
+                        question.VerifiedTimes >= minimumVerifiedTimes &&
+                        question.ConfidenceLevel >= minimumConfidenceRate
+                        )
                     {
                         if (!addedQuestionIds.Contains(question.Id))
                         {

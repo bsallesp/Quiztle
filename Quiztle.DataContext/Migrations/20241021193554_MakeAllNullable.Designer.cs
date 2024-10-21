@@ -12,8 +12,8 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    [Migration("20241018173321_migration0025")]
-    partial class migration0025
+    [Migration("20241021193554_MakeAllNullable")]
+    partial class MakeAllNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,7 +111,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.Property<string>("Text")
                         .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "Text");
+                        .HasAnnotation("Relational:JsonPropertyName", "OriginalContent");
 
                     b.HasKey("Id");
 
@@ -316,7 +316,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.Property<int>("ConfidenceLevel")
                         .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "Rate");
+                        .HasAnnotation("Relational:JsonPropertyName", "ConfidenceLevel");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone")
@@ -353,6 +353,10 @@ namespace Quiztle.DataContext.Migrations
                     b.Property<bool>("Verified")
                         .HasColumnType("boolean")
                         .HasAnnotation("Relational:JsonPropertyName", "Verified");
+
+                    b.Property<int>("VerifiedTimes")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "VerifiedTimes");
 
                     b.HasKey("Id");
 
@@ -492,14 +496,19 @@ namespace Quiztle.DataContext.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("MadeByAiContent")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginalContent")
+                        .HasColumnType("text");
+
                     b.Property<int>("QuestionsAmountTarget")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("ScratchId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
+                    b.Property<string>("Title")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

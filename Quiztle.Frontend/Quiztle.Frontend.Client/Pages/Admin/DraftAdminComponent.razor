@@ -3,7 +3,7 @@
     <MudStack Spacing="2">
         <MudButton OnClick="OnExpandCollapseClick" style="background-color: #66b3ff;">
 
-            @((draft!.Text != null && draft.Text.Length > 300) ? draft.Text.Substring(0, 300) : draft.Text)
+            @((draft!.OriginalContent != null && draft.OriginalContent.Length > 300) ? draft.OriginalContent.Substring(0, 300) : draft.OriginalContent)
 
         </MudButton>
 

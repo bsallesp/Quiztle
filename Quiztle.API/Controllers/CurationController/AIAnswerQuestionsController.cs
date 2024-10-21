@@ -55,7 +55,7 @@ namespace Quiztle.API.Controllers.CurationController
             {
                 foreach (var question in myDraft.Questions.Where(q => q.VerifiedTimes < verifiedTimesLevel))
                 {
-                    var prompt = CurationPrompt.AIPlayQuestionsPrompt(myDraft.Text, question);
+                    var prompt = CurationPrompt.AIPlayQuestionsPrompt(myDraft.OriginalContent, question);
 
                     var lLMJSONResult = await _llm.ExecuteAsync(prompt);
 

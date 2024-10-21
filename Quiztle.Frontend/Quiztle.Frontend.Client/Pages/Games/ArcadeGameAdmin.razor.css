@@ -1,0 +1,42 @@
+﻿.main-div {
+    padding: 10px;
+}
+
+
+.gap {
+    width: 100%; /* Largura padrão para dispositivos móveis */
+    margin: 0 auto; /* Centraliza o elemento */
+}
+
+@media (min-width: 576px) { /* Para telas pequenas e maiores */
+    .gap {
+        height: 20px;
+    }
+}
+
+@media (min-width: 768px) { /* Para telas médias e maiores */
+    .gap {
+        height: 30px;
+    }
+}
+
+@media (min-width: 992px) { /* Para telas grandes e maiores */
+    .gap {
+        height: 40px;
+    }
+}
+
+
+.fixed-bottom-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px; /* Ajuste conforme necessário para o espaçamento */
+    background-color: #fff; /* Opcional: Adiciona um fundo branco para o botão */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Opcional: Adiciona uma sombra para destaque */
+}
+
+.btn {
+    border-radius: 0; /* Opcional: Remove a borda arredondada para um estilo mais reto */
+}

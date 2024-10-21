@@ -99,7 +99,7 @@ namespace Quiztle.DataContext.DataService.Repository
                             {
                                 // Copia as propriedades do Draft
                                 Id = draft.Id,
-                                Text = draft.Text,
+                                OriginalContent = draft.OriginalContent,
                                 Questions = draft.Questions!
                                     .Where(q => q.Options.Any() &&
                                                 !string.IsNullOrEmpty(q.Hint) &&
@@ -183,7 +183,7 @@ namespace Quiztle.DataContext.DataService.Repository
                         (s.Name != null && keywordLowered.Any(k => s.Name.Contains(k, StringComparison.CurrentCultureIgnoreCase))) ||
                         s.Drafts!.Any(d =>
                             // Verifica se o texto do Draft contém alguma palavra-chave
-                            keywordLowered.Any(k => d.Text.Contains(k, StringComparison.CurrentCultureIgnoreCase)) ||
+                            keywordLowered.Any(k => d.OriginalContent.Contains(k, StringComparison.CurrentCultureIgnoreCase)) ||
                             d.Questions!.Any(q =>
                                 // Verifica se o nome da Question contém alguma palavra-chave
                                 keywordLowered.Any(k => q.Name.Contains(k, StringComparison.CurrentCultureIgnoreCase)) ||

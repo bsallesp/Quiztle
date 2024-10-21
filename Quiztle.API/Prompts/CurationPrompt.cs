@@ -31,7 +31,7 @@ namespace Quiztle.API.Prompts
                 - A Consistency of 1 indicates that the question is consistent and suitable for a professional exam.
 
                 Here is the content from which the question was derived:
-                {question.Draft!.Text}
+                {question.Draft!.OriginalContent}
 
                 Here is the quiz for evaluation:
                 {QuestionString(question)}

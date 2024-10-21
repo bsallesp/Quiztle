@@ -9,7 +9,7 @@ namespace Quiztle.CoreBusiness.Entities.Course
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonPropertyName("Text")]
+        [JsonPropertyName("OriginalContent")]
         public string? Text { get; set; } = "";
     }
 }

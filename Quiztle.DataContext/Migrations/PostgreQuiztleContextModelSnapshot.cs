@@ -108,7 +108,7 @@ namespace Quiztle.DataContext.Migrations
 
                     b.Property<string>("Text")
                         .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "Text");
+                        .HasAnnotation("Relational:JsonPropertyName", "OriginalContent");
 
                     b.HasKey("Id");
 
@@ -493,14 +493,19 @@ namespace Quiztle.DataContext.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("MadeByAiContent")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginalContent")
+                        .HasColumnType("text");
+
                     b.Property<int>("QuestionsAmountTarget")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("ScratchId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
+                    b.Property<string>("Title")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

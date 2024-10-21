@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Quiztle.DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,19 +67,57 @@ namespace Quiztle.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Prompts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<int>(type: "integer", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Prompts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Scratches",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Scratches", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sentence",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sentence", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,8 +165,9 @@ namespace Quiztle.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PDFDataId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsAvaiable = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,6 +176,27 @@ namespace Quiztle.DataContext.Migrations
                         name: "FK_Tests_PDFData_PDFDataId",
                         column: x => x.PDFDataId,
                         principalTable: "PDFData",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Drafts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    OriginalContent = table.Column<string>(type: "text", nullable: false),
+                    MadeByAiContent = table.Column<string>(type: "text", nullable: false),
+                    QuestionsAmountTarget = table.Column<int>(type: "integer", nullable: false),
+                    ScratchId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drafts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Drafts_Scratches_ScratchId",
+                        column: x => x.ScratchId,
+                        principalTable: "Scratches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -148,7 +207,7 @@ namespace Quiztle.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<int>(type: "integer", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     Status = table.Column<byte>(type: "smallint", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -156,10 +215,11 @@ namespace Quiztle.DataContext.Migrations
                 {
                     table.PrimaryKey("PK_BookTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookTasks_User_UserId",
+                        name: "FK_BookTasks_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,6 +272,39 @@ namespace Quiztle.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PromptItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PromptId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SentenceId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DraftId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Order = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PromptItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PromptItems_Drafts_DraftId",
+                        column: x => x.DraftId,
+                        principalTable: "Drafts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PromptItems_Prompts_PromptId",
+                        column: x => x.PromptId,
+                        principalTable: "Prompts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PromptItems_Sentence_SentenceId",
+                        column: x => x.SentenceId,
+                        principalTable: "Sentence",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Questions",
                 columns: table => new
                 {
@@ -220,12 +313,23 @@ namespace Quiztle.DataContext.Migrations
                     Hint = table.Column<string>(type: "text", nullable: true),
                     Resolution = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SectionId = table.Column<Guid>(type: "uuid", nullable: true),
-                    TestId = table.Column<Guid>(type: "uuid", nullable: true)
+                    DraftId = table.Column<Guid>(type: "uuid", nullable: true),
+                    TestId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Verified = table.Column<bool>(type: "boolean", nullable: false),
+                    VerifiedTimes = table.Column<int>(type: "integer", nullable: false),
+                    Rate = table.Column<int>(type: "integer", nullable: false),
+                    ConfidenceLevel = table.Column<int>(type: "integer", nullable: false),
+                    SectionId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Questions_Drafts_DraftId",
+                        column: x => x.DraftId,
+                        principalTable: "Drafts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Questions_Sections_SectionId",
                         column: x => x.SectionId,
@@ -235,7 +339,8 @@ namespace Quiztle.DataContext.Migrations
                         name: "FK_Questions_Tests_TestId",
                         column: x => x.TestId,
                         principalTable: "Tests",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,6 +384,30 @@ namespace Quiztle.DataContext.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TestsQuestions",
+                columns: table => new
+                {
+                    TestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestsQuestions", x => new { x.TestId, x.QuestionId });
+                    table.ForeignKey(
+                        name: "FK_TestsQuestions_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TestsQuestions_Tests_TestId",
+                        column: x => x.TestId,
+                        principalTable: "Tests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BookTasks_UserId",
                 table: "BookTasks",
@@ -290,6 +419,11 @@ namespace Quiztle.DataContext.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Drafts_ScratchId",
+                table: "Drafts",
+                column: "ScratchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Options_QuestionId",
                 table: "Options",
                 column: "QuestionId");
@@ -298,6 +432,27 @@ namespace Quiztle.DataContext.Migrations
                 name: "IX_PDFDataPages_PDFDataId",
                 table: "PDFDataPages",
                 column: "PDFDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromptItems_DraftId",
+                table: "PromptItems",
+                column: "DraftId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromptItems_PromptId_Order",
+                table: "PromptItems",
+                columns: new[] { "PromptId", "Order" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromptItems_SentenceId",
+                table: "PromptItems",
+                column: "SentenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_DraftId",
+                table: "Questions",
+                column: "DraftId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_SectionId",
@@ -333,6 +488,11 @@ namespace Quiztle.DataContext.Migrations
                 name: "IX_Tests_PDFDataId",
                 table: "Tests",
                 column: "PDFDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestsQuestions_QuestionId",
+                table: "TestsQuestions",
+                column: "QuestionId");
         }
 
         /// <inheritdoc />
@@ -351,22 +511,40 @@ namespace Quiztle.DataContext.Migrations
                 name: "PDFDataPages");
 
             migrationBuilder.DropTable(
+                name: "PromptItems");
+
+            migrationBuilder.DropTable(
                 name: "Shots");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "TestsQuestions");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Prompts");
+
+            migrationBuilder.DropTable(
+                name: "Sentence");
+
+            migrationBuilder.DropTable(
+                name: "Responses");
 
             migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Responses");
+                name: "Drafts");
 
             migrationBuilder.DropTable(
                 name: "Sections");
 
             migrationBuilder.DropTable(
                 name: "Tests");
+
+            migrationBuilder.DropTable(
+                name: "Scratches");
 
             migrationBuilder.DropTable(
                 name: "Chapters");

@@ -1,4 +1,7 @@
-﻿@page "/Games/Arcade/{TestId}"
+﻿@* @page "/Games/Arcade/{TestId}"
+@page "/Games/Arcade/{TestId}/{admin:bool?}"
+@page "/Games/Arcade/{TestId}/{amount}"
+@page "/Games/Arcade/{TestId}/{amount}/{admin:bool?}"
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Blazor.Client.APIServices.Tests
@@ -14,7 +17,6 @@
 <title>
     @if (_title != null)
         @("Quiztle: " + _title)
-
 
 
 
@@ -53,6 +55,7 @@
                         <QuestionDTOArcadeComponent ShowResults="ShowResults"
                                                     questionDTO="questionDTO"
                                                     Number="@index"
+                                                    Admin="@Admin"
                                                     IsFinished="questionDTO.IsFinished"
                                                     OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
                         </QuestionDTOArcadeComponent>
@@ -81,7 +84,7 @@
                                 You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
                             </h4>
                         }
-                        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => PlayAgain()">
+                        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => NextQuestion()">
                             <h3 class="mb-0">
                                 Next Game
                             </h3>
@@ -105,6 +108,10 @@
 
     [Parameter]
     public string TestId { get; set; } = "";
+    [Parameter]
+    public string amount { get; set; } = "";
+    [Parameter]
+    public bool Admin { get; set; } = false;
 
     private TestDTO _testDTO = new();
     private Guid _testGuid = new Guid();
@@ -129,17 +136,9 @@
         StateHasChanged();
     }
 
-    private void PlayAgain()
+    private void NextQuestion()
     {
-        try
-        {
-            Nav.NavigateTo($"/Games/Arcade/{_testGuid}");
-        }
-        catch
-        {
-            Nav.NavigateTo($"/Games/Arcade/");
-        }
-
+        Nav.NavigateTo($"/Games/Arcade/{_testGuid}/{_testDTO.QuestionsDTO!.Count}/{Admin}", true);
     }
 
     private void FinalizeTestResponse()
@@ -159,18 +158,43 @@
     {
         try
         {
-            _testGuid = Guid.Parse(TestId);
-            var testAPIReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (TestId == "00000")
+            {
+                var result = await GetQuestionsService.ExecuteAsync();
+                if (result == null) return;
 
-            if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
-                throw new Exception("TestGame: Error during retrieving TestApiResponse");
+                var test = new Test();
+                test.Name = "All Questions";
+                test.Questions = result.Data.ToList();
 
-            _testDTO.FromTest(testAPIReponse.Data);
-            _title = testAPIReponse.Data.Name;
+                _testDTO.FromTest(test);
+            }
+            else if (!Guid.TryParse(TestId, out Guid testIdGuid))
+            {
+                Nav.NavigateTo("/", true);
+            }
+            else
+            {
+                _testGuid = Guid.Parse(TestId);
+                var testAPIReponse = await GetTestByIdService.ExecuteAsync(testIdGuid);
+
+                if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
+                    throw new Exception("TestGame: Error during retrieving TestApiResponse");
+
+                _testDTO.FromTest(testAPIReponse.Data);
+                _title = testAPIReponse.Data.Name;
+
+                if (int.TryParse(this.amount, out int amount))
+                {
+                    _testDTO.SetQuestionsAmount(amount);
+                }
+            }
         }
         catch (Exception ex)
         {
+            // Handle exception or log it
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }
+ *@

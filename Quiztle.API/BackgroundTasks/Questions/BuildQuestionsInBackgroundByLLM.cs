@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quiztle.API.Controllers.LLM.Interfaces;
@@ -47,7 +48,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
             try
             {
-                if (debugCW) Console.WriteLine("Running BuildQuestionsInBackgroundByLLM/ExecuteAsync...");
+                if (debugCW) Console.WriteLine("Running BuildQuestionsInBackgroundByLLM/UpdateDraftByDraftAsync...");
 
                 var draft = await GetNextDraftAsync();
                 if (draft == null) throw new Exception("DRAFT IS NULL");
@@ -55,6 +56,8 @@ namespace Quiztle.API.BackgroundTasks.Questions
                 if (debugCW) Console.WriteLine("Total questions in draft: " + draft.Questions?.Count);
                 var llmInput = await PrepareLLMInputAsync(draft);
                 var llmRequestResult = await _llmRequest.ExecuteAsync(llmInput);
+
+                Console.WriteLine(llmRequestResult);
 
                 var questions = ParseQuestionsFromLLMResult(llmRequestResult);
                 if (questions == null) throw new Exception("QUESTIONS ARE NULL. FINISHING THE SCOPE.");
@@ -113,7 +116,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
             var stringQuestions = draft.Questions?.Where(q => !string.IsNullOrEmpty(q.Name))
                                                   .Select(q => q.Name)
                                                   .ToList();
-            var llmInput = Prompts.CreateQuestionsPrompt.GetNewQuestionFromPages(draft.Text, stringQuestions, 10);
+            var llmInput = Prompts.CreateQuestionsPrompt.GetNewQuestionFromPages(draft.OriginalContent!, stringQuestions, 5);
             await LogLLMInputAsync(llmInput);
             return llmInput;
         }
@@ -142,7 +145,7 @@ namespace Quiztle.API.BackgroundTasks.Questions
 
         private async Task LogErrorAsync(Exception ex)
         {
-            var errorMessage = $"Error in BuildQuestionsInBackgroundByLLM/ExecuteAsync: {ex.Message}";
+            var errorMessage = $"Error in BuildQuestionsInBackgroundByLLM/UpdateDraftByDraftAsync: {ex.Message}";
             var stackTrace = ex.StackTrace ?? "No stack trace available";
 
             var detailedError = new
