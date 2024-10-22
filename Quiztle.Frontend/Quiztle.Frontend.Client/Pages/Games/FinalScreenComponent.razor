@@ -28,6 +28,10 @@
                 </div>
             </div>
 
+            <div class="message text-center">
+                <h3>@message</h3> <!-- Exibe a mensagem -->
+            </div>
+
             <div class="card-buttons">
                 <a href="/signup" class="btn btn-primary">Next Game</a>
             </div>
@@ -36,7 +40,6 @@
 }
 
 @code {
-
     [Parameter]
     public required string Title { get; set; }
     [Parameter]
@@ -46,41 +49,68 @@
     [Parameter]
     public required int TotalQuestions { get; set; }
 
+    private string message = "";
+
     private bool _isVisible = true;
 
-    public required string Image { get; set; }
-
-    protected override void OnInitialized()
-    {
-        SetImageBasedOnScore();
-        base.OnInitialized();
-    }
+    public required string Image { get; set; } = "";
 
     protected override Task OnParametersSetAsync()
     {
-        SetImageBasedOnScore();
+        if (_isVisible) SetImageBasedOnScore();
+
         return base.OnParametersSetAsync();
     }
 
     private void SetImageBasedOnScore()
     {
-        // Calcula o percentual
-        var percentage = (double)Score / TotalQuestions * 100;
+         var percentage = (double)Score / TotalQuestions * 100;
 
-        // Define a imagem com base no percentual
         if (percentage < 50)
         {
             Image = "less-50-shield.svg";
+            message = GetRandomFeedback(new string[]
+            {
+            "Don't lose hope! Keep practicing, and you'll get there!",
+            "Every effort counts! Keep pushing forward!",
+            "Learning is a journey. You're making progress!",
+            "Mistakes are part of the process. Try again!",
+            "Stay determined! Success is just around the corner!"
+            });
         }
         else if (percentage >= 50 && percentage < 80)
         {
             Image = "50-shield.svg";
+            message = GetRandomFeedback(new string[]
+            {
+            "Nice job! You're improving, keep it up!",
+            "You're on the right path! A bit more practice will take you further!",
+            "Solid effort! You're getting closer to your goal!",
+            "Good work! Every attempt makes you stronger!",
+            "You're doing well! Keep honing your skills!"
+            });
         }
         else
         {
             Image = "80-shield.svg";
+            message = GetRandomFeedback(new string[]
+            {
+            "Fantastic! You're a star performer!",
+            "Awesome job! You've mastered this topic!",
+            "Impressive work! You should be proud of yourself!",
+            "Exceptional! Your hard work truly shows!",
+            "Outstanding achievement! Keep aiming high!"
+            });
         }
     }
+
+    private string GetRandomFeedback(string[] feedbacks)
+    {
+        Random random = new Random();
+        int index = random.Next(feedbacks.Length);
+        return feedbacks[index];
+    }
+
 
     private void CloseBtn()
     {
