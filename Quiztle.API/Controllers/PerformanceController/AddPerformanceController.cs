@@ -18,6 +18,8 @@ namespace Quiztle.API.Controllers.PerformanceController
         [HttpPost]
         public async Task<IActionResult> ExecuteAsync([FromBody] TestPerformance testPerformance)
         {
+            Console.WriteLine("----------------------TRYING");
+
             try
             {
                 var performanceGuid = Guid.NewGuid();

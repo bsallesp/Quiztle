@@ -4,6 +4,7 @@ using Quiztle.Frontend.Client;
 using MudBlazor.Services;
 using Quiztle.Blazor.Client.APIServices;
 using Quiztle.Blazor.Client.APIServices.Tests;
+using Quiztle.Frontend.Client.APIServices.Performance;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddTransient<GetAllScratchesService>();
 builder.Services.AddTransient<GetDraftByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
+builder.Services.AddTransient<AddTestPerformanceService>();
 
 builder.Services.AddAuthorizationCore();
 

@@ -1,4 +1,5 @@
-﻿using Quiztle.CoreBusiness.Entities.Quiz.DTO;
+﻿using Quiztle.CoreBusiness.Entities.Performance;
+using Quiztle.CoreBusiness.Entities.Quiz.DTO;
 
 namespace Quiztle.CoreBusiness.Entities.Quiz
 {
@@ -87,18 +88,13 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 throw new ArgumentException("The amount must be less than the number of questions.");
             }
 
-            // Create a random number generator
             Random rng = new Random();
-
-            // Generate a list of indices for the questions to keep
             var indicesToKeep = new HashSet<int>();
 
             while (indicesToKeep.Count < amount)
             {
                 indicesToKeep.Add(rng.Next(QuestionsDTO.Count));
             }
-
-            // Keep only the questions at the generated indices
             QuestionsDTO = QuestionsDTO
                 .Select((q, index) => new { q, index })
                 .Where(x => indicesToKeep.Contains(x.index))
@@ -109,6 +105,50 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public int GetTotalFinishedQuestions()
         {
             return QuestionsDTO.Count(q => q.IsFinished);
+        }
+
+        public TestPerformance CreateTestPerformance(string userId)
+        {
+            var testPerformance = new TestPerformance
+            {
+                Id = Guid.NewGuid(),
+                UserId = Guid.Parse(userId),
+                TestName = this.Name,
+                CorrectAnswers = this.GetTotalCorrectAnswers(),
+                IncorrectAnswers = this.QuestionsDTO.Count - this.GetTotalCorrectAnswers(),
+                Score = this.CalculateScore(),
+                QuestionsPerformance = new List<QuestionsPerformance>()
+            };
+
+            foreach (var questionDTO in QuestionsDTO)
+            {
+                var questionPerformance = new QuestionsPerformance
+                {
+                    Id = Guid.NewGuid(),
+                    QuestionName = questionDTO.Name,
+                    CorrectAnswerName = string.Join(", ", questionDTO.OptionsDTO.Where(o => o.IsCorrect).Select(o => o.Name)),
+                    IncorrectAnswerName = string.Join(", ", questionDTO.OptionsDTO.Where(o => !o.IsCorrect && o.IsSelected).Select(o => o.Name)),
+                    TagName = questionDTO.Tag
+                };
+
+                testPerformance.QuestionsPerformance.Add(questionPerformance);
+            }
+
+            return testPerformance;
+        }
+
+
+        private int CalculateScore()
+        {
+            int totalQuestions = this.QuestionsDTO.Count;
+            int correctAnswers = this.GetTotalCorrectAnswers();
+
+            if (totalQuestions == 0)
+            {
+                return 0;
+            }
+
+            return correctAnswers * 100 / totalQuestions;
         }
     }
 }

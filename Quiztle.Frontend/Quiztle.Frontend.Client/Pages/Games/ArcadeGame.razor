@@ -2,11 +2,15 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Blazor.Client.APIServices.Tests
+@using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
+@using Quiztle.Frontend.Client.APIServices.Performance
 
 @inject GetQuestionsService GetQuestionsService
 @inject GetDraftByIdService GetTestByIdService
+@inject AddTestPerformanceService AddTestPerformanceService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @rendermode InteractiveAuto
 @attribute [Authorize]
@@ -14,8 +18,6 @@
 <title>
     @if (_title != null)
         @("certcool - " + _title)
-
-
 </title>
 
 @if (_showFinalScreen)
@@ -56,22 +58,22 @@
                             </h3>
                         </div>
                     </div>
-                    
-@*                     <div>
-                        @code {
-                            private HashSet<string> displayedTags = new HashSet<string>();
-                            }
 
-                            <div class="text-center">
-                                @foreach (var question in _testDTO.QuestionsDTO)
-                                {
-                                    if (displayedTags.Add(question.Tag))
-                                    {
-                                        <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@question.Tag</MudChip>
-                                    }
-                                }
-                            </div>
-                    </div> *@
+                    @*                     <div>
+            @code {
+            private HashSet<string> displayedTags = new HashSet<string>();
+            }
+
+            <div class="text-center">
+            @foreach (var question in _testDTO.QuestionsDTO)
+            {
+            if (displayedTags.Add(question.Tag))
+            {
+            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@question.Tag</MudChip>
+            }
+            }
+            </div>
+            </div> *@
 
 
                     @foreach (var questionDTO in _testDTO.QuestionsDTO)
@@ -185,8 +187,9 @@
 
     }
 
-    private void FinalizeTestResponse()
+    private async Task FinalizeTestResponse()
     {
+        await AddTestPerformance();
         ShowResults = true;
         _showFinalScreen = true;
     }
@@ -217,4 +220,25 @@
         }
     }
 
+    private async Task AddTestPerformance()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.Claims.FirstOrDefault();
+
+            if (userIdClaim != null)
+            {
+                var userId = userIdClaim.Value;
+
+                Console.WriteLine(userId);
+
+                var testPerformance = _testDTO.CreateTestPerformance(userId);
+
+                await AddTestPerformanceService.ExecuteAsync(testPerformance);
+            }
+        }
+    }
 }

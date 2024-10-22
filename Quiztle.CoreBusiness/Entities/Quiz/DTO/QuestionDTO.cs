@@ -3,7 +3,7 @@
     public class QuestionDTO
     {
         public Guid Id { get; set; }
-        public string Number { get; set; } = "";
+        public string Name { get; set; } = "";
         public Question? Question { get; set; }
         public List<OptionDTO> OptionsDTO { get; private set; }
         private bool isFinished;
@@ -24,6 +24,7 @@
         public QuestionDTO(Question question)
         {
             Id = question.Id;
+            Name = question.Name;
             Question = question;
             Tag = question.Tag ?? "";
             OptionsDTO = question.Options?.Select(option => new OptionDTO

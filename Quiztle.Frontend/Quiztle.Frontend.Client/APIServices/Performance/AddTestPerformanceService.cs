@@ -1,6 +1,8 @@
 ﻿using Quiztle.CoreBusiness.APIEntities;
 using Quiztle.CoreBusiness.Entities.Performance;
+using Quiztle.CoreBusiness.Entities.Scratch;
 using Quiztle.CoreBusiness.Utils;
+using Stripe;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -15,58 +17,23 @@ namespace Quiztle.Frontend.Client.APIServices.Performance
             _httpClient = httpClient;
         }
 
-        public async Task<APIResponse<TestPerformance>> ExecuteAsync(TestPerformance testPerformance)
+        public async Task<TestPerformance> ExecuteAsync(TestPerformance testPerformance)
         {
             try
             {
                 var url = "api/AddPerformance/";
 
-                // Logs de apoio
-                Console.WriteLine($"Request URL: {url}");
-                Console.WriteLine($"Base Address: {_httpClient.BaseAddress}");
-                Console.WriteLine($"TestPerformance Object: {JsonSerializer.Serialize(testPerformance)}");
+                var stringResponse = await _httpClient.PostAsJsonAsync(url, testPerformance);
 
-                var httpResponse = await _httpClient.PostAsJsonAsync(url, testPerformance);
+                Console.WriteLine(stringResponse);
 
-                if (httpResponse.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("Success");
-                    var testPerformanceAPIResponse = await httpResponse.Content.ReadFromJsonAsync<TestPerformance>();
-                    return testPerformanceAPIResponse == null
-                        ? throw new Exception("AddTestPerformanceService: testPerformanceAPIResponse is null")
-                        : new APIResponse<TestPerformance>
-                        {
-                            Status = CustomStatusCodes.SuccessStatus,
-                            Data = testPerformanceAPIResponse,
-                            Message = "Test performance recorded successfully."
-                        };
-                }
-                else
-                {
-                    var statusCode = (int)httpResponse.StatusCode;
-                    var errorMessage = await httpResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error Status Code: {statusCode}");
-                    Console.WriteLine($"Error Message: {errorMessage}");
-
-                    return new APIResponse<TestPerformance>
-                    {
-                        Status = CustomStatusCodes.ErrorStatus,
-                        Data = new TestPerformance(),
-                        Message = errorMessage
-                    };
-                }
-
+                return testPerformance;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR in AddTestPerformanceService: {ex.Message} | Data: {ex.Data}");
+                Console.WriteLine("Error in AddTestPerformanceService: " + ex);
 
-                return new APIResponse<TestPerformance>
-                {
-                    Status = CustomStatusCodes.ErrorStatus,
-                    Data = new TestPerformance(),
-                    Message = $"{ex.Message} | Data: {ex.Data}"
-                };
+                return new();
             }
         }
     }

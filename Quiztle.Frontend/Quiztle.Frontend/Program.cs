@@ -11,6 +11,8 @@ using Npgsql;
 using Quiztle.Blazor.Client.APIServices;
 using System.Security.Policy;
 using Quiztle.Blazor.Client.APIServices.Tests;
+using Quiztle.CoreBusiness.Entities.Performance;
+using Quiztle.Frontend.Client.APIServices.Performance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,7 @@ builder.Services.AddTransient<GetAllScratchesService>();
 builder.Services.AddTransient<GetDraftByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
+builder.Services.AddTransient<AddTestPerformanceService>();
 
 builder.Services.AddAntiforgery(options =>
 {
