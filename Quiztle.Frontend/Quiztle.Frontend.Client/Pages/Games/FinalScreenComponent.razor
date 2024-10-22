@@ -2,11 +2,10 @@
 {
     <div class="full-screen-div">
         <div class="container bg-fx">
-
             <div class="close-btn">
-
                 <button @onclick="CloseBtn">
-                    <img src="svg/utils/close-bold.svg" />
+                    close
+                    <img src="svg/utils/close-bold.svg" style="width: 40px; height: 40px;" />
                 </button>
             </div>
 
@@ -32,11 +31,6 @@
             <div class="card-buttons">
                 <a href="/signup" class="btn btn-primary">Next Game</a>
             </div>
-
-            <div class="crown">
-                <img src="svg/courses/crown.svg" />
-            </div>
-
         </div>
     </div>
 }
@@ -58,11 +52,34 @@
 
     protected override void OnInitialized()
     {
-        if (Score < 50) Image = "less-50-shield.svg";
-        if (Score >= 50) Image = "50-shield.svg";
-        if (Score >= 80) Image = "80-shield.svg";
-
+        SetImageBasedOnScore();
         base.OnInitialized();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        SetImageBasedOnScore();
+        return base.OnParametersSetAsync();
+    }
+
+    private void SetImageBasedOnScore()
+    {
+        // Calcula o percentual
+        var percentage = (double)Score / TotalQuestions * 100;
+
+        // Define a imagem com base no percentual
+        if (percentage < 50)
+        {
+            Image = "less-50-shield.svg";
+        }
+        else if (percentage >= 50 && percentage < 80)
+        {
+            Image = "50-shield.svg";
+        }
+        else
+        {
+            Image = "80-shield.svg";
+        }
     }
 
     private void CloseBtn()

@@ -15,9 +15,9 @@
     @if (_title != null)
         @("Quiztle: " + _title)
 
-</title>
 
-<div class="gap"></div>
+
+</title>
 
 @if (_showFinalScreen)
 {
@@ -36,12 +36,19 @@
                 @if (_testDTO.QuestionsDTO != null)
                 {
                     <div class="text-center">
+
+                        <div>
+                            shield.svg
+                        </div>
+
                         <h1>
                             @_testDTO.Name
                         </h1>
+
                         <h2>
                             @(_testDTO.QuestionsDTO.Count + " questions")
                         </h2>
+
                     </div>
 
                     @foreach (var questionDTO in _testDTO.QuestionsDTO)
@@ -51,33 +58,33 @@
                                                     questionDTO="questionDTO"
                                                     Number="@index"
                                                     IsFinished="questionDTO.IsFinished"
-                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))">
+                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))"
+                                                    OnSelectAnswer="@(() => HandleSelectAnswer())">
                         </QuestionDTOArcadeComponent>
                     }
                 }
             </div>
             <div class="fixed-bottom-container">
 
-                <ProgressBar TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
-                             AnsweredQuestions="@_testDTO.GetTotalFinishedQuestions()" />
+                <ProgressBar @ref=progressBar
+                             TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
+                             AnsweredQuestions="@_testDTO.GetTotalSelectedAnswers()" />
 
                 @if (!ShowResults)
                 {
-                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => FinalizeTestResponse()">
+                    bool disabledFinishButton = (_testDTO.GetTotalSelectedAnswers() != _testDTO.QuestionsDTO.Count);
+
+                    <button disabled="@(disabledFinishButton ? "disabled" : null)"
+                            class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
                         <h3 class="mb-0">
-                            FINISH
+                            FINISH (@_testDTO.GetTotalSelectedAnswers() of @_testDTO.QuestionsDTO.Count)
                         </h3>
                     </button>
                 }
+
                 @if (ShowResults)
                 {
                     <div style="background-color: mintcream;">
-                        @if (_testDTO.QuestionsDTO!.Count > 1)
-                        {
-                            <h4>
-                                You got @_testDTO.GetTotalCorrectAnswers() out of @_testDTO.QuestionsDTO!.Count questions correct
-                            </h4>
-                        }
                         <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => PlayAgain()">
                             <h3 class="mb-0">
                                 Next Game
@@ -98,6 +105,8 @@
 }
 
 @code {
+    ProgressBar progressBar = new();
+
     private string _title = "Quiztle";
 
     [Parameter]
@@ -123,6 +132,13 @@
     private void HandleGetAnswer(QuestionDTO questionDTO)
     {
         questionDTO.IsFinished = true;
+        StateHasChanged();
+    }
+
+    private void HandleSelectAnswer()
+    {
+        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedAnswers();
+
         StateHasChanged();
     }
 

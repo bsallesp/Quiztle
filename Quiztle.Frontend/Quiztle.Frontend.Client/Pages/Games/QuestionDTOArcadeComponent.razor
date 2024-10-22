@@ -13,7 +13,7 @@
     {
         <h4 style="padding: 10px;">
             @(1 + Number) - @questionDTO.Question!.Name
-            <MudChip Size="Size.Small" T="string" Color="Color.Secondary">@questionDTO.Tag</MudChip>
+            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@questionDTO.Tag</MudChip>
         </h4>
 
         @foreach (var option in questionDTO.OptionsDTO)
@@ -36,6 +36,14 @@
 
                 <h6 class="option @cssClass">
                     @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+                    @if (option.IsCorrect && option.IsSelected)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Star" Title="Star"></MudIcon>
+                    }
+                    else if (option.IsSelected && !option.IsCorrect)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Error" Title="Star"></MudIcon>
+                    }
                 </h6>
             }
         }
@@ -58,6 +66,7 @@
     {
         <div class="hint-text text-center">
             <h6>
+                <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info" />
                 @questionDTO!.Question!.Hint
             </h6>
         </div>
@@ -66,6 +75,7 @@
     {
         <div class="hint-text text-center">
             <h6>
+                <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info" />
                 @questionDTO!.Question!.Resolution
             </h6>
         </div>
@@ -103,6 +113,8 @@
     public bool IsFinished { get; set; } = false;
     [Parameter]
     public Action? OnGetAnswer { get; set; }
+    [Parameter]
+    public Action? OnSelectAnswer { get; set; }
     [Parameter]
     public string Tag { get; set; } = "";
 
@@ -170,6 +182,7 @@
         return base.OnInitializedAsync();
     }
 
+
     private void GetAnswer()
     {
         ShowResults = true;
@@ -214,9 +227,9 @@
         UnselectAll();
         selectedOption.IsSelected = true;
         _selectedOptionIds.Add(selectedOption.Id);
+        OnSelectAnswer!.Invoke();
         StateHasChanged();
     }
-
 
     private void UnselectAll()
     {

@@ -7,6 +7,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    top: 0;
+    left: 0;
 }
 
 .centered-div {
@@ -27,13 +29,8 @@
     margin: 20px;
     padding: 10px;
     width: 400px;
-    position: relative;
-}
-
-.crown {
     position: absolute;
-    top: -65px;
-    left: -22px;
+    z-index: 9;
 }
 
     .crown img {
@@ -71,8 +68,8 @@
 }
 
 img {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
 }
 
 .description-item {
@@ -169,7 +166,8 @@ img {
 
 .close-btn {
     position: absolute;
-    top: 20px; /* Ajuste a distância do topo conforme necessário */
-    right: 20px; /* Ajuste a distância da direita conforme necessário */
-    cursor: pointer; /* Para indicar que é clicável */
+    top: 5px; /* Distância do topo ajustada */
+    right: 5px; /* Distância da direita ajustada */
+    cursor: pointer;
 }
+
