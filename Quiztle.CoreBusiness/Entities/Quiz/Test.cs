@@ -27,6 +27,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("TestQuestions")]
         public ICollection<TestQuestion> TestQuestions { get; set; } = [];
+        [JsonPropertyName("ShieldSVG")]
+        public string? ShieldSVG { get; set; } = "default.svg";
 
         public void ShuffleQuestions()
         {

@@ -2,6 +2,10 @@
     padding: 10px;
 }
 
+img{
+    width: 10px;
+    height: 10px;
+}
 
 .gap {
     width: 100%; /* Largura padrão para dispositivos móveis */

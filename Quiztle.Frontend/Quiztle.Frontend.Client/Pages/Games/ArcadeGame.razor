@@ -11,12 +11,8 @@
 @rendermode InteractiveAuto
 @attribute [Authorize]
 
-<title>
-    @if (_title != null)
+<title> @if (_title != null)
         @("Quiztle: " + _title)
-
-
-
 </title>
 
 @if (_showFinalScreen)
@@ -35,21 +31,20 @@
             <div style="padding-bottom:80px;">
                 @if (_testDTO.QuestionsDTO != null)
                 {
-                    <div class="text-center">
-
-                        <div>
-                            shield.svg
+                    <div class="d-flex justify-content-center align-items-center text-center">
+                        <div class="me-3 p-3">
+                            <img src="img/courses/@_testDTO.ShieldSVG" style="width: 100px; height: 100px;" />
                         </div>
-
-                        <h1>
-                            @_testDTO.Name
-                        </h1>
-
-                        <h2>
-                            @(_testDTO.QuestionsDTO.Count + " questions")
-                        </h2>
-
+                        <div style="padding: 10px 10px;">
+                            <h1>
+                                @_testDTO.Name
+                            </h1>
+                            <h3>
+                                @(_testDTO.QuestionsDTO.Count + " questions")
+                            </h3>
+                        </div>
                     </div>
+
 
                     @foreach (var questionDTO in _testDTO.QuestionsDTO)
                     {
