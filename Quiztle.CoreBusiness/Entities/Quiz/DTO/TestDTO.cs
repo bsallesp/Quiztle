@@ -48,6 +48,22 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             return totalSelectedAnswers;
         }
 
+        public int GetTotalSelectedOrFinishedQuestions()
+        {
+            int totalSelectedOrFinished = 0;
+
+            foreach (var questionDTO in QuestionsDTO)
+            {
+                if (questionDTO.OptionsDTO.Any(o => o.IsSelected) || questionDTO.IsFinished)
+                {
+                    totalSelectedOrFinished++;
+                }
+            }
+
+            return totalSelectedOrFinished;
+        }
+
+
         public int GetTotalCorrectAnswers()
         {
             TotalCorrectAnswers = 0;

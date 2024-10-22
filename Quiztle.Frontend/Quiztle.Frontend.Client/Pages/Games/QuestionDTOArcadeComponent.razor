@@ -192,6 +192,7 @@
         IsFinished = true;
 
         OnGetAnswer?.Invoke();
+        OnSelectAnswer?.Invoke();
         PreserveSelections();
         StateHasChanged();
     }

@@ -90,7 +90,7 @@
 
                 <ProgressBar @ref=progressBar
                              TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
-                             AnsweredQuestions="@_testDTO.GetTotalSelectedAnswers()" />
+                             AnsweredQuestions="@_testDTO.GetTotalSelectedOrFinishedQuestions()" />
 
                 @if (!ShowResults)
                 {
@@ -99,7 +99,7 @@
                     <button disabled="@(disabledFinishButton ? "disabled" : null)"
                             class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
                         <h3 class="mb-0">
-                            FINISH (@_testDTO.GetTotalSelectedAnswers() of @_testDTO.QuestionsDTO.Count)
+                            FINISH (@_testDTO.GetTotalSelectedOrFinishedQuestions() of @_testDTO.QuestionsDTO.Count)
                         </h3>
                     </button>
                 }
@@ -154,13 +154,13 @@
     private void HandleGetAnswer(QuestionDTO questionDTO)
     {
         questionDTO.IsFinished = true;
+        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
 
     private void HandleSelectAnswer()
     {
-        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedAnswers();
-
+        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
 
