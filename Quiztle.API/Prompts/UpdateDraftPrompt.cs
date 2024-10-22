@@ -24,7 +24,7 @@ namespace Quiztle.API.Prompts
         private static void AddHeader(StringBuilder promptBuilder, int lenght)
         {
             promptBuilder.AppendLine($"I have some content." +
-                $" I need you to read it and create a title and a new summary of up to {lenght} characters about it:");
+                $" I need you to read it and create a title and explain in detail, concepts of up to {lenght} characters about it:");
 
         }
 
@@ -54,9 +54,15 @@ namespace Quiztle.API.Prompts
             // Aqui estamos apenas definindo a estrutura JSON para o draft
             return $@"{{
                 ""Draft"": {{
-                    ""Title"": ""<Create a nice title for the current draft>"",
-                    ""MadeByAiContent"": ""<create a didactic and reliable summary here. Avoid the ""crucial"" word.>"",
-                    ""Tag"": ""<Create a tag, like a short Title. Try to make beetween from 3 to 5 words. As shorter as better.>"",
+
+                    ""Title"": ""<Create a oficial title for the current draft>"",
+
+                    ""MadeByAiContent"": ""<Imagine questions and answer them. Dont expose the questions, just answer them.
+                        Create real life examples. Avoid the words like ""crucial"" and another cliche words.
+                            Be didactic, Make ADHD people understand your explanation.>"",
+
+                    ""Tag"""": """"<Create a concise, content-specific tag using 1 to 3 words that
+                        directly represent the key topic or idea from the article. Avoid vague or general terms.>"""",
                 }}
             }}";
         }

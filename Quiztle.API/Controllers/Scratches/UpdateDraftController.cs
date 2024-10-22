@@ -29,32 +29,18 @@ namespace Quiztle.API.Controllers.Scratches
         {
             try
             {
-                Console.WriteLine($"Received draftGuid: {draftGuid}");
-
                 var draft = await _draftRepository.GetDraftByIdAsync(draftGuid);
 
-                if (draft == null || draft.OriginalContent == null)
-                {
-                    Console.WriteLine("Draft not found or OriginalContent is null.");
-                    return NotFound();
-                }
+                if (draft == null || draft.OriginalContent == null) return NotFound();
 
-                Console.WriteLine($"Draft found. OriginalContent length: {draft.OriginalContent.Length}");
-
-                var summaryLength = (int)Math.Round(draft.OriginalContent.Length * 0.5);
-                Console.WriteLine($"Calculated summary length: {summaryLength}");
-
+                var summaryLength = (int)Math.Round(draft.OriginalContent.Length * 0.7);
                 var llmResult = await _chatGPTRequest.ExecuteAsync(UpdateDraftPromt.GetPromptString(draft.OriginalContent!, summaryLength));
-                Console.WriteLine("Received result from ChatGPT.");
-
                 DraftJson newDraft = JsonSerializer.Deserialize<DraftJson>(llmResult)!;
-                Console.WriteLine($"Deserialized draft. Title: {newDraft.Draft?.Title}, MadeByAiContent length: {newDraft.Draft?.MadeByAiContent!.Length}");
 
                 draft.MadeByAiContent = newDraft.Draft!.MadeByAiContent;
                 draft.Title = newDraft.Draft.Title;
                 draft.Tag = newDraft.Draft.Tag;
-
-                Console.WriteLine("Draft updated successfully.");
+                foreach (var question in draft.Questions!) question.Tag = draft.Tag;
 
                 await _draftRepository.SaveChangesAsync();
 
