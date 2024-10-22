@@ -21,6 +21,8 @@ using Quiztle.API.Controllers.LLM.Interfaces;
 using Quiztle.API.Controllers.ScratchControllers;
 using Quiztle.DataContext.DataService.Repository;
 using Quiztle.API.Controllers;
+using Quiztle.CoreBusiness.Entities.Performance;
+using Quiztle.DataContext.DataService.Repository.Performance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,7 @@ builder.Services.AddTransient<CreateAllTestsByScratchController>();
 builder.Services.AddTransient<CreateTestByDraftController>();
 builder.Services.AddTransient<CreateTestByScratchController>();
 builder.Services.AddTransient<GetAllScratchesController>();
+builder.Services.AddTransient<TestPerformance>();
 
 builder.Services.AddTransient<GetChaptersFromLLM>();
 builder.Services.AddTransient<GetContentFromLLLM>();
@@ -72,6 +75,7 @@ builder.Services.AddTransient<ShotRepository>();
 builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<DraftRepository>();
 builder.Services.AddTransient<UserRepository>();
+builder.Services.AddTransient<TestPerformanceRepository>();
 
 builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 

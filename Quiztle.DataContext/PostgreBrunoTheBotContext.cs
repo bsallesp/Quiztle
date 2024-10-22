@@ -6,6 +6,7 @@ using Quiztle.CoreBusiness.Entities.PDFData;
 using Quiztle.CoreBusiness.Entities.Prompts;
 using Quiztle.CoreBusiness.Entities.Scratch;
 using Quiztle.CoreBusiness;
+using Quiztle.CoreBusiness.Entities.Performance;
 
 namespace Quiztle.DataContext
 {
@@ -107,6 +108,9 @@ namespace Quiztle.DataContext
                 .HasForeignKey(q => q.TestId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<TestPerformance>();
+
+
             modelBuilder.Entity<User>();
 
             base.OnModelCreating(modelBuilder);
@@ -130,6 +134,10 @@ namespace Quiztle.DataContext
         public DbSet<Shot>? Shots { get; set; }
         public DbSet<Test>? Tests { get; set; }
         public DbSet<User>? Users { get; set; }
+
+        public DbSet<TestPerformance>? TestsPerformance { get; set; }
+
+        public DbSet<QuestionsPerformance>? QuestionsPerformance { get; set; }
 
         public DbSet<TestQuestion>? TestsQuestions { get; set; }
     }
