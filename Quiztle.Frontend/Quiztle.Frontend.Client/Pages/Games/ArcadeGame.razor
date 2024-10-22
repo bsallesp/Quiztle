@@ -11,8 +11,11 @@
 @rendermode InteractiveAuto
 @attribute [Authorize]
 
-<title> @if (_title != null)
+<title>
+    @if (_title != null)
         @("Quiztle: " + _title)
+
+
 </title>
 
 @if (_showFinalScreen)
@@ -33,7 +36,16 @@
                 {
                     <div class="d-flex justify-content-center align-items-center text-center">
                         <div class="me-3 p-3">
-                            <img src="img/courses/@_testDTO.ShieldSVG" style="width: 100px; height: 100px;" />
+
+                            @if (_testDTO.ShieldSVG == null)
+                            {
+                                <img src="img/courses/default.svg" style="width: 100px; height: 100px;" />
+                            }
+                            else
+                            {
+                                <img src="img/courses/@_testDTO.ShieldSVG" style="width: 100px; height: 100px;" />
+                            }
+
                         </div>
                         <div style="padding: 10px 10px;">
                             <h1>
@@ -43,6 +55,21 @@
                                 @(_testDTO.QuestionsDTO.Count + " questions")
                             </h3>
                         </div>
+                    </div>
+                    <div>
+                        @code {
+                            private HashSet<string> displayedTags = new HashSet<string>();
+                            }
+
+                            <div class="text-center">
+                                @foreach (var question in _testDTO.QuestionsDTO)
+                                {
+                                    if (displayedTags.Add(question.Tag))
+                                    {
+                                        <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@question.Tag</MudChip>
+                                    }
+                                }
+                            </div>
                     </div>
 
 

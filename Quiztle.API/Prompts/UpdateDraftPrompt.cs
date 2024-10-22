@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Quiztle.API.Prompts
 {
@@ -23,22 +25,30 @@ namespace Quiztle.API.Prompts
 
         private static void AddHeader(StringBuilder promptBuilder, int lenght)
         {
-            promptBuilder.AppendLine($"I have some content." +
-                $" I need you to read it and create a title and explain in detail, concepts of up to {lenght} characters about it:");
-
+            promptBuilder.AppendLine(
+                $"Imagine a meticulous and engaging professor, Dr. Elena Silva, known for her clarity and passion in teaching complex concepts. " +
+                $"She approaches every lesson with enthusiasm and encourages her students to explore and question the material deeply. " +
+                $"Dr. Silva uses relatable examples and visual aids to enhance understanding, making even the most abstract ideas accessible. " +
+                $"Now, perform a technical analysis of the following text, explicitly focusing on the identification and exposition of key concepts. " +
+                $"This is not a summary or narrative; instead, provide clear and precise definitions for each identified concept, " +
+                $"utilizing relevant theoretical frameworks. Discuss the implications of these concepts within the context" +
+                $" of the text and provide practical examples that demonstrate their application. " +
+                $"Use appropriate terminology from the fields of linguistics, semantics, or discourse analysis. " +
+                $"Generate it, up to {lenght} characters. This is the text: "
+            );
         }
 
         private static void AddOriginalContent(StringBuilder promptBuilder, string bookArticle)
         {
-            promptBuilder.AppendLine("----------------------BEGIN OF ARTICLE-----------------------------------------------------------");
+            promptBuilder.AppendLine("----------------------BEGIN OF text-----------------------------------------------------------");
             promptBuilder.AppendLine(bookArticle);
-            promptBuilder.AppendLine("----------------------END OF ARTICLE-----------------------------------------------------------");
+            promptBuilder.AppendLine("----------------------END OF text-----------------------------------------------------------");
         }
 
         private static void AddSummaryInstruction(StringBuilder promptBuilder)
         {
             promptBuilder.AppendLine("Before generating the questions, summarize the key points from the article. " +
-                                     "Identify crucial facts or concepts that can serve as the basis for your questions.");
+            "Identify crucial facts or concepts that can serve as the basis for your questions.");
         }
 
         private static void AddJsonDraftStructure(StringBuilder promptBuilder)
@@ -62,7 +72,8 @@ namespace Quiztle.API.Prompts
                             Be didactic, Make ADHD people understand your explanation.>"",
 
                     ""Tag"""": """"<Create a concise, content-specific tag using 1 to 3 words that
-                        directly represent the key topic or idea from the article. Avoid vague or general terms.>"""",
+                        directly represent the key topic or idea from the article.
+                            Absolutely dont use common nouns. But use proper nouns. Avoid vague or general terms.>"""",
                 }}
             }}";
         }
