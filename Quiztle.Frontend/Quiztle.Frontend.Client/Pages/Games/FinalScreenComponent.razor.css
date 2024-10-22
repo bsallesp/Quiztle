@@ -120,8 +120,8 @@ img {
 
 .questions-literal {
     position: absolute;
-    bottom: 10px;
-    right: 5px;
+    bottom: 40px;
+    right: -35px;
     font-family: 'Poppins-Bold', sans-serif;
     font-size: 1.5rem;
     color: aliceblue;

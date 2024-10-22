@@ -13,7 +13,7 @@
 
 <title>
     @if (_title != null)
-        @("Quiztle: " + _title)
+        @("certcool - " + _title)
 
 
 </title>
@@ -56,7 +56,8 @@
                             </h3>
                         </div>
                     </div>
-                    <div>
+                    
+@*                     <div>
                         @code {
                             private HashSet<string> displayedTags = new HashSet<string>();
                             }
@@ -70,7 +71,7 @@
                                     }
                                 }
                             </div>
-                    </div>
+                    </div> *@
 
 
                     @foreach (var questionDTO in _testDTO.QuestionsDTO)
@@ -94,7 +95,7 @@
 
                 @if (!ShowResults)
                 {
-                    bool disabledFinishButton = (_testDTO.GetTotalSelectedAnswers() != _testDTO.QuestionsDTO.Count);
+                    bool disabledFinishButton = (_testDTO.GetTotalSelectedOrFinishedQuestions() != _testDTO.QuestionsDTO.Count);
 
                     <button disabled="@(disabledFinishButton ? "disabled" : null)"
                             class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
@@ -121,9 +122,16 @@
 
 @if (_testDTO!.QuestionsDTO!.Count < 1)
 {
-    <h4 class="text-center">
-        LOADING...
-    </h4>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+        @if (_testDTO!.QuestionsDTO!.Count < 1)
+        {
+            <h4>
+                <img src="gif/Rocket.gif" style="width: 100px; height: 100px;" />
+                <br />
+                LOADING...
+            </h4>
+        }
+    </div>
 }
 
 @code {
