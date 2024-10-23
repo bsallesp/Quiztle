@@ -21,5 +21,6 @@ namespace Quiztle.CoreBusiness.Entities.Performance
 
         [JsonPropertyName("Score")]
         public int Score { get; set; } = 0;
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }
