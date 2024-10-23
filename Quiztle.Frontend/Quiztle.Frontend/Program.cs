@@ -13,6 +13,7 @@ using System.Security.Policy;
 using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.CoreBusiness.Entities.Performance;
 using Quiztle.Frontend.Client.APIServices.Performance;
+using Quiztle.Frontend.Client.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+builder.Services.AddTransient<GetUserInfos>();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
@@ -38,6 +40,7 @@ builder.Services.AddTransient<GetDraftByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();
+builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 
 builder.Services.AddAntiforgery(options =>
 {

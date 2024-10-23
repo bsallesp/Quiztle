@@ -6,11 +6,13 @@
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
 @using Quiztle.Frontend.Client.APIServices.Performance
+@using Quiztle.Frontend.Client.Utils
 
 @inject GetQuestionsService GetQuestionsService
 @inject GetDraftByIdService GetTestByIdService
 @inject AddTestPerformanceService AddTestPerformanceService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject GetUserInfos GetUserInfos
 
 @rendermode InteractiveAuto
 @attribute [Authorize]
@@ -222,23 +224,10 @@
 
     private async Task AddTestPerformance()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var userId = await GetUserInfos.GetUserId();
 
-        if (user.Identity != null && user.Identity.IsAuthenticated)
-        {
-            var userIdClaim = user.Claims.FirstOrDefault();
+        var testPerformance = _testDTO.CreateTestPerformance(userId);
 
-            if (userIdClaim != null)
-            {
-                var userId = userIdClaim.Value;
-
-                Console.WriteLine(userId);
-
-                var testPerformance = _testDTO.CreateTestPerformance(userId);
-
-                await AddTestPerformanceService.ExecuteAsync(testPerformance);
-            }
-        }
+        await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
 }

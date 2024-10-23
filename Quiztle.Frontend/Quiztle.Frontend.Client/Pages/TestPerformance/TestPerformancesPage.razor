@@ -1,0 +1,53 @@
+﻿@page "/TestPerformances"
+@rendermode InteractiveAuto
+
+@using Microsoft.AspNetCore.Authorization
+@using Quiztle.CoreBusiness.Entities.Performance
+@using Quiztle.Frontend.Client.APIServices.Performance
+@using Quiztle.Frontend.Client.Utils
+@using Quiztle.Blazor.Client.APIServices.Tests
+
+@inject GetUserInfos GetUserInfos
+@inject GetTestPerformancesByUserIdService GetTestPerformanceByUserIdService
+@attribute [Authorize]
+
+<h3>PerformancePage</h3>
+
+@if (_testPerformance != null)
+{
+    foreach (var performance in _testPerformance)
+    {
+        <MudContainer MaxWidth="MaxWidth.Large">
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText>@performance.TestName</MudText>
+                    <MudText Typo="Typo.body2">@performance.TestName</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudContainer>
+    }
+}
+
+<h1>
+    @_testPerformance!.Count()
+</h1>
+
+<h1>
+    @_userId
+</h1>
+
+@code {
+    private IEnumerable<TestPerformance> _testPerformance = [];
+    private string _userId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userId = await GetUserInfos.GetUserId();
+        _testPerformance = await GetTestPerformanceByUserIdService.ExecuteAsync(Guid.Parse(_userId));
+
+        StateHasChanged();
+    }
+}

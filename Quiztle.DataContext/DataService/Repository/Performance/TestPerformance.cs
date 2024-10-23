@@ -28,6 +28,25 @@ namespace Quiztle.DataContext.DataService.Repository.Performance
             }
         }
 
+        public async Task<IEnumerable<TestPerformance?>> GetTestPerformancesByUserAsync(Guid userId)
+        {
+            try
+            {
+                EnsureTestPerformanceNotNull();
+                return await _context.TestsPerformance!.Where(u => u.UserId == userId)
+                    .Include(tp => tp.QuestionsPerformance)
+                    .AsTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetTestPerformancesByUserAsync:" +
+                    " An exception occurred while retrieving the test performance by User:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
         public async Task<TestPerformance?> GetTestPerformanceByIdAsync(Guid id)
         {
             try
