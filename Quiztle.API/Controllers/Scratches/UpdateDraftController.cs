@@ -34,7 +34,26 @@ namespace Quiztle.API.Controllers.Scratches
                 if (draft == null || draft.OriginalContent == null) return NotFound();
 
                 var summaryLength = (int)Math.Round(draft.OriginalContent.Length * 0.7);
-                var llmResult = await _chatGPTRequest.ExecuteAsync(UpdateDraftPromt.GetPromptString(draft.OriginalContent!, summaryLength));
+                var prompt = UpdateDraftPromt.GetPromptString(draft.OriginalContent!,
+                    new string[]
+                    {
+                        "Azure Cloud Concepts", "Azure Architecture and Services", "Azure Management and Governance"
+                    });
+
+                    //                new string[]
+                    //{
+                    //                        "Prerequisites for Azure administrators",
+                    //                        "Manage identities and governance in Azure",
+                    //                        "Configure and manage virtual networks for Azure administrators",
+                    //                        "Implement and manage storage in Azure",
+                    //                        "Deploy and manage Azure compute resources",
+                    //                        "Monitor and back up Azure resources",
+                    //});
+
+                Console.WriteLine(prompt);
+                
+                var llmResult = await _chatGPTRequest.ExecuteAsync(prompt);
+
                 DraftJson newDraft = JsonSerializer.Deserialize<DraftJson>(llmResult)!;
 
                 draft.MadeByAiContent = newDraft.Draft!.MadeByAiContent;
