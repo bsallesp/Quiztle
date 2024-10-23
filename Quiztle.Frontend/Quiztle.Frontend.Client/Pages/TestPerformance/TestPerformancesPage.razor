@@ -11,14 +11,20 @@
 @inject GetTestPerformancesByUserIdService GetTestPerformanceByUserIdService
 @attribute [Authorize]
 
-<h3>PerformancePage</h3>
-
 @if (_testPerformance != null)
 {
     foreach (var performance in _testPerformance)
     {
         <MudContainer MaxWidth="MaxWidth.Large">
-            <MudCard Outlined="true">
+            <h3>PerformancePage</h3>
+
+            <ChartScorePerformanceComponent Scores="@_testPerformance.Select(p => (double)p.Score).ToList()"
+                                            Dates="@_testPerformance.Select(p => p.Created).ToList()" />
+
+            <MudCard Outlined="true" Style="background-color: antiquewhite">
+
+                @performance.Score
+
                 <MudCardContent>
                     <MudText>@performance.TestName</MudText>
                     <MudText Typo="Typo.body2">@performance.TestName</MudText>
@@ -47,7 +53,5 @@
     {
         _userId = await GetUserInfos.GetUserId();
         _testPerformance = await GetTestPerformanceByUserIdService.ExecuteAsync(Guid.Parse(_userId));
-
-        StateHasChanged();
     }
 }

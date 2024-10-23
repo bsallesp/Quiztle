@@ -1,0 +1,25 @@
+﻿<div>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options" />
+</div>
+
+@code {
+    [Parameter] public List<double> Scores { get; set; } = new();
+    [Parameter] public List<DateTime> Dates { get; set; } = new();
+
+    public ChartOptions Options = new ChartOptions() { LineStrokeWidth = 3 };
+
+    public List<ChartSeries> Series = new List<ChartSeries>();
+
+    public string[] XAxisLabels = { };
+
+    protected override void OnInitialized()
+    {
+        Series.Add(new ChartSeries
+            {
+                Name = "Score",
+                Data = Scores.ToArray()
+            });
+
+        XAxisLabels = Dates.Select(d => d.ToString("dd/MM/yyyy")).ToArray();
+    }
+}
