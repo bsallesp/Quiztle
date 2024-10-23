@@ -23,6 +23,8 @@ namespace Quiztle.API.Prompts
             return promptBuilder.ToString();
         }
 
+
+
         private static void AddHeader(StringBuilder promptBuilder, int lenght)
         {
             promptBuilder.AppendLine(

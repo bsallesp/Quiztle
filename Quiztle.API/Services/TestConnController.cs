@@ -38,8 +38,17 @@ namespace Quiztle.API.Services
             try
             {
                 Console.WriteLine("Tentando conectar ao banco de dados...");
-                Console.WriteLine(_context.Database.CanConnect() ? "Conexão bem-sucedida!" : "Não foi possível conectar ao banco de dados.");
-                return Ok("Teste de conexão bem-sucedido!");
+                if (_context.Database.CanConnect())
+                {
+                    Console.WriteLine("Teste de conexão bem-sucedido");
+                    return Ok("Teste de conexão bem-sucedido!");
+                }
+                else
+                {
+                    Console.WriteLine("Erro ao tentar conectar no banco");
+                    return BadRequest("Erro ao tentar conectar no banco!");
+                }
+                
             }
             catch (NpgsqlException ex)
             {
