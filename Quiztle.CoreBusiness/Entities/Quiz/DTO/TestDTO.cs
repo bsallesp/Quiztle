@@ -117,7 +117,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 CorrectAnswers = this.GetTotalCorrectAnswers(),
                 IncorrectAnswers = this.QuestionsDTO.Count - this.GetTotalCorrectAnswers(),
                 Score = this.CalculateScore(),
-                QuestionsPerformance = new List<QuestionsPerformance>()
+                QuestionsPerformance = [],
+                TestId = Id
             };
 
             foreach (var questionDTO in QuestionsDTO)

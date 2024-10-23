@@ -32,7 +32,8 @@ namespace Quiztle.API.Controllers.PerformanceController
                     QuestionsPerformance = testPerformance.QuestionsPerformance,
                     CorrectAnswers = testPerformance.CorrectAnswers,
                     IncorrectAnswers = testPerformance.IncorrectAnswers,
-                    Score = testPerformance.Score
+                    Score = testPerformance.Score,
+                    TestId = testPerformance.TestId
                 };
 
                 await _testPerformanceRepository.CreateTestPerformanceAsync(newTestPerformance);

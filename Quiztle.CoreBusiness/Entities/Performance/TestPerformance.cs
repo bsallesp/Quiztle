@@ -16,6 +16,9 @@ namespace Quiztle.CoreBusiness.Entities.Performance
         public int CorrectAnswers { get; set; } = 0;
         [JsonPropertyName("IncorrectAnswers")]
         public int IncorrectAnswers { get; set; } = 0;
+        [JsonPropertyName("TestId")]
+        public Guid TestId { get; set; } = new Guid();
+
         [JsonPropertyName("Score")]
         public int Score { get; set; } = 0;
     }
