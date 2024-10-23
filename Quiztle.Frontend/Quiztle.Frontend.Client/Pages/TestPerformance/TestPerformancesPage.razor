@@ -16,14 +16,12 @@
     foreach (var performance in _testPerformance)
     {
         <MudContainer MaxWidth="MaxWidth.Large">
-            <h3>PerformancePage</h3>
+            <h3>@performance.TestName</h3>
 
             <ChartScorePerformanceComponent Scores="@_testPerformance.Select(p => (double)p.Score).ToList()"
                                             Dates="@_testPerformance.Select(p => p.Created).ToList()" />
 
             <MudCard Outlined="true" Style="background-color: antiquewhite">
-
-                @performance.Score
 
                 <MudCardContent>
                     <MudText>@performance.TestName</MudText>

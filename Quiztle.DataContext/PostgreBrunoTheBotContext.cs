@@ -108,7 +108,10 @@ namespace Quiztle.DataContext
                 .HasForeignKey(q => q.TestId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<TestPerformance>();
+            modelBuilder.Entity<TestPerformance>()
+                .HasMany(qp => qp.QuestionsPerformance)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             modelBuilder.Entity<User>();
