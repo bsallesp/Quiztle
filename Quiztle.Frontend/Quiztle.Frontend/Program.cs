@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Stripe;
 using Npgsql;
 using Quiztle.Blazor.Client.APIServices;
-using System.Security.Policy;
 using Quiztle.Blazor.Client.APIServices.Tests;
-using Quiztle.CoreBusiness.Entities.Performance;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
 

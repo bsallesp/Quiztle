@@ -1,24 +1,34 @@
 ﻿<div>
     <MudChart
-        ChartType="ChartType.Line"
+        ChartType="ChartType.StackedBar"
         ChartSeries="@Series"
+        @bind-SelectedIndex="Index"
+        LegendPosition="@LegendPosition"
         XAxisLabels="@XAxisLabels"
-        Width="100%" Height="350px"
-        ChartOptions="@Options"
-        
-        />
+        Width="100%" Height="350px">
+    </MudChart>
+</div>
+
+<MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
+
+<div>
+    <MudRadioGroup T="Position" @bind-Value="LegendPosition">
+        <MudRadio Value="@(Position.Bottom)" Color="Color.Primary">Bottom</MudRadio>
+        <MudRadio Value="@(Position.Top)" Color="Color.Primary">Top</MudRadio>
+        <MudRadio Value="@(Position.Left)" Color="Color.Primary">Left</MudRadio>
+        <MudRadio Value="@(Position.Right)" Color="Color.Primary">Right</MudRadio>
+        <MudRadio Value="@(Position.Start)" Color="Color.Primary">Start</MudRadio>
+        <MudRadio Value="@(Position.End)" Color="Color.Primary">End</MudRadio>
+    </MudRadioGroup>
 </div>
 
 @code {
     [Parameter] public List<double> Scores { get; set; } = new();
     [Parameter] public List<DateTime> Dates { get; set; } = new();
 
-    public ChartOptions Options = new ChartOptions()
-    {
-        LineStrokeWidth = 3,
-        
-    
-    };
+    private int Index = -1; 
+
+    private Position LegendPosition = Position.Bottom;
 
     public List<ChartSeries> Series = new List<ChartSeries>();
 
@@ -33,7 +43,5 @@
             });
 
         XAxisLabels = Dates.Select(d => d.ToString("dd/MM")).ToArray();
-
-        Options.InterpolationOption = InterpolationOption.NaturalSpline;
     }
 }

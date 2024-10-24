@@ -2,30 +2,46 @@
 @rendermode InteractiveAuto
 
 @using Microsoft.AspNetCore.Authorization
+@using Quiztle.CoreBusiness.DTOs
 @using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils
 @using Quiztle.Blazor.Client.APIServices.Tests
+@using Quiztle.Frontend.Client.Utils.Components
 
 @inject GetUserInfos GetUserInfos
-@inject GetTestPerformancesByUserIdService GetTestPerformanceByUserIdService
+@inject GetTestPerformancesByUserIdService GetTestPerformancesByUserIdService
 @attribute [Authorize]
 
-@if (_testPerformance != null)
+@if (_testPerformances != null)
 {
-    foreach (var performance in _testPerformance)
+    foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
     {
         <MudContainer MaxWidth="MaxWidth.Large">
-            <h3>@performance.TestName</h3>
 
-            <ChartScorePerformanceComponent Scores="@_testPerformance.Select(p => (double)p.Score).ToList()"
-                                            Dates="@_testPerformance.Select(p => p.Created).ToList()" />
+
+
 
             <MudCard Outlined="true" Style="background-color: antiquewhite">
 
                 <MudCardContent>
-                    <MudText>@performance.TestName</MudText>
-                    <MudText Typo="Typo.body2">@performance.TestName</MudText>
+                    <MudText>
+
+                        @groupedPerformances.TestName - @groupedPerformances.Performances.Count()
+
+                    </MudText>
+                    <MudText Typo="Typo.body2">
+
+                        @foreach (var performance in groupedPerformances.Performances)
+                        {
+                            <MudText Typo="Typo.body2">
+                                @performance.TestName - @performance.Score
+                            </MudText>
+                        }
+
+                    </MudText>
+
+
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
@@ -35,21 +51,42 @@
     }
 }
 
-<h1>
-    @_testPerformance!.Count()
-</h1>
-
-<h1>
-    @_userId
-</h1>
 
 @code {
-    private IEnumerable<TestPerformance> _testPerformance = [];
+    private IEnumerable<TestPerformance> _testPerformances = [];
+    private SetGroupedPerformancesDTO _setGroupedTestPerformanceDTO = new();
+
     private string _userId = "";
 
     protected override async Task OnInitializedAsync()
     {
         _userId = await GetUserInfos.GetUserId();
-        _testPerformance = await GetTestPerformanceByUserIdService.ExecuteAsync(Guid.Parse(_userId));
+        _testPerformances = await GetTestPerformancesByUserIdService.ExecuteAsync(Guid.Parse(_userId));
+        _setGroupedTestPerformanceDTO.GroupAndFill(_testPerformances);
     }
 }
+
+@*
+<MudContainer MaxWidth="MaxWidth.Large">
+    <h3>@performance.TestName</h3>
+
+
+
+
+
+
+
+    <MudCard Outlined="true" Style="background-color: antiquewhite">
+
+        <MudCardContent>
+            <MudText>@performance.TestName</MudText>
+            <MudText Typo="Typo.body2">@performance.TestName</MudText>
+
+            <ChartScorePerformanceComponent Scores="@_testPerformances.Select(p => (double)p.Score).ToList()"
+                                            Dates="@_testPerformances.Select(p => p.Created).ToList()" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer> *@
