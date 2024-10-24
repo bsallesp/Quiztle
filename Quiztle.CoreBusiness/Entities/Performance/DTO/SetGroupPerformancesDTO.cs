@@ -18,11 +18,16 @@ namespace Quiztle.CoreBusiness.DTOs
                     var groupedDTO = new GroupedTestPerformanceDTO
                     {
                         TestId = group.Key,
-                        TestName = group.First().TestName, // Nome assumido o mesmo por grupo
+                        TestName = group.First().TestName,
                         Performances = group
                     };
                     return groupedDTO;
                 });
+        }
+
+        public int GetTotalPerformances()
+        {
+            return GroupedPerformances.Sum(group => group.Performances.Count());
         }
     }
 }

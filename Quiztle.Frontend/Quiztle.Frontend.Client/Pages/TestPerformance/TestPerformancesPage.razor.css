@@ -1,0 +1,98 @@
+﻿.full-screen-container {
+    position: relative;
+    padding: 20px;
+    height: 100vh; /* Ocupa 100% da altura da viewport */
+    background: radial-gradient(circle, white, #d8d1ff);
+    color: #2647a5;
+    display: flex; /* Para alinhar o conteúdo no centro, se necessário */
+    flex-direction: column; /* Para uma coluna de itens */
+    justify-content: center; /* Centraliza verticalmente */
+}
+
+
+.test-performances-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.performance-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px; /* Largura padrão para desktop */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.test-name {
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 1.5rem; /* Tamanho padrão para desktop */
+    color: #1E3A8A;
+}
+
+.test-count, .average-performance {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem; /* Tamanho padrão para desktop */
+    color: #ff0000;
+}
+
+.performance-item {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem; /* Tamanho padrão para desktop */
+    color: #d8d1ff;
+}
+
+.learn-more-btn {
+    background: linear-gradient(130deg, #1E3A8A, #2647a5);
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+/* Media Query para telas menores que 768px (tablets e dispositivos móveis) */
+@media (max-width: 768px) {
+    .performance-card {
+        width: 90%; /* Largura dos cartões em tablets */
+    }
+
+    .test-name {
+        font-size: 1.3rem; /* Tamanho da fonte para tablets */
+    }
+
+    .test-count, .average-performance {
+        font-size: 1rem; /* Tamanho da fonte para tablets */
+    }
+
+    .performance-item {
+        font-size: 0.9rem; /* Tamanho da fonte para tablets */
+    }
+
+    .learn-more-btn {
+        padding: 8px 16px; /* Ajuste de padding para botões em tablets */
+    }
+}
+
+/* Media Query para telas menores que 480px (dispositivos móveis) */
+@media (max-width: 480px) {
+    .performance-card {
+        width: 95%; /* Largura dos cartões em dispositivos móveis */
+    }
+
+    .test-name {
+        font-size: 1.2rem; /* Tamanho da fonte para dispositivos móveis */
+    }
+
+    .test-count, .average-performance {
+        font-size: 0.9rem; /* Tamanho da fonte para dispositivos móveis */
+    }
+
+    .performance-item {
+        font-size: 0.8rem; /* Tamanho da fonte para dispositivos móveis */
+    }
+
+    .learn-more-btn {
+        padding: 6px 12px; /* Ajuste de padding para botões em dispositivos móveis */
+    }
+}

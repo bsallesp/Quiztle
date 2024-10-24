@@ -22,5 +22,23 @@ namespace Quiztle.CoreBusiness.DTOs
                 Performances = groupedPerformances;
             }
         }
+
+        public int TotalHits()
+        {
+            return Performances.Sum(tp => tp.CorrectAnswers);
+        }
+
+        public int TotalMiss()
+        {
+            return Performances.Sum(tp => tp.IncorrectAnswers);
+        }
+
+        public double MediaScore()
+        {
+            if (!Performances.Any())
+                return 0;
+
+            return Performances.Average(tp => tp.Score);
+        }
     }
 }

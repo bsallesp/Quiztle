@@ -6,8 +6,6 @@
 @using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils
-@using Quiztle.Blazor.Client.APIServices.Tests
-@using Quiztle.Frontend.Client.Utils.Components
 
 @inject GetUserInfos GetUserInfos
 @inject GetTestPerformancesByUserIdService GetTestPerformancesByUserIdService
@@ -15,42 +13,43 @@
 
 @if (_testPerformances != null)
 {
-    foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
-    {
-        <MudContainer MaxWidth="MaxWidth.Large">
+    <div class="full-screen-container">
+        <div class="test-performances-container">
+            <h1 class="greeting">
+                Hi, @GetUserInfos.GetUserNameOrEmail().Result! You had @_setGroupedTestPerformanceDTO.GetTotalPerformances() Tests!
+            </h1>
 
+            @foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
+            {
+                <div class="performance-card">
 
-
-
-            <MudCard Outlined="true" Style="background-color: antiquewhite">
-
-                <MudCardContent>
-                    <MudText>
-
-                        @groupedPerformances.TestName - @groupedPerformances.Performances.Count()
-
-                    </MudText>
-                    <MudText Typo="Typo.body2">
+                    <div class="card-content">
+                        <h3 class="test-name">
+                            @groupedPerformances.TestName
+                        </h3>
+                        <h4 class="test-count">
+                            Total Tests made: @groupedPerformances.Performances.Count()
+                        </h4>
+                        <h3 class="average-performance">
+                            Average Performance: @groupedPerformances.MediaScore();
+                        </h3>
 
                         @foreach (var performance in groupedPerformances.Performances)
                         {
-                            <MudText Typo="Typo.body2">
-                                @performance.TestName - @performance.Score
-                            </MudText>
+                            <h3 class="performance-item">
+                                @performance.Created.ToString("dd/MM HH:mm") - @performance.TestName - @performance.Score%
+                            </h3>
                         }
+                    </div>
 
-                    </MudText>
-
-
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudContainer>
-    }
+                    <div class="card-actions">
+                        <button class="learn-more-btn">Learn More</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 }
-
 
 @code {
     private IEnumerable<TestPerformance> _testPerformances = [];
@@ -65,28 +64,3 @@
         _setGroupedTestPerformanceDTO.GroupAndFill(_testPerformances);
     }
 }
-
-@*
-<MudContainer MaxWidth="MaxWidth.Large">
-    <h3>@performance.TestName</h3>
-
-
-
-
-
-
-
-    <MudCard Outlined="true" Style="background-color: antiquewhite">
-
-        <MudCardContent>
-            <MudText>@performance.TestName</MudText>
-            <MudText Typo="Typo.body2">@performance.TestName</MudText>
-
-            <ChartScorePerformanceComponent Scores="@_testPerformances.Select(p => (double)p.Score).ToList()"
-                                            Dates="@_testPerformances.Select(p => p.Created).ToList()" />
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-        </MudCardActions>
-    </MudCard>
-</MudContainer> *@

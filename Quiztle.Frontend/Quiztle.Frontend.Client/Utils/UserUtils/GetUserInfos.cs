@@ -44,5 +44,27 @@ namespace Quiztle.Frontend.Client.Utils
 
             return [];
         }
+
+        public async Task<string> GetUserNameOrEmail()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                // Tentando obter o nome
+                var nameClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                if (!string.IsNullOrEmpty(nameClaim?.Value))
+                {
+                    return nameClaim.Value;
+                }
+
+                // Se o nome estiver vazio, tentar obter o email
+                var emailClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                return emailClaim?.Value ?? "";
+            }
+
+            return "";
+        }
     }
 }
