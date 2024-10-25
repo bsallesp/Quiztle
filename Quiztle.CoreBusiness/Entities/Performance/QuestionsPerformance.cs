@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Quiztle.CoreBusiness.Entities.Performance.DTO;
+using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Performance
 {

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Quiztle.CoreBusiness.Entities.Performance.DTO;
+using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Performance
 {
@@ -22,5 +23,17 @@ namespace Quiztle.CoreBusiness.Entities.Performance
         [JsonPropertyName("Score")]
         public int Score { get; set; } = 0;
         public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        public IEnumerable<ReportByTagDTO> ReportsByTag()
+        {
+            return QuestionsPerformance
+                .GroupBy(q => q.TagName)
+                .Select(g => new ReportByTagDTO
+                {
+                    Tag = g.Key,
+                    CorrectAmount = g.Count(q => q.CorrectAnswerName != ""),
+                    IncorrectAmount = g.Count(q => q.IncorrectAnswerName != "")
+                });
+        }
     }
 }

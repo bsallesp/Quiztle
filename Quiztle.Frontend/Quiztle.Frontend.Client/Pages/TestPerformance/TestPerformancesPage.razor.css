@@ -1,53 +1,120 @@
 ﻿.full-screen-container {
-    position: relative;
+    position: fixed;
+    top: 97px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding: 20px;
-    height: calc(100vh - 97px); /* Altura padrão do menu */
     background: radial-gradient(circle, white, #d8d1ff);
     color: #2647a5;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 @media (max-width: 900px) {
     .full-screen-container {
-        height: calc(100vh - 77.19px); /* Ajuste para telas menores */
+        top: 77.19px;
     }
 }
 
-
+.greeting {
+    font-family: 'Poppins-Bold', sans-serif;
+    font-size: 2rem;
+    color: #1E3A8A;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(130deg, #d8d1ff, #2647a5);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 
 
 .test-performances-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
 }
 
 .performance-card {
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
-    width: 400px; /* Largura padrão para desktop */
+    width: calc(33.33% - 40px);
+    max-width: 400px;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
+@media (max-width: 1200px) {
+    .performance-card {
+        width: calc(75% - 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .performance-card {
+        width: 90%;
+    }
+
+    .test-name {
+        font-size: 1.3rem;
+    }
+
+    .test-count, .average-performance {
+        font-size: 1rem;
+    }
+
+    .performance-item {
+        font-size: 0.9rem;
+    }
+
+    .learn-more-btn {
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .performance-card {
+        width: 95%;
+    }
+
+    .test-name {
+        font-size: 1.2rem;
+    }
+
+    .test-count, .average-performance {
+        font-size: 0.9rem;
+    }
+
+    .performance-item {
+        font-size: 0.8rem;
+    }
+
+    .learn-more-btn {
+        padding: 6px 12px;
+    }
+}
+
 .test-name {
     font-family: 'Poppins-Bold', sans-serif;
-    font-size: 1.5rem; /* Tamanho padrão para desktop */
+    font-size: 1.5rem;
     color: #1E3A8A;
 }
 
 .test-count, .average-performance {
     font-family: 'Roboto', sans-serif;
-    font-size: 1.2rem; /* Tamanho padrão para desktop */
+    font-size: 1.2rem;
     color: #ff0000;
 }
 
 .performance-item {
     font-family: 'Roboto', sans-serif;
-    font-size: 1rem; /* Tamanho padrão para desktop */
+    font-size: 1rem;
     color: #d8d1ff;
 }
 
@@ -56,50 +123,4 @@
     color: #fff;
     border-radius: 5px;
     padding: 10px 20px;
-}
-
-/* Media Query para telas menores que 768px (tablets e dispositivos móveis) */
-@media (max-width: 768px) {
-    .performance-card {
-        width: 90%; /* Largura dos cartões em tablets */
-    }
-
-    .test-name {
-        font-size: 1.3rem; /* Tamanho da fonte para tablets */
-    }
-
-    .test-count, .average-performance {
-        font-size: 1rem; /* Tamanho da fonte para tablets */
-    }
-
-    .performance-item {
-        font-size: 0.9rem; /* Tamanho da fonte para tablets */
-    }
-
-    .learn-more-btn {
-        padding: 8px 16px; /* Ajuste de padding para botões em tablets */
-    }
-}
-
-/* Media Query para telas menores que 480px (dispositivos móveis) */
-@media (max-width: 480px) {
-    .performance-card {
-        width: 95%; /* Largura dos cartões em dispositivos móveis */
-    }
-
-    .test-name {
-        font-size: 1.2rem; /* Tamanho da fonte para dispositivos móveis */
-    }
-
-    .test-count, .average-performance {
-        font-size: 0.9rem; /* Tamanho da fonte para dispositivos móveis */
-    }
-
-    .performance-item {
-        font-size: 0.8rem; /* Tamanho da fonte para dispositivos móveis */
-    }
-
-    .learn-more-btn {
-        padding: 6px 12px; /* Ajuste de padding para botões em dispositivos móveis */
-    }
 }

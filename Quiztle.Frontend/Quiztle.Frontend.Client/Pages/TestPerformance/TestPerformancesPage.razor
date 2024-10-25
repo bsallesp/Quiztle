@@ -14,11 +14,10 @@
 @if (_testPerformances != null)
 {
     <div class="full-screen-container">
+        <h1 class="greeting">
+            Hi, @GetUserInfos.GetUserNameOrEmail().Result! You had @_setGroupedTestPerformanceDTO.GetTotalPerformances() Tests!
+        </h1>
         <div class="test-performances-container">
-            <h1 class="greeting">
-                Hi, @GetUserInfos.GetUserNameOrEmail().Result! You had @_setGroupedTestPerformanceDTO.GetTotalPerformances() Tests!
-            </h1>
-
             @foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
             {
                 <div class="performance-card">
@@ -36,9 +35,17 @@
 
                         @foreach (var performance in groupedPerformances.Performances)
                         {
-                            <h3 class="performance-item">
+                            <span>
                                 @performance.Created.ToString("dd/MM HH:mm") - @performance.TestName - @performance.Score%
-                            </h3>
+                            </span>
+                            @foreach (var report in performance.ReportsByTag())
+                            {
+                                <span>
+                                    @report.Tag: @report.CorrectAmount of @report.GetTotalAttempts()
+                                </span>
+                                <hr />
+                            }
+                            <hr />
                         }
                     </div>
 
