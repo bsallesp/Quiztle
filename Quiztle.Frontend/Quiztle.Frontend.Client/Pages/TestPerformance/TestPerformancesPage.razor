@@ -14,32 +14,41 @@
 @if (_testPerformances != null)
 {
     <div class="full-screen-container">
-        <h1 class="greeting">
-            Hi, @GetUserInfos.GetUserNameOrEmail().Result! You had @_setGroupedTestPerformanceDTO.GetTotalPerformances() Tests!
-        </h1>
+        <div class="greeting">
+            Hi, @GetUserInfos.GetUserNameOrEmail().Result!
+        </div>
         <div class="test-performances-container">
             @foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
             {
                 <div class="performance-card">
 
                     <div class="card-content">
-                        <h2 class="test-name">
-                            @groupedPerformances.TestName
-                        </h2>
-                        <h4 class="test-count">
-                            Total Practices : @groupedPerformances.Performances.Count()
-                        </h4>
-                        <h4 class="average-performance">
-                            Overview performance:
-                            @groupedPerformances.TotalHits() of @groupedPerformances.TotalProbla(): @groupedPerformances.MediaScore().ToString("00.00")%
-                        </h4>
 
-                        <PerformanceBarComponent
-                            heightBar="15"
-                            goodNumber="@groupedPerformances.TotalHits()"
+                        <div class="overview-top">
+                            <h2 class="">
+                                @groupedPerformances.TestName
+                            </h2>
+
+                            <div class="card-actions overview-button-div">
+                                <button class="learn-more-btn">Play again</button>
+                            </div>
+                        </div>
+
+                        <div class="top-info text-center">
+
+                            <h2 style="padding:5px;">
+                                Total practice tests: @groupedPerformances.Performances.Count()
+                            </h2>
+
+                            <h3 class="text-center">
+                                @groupedPerformances.TotalHits() of @groupedPerformances.TotalProbla() questions: @groupedPerformances.MediaScore().ToString("00.00")%
+                            </h3>
+                        </div>
+
+                        <PerformanceBarComponent heightBar="15"
+                                                 goodNumber="@groupedPerformances.TotalHits()"
                                                  badNumber="@groupedPerformances.TotalMiss()"
-                            showFinalScore="false"
-                        >
+                                                 showFinalScore="false">
 
                         </PerformanceBarComponent>
 
@@ -75,11 +84,6 @@
                         }
                     </div>
 
-
-
-                    <div class="card-actions">
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
                 </div>
             }
         </div>

@@ -31,15 +31,35 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.overview-top {
+    display: flex; /* Usando flexbox para layout */
+    justify-content: space-between; /* Distribui espaço entre os itens */
+    align-items: center; /* Centraliza verticalmente os itens */
+    width: 100%; /* Ocupa 100% do espaço horizontal */
+    padding: 10px 10px;
+}
+
+h2 {
+    margin: 0; /* Remove a margem padrão do h2 */
+}
+
+.learn-more-btn {
+    margin: 0; /* Remove a margem padrão do botão */
+    padding: 10px 20px; /* Ajuste o padding conforme necessário */
+}
+
+.top-info{
+    padding: 10px;
+}
+
 .test-performances-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between; /* Allows for spacing between items */
-    align-items: center; /* Align items in the center */
     padding: 20px;
-    margin: 0 auto; /* Center the container itself */
-    align-items: flex-start;
+    margin: 0 auto;
+    justify-content: center; /* Adicione esta linha para centralizar horizontalmente */
+    align-items: flex-start; /* Este permanece para o alinhamento vertical */
 }
 
 .performance-card {
