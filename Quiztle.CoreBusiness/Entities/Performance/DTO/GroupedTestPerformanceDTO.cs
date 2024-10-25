@@ -33,6 +33,8 @@ namespace Quiztle.CoreBusiness.DTOs
             return Performances.Sum(tp => tp.IncorrectAnswers);
         }
 
+        public int TotalProbla() => TotalHits() + TotalMiss();
+
         public double MediaScore()
         {
             if (!Performances.Any())
@@ -40,5 +42,36 @@ namespace Quiztle.CoreBusiness.DTOs
 
             return Performances.Average(tp => tp.Score);
         }
+
+        public IEnumerable<AggregatedTagPerformance> GetAggregatedPerformanceByTags()
+        {
+            var allAggregatedPerformances = new List<AggregatedTagPerformance>();
+
+            foreach (var performance in Performances)
+            {
+                var aggregatedPerformances = performance.AggregatePerformanceByTags();
+
+                foreach (var aggregated in aggregatedPerformances)
+                {
+                    var existingTag = allAggregatedPerformances.FirstOrDefault(atp => atp.Tag == aggregated.Tag);
+                    if (existingTag != null)
+                    {
+                        existingTag.TotalCorrect += aggregated.TotalCorrect;
+                        existingTag.TotalIncorrect += aggregated.TotalIncorrect;
+                    }
+                    else
+                    {
+                        allAggregatedPerformances.Add(new AggregatedTagPerformance(aggregated.Tag)
+                        {
+                            TotalCorrect = aggregated.TotalCorrect,
+                            TotalIncorrect = aggregated.TotalIncorrect
+                        });
+                    }
+                }
+            }
+
+            return allAggregatedPerformances;
+        }
+
     }
 }

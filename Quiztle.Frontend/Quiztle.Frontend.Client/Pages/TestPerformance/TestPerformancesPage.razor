@@ -23,35 +23,40 @@
                 <div class="performance-card">
 
                     <div class="card-content">
-                        <h3 class="test-name">
+                        <h2 class="test-name">
                             @groupedPerformances.TestName
-                        </h3>
+                        </h2>
                         <h4 class="test-count">
                             Total Practices : @groupedPerformances.Performances.Count()
                         </h4>
-                        <h3 class="average-performance">
+                        <h4 class="average-performance">
                             Overview performance:
-                            <PerformanceBarComponent
-                            heightBar="15"    
-                            >
+                            @groupedPerformances.TotalHits() of @groupedPerformances.TotalProbla(): @groupedPerformances.MediaScore().ToString("00.00")%
+                        </h4>
 
-                            </PerformanceBarComponent>
-                            @groupedPerformances.MediaScore().ToString("00.00")%
-                        </h3>
+                        <PerformanceBarComponent
+                            heightBar="15"
+                            goodNumber="@groupedPerformances.TotalHits()"
+                                                 badNumber="@groupedPerformances.TotalMiss()"
+                            showFinalScore="false"
+                        >
 
+                        </PerformanceBarComponent>
 
-
-                        @foreach (var performance in groupedPerformances.Performances)
+                        @foreach (var testPerformance in groupedPerformances.Performances)
                         {
                             <div class="test-performance-card">
 
                                 <div class="text-center">
+                                    <h6>
+                                        @testPerformance.CorrectAnswers of @testPerformance.TotalOptions(): @testPerformance.Score%
+                                    </h6>
                                     <span>
-                                        @performance.Created.ToString("dd/MM HH:mm")
+                                        @testPerformance.Created.ToString("dd/MM HH:mm")
                                     </span>
                                 </div>
 
-                                @foreach (var report in performance.ReportsByTag())
+                                @foreach (var report in testPerformance.ReportsByTag())
                                 {
 
                                     <div class="performance-card">
@@ -66,7 +71,6 @@
                                                                  heightBar="10"></PerformanceBarComponent>
                                     </div>
                                 }
-
                             </div>
                         }
                     </div>

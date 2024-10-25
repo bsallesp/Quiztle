@@ -31,14 +31,15 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-
 .test-performances-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
+    justify-content: space-between; /* Allows for spacing between items */
+    align-items: center; /* Align items in the center */
     padding: 20px;
-    max-width:500px;
+    margin: 0 auto; /* Center the container itself */
+    align-items: flex-start;
 }
 
 .performance-card {
@@ -46,16 +47,14 @@
     border-radius: 10px;
     padding: 20px;
     width: 100%;
-    max-width: none;
+    max-width: 500px;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
 }
 
-
-
+/* Media queries remain unchanged */
 @media (max-width: 768px) {
-
     .test-name {
         font-size: 1.3rem;
     }
@@ -105,17 +104,16 @@
 .test-count, .average-performance {
     font-family: 'Roboto', sans-serif;
     font-size: 1.2rem;
-    color: #333333; /* Mudança de vermelho para cinza quase preto */
+    color: #333333;
     text-align: center;
 }
 
 .test-performance-card {
-    background-color: rgba(0, 0, 0, 0.05); /* Preto com 10% de opacidade */
-    border-radius: 8px; /* Bordas arredondadas */
-    padding: 15px; /* Espaçamento interno */
-    margin-top: 10px; /* Espaço acima do card */
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
 }
-
 
 .performance-item {
     font-family: 'Roboto', sans-serif;

@@ -35,5 +35,19 @@ namespace Quiztle.CoreBusiness.Entities.Performance
                     IncorrectAmount = g.Count(q => q.IncorrectAnswerName != "")
                 });
         }
+
+        public IEnumerable<AggregatedTagPerformance> AggregatePerformanceByTags()
+        {
+            return QuestionsPerformance
+                .GroupBy(q => q.TagName)
+                .Select(g => new AggregatedTagPerformance(g.Key)
+                {
+                    TotalCorrect = g.Sum(q => q.CorrectAnswerName != "" ? 1 : 0),
+                    TotalIncorrect = g.Sum(q => q.IncorrectAnswerName != "" ? 1 : 0)
+                });
+        }
+
+        public int TotalOptions() => CorrectAnswers + IncorrectAnswers;
+
     }
 }
