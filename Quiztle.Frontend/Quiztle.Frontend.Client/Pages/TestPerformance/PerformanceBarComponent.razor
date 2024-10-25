@@ -1,0 +1,78 @@
+﻿<div class="performance-bar">
+    <div class="bar-container" style="@GetBarContainerStyle()">
+        @if (goodNumber >= 0 && badNumber >= 0)
+        {
+            double good = goodNumber;
+            double bad = badNumber;
+            double total = good + bad;
+
+            double goodPercentage = total > 0 ? (good / total) * 100 : 0;
+            double badPercentage = total > 0 ? (bad / total) * 100 : 0;
+
+            <div class="good-bar" style="@GetGoodBarStyle(goodPercentage)">
+                @if (showText)
+                {
+                    <span class="bar-text">@text</span>
+                }
+            </div>
+            <div class="bad-bar" style="@GetBadBarStyle(badPercentage)"></div>
+        }
+        else
+        {
+            <div>No valid data to display.</div>
+        }
+    </div>
+
+    @if (showGoodNumberLiteral)
+    {
+        <span class="good-number">@goodNumber</span>
+    }
+    @if (showBadNumberLiteral)
+    {
+        <span class="bad-number">@badNumber</span>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? text { get; set; } = "performance";
+
+    [Parameter]
+    public int goodNumber { get; set; } = 50;
+
+    [Parameter]
+    public int badNumber { get; set; } = 50;
+
+    [Parameter]
+    public int heightBar { get; set; } = 25; // Ensure this is a reasonable height for visibility
+
+    [Parameter]
+    public string badColor { get; set; } = "#FF0000";
+
+    [Parameter]
+    public string goodColor { get; set; } = "#0000FF";
+
+    [Parameter]
+    public bool showText { get; set; } = true; // Default to true to show text inside the bar
+
+    [Parameter]
+    public bool showBadNumberLiteral { get; set; } = false;
+
+    [Parameter]
+    public bool showGoodNumberLiteral { get; set; } = false;
+
+    private string GetBarContainerStyle()
+    {
+        return $"height: {heightBar}px;"; // Formata a altura da barra corretamente
+    }
+
+    private string GetGoodBarStyle(double goodPercentage)
+    {
+        return $"width: {goodPercentage}%; background-color: {goodColor};"; // Estilo da barra boa
+    }
+
+    private string GetBadBarStyle(double badPercentage)
+    {
+        return $"width: {badPercentage}%; background-color: {badColor};"; // Estilo da barra ruim
+    }
+}

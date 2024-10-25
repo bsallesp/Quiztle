@@ -1,0 +1,69 @@
+﻿.performance-bar {
+    width: 100%; /* Preenche a largura total do container */
+    display: flex;
+    flex-direction: column;
+}
+
+.bar-container {
+    display: flex;
+    width: 100%;
+    background-color: #f0f0f0; /* Cor de fundo da barra */
+    border-radius: 5px;
+    overflow: hidden; /* Garante que os filhos não saiam do container */
+    position: relative; /* Para posicionar o texto centralizado */
+}
+
+.good-bar {
+    height: 100%; /* Para preencher a altura definida pelo componente */
+    display: flex;
+    align-items: center; /* Alinha o texto verticalmente no centro */
+    justify-content: center; /* Alinha o texto horizontalmente no centro */
+    color: white; /* Cor do texto dentro da barra */
+    position: relative; /* Para usar a posição do texto */
+}
+
+.bad-bar {
+    height: 100%; /* Para preencher a altura definida pelo componente */
+}
+
+/* Estilo para o texto */
+.bar-text {
+    z-index: 1; /* Coloca o texto acima da barra */
+    position: absolute; /* Para centralizar o texto */
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza o texto */
+    color: white; /* Cor do texto dentro da barra */
+    max-width: 90%; /* Limite de largura para o texto */
+    white-space: nowrap; /* Não quebra o texto */
+    overflow: hidden; /* Esconde o texto que não cabe */
+    text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+}
+
+/* Ajustes para números */
+.good-number, .bad-number {
+    margin-top: 5px; /* Espaçamento entre a barra e os números */
+}
+
+
+.performance-bar {
+    width: 100%;
+    position: relative;
+    margin: 10px 0;
+}
+
+.bar-container {
+    height: var(--heightBar, 10px);
+    display: flex;
+    background-color: #f0f0f0; /* Background color for the bar */
+    border-radius: 5px; /* Optional: rounded corners */
+}
+
+.good-bar {
+    height: 100%; /* Make sure the good bar takes full height */
+    border-radius: 5px 0 0 5px; /* Optional: rounded corners for the good bar */
+}
+
+.bad-bar {
+    height: 100%; /* Make sure the bad bar takes full height */
+    border-radius: 0 5px 5px 0; /* Optional: rounded corners for the bad bar */
+}
