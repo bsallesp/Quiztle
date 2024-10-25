@@ -44,22 +44,16 @@
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
-    width: calc(33.33% - 40px);
-    max-width: 400px;
+    width: 100%;
+    max-width: none;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
-@media (max-width: 1200px) {
-    .performance-card {
-        width: calc(75% - 40px);
-    }
-}
+
 
 @media (max-width: 768px) {
-    .performance-card {
-        width: 90%;
-    }
 
     .test-name {
         font-size: 1.3rem;
@@ -104,13 +98,23 @@
     font-family: 'Poppins-Bold', sans-serif;
     font-size: 1.5rem;
     color: #1E3A8A;
+    text-align: center;
 }
 
 .test-count, .average-performance {
     font-family: 'Roboto', sans-serif;
     font-size: 1.2rem;
-    color: #ff0000;
+    color: #333333; /* Mudança de vermelho para cinza quase preto */
+    text-align: center;
 }
+
+.tag-performance-card {
+    background-color: rgba(0, 0, 0, 0.05); /* Preto com 10% de opacidade */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 15px; /* Espaçamento interno */
+    margin-top: 10px; /* Espaço acima do card */
+}
+
 
 .performance-item {
     font-family: 'Roboto', sans-serif;
