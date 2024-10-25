@@ -1,7 +1,7 @@
 ﻿<div class="performance-bar">
     @if (showTitle)
     {
-        <h3 class="bar-title">@title</h3>
+        <h3 class="bar-title text-center">@title</h3>
     }
     <div class="bar-container" style="@GetBarContainerStyle()">
         @if (goodNumber > 0 || badNumber > 0) // Verifica se pelo menos um dos números é maior que zero
@@ -23,7 +23,7 @@
         }
     </div>
 
-    @if (showFinalScore && (goodNumber > 0 || badNumber > 0))
+    @if (showFinalScore)
     {
         <span class="final-score text-center">@goodNumber / @badNumber</span>
     }

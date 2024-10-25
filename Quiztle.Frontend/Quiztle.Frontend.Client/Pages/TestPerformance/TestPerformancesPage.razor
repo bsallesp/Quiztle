@@ -27,46 +27,51 @@
                             @groupedPerformances.TestName
                         </h3>
                         <h4 class="test-count">
-                            Total Tests made: @groupedPerformances.Performances.Count()
+                            Total Practices : @groupedPerformances.Performances.Count()
                         </h4>
                         <h3 class="average-performance">
-                            Average Performance: @groupedPerformances.MediaScore();
+                            Overview performance:
+                            <PerformanceBarComponent
+                            heightBar="15"    
+                            >
+
+                            </PerformanceBarComponent>
+                            @groupedPerformances.MediaScore().ToString("00.00")%
                         </h3>
 
-                        <div class="tag-performance-card">
 
-                            @foreach (var performance in groupedPerformances.Performances)
-                            {
-                                <span>
-                                    @performance.Created.ToString("dd/MM HH:mm") - @performance.TestName - @performance.Score%
-                                </span>
+
+                        @foreach (var performance in groupedPerformances.Performances)
+                        {
+                            <div class="test-performance-card">
+
+                                <div class="text-center">
+                                    <span>
+                                        @performance.Created.ToString("dd/MM HH:mm")
+                                    </span>
+                                </div>
+
                                 @foreach (var report in performance.ReportsByTag())
                                 {
 
                                     <div class="performance-card">
-                                        <PerformanceBarComponent
-                                            goodNumber="@report.CorrectAmount"
-                                            badNumber="@report.IncorrectAmount"
-                                            showText="true"
-                                            title="@report.Tag"
-                                            showTitle="true"
-                                            showBadNumber="true"
-                                            showGoodNumber="true"
-                                            showFinalScore="true"
-                                            heightBar="10"
-                                        ></PerformanceBarComponent>
+                                        <PerformanceBarComponent goodNumber="@report.CorrectAmount"
+                                                                 badNumber="@report.IncorrectAmount"
+                                                                 showText="true"
+                                                                 title="@report.Tag"
+                                                                 showTitle="true"
+                                                                 showBadNumber="true"
+                                                                 showGoodNumber="true"
+                                                                 showFinalScore="true"
+                                                                 heightBar="10"></PerformanceBarComponent>
                                     </div>
-                                        
-                                    <span>
-                                        @report.CorrectAmount of @report.GetTotalAttempts()
-                                    </span>
-                                    <hr />
                                 }
-                                <hr />
-                            }
-                        </div>
 
+                            </div>
+                        }
                     </div>
+
+
 
                     <div class="card-actions">
                         <button class="learn-more-btn">Learn More</button>
