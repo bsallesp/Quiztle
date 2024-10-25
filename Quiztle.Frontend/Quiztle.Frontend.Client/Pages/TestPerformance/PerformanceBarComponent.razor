@@ -8,10 +8,9 @@
         {
             double good = goodNumber;
             double bad = badNumber;
-            double total = good + bad;
 
-            double goodPercentage = total > 0 ? (good / total) * 100 : 0;
-            double badPercentage = total > 0 ? (bad / total) * 100 : 0;
+            double goodPercentage = Total() > 0 ? (good / Total()) * 100 : 0;
+            double badPercentage = Total() > 0 ? (bad / Total()) * 100 : 0;
 
             <div class="good-bar" style="@GetGoodBarStyle(goodPercentage)"></div>
             <div class="bad-bar" style="@GetBadBarStyle(badPercentage)"></div>
@@ -19,13 +18,12 @@
         else
         {
             <div>No valid data to display.</div>
-            // Opcional: mensagem caso não haja dados válidos
         }
     </div>
 
     @if (showFinalScore)
     {
-        <span class="final-score text-center">@goodNumber / @badNumber</span>
+        <span class="final-score text-center">@goodNumber / @Total()</span>
     }
 </div>
 
@@ -101,4 +99,6 @@
 
         return string.Join(';', styles) + (styles.Any() ? ";" : string.Empty);
     }
+
+    private double Total() => goodNumber + badNumber;
 }

@@ -45,6 +45,8 @@
 }
 
 .bar-title {
+    display: flex;
+    flex-wrap: wrap;
     font-size: 0.875rem;
     margin-bottom: 5px;
     color: #1E3A8A;

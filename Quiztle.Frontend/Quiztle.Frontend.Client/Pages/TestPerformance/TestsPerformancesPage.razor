@@ -12,60 +12,45 @@
 @inject GetTestPerformancesByUserIdService GetTestPerformancesByUserIdService
 @attribute [Authorize]
 
+
 @if (_testPerformances != null)
 {
     <div class="full-screen-container">
         <div class="greeting">
             Hi, @GetUserInfos.GetUserNameOrEmail().Result!
         </div>
-        <div class="test-performances-container">
+        <div class="test-performances-container text-center">
             @foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)
             {
-                <div class="performance-card">
+                <div class="performance-card text-center">
 
                     <div class="card-content">
 
-                        <div class="top-info text-center" @onclick=ToggleTestsBox>
+                        <ShieldComponent fileName="@groupedPerformances.Performances.First().Shield">
+                        </ShieldComponent>
 
-                            <ShieldComponent
-                                fileName="@groupedPerformances.Performances.First().Shield"
-                            >
-                            </ShieldComponent>
+                        <div class="text-center p-4">
+                            <h2 class="">
+                                @groupedPerformances.TestName
+                            </h2>
+                        </div>
 
-                            <div class="overview-top">
-                                <h2 class="">
-                                    @groupedPerformances.TestName
-                                </h2>
-
-                                @if (_isTestsBoxVisible)
-                                {
-                                    <div class="card-actions overview-button-div">
-                                        <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown"
-                                                 Title="Favorite"
-                                                 Size="Size.Large" />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="card-actions overview-button-div">
-                                        <MudIcon Icon="@Icons.Material.Filled.ArrowDropUp"
-                                                 Title="Favorite"
-                                                 Size="Size.Large" />
-                                    </div>
-                                }
-
-                            </div>
+                        <div class="performance-card">
 
                             <h2 style="padding:5px;">
-                                Total practice tests: @groupedPerformances.Performances.Count()
+                                Overall Statistics:
                             </h2>
 
-                            <h3 class="text-center">
+                            <h3 style="padding:5px;">
+                                Total practice tests: @groupedPerformances.Performances.Count()
+                            </h3>
+
+                            <h4 class="text-center">
                                 @groupedPerformances.TotalHits()
                                 of
                                 @groupedPerformances.TotalProbla()
                                 questions: @groupedPerformances.MediaScore().ToString("00.00")%
-                            </h3>
+                            </h4>
 
                             <PerformanceBarComponent heightBar="15"
                                                      goodNumber="@groupedPerformances.TotalHits()"
@@ -75,40 +60,63 @@
                             </PerformanceBarComponent>
                         </div>
 
-                        @if (_isTestsBoxVisible)
-                        {
-                            @foreach (var testPerformance in groupedPerformances.Performances)
-                            {
-                                <div class="test-performance-card">
+                        <div class="performance-card">
+                            <h2>
+                                Statistics by practice test
+                            </h2>
+                            <span>
+                                coming soon
+                            </span>
 
-                                    <div class="text-center">
-                                        <h6>
-                                            @testPerformance.CorrectAnswers of @testPerformance.TotalOptions(): @testPerformance.Score%
-                                        </h6>
-                                        <span>
-                                            @testPerformance.Created.ToString("dd/MM HH:mm")
-                                        </span>
-                                    </div>
+@*                             <PerformanceByTestComponent>
 
-                                    @foreach (var report in testPerformance.ReportsByTag())
-                                    {
+                            </PerformanceByTestComponent>
 
-                                        <div class="performance-card">
-                                            <PerformanceBarComponent goodNumber="@report.CorrectAmount"
-                                                                     badNumber="@report.IncorrectAmount"
-                                                                     showText="true"
-                                                                     title="@report.Tag"
-                                                                     showTitle="true"
-                                                                     showBadNumber="true"
-                                                                     showGoodNumber="true"
-                                                                     showFinalScore="true"
-                                                                     heightBar="10"></PerformanceBarComponent>
+                            <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Collapse" : "Expand")</MudButton>
+                            <MudCollapse Expanded="_expanded">
+
+                                @foreach (var testPerformance in groupedPerformances.Performances)
+                                {
+                                    <div class="test-performance-card">
+
+                                        <div class="text-center">
+                                            <h6>
+                                                @testPerformance.CorrectAnswers of @testPerformance.TotalOptions(): @testPerformance.Score%
+                                            </h6>
+                                            <span>
+                                                @testPerformance.Created.ToString("dd/MM HH:mm")
+                                            </span>
                                         </div>
-                                    }
-                                </div>
-                            }
-                        }
 
+                                        @foreach (var report in testPerformance.ReportsByTag())
+                                        {
+
+                                            <div class="performance-card">
+                                                <PerformanceBarComponent goodNumber="@report.CorrectAmount"
+                                                                         badNumber="@report.IncorrectAmount"
+                                                                         showText="true"
+                                                                         title="@report.Tag"
+                                                                         showTitle="true"
+                                                                         showBadNumber="true"
+                                                                         showGoodNumber="true"
+                                                                         showFinalScore="true"
+                                                                         heightBar="10"></PerformanceBarComponent>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                            </MudCollapse> *@
+                        </div>
+
+                        <div class="performance-card">
+                            <h2>
+                                Statistics by Topic
+                            </h2>
+                            <span>
+                                coming soon
+                            </span>
+                        </div>
                     </div>
 
                 </div>
@@ -120,19 +128,20 @@
 @code {
     private IEnumerable<TestPerformance> _testPerformances = [];
     private SetGroupedPerformancesDTO _setGroupedTestPerformanceDTO = new();
-    private bool _isTestsBoxVisible = false;
 
     private string _userId = "";
-
-    private void ToggleTestsBox()
-    {
-        _isTestsBoxVisible = !_isTestsBoxVisible;
-    }
 
     protected override async Task OnInitializedAsync()
     {
         _userId = await GetUserInfos.GetUserId();
         _testPerformances = await GetTestPerformancesByUserIdService.ExecuteAsync(Guid.Parse(_userId));
         _setGroupedTestPerformanceDTO.GroupAndFill(_testPerformances);
+    }
+
+    bool _expanded = false;
+
+    private void OnExpandCollapseClick()
+    {
+        _expanded = !_expanded;
     }
 }
