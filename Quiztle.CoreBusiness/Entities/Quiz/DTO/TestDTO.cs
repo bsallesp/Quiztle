@@ -118,7 +118,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 IncorrectAnswers = this.QuestionsDTO.Count - this.GetTotalCorrectAnswers(),
                 Score = this.CalculateScore(),
                 QuestionsPerformance = [],
-                TestId = Id
+                TestId = Id,
+                Shield = this.ShieldSVG
             };
 
             foreach (var questionDTO in QuestionsDTO)

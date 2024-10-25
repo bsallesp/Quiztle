@@ -1,0 +1,35 @@
+﻿<img src=@finalPath width="@size" />
+
+
+@code {
+    [Parameter]
+    public string? path { get; set; }
+
+    [Parameter]
+    public string? fileName { get; set; }
+
+    [Parameter]
+    public string size { get; set; } = "100px";
+
+    private string finalPath = "";
+
+    protected override Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(fileName)) fileName = "default.svg";
+        if (string.IsNullOrEmpty(path)) path = "img/courses/";
+
+        finalPath = path + fileName;
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (string.IsNullOrEmpty(fileName)) fileName = "default.svg";
+        if (string.IsNullOrEmpty(path)) path = "img/courses/";
+
+        finalPath = path + fileName;
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

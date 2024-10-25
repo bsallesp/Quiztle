@@ -19,5 +19,7 @@ namespace Quiztle.CoreBusiness.Entities.Performance
 
         [JsonPropertyName("TagName")]
         public string TagName { get; set; } = "";
+        [JsonPropertyName("Created")]
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }

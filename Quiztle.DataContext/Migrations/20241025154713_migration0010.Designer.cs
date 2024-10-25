@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Quiztle.DataContext;
@@ -11,9 +12,11 @@ using Quiztle.DataContext;
 namespace Quiztle.DataContext.Migrations
 {
     [DbContext(typeof(PostgreQuiztleContext))]
-    partial class PostgreQuiztleContextModelSnapshot : ModelSnapshot
+    [Migration("20241025154713_migration0010")]
+    partial class migration0010
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -22,7 +22,10 @@ namespace Quiztle.CoreBusiness.Entities.Performance
 
         [JsonPropertyName("Score")]
         public int Score { get; set; } = 0;
+        [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
+        [JsonPropertyName("Shield")]
+        public string Shield { get; set; } = "default.svg";
 
         public IEnumerable<ReportByTagDTO> ReportsByTag()
         {

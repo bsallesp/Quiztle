@@ -61,23 +61,6 @@
                         </div>
                     </div>
 
-                    @*                     <div>
-            @code {
-            private HashSet<string> displayedTags = new HashSet<string>();
-            }
-
-            <div class="text-center">
-            @foreach (var question in _testDTO.QuestionsDTO)
-            {
-            if (displayedTags.Add(question.Tag))
-            {
-            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@question.Tag</MudChip>
-            }
-            }
-            </div>
-            </div> *@
-
-
                     @foreach (var questionDTO in _testDTO.QuestionsDTO)
                     {
                         var index = _testDTO.QuestionsDTO.IndexOf(questionDTO);
@@ -186,7 +169,6 @@
         {
             Nav.NavigateTo($"/Games/Arcade/");
         }
-
     }
 
     private async Task FinalizeTestResponse()

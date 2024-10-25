@@ -6,6 +6,7 @@
 @using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils
+@using Quiztle.Frontend.Client.Utils.Components
 
 @inject GetUserInfos GetUserInfos
 @inject GetTestPerformancesByUserIdService GetTestPerformancesByUserIdService
@@ -25,6 +26,11 @@
                     <div class="card-content">
 
                         <div class="top-info text-center" @onclick=ToggleTestsBox>
+
+                            <ShieldComponent
+                                fileName="@groupedPerformances.Performances.First().Shield"
+                            >
+                            </ShieldComponent>
 
                             <div class="overview-top">
                                 <h2 class="">
