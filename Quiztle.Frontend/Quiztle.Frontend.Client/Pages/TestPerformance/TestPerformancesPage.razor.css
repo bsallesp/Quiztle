@@ -1,13 +1,20 @@
 ﻿.full-screen-container {
     position: relative;
     padding: 20px;
-    height: 100vh; /* Ocupa 100% da altura da viewport */
+    height: calc(100vh - 97px); /* Altura padrão do menu */
     background: radial-gradient(circle, white, #d8d1ff);
     color: #2647a5;
-    display: flex; /* Para alinhar o conteúdo no centro, se necessário */
-    flex-direction: column; /* Para uma coluna de itens */
-    justify-content: center; /* Centraliza verticalmente */
+    display: flex;
+    flex-direction: column;
 }
+
+@media (max-width: 900px) {
+    .full-screen-container {
+        height: calc(100vh - 77.19px); /* Ajuste para telas menores */
+    }
+}
+
+
 
 
 .test-performances-container {
