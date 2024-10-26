@@ -1,5 +1,4 @@
-﻿@inject NavigationManager NavigationManager
-
+﻿@* @inject NavigationManager NavigationManager
 
 @code {
     [Parameter]
@@ -9,8 +8,11 @@
 
     protected override Task OnParametersSetAsync()
     {
-        NavigationManager.NavigateTo(address, force);
+        var uri = new Uri(NavigationManager.BaseUri);
+        var fullAddress = new UriBuilder(uri) { Scheme = Uri.UriSchemeHttps, Host = address }.Uri.ToString();
 
+        NavigationManager.NavigateTo(fullAddress, force);
         return base.OnParametersSetAsync();
     }
 }
+ *@

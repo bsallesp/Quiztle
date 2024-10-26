@@ -30,14 +30,14 @@ builder.Services.AddTransient<GetUserInfos>();
 
 builder.Services.AddAuthorizationCore();
 
-Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
+//Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
 
 #region Configuração da API
 var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
 if (string.IsNullOrEmpty(QuiztleAPIURL))
     throw new Exception("API URL is not configured in appsettings.json");
 
-Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {QuiztleAPIURL}");
+//Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {QuiztleAPIURL}");
 
 builder.Services.AddScoped(sp => new HttpClient
 {

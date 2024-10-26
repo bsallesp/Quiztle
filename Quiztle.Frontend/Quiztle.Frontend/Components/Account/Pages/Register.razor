@@ -15,10 +15,9 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Register</PageTitle>
-
-
 
 <AuthorizeView>
     <Authorized>
@@ -88,6 +87,22 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var profileUrl = new Uri(new Uri(NavigationManager.BaseUri), "profile").ToString();
+
+            // Escreve a URL no console para verificar
+            Console.WriteLine($"Navigating to: {profileUrl}");
+
+            NavigationManager.NavigateTo(profileUrl);
+        }
+    }
 
     public async Task RegisterUser(EditContext editContext)
     {

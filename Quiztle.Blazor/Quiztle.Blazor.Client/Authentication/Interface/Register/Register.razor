@@ -7,64 +7,60 @@
 @inject GetUserByEmailService GetUserByEmailService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject DefaultAuthenticationStateProvider DefaultAuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveAuto
 
 @inject NavigationManager NavigationManager
 
 <AuthorizeView>
-    <Authorized>
-        <RedirectPageComponent address="/profile" force="false"></RedirectPageComponent>
-    </Authorized>
-
     <NotAuthorized>
+        <div class="container">
+            <div class="display-5">
+                Register
+            </div>
 
+            <input type="email" id="email" name="email" placeholder="Email" @bind-value="_userEmail" @bind-value:event="oninput">
+
+
+            @*     <div class="forgot-links">
+            Forgot my email
+            </div> *@
+
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="password"
+                   @bind="_userPass">
+
+            @*     <div class="forgot-links">
+            Forgot my password
+            </div> *@
+
+
+            <button @onclick=Submit>
+                Submit
+            </button>
+
+            @if (_showError)
+            {
+                <div class="error-display">
+                    @_errorMessage
+                </div>
+            }
+
+            <button class="google-button" disabled>
+
+                <img src="/svg/google.png" />
+                Register with google (coming soon)
+
+            </button>
+            <hr>
+            <button @onclick="GoToLogin" class="div-login-link">Already registered? Login</button>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 
-<div class="container">
-    <div class="display-5">
-        Register
-    </div>
-
-    <input type="email" id="email" name="email" placeholder="Email" @bind-value="_userEmail" @bind-value:event="oninput">
-
-
-@*     <div class="forgot-links">
-        Forgot my email
-    </div> *@
-
-    <input type="password"
-        id="password"
-        name="password"
-        placeholder="password"
-           @bind="_userPass">
-
-@*     <div class="forgot-links">
-        Forgot my password
-    </div> *@
-
-
-    <button @onclick=Submit>
-        Submit
-        </button>
-
-    @if (_showError)
-    {
-        <div class="error-display">
-            @_errorMessage
-        </div>
-    }
-
-    <button class="google-button" disabled>
-    
-        <img src="/svg/google.png"/>
-        Register with google (coming soon)
-        
-    </button>
-    <hr>
-    <button @onclick="GoToLogin" class="div-login-link">Already registered? Login</button>
-</div>
 
 @code{
     private string _userEmail = "bsallesp@gmail.com";
@@ -73,13 +69,6 @@
     private string _errorMessage = "";
 
     private User _newUser = new();
-
-    protected override Task OnInitializedAsync()
-    {
-
-
-        return base.OnInitializedAsync();
-    }
 
     private void GoToLogin()
     {
