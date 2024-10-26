@@ -1,3 +1,8 @@
-﻿img {
-    filter: brightness(2) invert(1); /* Altera a cor para branco */
+﻿.sign-in-link {
+    color: white; /* Definir a cor do texto como branco */
+    text-decoration: none; /* Remover sublinhado se necessário */
 }
+
+    .sign-in-link:focus, .sign-in-link:hover {
+        color: white; /* Manter a cor branca no hover ou foco */
+    }

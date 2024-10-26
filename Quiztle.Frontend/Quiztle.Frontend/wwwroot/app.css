@@ -1,4 +1,3 @@
-/* Font faces */
 @font-face {
     font-family: 'Rajdhani';
     src: url('/fonts/Rajdhani-Regular.woff2') format('truetype');
@@ -20,29 +19,45 @@
     font-style: normal;
 }
 
-/* Global styles */
 html, body {
     font-family: 'Roboto', sans-serif;
 }
 
 a, .btn-link {
-    color: #1E3A8A; /* Azul Real */
+    color: #1E3A8A;
 }
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+    a:focus, a:hover, a:visited {
+        color: blue;
+    }
+
+.sign-in-link {
+    color: blue;
+}
+
+    .sign-in-link:focus, .sign-in-link:hover {
+        color: blue;
+    }
 
 .btn-primary {
     color: #fff;
-    background-color: #1E3A8A; /* Azul Real */
-    border-color: #1E3A8A; /* Azul Real */
+    background-color: #1E3A8A;
+    border-color: #1E3A8A;
 }
 
 .btn-secondary {
     color: #fff;
-    background-color: #10B981; /* Verde Claro */
-    border-color: #10B981; /* Verde Claro */
+    background-color: #10B981;
+    border-color: #10B981;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #10B981; /* Verde Claro */
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #10B981;
 }
 
 .content {
@@ -54,7 +69,7 @@ h1:focus {
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #10B981; /* Verde Claro */
+    outline: 1px solid #10B981;
 }
 
 .invalid {
@@ -79,33 +94,31 @@ h1:focus {
     border-color: #929292;
 }
 
-/* Custom styles */
 header, footer {
-    background-color: #1E3A8A; /* Azul Real */
+    background-color: #1E3A8A;
     color: white;
 }
 
 button.primary {
-    background-color: #1E3A8A; /* Azul Real */
+    background-color: #1E3A8A;
 }
 
 button.secondary {
-    background-color: #10B981; /* Verde Claro */
+    background-color: #10B981;
 }
 
 .success-icon {
-    color: #10B981; /* Verde Claro */
+    color: #10B981;
 }
 
 .section-background {
-    background-color: #F3F4F6; /* Cinza Claro */
+    background-color: #F3F4F6;
 }
 
 p, h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto', sans-serif;
 }
 
-/* Example for Rajdhani font usage in logo */
 .logo-text {
     font-family: 'Rajdhani', sans-serif;
     font-weight: normal;

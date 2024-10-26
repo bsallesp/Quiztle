@@ -1,16 +1,18 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="menu-item">
-    <a href="/Account/Login">
-        @if (isSignedIn)
-        {
+    @if (isSignedIn)
+    {
+        <NavLink href="/Profile" class="nav-link" active-class="active">
             <img src="svg/user.svg" style="height:50px; width:50px" alt="User Profile" />
-        }
-        else
-        {
-            <img src="svg/login.svg" style="height:50px; width:50px;" alt="Login" /> 
-        }
-    </a>
+        </NavLink>
+    }
+    else
+    {
+        <NavLink href="/Account/Login" class="sign-in-link" active-class="active">
+            <h6 class="sign-in-link">Sign In</h6>
+        </NavLink>
+    }
 </div>
 
 @code {
@@ -21,9 +23,6 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity != null && user.Identity.IsAuthenticated)
-            isSignedIn = true;
-        else
-            isSignedIn = false;
+        isSignedIn = user.Identity != null && user.Identity.IsAuthenticated;
     }
 }
