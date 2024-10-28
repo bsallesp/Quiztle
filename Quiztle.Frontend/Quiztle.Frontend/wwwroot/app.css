@@ -1,3 +1,4 @@
+/* Font Faces */
 @font-face {
     font-family: 'Rajdhani';
     src: url('/fonts/Rajdhani-Regular.woff2') format('truetype');
@@ -19,31 +20,95 @@
     font-style: normal;
 }
 
+/* Root Variables */
+:root {
+    --font-family: 'Roboto', sans-serif;
+    --font-size-base: 16px;
+    --font-size-h1: 32px;
+    --font-size-h2: 28px;
+    --font-size-h3: 24px;
+    --font-size-h4: 20px;
+    --font-size-h5: 18px;
+    --font-size-h6: 16px;
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+    --line-height-base: 1.5;
+    --color-text-primary: #333;
+    --color-text-secondary: #555;
+}
+
+/* Base Elements */
 html, body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-base);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto', sans-serif;
+    color: var(--color-text-primary);
 }
 
-a, .btn-link {
+h1 {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+}
+
+h2 {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+}
+
+h3 {
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-bold);
+}
+
+h4 {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+}
+
+h5 {
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+}
+
+h6 {
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+}
+
+/* Text Elements */
+p {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-base);
+}
+
+.logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: normal;
+}
+
+/* Links */
+a, .btn-link, .sign-in-link {
     color: #1E3A8A;
-}
-
-a {
-    color: blue;
     text-decoration: none;
 }
 
-    a:focus, a:hover, a:visited {
-        color: blue;
-    }
-
-.sign-in-link {
-    color: blue;
-}
-
+    a:focus, a:hover, a:visited,
     .sign-in-link:focus, .sign-in-link:hover {
         color: blue;
     }
 
+/* Buttons */
 .btn-primary {
     color: #fff;
     background-color: #1E3A8A;
@@ -56,18 +121,21 @@ a {
     border-color: #10B981;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+button.primary {
+    background-color: #1E3A8A;
+}
+
+button.secondary {
+    background-color: #10B981;
+}
+
+/* Focus Styles */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #10B981;
 }
 
-.content {
-    padding-top: 1.1rem;
-}
-
-h1:focus {
-    outline: none;
-}
-
+/* Validation Styles */
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #10B981;
 }
@@ -80,6 +148,7 @@ h1:focus {
     color: #e50000;
 }
 
+/* Error Boundary */
 .blazor-error-boundary {
     background: url(data:image/svg+xml;base64,...) no-repeat 1rem/1.8rem, #b32121;
     padding: 1rem 1rem 1rem 3.7rem;
@@ -90,6 +159,7 @@ h1:focus {
         content: "An error has occurred.";
     }
 
+/* Miscellaneous Styles */
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
@@ -97,14 +167,6 @@ h1:focus {
 header, footer {
     background-color: #1E3A8A;
     color: white;
-}
-
-button.primary {
-    background-color: #1E3A8A;
-}
-
-button.secondary {
-    background-color: #10B981;
 }
 
 .success-icon {
@@ -115,11 +177,10 @@ button.secondary {
     background-color: #F3F4F6;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', sans-serif;
+.content {
+    padding-top: 1.1rem;
 }
 
-.logo-text {
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: normal;
+h1:focus {
+    outline: none;
 }

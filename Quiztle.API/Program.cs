@@ -24,6 +24,7 @@ using Quiztle.API.Controllers;
 using Quiztle.CoreBusiness.Entities.Performance;
 using Quiztle.DataContext.DataService.Repository.Performance;
 using Quiztle.API.Controllers.PerformanceController;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ builder.Services.AddHttpClient<OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
 });
+
+StripeConfiguration.ApiKey = "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";
 
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 

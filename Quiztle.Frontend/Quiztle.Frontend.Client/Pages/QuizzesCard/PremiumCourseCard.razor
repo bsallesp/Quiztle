@@ -1,4 +1,8 @@
-﻿<div class="container bg-fx">
+﻿@using Quiztle.Frontend
+
+
+
+<div class="container bg-fx">
     <img src="img/courses/@Image" />
 
     <div class="card-title text-center">
@@ -23,9 +27,9 @@
         }
     </div>
 
-    <div class="card-buttons">
-        <a href="/signup" class="btn btn-primary">PLAY NOW</a>
-    </div>
+    <button class="card-buttons" @onclick="Checkout">
+        PLAY NOW
+    </button>
 
     <div class="crown">
         <img src="svg/courses/crown.svg" />
@@ -44,6 +48,18 @@
 
     [Parameter]
     public required string[] Contents { get; set; }
+
+    [Parameter]
+    public required string PriceId { get; set; }
+
+    [Parameter]
+    public required bool Enabled { get; set; }
+
+
+    private void Checkout()
+    {
+        
+    }
 
     protected override Task OnParametersSetAsync()
     {

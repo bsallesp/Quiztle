@@ -12,6 +12,8 @@ using Quiztle.Blazor.Client.APIServices;
 using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
+using Quiztle.Frontend.Components.Stripe;
+using Quiztle.Frontend.Components.Stripe.Engine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddTransient<GetUserInfos>();
+
+builder.Services.AddTransient<StripeBlazor>();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
@@ -148,7 +152,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 #endregion
 
-StripeConfiguration.ApiKey = "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";
+//StripeConfiguration.ApiKey = "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";
+StripeConfiguration.ApiKey = "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";
+
 
 var app = builder.Build();
 
