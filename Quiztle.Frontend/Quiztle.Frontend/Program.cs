@@ -12,10 +12,15 @@ using Quiztle.Blazor.Client.APIServices;
 using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
-using Quiztle.Frontend.Components.Stripe;
-using Quiztle.Frontend.Components.Stripe.Engine;
+using Microsoft.Extensions.Logging;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+ILogger logger = factory.CreateLogger("Program");
+
+logger.LogInformation("fsdfffsdfsdsdsdffsd");
 
 builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
 
@@ -33,8 +38,6 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddTransient<GetUserInfos>();
-
-builder.Services.AddTransient<StripeBlazor>();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
@@ -129,8 +132,6 @@ builder.Services.AddAuthentication(options =>
 
 #endregion
 
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
 #region DataContext
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -152,7 +153,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 #endregion
 
-//StripeConfiguration.ApiKey = "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";
 StripeConfiguration.ApiKey = "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";
 
 

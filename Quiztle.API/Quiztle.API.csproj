@@ -36,5 +36,4 @@
     <Folder Include="Controllers\BookControllers\" />
     <Folder Include="Controllers\LLMControllers\Book\" />
   </ItemGroup>
-
 </Project>

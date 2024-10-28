@@ -8,7 +8,7 @@ namespace Quiztle.API.Controllers.StripeController
     [ApiController]
     public class StripeInvoiceController : ControllerBase
     {
-        [HttpGet("invoices/all")]
+        [HttpGet("invoices/alla")]
         public ActionResult GetAllInvoices()
         {
             var options = new InvoiceListOptions {  };

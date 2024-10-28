@@ -28,10 +28,20 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
+using ILoggerFactory factory = LoggerFactory.Create(builder =>
+{
+    builder.AddDebug();
+    builder.AddConsole();
+});
+ILogger logger = factory.CreateLogger("Program");
+
+logger.LogInformation("tesfsdfdste123");
+
 builder.Services.AddHttpClient<OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
 });
+
 
 StripeConfiguration.ApiKey = "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";
 
@@ -141,6 +151,8 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+
+logger.LogInformation("Hello CertCool! Logging is {Description}.", "fun");
 
 var app = builder.Build();
 

@@ -11,26 +11,27 @@
     },
     "https": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7204;http://localhost:5514",
-      "hotReloadEnabled": false
+      "hotReloadEnabled": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:5514",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
@@ -39,9 +40,19 @@
       "publishAllPorts": true,
       "useSSL": true
     },
+    "WSL2": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "hotReloadEnabled": false
+    },
     "WSL": {
       "commandName": "WSL2",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "https://localhost:7204/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

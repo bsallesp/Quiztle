@@ -33,5 +33,4 @@
     <Folder Include="wwwroot\svg\courses\" />
     <Folder Include="wwwroot\svg\test-rating\" />
   </ItemGroup>
-
 </Project>

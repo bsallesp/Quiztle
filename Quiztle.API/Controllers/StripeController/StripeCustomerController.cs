@@ -59,27 +59,6 @@ namespace Quiztle.API.Controllers.StripeController
             return Ok(result);
         }
 
-        [HttpGet("invoices/all")]
-        public ActionResult GetAllInvoices(string invoiceId = "", string productId = "", string customerId = "")
-        {
-
-            var options = new InvoiceListOptions { Limit = 3, Customer=customerId };
-            var service = new InvoiceService();
-
-            StripeList<Invoice> invoices = service.List(options);
-
-            return Ok(invoices);
-        }
-
-        //[HttpPost("invoices/")]
-        //public ActionResult<object> GetAllInvoices(string invoiceId, string productId, string customerId)
-        //{
-
-        //    var service = new InvoiceService();
-        //    service.Get(invoiceId);
-        //}
-
-
 
         [HttpGet("listall")]
         public ActionResult<object> ListAllCustomers()
@@ -96,6 +75,8 @@ namespace Quiztle.API.Controllers.StripeController
                 c.Created,
                 c.Description
             }).ToList();
+
+            Console.WriteLine(response);
 
             return Ok(response);
         }
