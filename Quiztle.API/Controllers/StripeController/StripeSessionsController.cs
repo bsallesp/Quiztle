@@ -19,14 +19,22 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
         [HttpGet("sessions/createsession")]
-        public async Task<ActionResult> CreateSession(string priceID)
+        public async Task<ActionResult> CreateSession
+            (string priceID,
+            string customerId,
+            string customerEmail
+            )
         {
-            string domain = "http://localhost:5514/";
+            string domain = "http://localhost:5008/";
             string sucessPage = "sucess";
             string cancelPage = "abandoned";
 
             var options = new SessionCreateOptions
             {
+                ClientReferenceId = customerId,
+                Customer = customerId,
+                CustomerEmail = customerEmail,
+
                 LineItems =
                 [
                     new()
@@ -34,6 +42,7 @@ namespace Quiztle.API.Controllers.StripeController
                         Price = priceID,
                         Quantity = 1,
                     },
+
                 ],
                 Mode = "payment",
                 SuccessUrl = domain + sucessPage,

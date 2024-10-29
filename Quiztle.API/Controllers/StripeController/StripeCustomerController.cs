@@ -47,6 +47,27 @@ namespace Quiztle.API.Controllers.StripeController
             return Ok(result.FirstOrDefault()!.Email);
         }
 
+
+        [HttpGet("search/customeridbyemail")]
+        public ActionResult<string> SearchCustomerIdByEmail(string email)
+        {
+            var options = new CustomerSearchOptions
+            {
+                Query = $"email:'{email.ToLower()}'",
+            };
+            var service = new CustomerService();
+            var result = service.Search(options);
+
+            Console.WriteLine("");
+
+
+            if (result.FirstOrDefault() == null) return NotFound();
+
+            return Ok(result.FirstOrDefault()!.Id);
+        }
+
+
+        [HttpGet("customer/search")]
         private ActionResult<object> Search(string name = "", string email = "")
         {
             var queryString = $"name:'{name}' OR email:'{email.ToLower()}'";
@@ -76,7 +97,7 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
 
-        [HttpGet("listall")]
+        [HttpGet("customer/listall")]
         public ActionResult<object> ListAllCustomers()
         {
             var options = new CustomerListOptions { Limit = 3 };
@@ -98,7 +119,7 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
 
-        [HttpPost("create")]
+        [HttpPost("customer/create")]
         public ActionResult<object> CreateCustomer(string name, string email)
         {
             var options = new CustomerCreateOptions

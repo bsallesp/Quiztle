@@ -57,6 +57,18 @@ namespace Quiztle.Frontend.Client.Utils
             return !string.IsNullOrEmpty(nameClaim) ? nameClaim : await GetUserEmail();
         }
 
+        public async Task<Dictionary<string, string>> GetUserNameAndEmail()
+        {
+            var claims = new Dictionary<string, string>
+            {
+                ["Name"] = await GetClaimValue(ClaimTypes.Name) ?? "",
+                ["Email"] = await GetClaimValue(ClaimTypes.Email) ?? ""
+            };
+
+            return claims;
+        }
+
+
         private async Task<string?> GetClaimValue(string claimType)
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();

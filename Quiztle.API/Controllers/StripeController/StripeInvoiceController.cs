@@ -8,7 +8,7 @@ namespace Quiztle.API.Controllers.StripeController
     [ApiController]
     public class StripeInvoiceController : ControllerBase
     {
-        [HttpGet("invoices/alla")]
+        [HttpGet("invoices/all")]
         public ActionResult GetAllInvoices()
         {
             var options = new InvoiceListOptions {  };
@@ -19,7 +19,7 @@ namespace Quiztle.API.Controllers.StripeController
             return Ok(invoices);
         }
 
-        [HttpGet("invoices/bycostumerid")]
+        [HttpGet("invoices/bycustomerId")]
         public ActionResult GetInvoicesByCustomerId(string customerId = "")
         {
             var options = new InvoiceListOptions { Limit = 3, Customer = customerId };
@@ -28,16 +28,6 @@ namespace Quiztle.API.Controllers.StripeController
             StripeList<Invoice> invoices = service.List(options);
 
             return Ok(invoices);
-        }
-
-        [HttpGet("invoices/bycustomerId")]
-        public ActionResult GetInvoicesByCustomerEmail(string customerId)
-        {
-            var options = new InvoiceSearchOptions { Query = $"customer:'{customerId}'" };
-            var service = new InvoiceService();
-            var result = service.Search(options);
-
-            return Ok(result);
         }
     }
 }

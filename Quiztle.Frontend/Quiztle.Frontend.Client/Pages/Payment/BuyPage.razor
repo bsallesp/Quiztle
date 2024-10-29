@@ -1,15 +1,27 @@
 ﻿@page "/Buy"
+@using Microsoft.AspNetCore.Authorization
 @using Quiztle.Frontend.Client.APIServices.StripeService
 
 @inject StripePaymentService StripePaymentService
+@inject StripeCustomerService StripeCustomerService
+@inject GetUserInfos GetUserInfos
+
+@attribute [Authorize]
 
 <h3>BuyPage</h3>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var result = await StripePaymentService.CreateSession("price_1QF42pLKiSsrfvcHmFPvMy6x");
+        var customerId = await StripeCustomerService.SearchCustomerIdByEmail("bsallesp@gmail.com");
+        if (customerId == null)
+        {
+            var claims = await GetUserInfos.GetUserNameAndEmail();
+            if (claims["Email"] == null) Nav.NavigateTo("/error", true);
 
-        Console.WriteLine(result);
+            customerId = await StripeCustomerService.CreateCustomer(claims["Name"], claims["Email"]);
+        }
+
+        Console.WriteLine(customerId);
     }
 }
