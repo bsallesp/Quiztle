@@ -1,10 +1,11 @@
 ﻿@page "/Buy"
-@page "/Buy/{priceId}"
+@page "/Buy/{priceId}/testid/{testId}"
+
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Frontend.Client.APIServices.StripeService
 
-@inject StripeSessionsService StripePaymentService
+@inject StripeSessionsService StripeSessionsService
 @inject StripeCustomerService StripeCustomerService
 @inject GetUserInfos GetUserInfos
 
@@ -13,6 +14,9 @@
 @code {
     [Parameter]
     public string priceId { get; set; } = "";
+
+    [Parameter]
+    public string testId { get; set; } = "";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -26,13 +30,8 @@
         if(string.IsNullOrEmpty(customerId))
             customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
 
-        var session = await StripePaymentService.CreateSession(priceId, customerId, claims["Email"]);
+        var session = await StripeSessionsService.CreateSession(priceId, customerId, claims["Email"]);
 
         if (!string.IsNullOrEmpty(session)) Nav.NavigateTo(session);
     }
-
-    // public async Task<bool> ValidProduct()
-    // {
-        
-    // }
 }

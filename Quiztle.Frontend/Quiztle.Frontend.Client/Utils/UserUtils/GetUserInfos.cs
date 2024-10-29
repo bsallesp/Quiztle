@@ -7,10 +7,12 @@ namespace Quiztle.Frontend.Client.Utils
     {
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
+
         public GetUserInfos(AuthenticationStateProvider authenticationStateProvider)
         {
             _authenticationStateProvider = authenticationStateProvider;
         }
+
 
         public async Task<string> GetUserId()
         {
@@ -26,11 +28,13 @@ namespace Quiztle.Frontend.Client.Utils
             return "";
         }
 
+
         public async Task<ClaimsPrincipal> GetUserTotalInfo()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return authState.User;
         }
+
 
         public async Task<Claim[]> GetUserClaims()
         {
@@ -45,17 +49,20 @@ namespace Quiztle.Frontend.Client.Utils
             return [];
         }
 
+
         public async Task<string> GetUserEmail()
         {
             var emailClaim = await GetClaimValue(ClaimTypes.Email);
             return emailClaim ?? "";
         }
 
+
         public async Task<string> GetUserName()
         {
             var nameClaim = await GetClaimValue(ClaimTypes.Name);
             return !string.IsNullOrEmpty(nameClaim) ? nameClaim : await GetUserEmail();
         }
+
 
         public async Task<Dictionary<string, string>> GetUserNameAndEmail()
         {
@@ -81,6 +88,7 @@ namespace Quiztle.Frontend.Client.Utils
 
             return null;
         }
+
 
         public async Task<bool> IsAuthenticated()
         {

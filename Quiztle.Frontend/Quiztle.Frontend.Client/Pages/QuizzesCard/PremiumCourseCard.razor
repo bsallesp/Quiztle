@@ -53,10 +53,12 @@
     [Parameter]
     public required bool Enabled { get; set; }
 
+    [Parameter]
+    public required string TestId { get; set; }
+
     private void PlayGame()
     {
-        Console.WriteLine("/Buy/" + PriceId);
-        Nav.NavigateTo("/Buy/" + PriceId);
+        Nav.NavigateTo("/Buy/" + PriceId + "/testId/" + TestId);
     }
 
     protected override Task OnParametersSetAsync()

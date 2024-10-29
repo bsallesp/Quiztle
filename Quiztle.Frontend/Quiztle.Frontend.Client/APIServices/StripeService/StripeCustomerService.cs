@@ -16,12 +16,17 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
-                var url = $"api/StripeCustomer/customer/create?name={name}?email={email}";
-                var response = await _httpClient.GetStringAsync(url);
+                var url = $"api/StripeCustomer/customer/create?name={Uri.EscapeDataString(name)}&email={Uri.EscapeDataString(email)}";
+                var response = await _httpClient.PostAsync(url, null); // Usando POST para criar cliente
 
-                return response;
+                if (response.IsSuccessStatusCode)
+                {
+                    var stringResponse = await response.Content.ReadAsStringAsync();
+                    return stringResponse;
+                }
+
+                return "";
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -33,18 +38,16 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
-                var url = $"api/StripeCustomer/search/name?name={name}";
+                var url = $"api/StripeCustomer/search/name?name={Uri.EscapeDataString(name)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
-
                 var result = JsonSerializer.Deserialize<List<Customer>>(stringResponse)!;
 
                 return result;
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return [];
+                return new List<Customer>(); // Retorna uma lista vazia em caso de erro
             }
         }
 
@@ -52,15 +55,13 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
-                var url = $"api/StripeCustomer/search/email?email={email}";
+                var url = $"api/StripeCustomer/search/email?email={Uri.EscapeDataString(email)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 var result = JsonSerializer.Deserialize<List<Customer>>(stringResponse)!;
 
-
                 Console.WriteLine(result);
-                return result.FirstOrDefault()!.Email;
+                return result.FirstOrDefault()?.Email ?? ""; // Retorna vazio se não encontrado
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -72,16 +73,32 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
-                var url = $"api/StripeCustomer/search/customeridbyemail?email={email}";
+                var url = $"api/StripeCustomer/search/customeridbyemail?email={Uri.EscapeDataString(email)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 Console.WriteLine(stringResponse);
-                return stringResponse;
+                return stringResponse; // Retorna o ID do cliente
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 return ex.ToString();
+            }
+        }
+
+        public async Task<List<object>> ListAllCustomers()
+        {
+            try
+            {
+                var url = $"api/StripeCustomer/customer/listall";
+                var stringResponse = await _httpClient.GetStringAsync(url);
+                var result = JsonSerializer.Deserialize<List<object>>(stringResponse)!;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<object>(); // Retorna uma lista vazia em caso de erro
             }
         }
     }
