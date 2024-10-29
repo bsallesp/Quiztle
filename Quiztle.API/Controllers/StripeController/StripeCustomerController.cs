@@ -9,6 +9,18 @@ namespace Quiztle.API.Controllers.StripeController
     [ApiController]
     public class StripeCustomerController : ControllerBase
     {
+        private readonly StripePaymentIntentController _stripePaymentIntentController;
+        private readonly StripeSessionsController _stripeSessionsController;
+
+        public StripeCustomerController(
+            StripePaymentIntentController stripePaymentIntentController,
+            StripeSessionsController stripeSessionsController
+            )
+        {
+            _stripePaymentIntentController = stripePaymentIntentController;
+            _stripeSessionsController = stripeSessionsController;
+        }
+
         [HttpGet("search")]
         public ActionResult<object> SearchCustomer(string name, string email)
         {
@@ -131,6 +143,35 @@ namespace Quiztle.API.Controllers.StripeController
             var result = service.Create(options);
 
             return CreatedAtAction(nameof(CreateCustomer), result);
+        }
+
+
+        [HttpPost("customer/balancetransactions")]
+        public ActionResult<object> BalanceTransactions(string customerId)
+        {
+            var options = new CustomerBalanceTransactionListOptions { Limit = 300 };
+            var service = new CustomerBalanceTransactionService();
+            StripeList<CustomerBalanceTransaction> customerBalanceTransactions =
+                service.List(
+                customerId,
+                options);
+
+
+            return Ok(customerBalanceTransactions);
+        }
+
+
+        [HttpPost("customer/isproductpaidandvalid")]
+        public async Task<ActionResult> IsProductPaidAndValid(string customerId, string priceId = "")
+        {
+            var resultSession = await _stripeSessionsController.GetPaidSessionsByUserid(customerId);
+
+            foreach (var payIntent in resultSession)
+            {
+                Console.WriteLine(_stripePaymentIntentController.ListPaymentIntentById(payIntent.PaymentIntentId!).ToString());
+            }
+
+            return Ok(resultSession);
         }
     }
 }

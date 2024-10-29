@@ -25,6 +25,7 @@ using Quiztle.CoreBusiness.Entities.Performance;
 using Quiztle.DataContext.DataService.Repository.Performance;
 using Quiztle.API.Controllers.PerformanceController;
 using Stripe;
+using Quiztle.API.Controllers.StripeController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,8 @@ builder.Services.AddTransient<ILLMChatGPTRequest, ChatGPTRequestController>();
 builder.Services.AddTransient<RemoveBadQuestions>();
 builder.Services.AddTransient<AnswerValidateQuestions>();
 
+builder.Services.AddTransient<StripePaymentIntentController>();
+builder.Services.AddTransient<StripeSessionsController>();
 
 builder.Services.AddTransient(typeof(LogService<>));
 
