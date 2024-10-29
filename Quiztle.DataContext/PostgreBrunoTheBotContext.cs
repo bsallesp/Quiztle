@@ -7,6 +7,7 @@ using Quiztle.CoreBusiness.Entities.Prompts;
 using Quiztle.CoreBusiness.Entities.Scratch;
 using Quiztle.CoreBusiness;
 using Quiztle.CoreBusiness.Entities.Performance;
+using Quiztle.CoreBusiness.Entities.Paid;
 
 namespace Quiztle.DataContext
 {
@@ -143,5 +144,7 @@ namespace Quiztle.DataContext
         public DbSet<QuestionsPerformance>? QuestionsPerformance { get; set; }
 
         public DbSet<TestQuestion>? TestsQuestions { get; set; }
+
+        public DbSet<Paid>? Paids { get; set; }
     }
 }
