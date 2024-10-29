@@ -26,6 +26,7 @@ using Quiztle.DataContext.DataService.Repository.Performance;
 using Quiztle.API.Controllers.PerformanceController;
 using Stripe;
 using Quiztle.API.Controllers.StripeController;
+using Quiztle.DataContext.DataService.Repository.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +95,7 @@ builder.Services.AddTransient<TestRepository>();
 builder.Services.AddTransient<DraftRepository>();
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<TestPerformanceRepository>();
+builder.Services.AddTransient<PaidRepository>();
 
 builder.Services.AddTransient<BuildQuestionsInBackgroundByLLM>();
 
