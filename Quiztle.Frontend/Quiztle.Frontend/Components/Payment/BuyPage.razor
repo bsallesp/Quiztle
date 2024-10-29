@@ -1,6 +1,5 @@
-﻿@* @page "/Buy"
+﻿@page "/Buy"
 @page "/Buy/{priceId}/testid/{testId}"
-
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Frontend.Client.APIServices.StripeService
@@ -23,6 +22,9 @@
         if (string.IsNullOrEmpty(priceId)) Nav.NavigateTo("/");
 
         var claims = await GetUserInfos.GetUserNameAndEmail();
+
+        
+
         if (string.IsNullOrEmpty(claims["Email"])) Nav.NavigateTo("/error", true);
 
         var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
@@ -35,4 +37,3 @@
         if (!string.IsNullOrEmpty(session)) Nav.NavigateTo(session);
     }
 }
- *@

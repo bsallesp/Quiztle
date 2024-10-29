@@ -96,5 +96,17 @@ namespace Quiztle.Frontend.Client.Utils
             return authState.User.Identity?.IsAuthenticated ?? false;
         }
 
+        public async Task<bool> HasClaim(string claimType)
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                return user.Claims.Any(c => c.Type == claimType);
+            }
+
+            return false;
+        }
     }
 }
