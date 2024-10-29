@@ -13,7 +13,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             _httpClient = httpClient;
         }
 
-        public async Task<bool> CreateSession(
+        public async Task<string> CreateSession(
             string priceId,
             string customerId,
             string customerEmail)
@@ -26,25 +26,18 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
 
                 var url = $"api/StripeSessions/sessions/createsession?priceID={priceId}&customerId={customerId}&customerEmail={customerEmail}";
 
-                Console.WriteLine(url);
                 var result = await _httpClient.GetAsync(url);
 
-                if (result.IsSuccessStatusCode)
-                {
-                    Console.WriteLine(await result.Content.ReadAsStringAsync());
-                    return true;
-                }
+                if (result.IsSuccessStatusCode) return await result.Content.ReadAsStringAsync();
 
-                Console.WriteLine($"Error: {result.StatusCode}");
-                return false;
+                return "";
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return false;
+                return "";
             }
         }
-
 
         public async Task<string> SearchCustomerByEmail(string email)
         {

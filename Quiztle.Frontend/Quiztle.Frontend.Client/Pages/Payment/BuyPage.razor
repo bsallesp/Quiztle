@@ -21,21 +21,13 @@
         var claims = await GetUserInfos.GetUserNameAndEmail();
         if (string.IsNullOrEmpty(claims["Email"])) Nav.NavigateTo("/error", true);
 
-        Console.WriteLine("EMAIL????????????????" + claims["Email"]);
-
         var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
 
         if(string.IsNullOrEmpty(customerId))
-        customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
+            customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
 
         var session = await StripePaymentService.CreateSession(priceId, customerId, claims["Email"]);
 
-        Console.WriteLine(session);
-        
+        if (!string.IsNullOrEmpty(session)) Nav.NavigateTo(session);
     }
-
-    // protected override async Task OnInitializedAsync()
-    // {
-
-    // }
 }

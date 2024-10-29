@@ -26,7 +26,7 @@ namespace Quiztle.API.Controllers.StripeController
             )
         {
             string domain = "http://localhost:5008/";
-            string sucessPage = "sucess";
+            string sucessPage = "success";
             string cancelPage = "abandoned";
 
             var options = new SessionCreateOptions
