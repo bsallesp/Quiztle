@@ -55,7 +55,8 @@
 
     private void PlayGame()
     {
-        
+        Console.WriteLine("/Buy/" + PriceId);
+        Nav.NavigateTo("/Buy/" + PriceId);
     }
 
     protected override Task OnParametersSetAsync()

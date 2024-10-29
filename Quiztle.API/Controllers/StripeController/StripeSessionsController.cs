@@ -32,7 +32,6 @@ namespace Quiztle.API.Controllers.StripeController
             var options = new SessionCreateOptions
             {
                 ClientReferenceId = customerId,
-                Customer = customerId,
                 CustomerEmail = customerEmail,
 
                 LineItems =

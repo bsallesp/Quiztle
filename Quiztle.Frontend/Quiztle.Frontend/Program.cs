@@ -47,7 +47,7 @@ builder.Services.AddTransient<AddTestPerformanceService>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 
 builder.Services.AddTransient<StripeCustomerService>();
-builder.Services.AddTransient<StripePaymentService>();
+builder.Services.AddTransient<StripeSessionsService>();
 
 builder.Services.AddAntiforgery(options =>
 {

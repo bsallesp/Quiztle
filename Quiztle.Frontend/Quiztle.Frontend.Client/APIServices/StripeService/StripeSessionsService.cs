@@ -4,20 +4,29 @@ using System.Text.Json;
 
 namespace Quiztle.Frontend.Client.APIServices.StripeService
 {
-    public class StripePaymentService
+    public class StripeSessionsService
     {
         private readonly HttpClient _httpClient;
 
-        public StripePaymentService(HttpClient httpClient)
+        public StripeSessionsService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<bool> CreateSession(string priceID)
+        public async Task<bool> CreateSession(
+            string priceId,
+            string customerId,
+            string customerEmail)
         {
             try
             {
-                var url = "api/StripeSessions/sessions/createsession?priceID=" + priceID;
+                Console.WriteLine(priceId);
+                Console.WriteLine(customerId);
+                Console.WriteLine(customerEmail);
+
+                var url = $"api/StripeSessions/sessions/createsession?priceID={priceId}&customerId={customerId}&customerEmail={customerEmail}";
+
+                Console.WriteLine(url);
                 var result = await _httpClient.GetAsync(url);
 
                 if (result.IsSuccessStatusCode)
