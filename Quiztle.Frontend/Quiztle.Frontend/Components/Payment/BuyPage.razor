@@ -10,6 +10,26 @@
 
 @attribute [Authorize]
 
+@if(!isDone){
+    <h1>
+        Looks you already have it.
+    </h1>
+    <h1>
+        Looks you already have it.
+    </h1>
+    <h1>
+        Looks you already have it.
+    </h1>
+        <h1>
+        Looks you already have it.
+    </h1>
+    <h1>
+        Looks you already have it.
+    </h1>
+
+}
+
+
 @code {
     [Parameter]
     public string priceId { get; set; } = "";
@@ -17,23 +37,45 @@
     [Parameter]
     public string testId { get; set; } = "";
 
+    private bool isDone = false;
+
+    private string _finalURL = "";
+
     protected override async Task OnParametersSetAsync()
     {
-        if (string.IsNullOrEmpty(priceId)) Nav.NavigateTo("/");
+        if (await CheckListToBuy()) Nav.NavigateTo(_finalURL);
+        isDone = true;
+        Console.WriteLine();
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        
+        
+        base.OnAfterRender(firstRender);
+    }
+
+    private async Task<bool> CheckListToBuy()
+    {
+        if (string.IsNullOrEmpty(priceId)) return false;
 
         var claims = await GetUserInfos.GetUserNameAndEmail();
 
-        
-
-        if (string.IsNullOrEmpty(claims["Email"])) Nav.NavigateTo("/error", true);
+        if (string.IsNullOrEmpty(claims["Email"])) return false;
 
         var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
 
-        if(string.IsNullOrEmpty(customerId))
+        if (await StripeSessionsService.IsPaidSessionByCustomer(customerId, priceId)) return false;
+
+        if (string.IsNullOrEmpty(customerId))
             customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
 
         var session = await StripeSessionsService.CreateSession(priceId, customerId, claims["Email"]);
 
-        if (!string.IsNullOrEmpty(session)) Nav.NavigateTo(session);
+        if (string.IsNullOrEmpty(session)) return false;
+
+        _finalURL = session;
+        return true;
     }
 }
