@@ -1,0 +1,15 @@
+﻿@page "/Buy"
+@using Quiztle.Frontend.Client.APIServices.StripeService
+
+@inject StripePaymentService StripePaymentService
+
+<h3>BuyPage</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await StripePaymentService.CreateSession("price_1QF42pLKiSsrfvcHmFPvMy6x");
+
+        Console.WriteLine(result);
+    }
+}

@@ -19,13 +19,12 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
         [HttpGet("sessions/createsession")]
-        public async Task<ActionResult> CreateSession(
-            string priceID,
-            string domain = "http://localhost:5514/",
-            string sucessPage = "/sucess",
-            string cancelPage = "/abandoned"
-            )
+        public async Task<ActionResult> CreateSession(string priceID)
         {
+            string domain = "http://localhost:5514/";
+            string sucessPage = "sucess";
+            string cancelPage = "abandoned";
+
             var options = new SessionCreateOptions
             {
                 LineItems =

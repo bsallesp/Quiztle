@@ -30,6 +30,7 @@ builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 builder.Services.AddTransient<GetUserInfos>();
 
 builder.Services.AddTransient<StripeCustomerService>();
+builder.Services.AddTransient<StripePaymentService>();
 
 builder.Services.AddAuthorizationCore();
 

@@ -35,8 +35,6 @@ using ILoggerFactory factory = LoggerFactory.Create(builder =>
 });
 ILogger logger = factory.CreateLogger("Program");
 
-logger.LogInformation("tesfsdfdste123");
-
 builder.Services.AddHttpClient<OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
@@ -153,8 +151,6 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-
-logger.LogInformation("Hello CertCool! Logging is {Description}.", "fun");
 
 var app = builder.Build();
 
