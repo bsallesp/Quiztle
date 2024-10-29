@@ -17,7 +17,7 @@
 {
     <div class="full-screen-container">
         <div class="greeting">
-            Hi, @GetUserInfos.GetUserNameOrEmail().Result!
+            Hi, @GetUserInfos.GetUserEmail().Result!
         </div>
         <div class="test-performances-container text-center">
             @foreach (var groupedPerformances in _setGroupedTestPerformanceDTO.GroupedPerformances)

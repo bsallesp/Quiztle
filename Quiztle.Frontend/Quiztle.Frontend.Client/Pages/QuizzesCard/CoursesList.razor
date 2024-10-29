@@ -1,4 +1,10 @@
-﻿@page "/Courses"
+﻿@using Quiztle.Frontend.Client.APIServices.StripeService
+@using Quiztle.Frontend.Client.Utils
+
+@inject GetUserInfos GetUserInfos
+@inject StripeCustomerService StripeCustomerService
+
+@page "/Courses"
 
 <div class="container d-flex flex-wrap justify-content-evenly main-div">
 
@@ -110,4 +116,15 @@
         "Design infrastructure solutions",
         "Design solutions for applications"
     };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = await GetUserInfos.GetUserEmail();
+        Console.WriteLine(email);
+        
+        var result = await StripeCustomerService.SearchCustomerByEmail(email);
+
+        Console.WriteLine(result);
+    }
 }

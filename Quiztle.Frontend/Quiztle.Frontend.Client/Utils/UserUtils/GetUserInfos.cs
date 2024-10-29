@@ -45,26 +45,29 @@ namespace Quiztle.Frontend.Client.Utils
             return [];
         }
 
-        public async Task<string> GetUserNameOrEmail()
+        public async Task<string> GetUserEmail()
+        {
+            var emailClaim = await GetClaimValue(ClaimTypes.Email);
+            return emailClaim ?? "";
+        }
+
+        public async Task<string> GetUserName()
+        {
+            var nameClaim = await GetClaimValue(ClaimTypes.Name);
+            return !string.IsNullOrEmpty(nameClaim) ? nameClaim : await GetUserEmail();
+        }
+
+        private async Task<string?> GetClaimValue(string claimType)
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            if (user.Identity != null && user.Identity.IsAuthenticated)
+            if (user.Identity?.IsAuthenticated == true)
             {
-                // Tentando obter o nome
-                var nameClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-                if (!string.IsNullOrEmpty(nameClaim?.Value))
-                {
-                    return nameClaim.Value;
-                }
-
-                // Se o nome estiver vazio, tentar obter o email
-                var emailClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                return emailClaim?.Value ?? "";
+                return user.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
             }
 
-            return "";
+            return null;
         }
 
         public async Task<bool> IsAuthenticated()
@@ -72,5 +75,6 @@ namespace Quiztle.Frontend.Client.Utils
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return authState.User.Identity?.IsAuthenticated ?? false;
         }
+
     }
 }

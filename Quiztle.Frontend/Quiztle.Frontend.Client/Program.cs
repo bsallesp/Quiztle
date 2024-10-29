@@ -6,6 +6,7 @@ using Quiztle.Blazor.Client.APIServices;
 using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
+using Quiztle.Frontend.Client.APIServices.StripeService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddTransient<AddTestPerformanceService>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 
 builder.Services.AddTransient<GetUserInfos>();
+
+builder.Services.AddTransient<StripeCustomerService>();
 
 builder.Services.AddAuthorizationCore();
 

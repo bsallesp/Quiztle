@@ -1,6 +1,4 @@
-﻿@using Quiztle.Frontend
-
-
+﻿@using Quiztle.Frontend.Client.APIServices.StripeService
 
 <div class="container bg-fx">
     <img src="img/courses/@Image" />
@@ -54,7 +52,6 @@
 
     [Parameter]
     public required bool Enabled { get; set; }
-
 
     private void Checkout()
     {

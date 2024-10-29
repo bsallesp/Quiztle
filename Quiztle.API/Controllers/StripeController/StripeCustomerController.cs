@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -14,28 +15,43 @@ namespace Quiztle.API.Controllers.StripeController
             return Search(name, email);
         }
 
+
         [HttpGet("search/name")]
         public ActionResult<object> SearchCustomerByName(string name)
         {
-            return Search(name, "");
+            var options = new CustomerSearchOptions
+            {
+                Query = $"name:'{name.ToLower()}'",
+            };
+            var service = new CustomerService();
+            var result = service.Search(options);
+
+            if (result.IsNullOrEmpty()) return NotFound(result);
+
+            return Ok(result);
         }
 
+
         [HttpGet("search/email")]
-        public ActionResult<object> SearchCustomerByEmail(string email)
+        public ActionResult<string> SearchCustomerByEmail(string email)
         {
-            return Search("", email);
+            var options = new CustomerSearchOptions
+            {
+                Query = $"email:'{email.ToLower()}'",
+            };
+            var service = new CustomerService();
+            var result = service.Search(options);
+
+            if (result.FirstOrDefault() == null) return NotFound();
+
+            return Ok(result.FirstOrDefault()!.Email);
         }
 
         private ActionResult<object> Search(string name = "", string email = "")
         {
-            var queryString = $"name:\"{name}\" OR email:\"{email}\"";
+            var queryString = $"name:'{name}' OR email:'{email.ToLower()}'";
 
-
-            if (string.IsNullOrEmpty(email)) queryString = $"name:\"{name}\"";
-            if (string.IsNullOrEmpty(name)) queryString = $"email:\"{email}\"";
-
-            Console.WriteLine(queryString);
-            
+           
             var options = new CustomerSearchOptions { Query = queryString };
 
             var service = new CustomerService();
@@ -85,34 +101,15 @@ namespace Quiztle.API.Controllers.StripeController
         [HttpPost("create")]
         public ActionResult<object> CreateCustomer(string name, string email)
         {
-            var searchResult = SearchCustomer(name, email);
-            if (searchResult.Result is not null && searchResult.Value is IEnumerable<dynamic> existingCustomers && existingCustomers.Any())
-            {
-                return Conflict(new { message = "Customer already exists." });
-            }
-
             var options = new CustomerCreateOptions
             {
                 Name = name,
-                Email = email,
+                Email = email.ToLower(),
             };
-
             var service = new CustomerService();
-            var newCustomer = service.Create(options);
+            var result = service.Create(options);
 
-            // Return a simplified JSON response for the created customer
-            var response = new
-            {
-                newCustomer.Id,
-                newCustomer.Name,
-                newCustomer.Email,
-                newCustomer.Created,
-                newCustomer.Description
-            };
-
-            return CreatedAtAction(nameof(CreateCustomer), response); // Return 201 Created
+            return CreatedAtAction(nameof(CreateCustomer), result);
         }
-
-
     }
 }

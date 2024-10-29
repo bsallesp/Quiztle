@@ -42,8 +42,10 @@ builder.Services.AddHttpClient<OllamaRequest>(client =>
     client.Timeout = TimeSpan.FromMinutes(10);
 });
 
-
-StripeConfiguration.ApiKey = "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";
+//Real
+//StripeConfiguration.ApiKey = "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";
+//Test
+StripeConfiguration.ApiKey = "sk_test_51QAsiRLKiSsrfvcHtmFizIraAZoHURLCDugHPuq7FQ5bN1vv3rGVpaiclj1cYdiOYJtHyUJrB7PImAHDcbPUlqFf00Fvu61m3n";
 
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 

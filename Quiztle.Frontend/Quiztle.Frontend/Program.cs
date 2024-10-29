@@ -12,15 +12,14 @@ using Quiztle.Blazor.Client.APIServices;
 using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
-using Microsoft.Extensions.Logging;
-
+using Quiztle.Frontend.Client.APIServices.StripeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
 
-logger.LogInformation("fsdfffsdfsdsdsdffsd");
+logger.LogError("Fail test.");
 
 builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
 
@@ -46,6 +45,8 @@ builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
+
+builder.Services.AddTransient<StripeCustomerService>();
 
 builder.Services.AddAntiforgery(options =>
 {
@@ -153,8 +154,10 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 #endregion
 
-StripeConfiguration.ApiKey = "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";
-
+//Real
+//StripeConfiguration.ApiKey = "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";
+//Test
+StripeConfiguration.ApiKey = "sk_test_51QAsiRLKiSsrfvcHtmFizIraAZoHURLCDugHPuq7FQ5bN1vv3rGVpaiclj1cYdiOYJtHyUJrB7PImAHDcbPUlqFf00Fvu61m3n";
 
 var app = builder.Build();
 

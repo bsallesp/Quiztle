@@ -29,5 +29,15 @@ namespace Quiztle.API.Controllers.StripeController
 
             return Ok(invoices);
         }
+
+        [HttpGet("invoices/bycustomerId")]
+        public ActionResult GetInvoicesByCustomerEmail(string customerId)
+        {
+            var options = new InvoiceSearchOptions { Query = $"customer:'{customerId}'" };
+            var service = new InvoiceService();
+            var result = service.Search(options);
+
+            return Ok(result);
+        }
     }
 }
