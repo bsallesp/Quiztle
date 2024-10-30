@@ -42,6 +42,25 @@ builder.Services.AddHttpClient<OllamaRequest>(client =>
     client.Timeout = TimeSpan.FromMinutes(10);
 });
 
+#region Stripe Setup
+var stripeMode = builder.Configuration["Stripe:Mode"]
+    ?? Environment.GetEnvironmentVariable("STRIPE_MODE")
+    ?? throw new InvalidOperationException("STRIPE MODE NOT SET");
+
+var stripeApiKey = stripeMode == "Production"
+    ? builder.Configuration["Stripe:ProductionApiKey"] ?? Environment.GetEnvironmentVariable("PROD_STRIPE_API_KEY")
+    : builder.Configuration["Stripe:TestApiKey"] ?? Environment.GetEnvironmentVariable("TEST_STRIPE_API_KEY");
+
+if (stripeApiKey == null)
+{
+    throw new InvalidOperationException("STRIPE API KEY NOT FOUND");
+}
+
+logger.LogInformation("Stripe mode: {Mode}. Using {KeyType} key.", stripeMode, stripeMode == "Production" ? "Production" : "Test");
+
+#endregion
+
+
 //Real
 //StripeConfiguration.ApiKey = "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";
 //Test

@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Quiztle.DataContext.DataService.Repository.Payments;
 using Stripe;
+using Stripe.Checkout;
+using Quiztle.CoreBusiness.Entities.Paid;
 
 namespace workspace.Controllers
 {
@@ -24,26 +24,44 @@ namespace workspace.Controllers
             {
                 var stripeEvent = EventUtility.ParseEvent(json);
 
-                // Handle the event
-                // If on SDK version < 46, use class Events instead of EventTypes
-                if (stripeEvent.Type == EventTypes.PaymentIntentSucceeded)
+                if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted)
                 {
-                    var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
-                    // Then define and call a method to handle the successful payment intent.
-                    // handlePaymentIntentSucceeded(paymentIntent);
+                    var sessionCompleted = stripeEvent.Data.Object as Session;
 
-                    Console.WriteLine("PAYMENT SUCESSSSS!!!!!!!!");
+                    if (sessionCompleted != null)
+                    {
+                        var paidEntity = new Paid
+                        {
+                            UserEmail = sessionCompleted.CustomerEmail ?? "",
+                            PriceId = sessionCompleted.Metadata["price_id"],
+                        };
+
+                        Console.WriteLine("creating _paidRepository.CreatePaidAsync....");
+                        await _paidRepository.CreatePaidAsync(paidEntity);
+
+                        Console.WriteLine(sessionCompleted.AmountTotal);
+                        //Console.WriteLine(sessionCompleted.Customer.Email);
+
+                        Console.WriteLine(sessionCompleted.Metadata.Count);
+                        foreach (var item in sessionCompleted.Metadata)
+                        {
+                            Console.WriteLine("---------------------------");
+                            Console.WriteLine(item.Key);
+                            Console.WriteLine(item.Value);
+                            Console.WriteLine("---------------------------");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Session object is null.");
+                    }
                 }
                 else if (stripeEvent.Type == EventTypes.PaymentMethodAttached)
                 {
                     var paymentMethod = stripeEvent.Data.Object as PaymentMethod;
-                    // Then define and call a method to handle the successful attachment of a PaymentMethod.
-                    // handlePaymentMethodAttached(paymentMethod);
                 }
-                // ... handle other event types
                 else
                 {
-                    // Unexpected event type
                     Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
                 }
                 return Ok();
@@ -55,4 +73,3 @@ namespace workspace.Controllers
         }
     }
 }
-//whsec_753fb15af4e9bf2d2f979e1c20f0a6641305d95790a5ef1bd09b8ce99b61a2aa

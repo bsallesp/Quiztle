@@ -9,7 +9,7 @@ namespace Quiztle.CoreBusiness.Entities.Paid
         public Guid Id { get; set; } = new();
 
         [JsonPropertyName("UserId")]
-        public Guid UserId { get; set; } = new();
+        public Guid? UserId { get; set; }
 
         [JsonPropertyName("CustomerId")]
         public string? CustomerId { get; set; }

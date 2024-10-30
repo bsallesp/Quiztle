@@ -19,41 +19,58 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
 
-        [HttpGet("sessions/createsession")]
-        public async Task<ActionResult> CreateSession
-            (string priceID,
-            string customerId,
-            string customerEmail
-            )
+        [HttpPost("sessions/createsession")]
+        public async Task<ActionResult> CreateSession([FromBody] SessionStartDTO sessionStartDTO)
         {
+            if (sessionStartDTO == null) return BadRequest("SessionStartDTO cannot be null.");
+
+            if (string.IsNullOrEmpty(sessionStartDTO.PriceId) || string.IsNullOrEmpty(sessionStartDTO.Email))
+                return BadRequest("PriceId and Email are required.");
+
             string domain = "http://localhost:5008/";
-            string sucessPage = "success";
+            string successPage = "success";
             string cancelPage = "abandoned";
 
             var options = new SessionCreateOptions
             {
-                ClientReferenceId = customerId,
-                CustomerEmail = customerEmail,
-
-                LineItems =
-                [
-                    new()
-                    {
-                        Price = priceID,
-                        Quantity = 1,
-                    },
-
-                ],
+                LineItems = new List<SessionLineItemOptions>
+        {
+            new SessionLineItemOptions
+            {
+                Price = sessionStartDTO.PriceId,
+                Quantity = 1
+            }
+        },
                 Mode = "payment",
-                SuccessUrl = domain + sucessPage,
-                CancelUrl = domain + cancelPage
+                SuccessUrl = domain + successPage,
+                CancelUrl = domain + cancelPage,
+                Metadata = new Dictionary<string, string>
+        {
+            { "price_id", sessionStartDTO.PriceId },
+            { "customer_email", sessionStartDTO.Email }
+        }
             };
 
-            var service = new SessionService();
-            var session = await service.CreateAsync(options);
+            try
+            {
+                var service = new SessionService();
+                var session = await service.CreateAsync(options);
 
-            return Ok(session.Url);
+                return Ok(session.Url);
+            }
+            catch (StripeException ex)
+            {
+                // Handle Stripe-specific exceptions here
+                return BadRequest($"Stripe error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
+
 
 
         [HttpGet("sessions/getpaidsessions")]

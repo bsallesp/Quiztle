@@ -1,5 +1,6 @@
 ﻿using Stripe;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 
 namespace Quiztle.Frontend.Client.APIServices.StripeService
@@ -13,20 +14,15 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             _httpClient = httpClient;
         }
 
-        public async Task<string> CreateSession(
-            string priceId,
-            string customerId,
-            string customerEmail)
+        public async Task<string> CreateSession(SessionStartDTO sessionStartDTO)
         {
             try
             {
-                Console.WriteLine(priceId);
-                Console.WriteLine(customerId);
-                Console.WriteLine(customerEmail);
+                var url = "api/StripeSessions/sessions/createsession";
 
-                var url = $"api/StripeSessions/sessions/createsession?priceID={Uri.EscapeDataString(priceId)}&customerId={Uri.EscapeDataString(customerId)}&customerEmail={Uri.EscapeDataString(customerEmail)}";
+                var content = new StringContent(JsonSerializer.Serialize(sessionStartDTO), Encoding.UTF8, "application/json");
 
-                var result = await _httpClient.GetAsync(url);
+                var result = await _httpClient.PostAsync(url, content);
 
                 if (result.IsSuccessStatusCode) return await result.Content.ReadAsStringAsync();
 
@@ -38,6 +34,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 return "";
             }
         }
+
 
         public async Task<List<Stripe.Checkout.Session>> GetAllSessions()
         {

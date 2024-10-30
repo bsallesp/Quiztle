@@ -7,6 +7,7 @@ using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
 using Quiztle.Frontend.Client.APIServices.StripeService;
+using Quiztle.Frontend.Client.APIServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -26,11 +27,12 @@ builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
+builder.Services.AddTransient<StripeCustomerService>();
+builder.Services.AddTransient<StripeSessionsService>();
+builder.Services.AddTransient<PaidService>();
 
 builder.Services.AddTransient<GetUserInfos>();
 
-builder.Services.AddTransient<StripeCustomerService>();
-builder.Services.AddTransient<StripeSessionsService>();
 
 builder.Services.AddAuthorizationCore();
 
@@ -55,3 +57,4 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
 await builder.Build().RunAsync();
+

@@ -38,5 +38,20 @@ namespace Quiztle.API.Controllers.Payments
                 return BadRequest($"Error processing request: {ex.Message}");
             }
         }
+
+        [HttpPost("ispaid")]
+        public async Task<IActionResult> IsPaidAsync([FromBody] Paid paid)
+        {
+            try
+            {
+                bool isPaid = await _paidRepository.IsPaid(paid);
+
+                return Ok(isPaid);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error processing request: {ex.Message}");
+            }
+        }
     }
 }

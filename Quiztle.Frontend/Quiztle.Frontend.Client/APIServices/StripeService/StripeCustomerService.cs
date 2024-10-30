@@ -76,7 +76,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 var url = $"api/StripeCustomer/search/customeridbyemail?email={Uri.EscapeDataString(email)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 Console.WriteLine(stringResponse);
-                return stringResponse; // Retorna o ID do cliente
+                return stringResponse;
             }
             catch (Exception ex)
             {

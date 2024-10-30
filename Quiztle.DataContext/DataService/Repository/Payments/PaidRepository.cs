@@ -18,6 +18,8 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
             {
                 EnsurePaidNotNull();
                 _context.Paids!.Add(paid);
+
+                Console.WriteLine("SAVING PAID IN REPOSITORY");
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -27,6 +29,28 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 throw;
             }
         }
+
+        public async Task<bool> IsPaid(Paid paid)
+        {
+            try
+            {
+                EnsurePaidNotNull();
+
+                var result = await _context.Paids!
+                    .Where(e => e.UserEmail == paid.UserEmail && e.PriceId == paid.PriceId)
+                    .OrderByDescending(e => e.Created)
+                    .FirstOrDefaultAsync();
+
+                return result != null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("IsPaid: An exception occurred while retrieving the paid entry by Id:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
 
         public async Task<Paid?> GetPaidByIdAsync(Guid id)
         {

@@ -2,33 +2,16 @@
 @page "/Buy/{priceId}/testid/{testId}"
 
 @using Microsoft.AspNetCore.Authorization
+@using Quiztle.CoreBusiness.Entities.Paid
+@using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.StripeService
 
 @inject StripeSessionsService StripeSessionsService
 @inject StripeCustomerService StripeCustomerService
 @inject GetUserInfos GetUserInfos
+@inject PaidService PaidService
 
 @attribute [Authorize]
-
-@if(!isDone){
-    <h1>
-        Looks you already have it.
-    </h1>
-    <h1>
-        Looks you already have it.
-    </h1>
-    <h1>
-        Looks you already have it.
-    </h1>
-        <h1>
-        Looks you already have it.
-    </h1>
-    <h1>
-        Looks you already have it.
-    </h1>
-
-}
-
 
 @code {
     [Parameter]
@@ -43,39 +26,59 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (await CheckListToBuy()) Nav.NavigateTo(_finalURL);
-        isDone = true;
-        Console.WriteLine();
-        StateHasChanged();
+        Paid paid = new()
+            {
+                UserEmail = await GetUserInfos.GetUserEmail(),
+                PriceId = priceId
+            };
+
+
+        if (!(await PaidService.IsPaidService(paid)))
+        {
+            Console.WriteLine("Not paid yet.");
+            Console.WriteLine("Getting new session....");
+
+            var sessionStartDTO = new SessionStartDTO
+                {
+                    Email = paid.UserEmail,
+                    PriceId = paid.PriceId
+                };
+
+            var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
+
+            Console.WriteLine("New session...." + sessionURL);
+
+            Nav.NavigateTo(sessionURL, true);
+        }
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        
-        
-        base.OnAfterRender(firstRender);
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     Nav.NavigateTo("/");
 
-    private async Task<bool> CheckListToBuy()
-    {
-        if (string.IsNullOrEmpty(priceId)) return false;
+    //     base.OnAfterRender(firstRender);
+    // }
 
-        var claims = await GetUserInfos.GetUserNameAndEmail();
+    // private async Task<bool> CheckListToBuy()
+    // {
+    //     if (string.IsNullOrEmpty(priceId)) return false;
 
-        if (string.IsNullOrEmpty(claims["Email"])) return false;
+    //     var claims = await GetUserInfos.GetUserNameAndEmail();
 
-        var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
+    //     if (string.IsNullOrEmpty(claims["Email"])) return false;
 
-        if (await StripeSessionsService.IsPaidSessionByCustomer(customerId, priceId)) return false;
+    //     var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
 
-        if (string.IsNullOrEmpty(customerId))
-            customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
+    //     if (await StripeSessionsService.IsPaidSessionByCustomer(customerId, priceId)) return false;
 
-        var session = await StripeSessionsService.CreateSession(priceId, customerId, claims["Email"]);
+    //     if (string.IsNullOrEmpty(customerId))
+    //         customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
 
-        if (string.IsNullOrEmpty(session)) return false;
+    //     var session = await StripeSessionsService.CreateSession(priceId, customerId, claims["Email"]);
 
-        _finalURL = session;
-        return true;
-    }
+    //     if (string.IsNullOrEmpty(session)) return false;
+
+    //     _finalURL = session;
+    //     return true;
+    // }
 }
