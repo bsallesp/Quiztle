@@ -24,61 +24,33 @@
 
     private string _finalURL = "";
 
+
+
     protected override async Task OnParametersSetAsync()
     {
+        var email = await GetUserInfos.GetUserEmail();
+        Console.WriteLine(email);
+
         Paid paid = new()
             {
-                UserEmail = await GetUserInfos.GetUserEmail(),
+            UserEmail = email,
                 PriceId = priceId
             };
 
 
         if (!(await PaidService.IsPaidService(paid)))
         {
-            Console.WriteLine("Not paid yet.");
-            Console.WriteLine("Getting new session....");
-
             var sessionStartDTO = new SessionStartDTO
                 {
                     Email = paid.UserEmail,
                     PriceId = paid.PriceId
                 };
 
-            var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
+            Console.WriteLine(paid.UserEmail);
 
-            Console.WriteLine("New session...." + sessionURL);
+            var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
 
             Nav.NavigateTo(sessionURL, true);
         }
     }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     Nav.NavigateTo("/");
-
-    //     base.OnAfterRender(firstRender);
-    // }
-
-    // private async Task<bool> CheckListToBuy()
-    // {
-    //     if (string.IsNullOrEmpty(priceId)) return false;
-
-    //     var claims = await GetUserInfos.GetUserNameAndEmail();
-
-    //     if (string.IsNullOrEmpty(claims["Email"])) return false;
-
-    //     var customerId = await StripeCustomerService.SearchCustomerIdByEmail(claims["Email"]);
-
-    //     if (await StripeSessionsService.IsPaidSessionByCustomer(customerId, priceId)) return false;
-
-    //     if (string.IsNullOrEmpty(customerId))
-    //         customerId = await StripeCustomerService.CreateCustomer(claims["Name"] ?? "", claims["Email"]);
-
-    //     var session = await StripeSessionsService.CreateSession(priceId, customerId, claims["Email"]);
-
-    //     if (string.IsNullOrEmpty(session)) return false;
-
-    //     _finalURL = session;
-    //     return true;
-    // }
 }

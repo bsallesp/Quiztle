@@ -71,8 +71,6 @@ namespace Quiztle.API.Controllers.StripeController
         }
 
 
-
-
         [HttpGet("sessions/getpaidsessions")]
         public ActionResult GetPaidSessions()
         {
