@@ -12,6 +12,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+
         public async Task CreatePaidAsync(Paid paid)
         {
             try
@@ -19,7 +20,6 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 EnsurePaidNotNull();
                 _context.Paids!.Add(paid);
 
-                Console.WriteLine("SAVING PAID IN REPOSITORY");
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -29,6 +29,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 throw;
             }
         }
+
 
         public async Task<bool> IsPaid(Paid paid)
         {
@@ -69,6 +70,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
             }
         }
 
+
         public async Task<IEnumerable<Paid>> GetAllPaidAsync()
         {
             try
@@ -85,6 +87,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 throw;
             }
         }
+
 
         public async Task<IEnumerable<Paid>> GetPaidByUserIdAsync(Guid userId)
         {
@@ -103,6 +106,25 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 throw;
             }
         }
+
+        public async Task<IEnumerable<Paid>> GetPaidByEmailAsync(string email)
+        {
+            try
+            {
+                EnsurePaidNotNull();
+                return await _context.Paids!
+                    .Where(e => e.UserEmail == email)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetPaidByUserIdAsync: An exception occurred while retrieving paid entries by user ID:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
 
         public async Task UpdatePaidAsync(Paid paid)
         {
@@ -128,6 +150,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 throw;
             }
         }
+
 
         private void EnsurePaidNotNull()
         {

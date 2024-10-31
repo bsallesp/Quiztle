@@ -1,7 +1,7 @@
 ﻿@page "/success"
 
 @inject StripeCustomerService StripeCustomerService
-
+@inject AddClaims AddClaims
 
 <div class="container">
 
@@ -13,6 +13,15 @@
 
 
 @code {
-   // var hasClaim = await GetUserInfos.HasClaim("")
+    protected override Task OnInitializedAsync()
+    {
+        var result = AddClaims.TransformAsync();
 
+        return base.OnInitializedAsync();
+    }
+
+    private async Task UpdateClaims()
+    {
+        await AddClaims.TransformAsync();
+    }
 }

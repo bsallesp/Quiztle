@@ -53,5 +53,19 @@ namespace Quiztle.API.Controllers.Payments
                 return BadRequest($"Error processing request: {ex.Message}");
             }
         }
+
+        [HttpGet("bypaidemail")]
+        public async Task<IActionResult> GetPaidByEmailAsync([FromQuery] string email)
+        {
+            try
+            {
+                var paidEntries = await _paidRepository.GetPaidByEmailAsync(email);
+                return Ok(paidEntries);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving paid entries: {ex.Message}");
+            }
+        }
     }
 }

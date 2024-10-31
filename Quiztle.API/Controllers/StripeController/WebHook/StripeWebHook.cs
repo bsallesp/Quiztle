@@ -30,26 +30,14 @@ namespace workspace.Controllers
 
                     if (sessionCompleted != null)
                     {
-                        var paidEntity = new Paid
+                        var newPaid = new Paid
                         {
-                            UserEmail = sessionCompleted.CustomerEmail ?? "",
+                            UserEmail = sessionCompleted.Metadata["customer_email"] ?? "",
                             PriceId = sessionCompleted.Metadata["price_id"],
                         };
 
-                        Console.WriteLine("creating _paidRepository.CreatePaidAsync....");
-                        await _paidRepository.CreatePaidAsync(paidEntity);
-
-                        Console.WriteLine(sessionCompleted.AmountTotal);
-                        //Console.WriteLine(sessionCompleted.Customer.Email);
-
-                        Console.WriteLine(sessionCompleted.Metadata.Count);
-                        foreach (var item in sessionCompleted.Metadata)
-                        {
-                            Console.WriteLine("---------------------------");
-                            Console.WriteLine(item.Key);
-                            Console.WriteLine(item.Value);
-                            Console.WriteLine("---------------------------");
-                        }
+                        newPaid.Status = "Completed";
+                        await _paidRepository.CreatePaidAsync(newPaid);
                     }
                     else
                     {
