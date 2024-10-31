@@ -57,9 +57,9 @@ if (stripeApiKey == null)
 }
 
 logger.LogInformation("Stripe mode: {Mode}. Using {KeyType} key.", stripeMode, stripeMode == "Production" ? "Production" : "Test");
+StripeConfiguration.ApiKey = stripeApiKey;
 
 #endregion
-
 
 builder.Services.AddHttpClient<FromPDFToJsonFile>();
 
