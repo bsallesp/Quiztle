@@ -11,6 +11,20 @@
 @inject GetUserInfos GetUserInfos
 @inject PaidService PaidService
 
+@rendermode InteractiveServer
+
+<div class="container-lg p2">
+    <h1>Pay</h1>
+
+    <form method="post" @onsubmit="CreateSession" @formname="create-session-and-pay">
+        <AntiforgeryToken />
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+
 @code {
     [Parameter]
     public string priceId { get; set; } = "";
@@ -20,33 +34,9 @@
 
     private string _finalURL = "";
 
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        var result = await IsPaid();
-
-        if (result == "NotLogged")
-        {
-            Nav.NavigateTo("/Login", true);
-        }
-
-        if (result == "NotPaid")
-        {
-            Nav.NavigateTo(_finalURL);
-        }
-
-        if (result == "Paid")
-        {
-            Nav.NavigateTo("/Play");
-        }
-        
-        base.OnAfterRender(firstRender);
-    }
-
-    private async Task<string> IsPaid()
+    private async Task CreateSession()
     {
         var email = await GetUserInfos.GetUserEmail();
-        if (string.IsNullOrEmpty(email)) return "NotLogged";
 
         Paid paid = new()
             {
@@ -54,21 +44,17 @@
                 PriceId = priceId
             };
 
+        var sessionStartDTO = new SessionStartDTO
+            {
+                Email = paid.UserEmail,
+                PriceId = paid.PriceId
+            };
 
-        if (!(await PaidService.IsPaidService(paid)))
-        {
-            var sessionStartDTO = new SessionStartDTO
-                {
-                    Email = paid.UserEmail,
-                    PriceId = paid.PriceId
-                };
+        var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
 
-            var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
+        Console.WriteLine($"Session: {sessionURL}");
+        _finalURL = sessionURL;
 
-            _finalURL = sessionURL;
-            return "NotPaid";
-        }
-
-        return "Paid";
+        Nav.NavigateTo(sessionURL);
     }
 }

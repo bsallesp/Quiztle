@@ -13,14 +13,12 @@ using Quiztle.Blazor.Client.APIServices.Tests;
 using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
 using Quiztle.Frontend.Client.APIServices.StripeService;
-using Microsoft.AspNetCore.Authentication;
-//using Quiztle.Frontend.Components.Account.ClaimsManager;
+using Quiztle.Frontend.Components.Account.ClaimsManager;
 using Quiztle.Frontend.Client.APIServices;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
-ILogger logger = factory.CreateLogger("Program");
 
 builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
 
@@ -50,7 +48,8 @@ builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
 
-//builder.Services.AddTransient<AddClaims>();
+builder.Services.AddTransient<IClaimsTransformation, AddClaimsAutomatic>();
+builder.Services.AddTransient<AddClaims>();
 
 builder.Services.AddAntiforgery(options =>
 {

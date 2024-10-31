@@ -1,7 +1,8 @@
 ﻿@page "/success"
+@using Quiztle.Frontend.Components.Account.ClaimsManager
 
 @inject StripeCustomerService StripeCustomerService
-@* @inject AddClaims AddClaims *@
+@inject AddClaims AddClaims
 
 <div class="container">
     <h3>SucessComponent</h3>
@@ -11,7 +12,7 @@
 @code {
     protected override Task OnInitializedAsync()
     {
-        // var result = AddClaims.TransformAsync();
+        var result = AddClaims.TransformAsync();
 
         return base.OnInitializedAsync();
     }
