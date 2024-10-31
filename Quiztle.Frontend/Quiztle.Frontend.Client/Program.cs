@@ -33,7 +33,6 @@ builder.Services.AddTransient<PaidService>();
 
 builder.Services.AddTransient<GetUserInfos>();
 
-
 builder.Services.AddAuthorizationCore();
 
 //Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");

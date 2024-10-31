@@ -1,4 +1,4 @@
-﻿@page "/Buy"
+﻿@* @page "/Buy"
 @page "/Buy/{priceId}/testid/{testId}"
 
 @using Microsoft.AspNetCore.Authorization
@@ -11,8 +11,6 @@
 @inject GetUserInfos GetUserInfos
 @inject PaidService PaidService
 
-@attribute [Authorize]
-
 @code {
     [Parameter]
     public string priceId { get; set; } = "";
@@ -20,31 +18,35 @@
     [Parameter]
     public string testId { get; set; } = "";
 
-    private bool isDone = false;
-
     private string _finalURL = "";
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isPaid = await IsPaid();
+        var result = await IsPaid();
 
-        if (isPaid)
+        if (result == "NotLogged")
         {
-            Console.WriteLine("ispaid");
-            Nav.NavigateTo("/");
+            Nav.NavigateTo("/Login", true);
         }
 
-        else if (!isPaid)
+        if (result == "NotPaid")
         {
-            Console.WriteLine("is not paid");
             Nav.NavigateTo(_finalURL);
         }
+
+        if (result == "Paid")
+        {
+            Nav.NavigateTo("/Play");
+        }
+        
+        base.OnAfterRender(firstRender);
     }
 
-    private async Task<bool> IsPaid()
+    private async Task<string> IsPaid()
     {
         var email = await GetUserInfos.GetUserEmail();
+        if (string.IsNullOrEmpty(email)) return "NotLogged";
 
         Paid paid = new()
             {
@@ -64,9 +66,10 @@
             var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
 
             _finalURL = sessionURL;
-            return false;
+            return "NotPaid";
         }
 
-        return true;
+        return "Paid";
     }
 }
+ *@

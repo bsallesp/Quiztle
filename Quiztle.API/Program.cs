@@ -30,12 +30,9 @@ using Quiztle.DataContext.DataService.Repository.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
 
-using ILoggerFactory factory = LoggerFactory.Create(builder =>
-{
-    builder.AddDebug();
-    builder.AddConsole();
-});
+using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
+
 
 builder.Services.AddHttpClient<OllamaRequest>(client =>
 {

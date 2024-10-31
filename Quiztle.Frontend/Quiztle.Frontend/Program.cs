@@ -22,8 +22,6 @@ var builder = WebApplication.CreateBuilder(args);
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
 
-logger.LogError("Fail test.");
-
 builder.Services.Configure<CircuitOptions>(options => { options.DetailedErrors = true; });
 
 builder.Services.AddHttpClient();
@@ -52,8 +50,7 @@ builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
 
-
-builder.Services.AddTransient<IClaimsTransformation, AddClaimsAutomatic>();
+builder.Services.AddTransient<AddClaims>();
 
 builder.Services.AddAntiforgery(options =>
 {
