@@ -34,21 +34,21 @@ namespace Quiztle.API.Controllers.StripeController
             var options = new SessionCreateOptions
             {
                 LineItems = new List<SessionLineItemOptions>
-        {
-            new SessionLineItemOptions
-            {
-                Price = sessionStartDTO.PriceId,
-                Quantity = 1
-            }
-        },
+                {
+                    new SessionLineItemOptions
+                    {
+                        Price = sessionStartDTO.PriceId,
+                        Quantity = 1
+                    }
+                },
                 Mode = "payment",
                 SuccessUrl = domain + successPage,
                 CancelUrl = domain + cancelPage,
                 Metadata = new Dictionary<string, string>
-        {
-            { "price_id", sessionStartDTO.PriceId },
-            { "customer_email", sessionStartDTO.Email }
-        }
+                {
+                    { "price_id", sessionStartDTO.PriceId },
+                    { "customer_email", sessionStartDTO.Email }
+                }
             };
 
             try

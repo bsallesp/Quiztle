@@ -14,6 +14,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             _httpClient = httpClient;
         }
 
+
         public async Task<string> CreateSession(SessionStartDTO sessionStartDTO)
         {
             try
@@ -53,6 +54,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
         }
 
+
         public async Task<bool> IsPaidSession(string sessionId, string customerId, string priceId)
         {
             try
@@ -75,6 +77,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
         }
 
+
         public async Task<bool> IsPaidSessionByCustomer(string customerId, string priceId)
         {
             try
@@ -96,6 +99,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 return false;
             }
         }
+
 
         public async Task<string> SearchCustomerByEmail(string email)
         {

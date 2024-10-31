@@ -143,6 +143,7 @@
     private bool _showPaymentScreen = false;
     private bool _showLoadingScreen = true;
     private bool _showPracticeTest = false;
+    private bool _showGoogleLogin = false;
 
     private bool _showResults = false;
     public bool ShowResults
@@ -187,6 +188,16 @@
         await AddTestPerformance();
         ShowResults = true;
         _showFinalScreen = true;
+    }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await GetUserInfos.GetUserEmail();
+
+        if (string.IsNullOrEmpty(result)) _showGoogleLogin = true;
+
+        // return base.OnParametersSetAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

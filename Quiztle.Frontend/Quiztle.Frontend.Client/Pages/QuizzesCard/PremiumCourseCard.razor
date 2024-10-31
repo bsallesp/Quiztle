@@ -25,15 +25,12 @@
         }
     </div>
 
-@*     <button class="card-buttons" @onclick="PlayGame">
-        PLAY NOW
-    </button> *@
-
-    <div class="card-buttons">
-        <a href="/Games/Arcade/@TestId" target="_blank" class="btn btn-secondary">
-            PLAY NOW
-        </a>
-    </div>
+    <form method="post" @onsubmit="PlayGame" @formname="play-game">
+        <AntiforgeryToken />
+        <div>
+            <button class="card-buttons" type="submit">PLAY NOW</button>
+        </div>
+    </form>
 
     <div class="crown">
         <img src="svg/courses/crown.svg" />
@@ -64,7 +61,7 @@
 
     private void PlayGame()
     {
-        Nav.NavigateTo($"/Games/Arcade/{TestId}");
+        Nav.NavigateTo($"/Games/Arcade/{TestId}", true);
     }
 
     protected override Task OnParametersSetAsync()

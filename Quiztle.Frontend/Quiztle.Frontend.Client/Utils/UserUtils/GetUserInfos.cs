@@ -76,7 +76,7 @@ namespace Quiztle.Frontend.Client.Utils
         }
 
 
-        private async Task<string?> GetClaimValue(string claimType)
+        public async Task<string?> GetClaimValue(string claimType)
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -95,6 +95,7 @@ namespace Quiztle.Frontend.Client.Utils
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return authState.User.Identity?.IsAuthenticated ?? false;
         }
+
 
         public async Task<bool> HasClaim(string claimType)
         {
