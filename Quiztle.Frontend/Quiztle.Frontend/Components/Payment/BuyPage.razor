@@ -24,14 +24,31 @@
 
     private string _finalURL = "";
 
-    protected override async Task OnParametersSetAsync()
+
+    protected override async Task OnInitializedAsync()
+    {
+        var isPaid = await IsPaid();
+
+        if (isPaid)
+        {
+            Console.WriteLine("ispaid");
+            Nav.NavigateTo("/");
+        }
+
+        else if (!isPaid)
+        {
+            Console.WriteLine("is not paid");
+            Nav.NavigateTo(_finalURL);
+        }
+    }
+
+    private async Task<bool> IsPaid()
     {
         var email = await GetUserInfos.GetUserEmail();
-        Console.WriteLine(email);
 
         Paid paid = new()
             {
-            UserEmail = email,
+                UserEmail = email,
                 PriceId = priceId
             };
 
@@ -44,11 +61,12 @@
                     PriceId = paid.PriceId
                 };
 
-            Console.WriteLine(paid.UserEmail);
-
             var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
 
-            Nav.NavigateTo(sessionURL, true);
+            _finalURL = sessionURL;
+            return false;
         }
+
+        return true;
     }
 }

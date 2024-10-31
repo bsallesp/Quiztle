@@ -53,7 +53,7 @@ builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
 
 
-builder.Services.AddTransient<IClaimsTransformation, AddClaims>();
+builder.Services.AddTransient<IClaimsTransformation, AddClaimsAutomatic>();
 
 builder.Services.AddAntiforgery(options =>
 {

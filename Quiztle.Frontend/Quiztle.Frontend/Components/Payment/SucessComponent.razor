@@ -4,11 +4,7 @@
 @inject AddClaims AddClaims
 
 <div class="container">
-
-
     <h3>SucessComponent</h3>
-
-
 </div>
 
 
@@ -18,10 +14,5 @@
         var result = AddClaims.TransformAsync();
 
         return base.OnInitializedAsync();
-    }
-
-    private async Task UpdateClaims()
-    {
-        await AddClaims.TransformAsync();
     }
 }

@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Quiztle.Frontend.Client.APIServices;
+﻿using Quiztle.Frontend.Client.APIServices;
 using System.Security.Claims;
 
 namespace Quiztle.Frontend.Components.Account.ClaimsManager
 {
-    public class AddClaims : IClaimsTransformation
+    public class AddClaims
     {
         private readonly PaidService _paidService;
 
@@ -23,39 +22,20 @@ namespace Quiztle.Frontend.Components.Account.ClaimsManager
                 foreach (var paidItem in paidRecords)
                 {
                     principal.AddIdentity(new ClaimsIdentity(
-[
-                    new Claim(claimType, paidItem.PriceId!)
-                ]));
+                    new[]
+                    {
+                        new Claim(claimType, paidItem.PriceId!)
+                    }));
                 }
             }
 
             return principal;
         }
 
-        public Task<ClaimsPrincipal> TransformAsync()
+        public async Task<ClaimsPrincipal> TransformAsync()
         {
-            var principal = new ClaimsPrincipal();
-
-            // Chama o método original para processar o ClaimsPrincipal vazio
-            var resultPrincipal = TransformAsync(principal).Result;
-
-            // Lista todos os claims
-            Console.WriteLine("Claims:");
-            foreach (var claim in resultPrincipal.Claims)
-            {
-                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
-            }
-
-            // Lista todos os roles (assumindo que os roles estão definidos como claims do tipo ClaimTypes.Role)
-            Console.WriteLine("Roles:");
-            var roles = resultPrincipal.FindAll(ClaimTypes.Role);
-            foreach (var role in roles)
-            {
-                Console.WriteLine(role.Value);
-            }
-
-            return Task.FromResult(resultPrincipal);
+            var emptyPrincipal = new ClaimsPrincipal();
+            return await TransformAsync(emptyPrincipal);
         }
-
     }
 }
