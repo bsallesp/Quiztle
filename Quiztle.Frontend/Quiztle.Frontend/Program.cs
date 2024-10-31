@@ -14,7 +14,7 @@ using Quiztle.Frontend.Client.APIServices.Performance;
 using Quiztle.Frontend.Client.Utils;
 using Quiztle.Frontend.Client.APIServices.StripeService;
 using Microsoft.AspNetCore.Authentication;
-using Quiztle.Frontend.Components.Account.ClaimsManager;
+//using Quiztle.Frontend.Components.Account.ClaimsManager;
 using Quiztle.Frontend.Client.APIServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +50,7 @@ builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
 
-builder.Services.AddTransient<AddClaims>();
+//builder.Services.AddTransient<AddClaims>();
 
 builder.Services.AddAntiforgery(options =>
 {

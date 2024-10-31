@@ -31,7 +31,7 @@
     </FinalScreenComponent>
 }
 
-@if (_testDTO.QuestionsDTO.Count >= 1)
+@if (_showPracticeTest)
 {
     <MudContainer MaxWidth="MaxWidth.Medium">
         <div class="main-div">
@@ -107,7 +107,7 @@
     </MudContainer>
 }
 
-@if (_testDTO!.QuestionsDTO!.Count < 1)
+@if (_showLoadingScreen)
 {
     <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
         @if (_testDTO!.QuestionsDTO!.Count < 1)
@@ -121,6 +121,14 @@
     </div>
 }
 
+@if (_showPaymentScreen)
+{
+    <h1>
+        PAY HERE
+    </h1>
+    <button>Pay</button>
+}
+
 @code {
     ProgressBar progressBar = new();
 
@@ -132,6 +140,9 @@
     private TestDTO _testDTO = new();
     private Guid _testGuid = new Guid();
     private bool _showFinalScreen = false;
+    private bool _showPaymentScreen = false;
+    private bool _showLoadingScreen = true;
+    private bool _showPracticeTest = false;
 
     private bool _showResults = false;
     public bool ShowResults
@@ -191,17 +202,42 @@
         {
             _testGuid = Guid.Parse(TestId);
             var testAPIReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (testAPIReponse.Data.IsPremium)
+            {
+                LoadPaymentInterface();
+                Console.WriteLine("Is Premium!");
+                return;
+            }
 
             if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
                 throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
             _testDTO.FromTest(testAPIReponse.Data);
             _title = testAPIReponse.Data.Name;
+
+            if (!testAPIReponse.Data.IsPremium)
+            {
+                LoadPracticeTest();
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+
+    private void LoadPracticeTest()
+    {
+        _showPracticeTest = true;
+        StateHasChanged();
+    }
+
+    private void LoadPaymentInterface()
+    {
+        _showPaymentScreen = true;
+        _showLoadingScreen = false;
+        _showPracticeTest = false;
+        StateHasChanged();
     }
 
     private async Task AddTestPerformance()

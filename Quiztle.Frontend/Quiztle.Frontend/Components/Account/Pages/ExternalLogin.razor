@@ -18,20 +18,20 @@
 
 <PageTitle>Register</PageTitle>
 
-@* @* StatusMessage Component can be removed if no longer needed
+StatusMessage Component can be removed if no longer needed
 <StatusMessage Message="@message" />
 <h1>Register</h1>
 <h2>Associate your @ProviderDisplayName account.</h2>
 <hr />
 
-@* This form is now optional, you can remove it if the registration is automated
+This form is now optional, you can remove it if the registration is automated
 @if (!isUserRegistered)
 {
     <div class="alert alert-info">
         You've successfully authenticated with <strong>@ProviderDisplayName</strong>.
         Please enter an email address for this site below and click the Register button to finish logging in.
     </div>
-} *@
+}
 
 @code {
     public const string LoginCallbackAction = "LoginCallback";

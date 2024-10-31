@@ -22,6 +22,10 @@ public class SessionStartDTO
     public string? PriceId { get; set; }
 
 
+    [JsonPropertyName("TestId")]
+    public string? TestId { get; set; }
+
+
     [JsonPropertyName("Description")]
     public string? Description { get; set; }
 
