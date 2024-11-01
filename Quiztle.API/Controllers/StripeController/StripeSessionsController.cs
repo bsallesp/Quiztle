@@ -24,7 +24,10 @@ namespace Quiztle.API.Controllers.StripeController
         {
             if (sessionStartDTO == null) return BadRequest("SessionStartDTO cannot be null.");
 
-            if (string.IsNullOrEmpty(sessionStartDTO.PriceId) || string.IsNullOrEmpty(sessionStartDTO.Email))
+            if (string.IsNullOrEmpty(sessionStartDTO.PriceId) ||
+                string.IsNullOrEmpty(sessionStartDTO.Email) ||
+                string.IsNullOrEmpty(sessionStartDTO.TestId)
+                )
                 return BadRequest("PriceId and Email are required.");
 
             string domain = "http://localhost:5008/";
@@ -47,7 +50,8 @@ namespace Quiztle.API.Controllers.StripeController
                 Metadata = new Dictionary<string, string>
                 {
                     { "price_id", sessionStartDTO.PriceId },
-                    { "customer_email", sessionStartDTO.Email }
+                    { "customer_email", sessionStartDTO.Email },
+                    { "test_id", sessionStartDTO.TestId }
                 }
             };
 

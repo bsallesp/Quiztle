@@ -29,15 +29,15 @@ namespace Quiztle.Frontend.Components.Account.ClaimsManager
                 }
             }
 
-            foreach (var identity in principal.Identities)
-            {
-                foreach (var claim in identity.Claims)
-                {
-                    // Process each claim here
-                    // Example: Log claim type and value or perform some operation
-                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-                }
-            }
+            // foreach (var identity in principal.Identities)
+            // {
+            //     foreach (var claim in identity.Claims)
+            //     {
+            //         // Process each claim here
+            //         // Example: Log claim type and value or perform some operation
+            //         Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            //     }
+            // }
             return principal;
         }
 

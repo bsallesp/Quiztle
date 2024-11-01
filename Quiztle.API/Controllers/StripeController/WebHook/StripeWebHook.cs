@@ -22,6 +22,8 @@ namespace workspace.Controllers
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             try
             {
+                Console.WriteLine("GETTING StripeWebHook-------------------");
+                
                 var stripeEvent = EventUtility.ParseEvent(json);
 
                 if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted)
@@ -34,6 +36,7 @@ namespace workspace.Controllers
                         {
                             UserEmail = sessionCompleted.Metadata["customer_email"] ?? "",
                             PriceId = sessionCompleted.Metadata["price_id"],
+                            TestId = sessionCompleted.Metadata["test_id"],
                         };
 
                         newPaid.Status = "Completed";

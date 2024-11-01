@@ -24,7 +24,6 @@
     </form>
 </div>
 
-
 @code {
     [Parameter]
     public string priceId { get; set; } = "";
@@ -34,10 +33,21 @@
 
     private string _finalURL = "";
 
+    protected override Task OnParametersSetAsync()
+    {
+        
+        
+        CreateSession();
+        
+        return base.OnParametersSetAsync();
+    }
+
     private async Task CreateSession()
     {
         var email = await GetUserInfos.GetUserEmail();
 
+        Console.WriteLine("priceId --------" + priceId);
+        
         Paid paid = new()
             {
                 UserEmail = email,
@@ -47,14 +57,15 @@
         var sessionStartDTO = new SessionStartDTO
             {
                 Email = paid.UserEmail,
-                PriceId = paid.PriceId
+                PriceId = priceId,
+                TestId = testId
             };
 
+        Console.WriteLine(priceId);
+        
         var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
-
-        Console.WriteLine($"Session: {sessionURL}");
+        
         _finalURL = sessionURL;
-
         Nav.NavigateTo(sessionURL);
     }
 }
