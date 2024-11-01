@@ -155,11 +155,13 @@
     {
         questionDto.IsFinished = true;
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
+        StateHasChanged();
     }
 
     private void HandleSelectAnswer()
     {
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
+        StateHasChanged();
     }
 
     private void PlayAgain()
