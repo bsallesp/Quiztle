@@ -15,13 +15,13 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         }
 
 
-        public async Task<string> CreateSession(SessionStartDTO sessionStartDTO)
+        public async Task<string> CreateSession(SessionStartDTO sessionStartDto)
         {
             try
             {
                 var url = "api/StripeSessions/sessions/createsession";
 
-                var content = new StringContent(JsonSerializer.Serialize(sessionStartDTO), Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonSerializer.Serialize(sessionStartDto), Encoding.UTF8, "application/json");
 
                 var result = await _httpClient.PostAsync(url, content);
 

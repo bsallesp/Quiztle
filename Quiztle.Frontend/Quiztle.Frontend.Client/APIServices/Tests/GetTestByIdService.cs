@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace Quiztle.Blazor.Client.APIServices.Tests
 {
-    public class GetDraftByIdService
+    public class GetTestByIdService
     {
         private readonly HttpClient _httpClient;
 
-        public GetDraftByIdService(HttpClient httpClient)
+        public GetTestByIdService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

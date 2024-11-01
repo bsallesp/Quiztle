@@ -24,6 +24,10 @@ namespace Quiztle.API.Controllers.StripeController
         {
             if (sessionStartDTO == null) return BadRequest("SessionStartDTO cannot be null.");
 
+            Console.WriteLine(sessionStartDTO.PriceId);
+            Console.WriteLine(sessionStartDTO.TestId);
+            Console.WriteLine(sessionStartDTO.Email);
+            
             if (string.IsNullOrEmpty(sessionStartDTO.PriceId) ||
                 string.IsNullOrEmpty(sessionStartDTO.Email) ||
                 string.IsNullOrEmpty(sessionStartDTO.TestId)

@@ -39,7 +39,7 @@ builder.Services.AddTransient<GetUserInfos>();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
-builder.Services.AddTransient<GetDraftByIdService>();
+builder.Services.AddTransient<GetTestByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();

@@ -1,5 +1,4 @@
-﻿@page "/Buy"
-@page "/Buy/{priceId}/testid/{testId}"
+﻿@page "/Buy/TestId/{TestId}"
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.CoreBusiness.Entities.Paid
@@ -14,16 +13,15 @@
 
 @rendermode InteractiveServer
 
-@if (_showLoadingScreen)
+@if (ShowLoadingScreen)
 {
     <LoadingScreenComponent></LoadingScreenComponent>
 }
 
 @code {
-    [Parameter] public string priceId { get; set; } = "";
-    [Parameter] public string testId { get; set; } = "";
-    private string _finalURL = "";
-    private bool _showLoadingScreen = true;
+    [Parameter] public string TestId { get; set; } = "";
+    private string _finalUrl = "";
+    private const bool ShowLoadingScreen = true;
 
     protected override Task OnParametersSetAsync()
     {
@@ -34,26 +32,29 @@
 
     private async Task CreateSession()
     {
-        var email = await GetUserInfos.GetUserEmail();
-
-        Paid paid = new()
+        try
         {
-            UserEmail = email,
-            PriceId = priceId
-        };
+            var email = await GetUserInfos.GetUserEmail();
+            var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
 
-        var sessionStartDTO = new SessionStartDTO
+            var sessionStartDto = new SessionStartDTO
+            {
+                Email = email,
+                PriceId = test.Data.PriceId,
+                TestId = test.Data.Id.ToString()
+            };
+
+            var sessionUrl = await StripeSessionsService.CreateSession(sessionStartDto);
+
+            Console.WriteLine("Session url " + sessionUrl + "------------------------");
+            
+            _finalUrl = sessionUrl;
+            Nav.NavigateTo(sessionUrl);
+        }
+        catch (Exception e)
         {
-            Email = paid.UserEmail,
-            PriceId = priceId,
-            TestId = testId
-        };
-
-        Console.WriteLine(priceId);
-
-        var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
-
-        _finalURL = sessionURL;
-        Nav.NavigateTo(sessionURL);
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

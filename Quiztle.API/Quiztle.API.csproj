@@ -36,4 +36,29 @@
     <Folder Include="Controllers\BookControllers\" />
     <Folder Include="Controllers\LLMControllers\Book\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\AILogs\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\AILogs\Delete.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\AILogs\Details.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\AILogs\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\AILogs\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
+  </ItemGroup>
 </Project>

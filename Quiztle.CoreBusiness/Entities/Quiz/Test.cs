@@ -34,6 +34,10 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
         [JsonPropertyName("IsPremium")]
         public bool IsPremium { get; set; } = false;
+        
+        
+        [JsonPropertyName("PriceId")]
+        public string PriceId { get; set; } = "";
 
 
         [JsonPropertyName("TestQuestions")]

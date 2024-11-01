@@ -22,7 +22,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
-builder.Services.AddTransient<GetDraftByIdService>();
+builder.Services.AddTransient<GetTestByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();
@@ -37,7 +37,7 @@ builder.Services.AddAuthorizationCore();
 
 //Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
 
-#region Configuração da API
+#region Configuraï¿½ï¿½o da API
 var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
 if (string.IsNullOrEmpty(QuiztleAPIURL))
     throw new Exception("API URL is not configured in appsettings.json");

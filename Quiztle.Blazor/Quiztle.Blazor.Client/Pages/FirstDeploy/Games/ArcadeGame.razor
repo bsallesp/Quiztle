@@ -1,7 +1,4 @@
 ﻿@page "/Games/Arcade/{TestId}"
-@* @page "/Games/Arcade/{TestId}/{admin:bool?}"
-@page "/Games/Arcade/{TestId}/{amount}"
-@page "/Games/Arcade/{TestId}/{amount}/{admin:bool?}" *@
 
 @using Quiztle.Blazor.Client.Pages.Games.Components
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
@@ -60,22 +57,13 @@
 
 
 @code {
-    private int _totalSelectedAnswers = 0;
-    private string _title = "Quiztle";
 
-    [Parameter]
-    public string TestId { get; set; } = "";
+
     [Parameter]
     public string amount { get; set; } = "";
     [Parameter]
     public bool Admin { get; set; } = false;
-
-    private TestDTO _testDTO = new();
-    private Response? _response;
-    private Guid _testGuid = new Guid();
-    private string _buttonText = "FINISH";
-
-    private bool _showResults = false;
+    [Parameter]
     public bool ShowResults
     {
         get => _showResults;
@@ -87,6 +75,14 @@
             }
         }
     }
+    private TestDTO _testDTO = new();
+    private Response? _response;
+    private Guid _testGuid = new Guid();
+    private string _buttonText = "FINISH";
+    private bool _showResults = false;
+    private int _totalSelectedAnswers = 0;
+    private string _title = "Quiztle";
+    public string TestId { get; set; } = "";
 
     private void NextQuestion()
     {
@@ -99,18 +95,24 @@
         if (IsAllQuestionsAnswered()) ShowResults = true;
         if (!IsAllQuestionsAnswered()) _buttonText = $"Complete all questions";
     }
+    
 
     private bool IsAllQuestionsAnswered()
     {
         if (_testDTO.QuestionsDTO.Count == _testDTO.GetTotalSelectedAnswers()) return true;
         return false;
     }
+    
 
     protected override async Task OnParametersSetAsync()
     {
+        
+        
         await LoadTestAsync();
         await base.OnParametersSetAsync();
     }
+    
+    
     private async Task LoadTestAsync()
     {
         try

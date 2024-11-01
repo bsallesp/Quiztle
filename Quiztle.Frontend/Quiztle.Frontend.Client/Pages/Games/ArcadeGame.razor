@@ -2,14 +2,16 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Blazor.Client.APIServices.Tests
+@using Quiztle.CoreBusiness.Entities.Paid
 @using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
+@using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils;
 
 @inject GetQuestionsService GetQuestionsService
-@inject GetDraftByIdService GetTestByIdService
+@inject GetTestByIdService GetTestByIdService
 @inject AddTestPerformanceService AddTestPerformanceService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject GetUserInfos GetUserInfos
@@ -19,7 +21,9 @@
 
 <title>
     @if (_title != null)
-        @("certcool - " + _title)
+    {
+        @("certcool - " + _title);
+    }
 </title>
 
 @if (_showFinalScreen)
@@ -121,31 +125,14 @@
     </div>
 }
 
-@if (_showPaymentScreen)
-{
-    <h1>
-        PAY HERE
-    </h1>
-    <button>Pay</button>
-}
-
 @code {
     ProgressBar progressBar = new();
 
-    private string _title = "Quiztle";
+    private string _title = "certcool";
 
     [Parameter]
     public string TestId { get; set; } = "";
-
-    private TestDTO _testDTO = new();
-    private Guid _testGuid = new Guid();
-    private bool _showFinalScreen = false;
-    private bool _showPaymentScreen = false;
-    private bool _showLoadingScreen = true;
-    private bool _showPracticeTest = false;
-    private bool _showGoogleLogin = false;
-
-    private bool _showResults = false;
+    
     public bool ShowResults
     {
         get => _showResults;
@@ -158,18 +145,28 @@
         }
     }
 
-    private void HandleGetAnswer(QuestionDTO questionDTO)
+    private TestDTO _testDTO = new();
+    private Guid _testGuid = new Guid();
+    private bool _showFinalScreen = false;
+    private bool _showLoadingScreen = true;
+    private bool _showPracticeTest = false;
+    private bool _showResults = false;
+
+
+    private void HandleGetAnswer(QuestionDTO questionDto)
     {
-        questionDTO.IsFinished = true;
+        questionDto.IsFinished = true;
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
+    
 
     private void HandleSelectAnswer()
     {
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
+    
 
     private void PlayAgain()
     {
@@ -182,6 +179,7 @@
             Nav.NavigateTo($"/Games/Arcade/");
         }
     }
+    
 
     private async Task FinalizeTestResponse()
     {
@@ -193,40 +191,52 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var result = await GetUserInfos.GetUserEmail();
-
-        if (string.IsNullOrEmpty(result)) _showGoogleLogin = true;
-
-        // return base.OnParametersSetAsync();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
+        if (!await IsPaid()) RedirectToBuy();
         await LoadTestAsync();
-        StateHasChanged();
     }
+    
 
+    private void RedirectToBuy() => Nav.NavigateTo("/Buy/TestId/" + TestId);
+    
+
+    private async Task<bool> IsPaid()
+    {
+        var email = await GetUserInfos.GetUserEmail();
+
+        if (string.IsNullOrEmpty(email))
+        {
+            Nav.NavigateTo("/Error", true);
+            return false;
+        }
+
+        var purchasesList = await PaidService.GetPaidByEmailService(email);
+        if (purchasesList == null) return true;
+        var  enumerable = purchasesList as Paid[] ?? purchasesList.ToArray();
+        if (!enumerable.Any()) return false;
+        var selectedPurchase = enumerable.FirstOrDefault(p => p.TestId == TestId);
+        return selectedPurchase != null;
+    }
+    
+    
     private async Task LoadTestAsync()
     {
         try
         {
             _testGuid = Guid.Parse(TestId);
-            var testAPIReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
-            if (testAPIReponse.Data.IsPremium)
+            var testApiReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (testApiReponse.Data.IsPremium)
             {
                 LoadPaymentInterface();
-                Console.WriteLine("Is Premium!");
                 return;
             }
 
-            if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
+            if (testApiReponse.Status != CustomStatusCodes.SuccessStatus)
                 throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
-            _testDTO.FromTest(testAPIReponse.Data);
-            _title = testAPIReponse.Data.Name;
+            _testDTO.FromTest(testApiReponse.Data);
+            _title = testApiReponse.Data.Name;
 
-            if (!testAPIReponse.Data.IsPremium)
+            if (!testApiReponse.Data.IsPremium)
             {
                 LoadPracticeTest();
             }
@@ -236,20 +246,22 @@
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
+    
 
     private void LoadPracticeTest()
     {
         _showPracticeTest = true;
         StateHasChanged();
     }
+    
 
     private void LoadPaymentInterface()
     {
-        _showPaymentScreen = true;
         _showLoadingScreen = false;
         _showPracticeTest = false;
         StateHasChanged();
     }
+    
 
     private async Task AddTestPerformance()
     {
