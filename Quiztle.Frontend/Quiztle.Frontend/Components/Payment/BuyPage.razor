@@ -5,6 +5,7 @@
 @using Quiztle.CoreBusiness.Entities.Paid
 @using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.StripeService
+@using Quiztle.Frontend.Client.Utils.LoadingScreen
 
 @inject StripeSessionsService StripeSessionsService
 @inject StripeCustomerService StripeCustomerService
@@ -13,58 +14,45 @@
 
 @rendermode InteractiveServer
 
-<div class="container-lg p2">
-    <h1>Pay</h1>
-
-    <form method="post" @onsubmit="CreateSession" @formname="create-session-and-pay">
-        <AntiforgeryToken />
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
+@if (_showLoadingScreen)
+{
+    <LoadingScreenComponent></LoadingScreenComponent>
+}
 
 @code {
-    [Parameter]
-    public string priceId { get; set; } = "";
-
-    [Parameter]
-    public string testId { get; set; } = "";
-
+    [Parameter] public string priceId { get; set; } = "";
+    [Parameter] public string testId { get; set; } = "";
     private string _finalURL = "";
+    private bool _showLoadingScreen = true;
 
     protected override Task OnParametersSetAsync()
     {
-        
-        
-        CreateSession();
-        
+        _ = CreateSession();
         return base.OnParametersSetAsync();
     }
+    
 
     private async Task CreateSession()
     {
         var email = await GetUserInfos.GetUserEmail();
 
-        Console.WriteLine("priceId --------" + priceId);
-        
         Paid paid = new()
-            {
-                UserEmail = email,
-                PriceId = priceId
-            };
+        {
+            UserEmail = email,
+            PriceId = priceId
+        };
 
         var sessionStartDTO = new SessionStartDTO
-            {
-                Email = paid.UserEmail,
-                PriceId = priceId,
-                TestId = testId
-            };
+        {
+            Email = paid.UserEmail,
+            PriceId = priceId,
+            TestId = testId
+        };
 
         Console.WriteLine(priceId);
-        
+
         var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
-        
+
         _finalURL = sessionURL;
         Nav.NavigateTo(sessionURL);
     }
