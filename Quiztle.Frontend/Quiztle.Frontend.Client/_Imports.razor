@@ -14,9 +14,11 @@
 @using Quiztle.Blazor.Client.APIServices.Tests
 @using Quiztle.CoreBusiness.Entities.Quiz
 @using Quiztle.Frontend.Client.APIServices
+@using Quiztle.Frontend.Client.Pages.Games
 @using Quiztle.Frontend.Client.Utils
 
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject PaidService PaidService
 @inject GetTestByIdService GetTestByIdService
+@inject ILogger<ArcadeGame> Logger

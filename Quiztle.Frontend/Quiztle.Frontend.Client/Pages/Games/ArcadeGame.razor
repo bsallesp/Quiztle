@@ -10,13 +10,14 @@
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils;
 
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
 @inject GetQuestionsService GetQuestionsService
 @inject GetTestByIdService GetTestByIdService
 @inject AddTestPerformanceService AddTestPerformanceService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject GetUserInfos GetUserInfos
 
-@rendermode InteractiveAuto
 @attribute [Authorize]
 
 <title>
@@ -44,7 +45,6 @@
                 {
                     <div class="d-flex justify-content-center align-items-center text-center">
                         <div class="me-3 p-3">
-
                             @if (_testDTO.ShieldSVG == null)
                             {
                                 <img src="img/courses/default.svg" style="width: 100px; height: 100px;" />
@@ -53,7 +53,6 @@
                             {
                                 <img src="img/courses/@_testDTO.ShieldSVG" style="width: 100px; height: 100px;" />
                             }
-
                         </div>
                         <div style="padding: 10px 10px;">
                             <h1>
@@ -79,7 +78,6 @@
                 }
             </div>
             <div class="fixed-bottom-container">
-
                 <ProgressBar @ref=progressBar
                              TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
                              AnsweredQuestions="@_testDTO.GetTotalSelectedOrFinishedQuestions()" />
@@ -87,7 +85,6 @@
                 @if (!ShowResults)
                 {
                     bool disabledFinishButton = (_testDTO.GetTotalSelectedOrFinishedQuestions() != _testDTO.QuestionsDTO.Count);
-
                     <button disabled="@(disabledFinishButton ? "disabled" : null)"
                             class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
                         <h3 class="mb-0">
@@ -151,124 +148,133 @@
     private bool _showLoadingScreen = true;
     private bool _showPracticeTest = false;
     private bool _showResults = false;
-
+    private bool _isPaymentChecked = false;
+    private bool _isPaid = false;
 
     private void HandleGetAnswer(QuestionDTO questionDto)
     {
         questionDto.IsFinished = true;
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
-        StateHasChanged();
     }
-    
 
     private void HandleSelectAnswer()
     {
         progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
-        StateHasChanged();
     }
-    
 
     private void PlayAgain()
     {
         try
         {
+            Logger.LogInformation("Reiniciando o jogo com TestGuid: {_testGuid}", _testGuid);
             Nav.NavigateTo($"/Games/Arcade/{_testGuid}");
         }
         catch
         {
+            Logger.LogWarning("Erro ao reiniciar o jogo, redirecionando para Games/Arcade.");
             Nav.NavigateTo($"/Games/Arcade/");
         }
     }
-    
 
     private async Task FinalizeTestResponse()
     {
         await AddTestPerformance();
         ShowResults = true;
         _showFinalScreen = true;
+        Logger.LogInformation("Finalizando a resposta do teste.");
     }
-
 
     protected override async Task OnParametersSetAsync()
     {
-        if (!await IsPaid()) RedirectToBuy();
-        await LoadTestAsync();
+        _isPaid = await IsPaid();
+        
+        if (!_isPaid && _isPaymentChecked) RedirectToBuy();
+        if (_isPaid || _isPaymentChecked) await LoadTestAsync();
     }
-    
-
-    private void RedirectToBuy() => Nav.NavigateTo("/Buy/TestId/" + TestId);
-    
 
     private async Task<bool> IsPaid()
     {
         var email = await GetUserInfos.GetUserEmail();
+        Logger.LogInformation("Email obtido: {Email}", email);
 
         if (string.IsNullOrEmpty(email))
         {
+            Logger.LogWarning("Email não encontrado, redirecionando para erro.");
             Nav.NavigateTo("/Error", true);
             return false;
         }
+        
+        Logger.LogInformation($"Getting TestId: {TestId}");
 
-        var purchasesList = await PaidService.GetPaidByEmailService(email);
-        if (purchasesList == null) return true;
-        var  enumerable = purchasesList as Paid[] ?? purchasesList.ToArray();
-        if (!enumerable.Any()) return false;
-        var selectedPurchase = enumerable.FirstOrDefault(p => p.TestId == TestId);
-        return selectedPurchase != null;
+        var purchases = await PaidService.GetPaidByEmailService(email);
+        if (purchases == null)
+        {
+            Logger.LogInformation("THERE ARE NO PURCHASES");
+            return false;
+        }
+        
+        var purchase = (purchases.FirstOrDefault(t =>
+                t.TestId == TestId));
+        
+        if (purchase == null)
+        {
+            Logger.LogInformation("THERE ARE NO PURCHASE");
+            RedirectToBuy();
+            return false;
+        }
+        
+        Logger.LogInformation("PriceID: " + purchase.PriceId);
+        Logger.LogInformation("TestID: " + purchase.TestId);
+
+        Logger.LogInformation("Pagamento encontrado?: {Found}", purchase != null);
+        _isPaymentChecked = true;
+        return purchase != null;
     }
-    
-    
+
+    private void RedirectToBuy()
+    {
+        Logger.LogInformation("Redirecionando para compra do TestId: {TestId}", TestId);
+        if(_isPaymentChecked) Logger.LogInformation("NAVIGATINGGGGGGGGGGGGGGNNNNNNNNNN");
+        Nav.NavigateTo("/Buy/TestId/" + TestId);
+    }
+
     private async Task LoadTestAsync()
     {
         try
         {
+            if (!_isPaymentChecked || !_isPaid) return;
+            Logger.LogInformation("Iniciando o carregamento do teste.");
             _testGuid = Guid.Parse(TestId);
-            var testApiReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
-            if (testApiReponse.Data.IsPremium)
-            {
-                LoadPaymentInterface();
-                return;
-            }
-
-            if (testApiReponse.Status != CustomStatusCodes.SuccessStatus)
+            var testApiResponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (testApiResponse.Status != CustomStatusCodes.SuccessStatus)
                 throw new Exception("TestGame: Error during retrieving TestApiResponse");
-
-            _testDTO.FromTest(testApiReponse.Data);
-            _title = testApiReponse.Data.Name;
-
-            if (!testApiReponse.Data.IsPremium)
-            {
-                LoadPracticeTest();
-            }
+            _testDTO.FromTest(testApiResponse.Data);
+            _title = testApiResponse.Data.Name;
+            Logger.LogInformation("Teste carregado com sucesso: {TestName}", _title);
+            
+            LoadPracticeTestScreen();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Logger.LogError(ex, "Erro ao carregar o teste.");
         }
     }
-    
 
-    private void LoadPracticeTest()
+    private void LoadPracticeTestScreen()
     {
+        if (!_isPaymentChecked || !_isPaid) return;
         _showPracticeTest = true;
+        Logger.LogInformation("Tela de prática do teste carregada.");
         StateHasChanged();
     }
-    
-
-    private void LoadPaymentInterface()
-    {
-        _showLoadingScreen = false;
-        _showPracticeTest = false;
-        StateHasChanged();
-    }
-    
 
     private async Task AddTestPerformance()
     {
         var userId = await GetUserInfos.GetUserId();
+        Logger.LogInformation("Adicionando performance do teste para o UserId: {UserId}", userId);
 
         var testPerformance = _testDTO.CreateTestPerformance(userId);
-
         await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
 }

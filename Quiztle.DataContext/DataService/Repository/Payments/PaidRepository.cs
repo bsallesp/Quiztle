@@ -107,6 +107,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
             }
         }
 
+        
         public async Task<IEnumerable<Paid>> GetPaidByEmailAsync(string email)
         {
             try

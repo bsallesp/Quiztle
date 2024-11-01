@@ -45,8 +45,6 @@
             };
 
             var sessionUrl = await StripeSessionsService.CreateSession(sessionStartDto);
-
-            Console.WriteLine("Session url " + sessionUrl + "------------------------");
             
             _finalUrl = sessionUrl;
             Nav.NavigateTo(sessionUrl);
