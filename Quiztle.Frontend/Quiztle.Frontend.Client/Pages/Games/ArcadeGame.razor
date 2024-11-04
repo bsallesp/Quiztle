@@ -25,54 +25,70 @@
         @("certcool - " + _title)
 </title>
 
-@if (_showFinalScreen)
+@if (_showLoadingScreen)
 {
-    <FinalScreenComponent Title="Azure AZ-900 Fundamentals"
-                          Score="@_testDto.GetTotalCorrectAnswers()"
-                          QuestionsAmount="200"
-                          TotalQuestions="@_testDto.QuestionsDTO.Count()">
-    </FinalScreenComponent>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+        @if (_testDto!.QuestionsDTO!.Count < 1)
+        {
+            <h4>
+                <img src="gif/Rocket.gif" style="width: 100px; height: 100px;"/>
+                <br/>
+                LOADING...
+            </h4>
+        }
+    </div>
 }
 
-@if (_showPracticeTest)
+@if (_showPracticeTestHeader)
+{
+    <div class="d-flex justify-content-center align-items-center text-center">
+        <div class="me-3 p-3">
+
+            @if (_testDto.ShieldSVG == null)
+            {
+                <img src="img/courses/default.svg" style="width: 100px; height: 100px;"/>
+            }
+            else
+            {
+                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;"/>
+            }
+
+        </div>
+        <div style="padding: 10px 10px;">
+            <h1>
+                @_testDto.Name
+            </h1>
+            <h3>
+                @(_testDto.QuestionsDTO.Count + " questions")
+            </h3>
+        </div>
+    </div>
+
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <DashboardComponent
+            IsPaid="_hasPaid"
+            TagsAmountDictionary="_dashboardSetup">
+        </DashboardComponent>
+    </MudContainer>
+}
+
+@if (_showPracticeTestQuestions)
 {
     <MudContainer MaxWidth="MaxWidth.Medium">
         <div class="main-div">
             <div style="padding-bottom:80px;">
                 @if (_testDto.QuestionsDTO != null)
                 {
-                    <div class="d-flex justify-content-center align-items-center text-center">
-                        <div class="me-3 p-3">
-
-                            @if (_testDto.ShieldSVG == null)
-                            {
-                                <img src="img/courses/default.svg" style="width: 100px; height: 100px;"/>
-                            }
-                            else
-                            {
-                                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;"/>
-                            }
-
-                        </div>
-                        <div style="padding: 10px 10px;">
-                            <h1>
-                                @_testDto.Name
-                            </h1>
-                            <h3>
-                                @(_testDto.QuestionsDTO.Count + " questions")
-                            </h3>
-                        </div>
-                    </div>
-
                     @foreach (var questionDTO in _testDto.QuestionsDTO)
                     {
                         var index = _testDto.QuestionsDTO.IndexOf(questionDTO);
-                        <QuestionDTOArcadeComponent ShowResults="ShowResults"
-                                                    questionDTO="questionDTO"
-                                                    Number="@index"
-                                                    IsFinished="questionDTO.IsFinished"
-                                                    OnGetAnswer="@(() => HandleGetAnswer(questionDTO))"
-                                                    OnSelectAnswer="@(() => HandleSelectAnswer())">
+                        <QuestionDTOArcadeComponent
+                            ShowResults="ShowResults"
+                            questionDTO="questionDTO"
+                            Number="@index"
+                            IsFinished="questionDTO.IsFinished"
+                            OnGetAnswer="@(() => HandleGetAnswer(questionDTO))"
+                            OnSelectAnswer="@(() => HandleSelectAnswer())">
                         </QuestionDTOArcadeComponent>
                     }
                 }
@@ -110,18 +126,13 @@
     </MudContainer>
 }
 
-@if (_showLoadingScreen)
+@if (_showFinalScreen)
 {
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
-        @if (_testDto!.QuestionsDTO!.Count < 1)
-        {
-            <h4>
-                <img src="gif/Rocket.gif" style="width: 100px; height: 100px;"/>
-                <br/>
-                LOADING...
-            </h4>
-        }
-    </div>
+    <FinalScreenComponent Title="Azure AZ-900 Fundamentals"
+                          Score="@_testDto.GetTotalCorrectAnswers()"
+                          QuestionsAmount="200"
+                          TotalQuestions="@_testDto.QuestionsDTO.Count()">
+    </FinalScreenComponent>
 }
 
 @code {
@@ -135,9 +146,11 @@
     private Guid _testGuid = new Guid();
     private bool _showFinalScreen = false;
     private bool _showLoadingScreen = true;
-    private bool _showPracticeTest = false;
-
+    private bool _showPracticeTestHeader = false;
+    private bool _showPracticeTestQuestions = false;
+    private Dictionary<string, int> _dashboardSetup = [];
     private bool _showResults = false;
+    private bool _hasPaid = false;
 
     public bool ShowResults
     {
@@ -153,49 +166,38 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var hasPaid = await PaidService.IsPaidService(new Paid()
+        _hasPaid = await PaidService.IsPaidService(new Paid()
         {
             UserEmail = await GetUserInfos.GetUserEmail(),
             TestId = TestId
         });
 
-        if (hasPaid) await LoadPremiumTestAsync();
+        if (_hasPaid) await LoadPremiumTestAsync();
         else await LoadFreeTestAsync(TestId);
     }
 
     private async Task LoadFreeTestAsync(string TestId)
     {
+        Console.WriteLine("Its NOT Paid!");
         var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
         var freeTest = data.Data.GetFreeTest(2);
         _testDto.FromTest(freeTest);
+        _dashboardSetup = _testDto.GetQuestionCountByTag();
         LoadPracticeTestScreen();
     }
-    
-    
+
 
     private async Task LoadPremiumTestAsync()
     {
         try
         {
+            Console.WriteLine("Its Paid!");
             var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
-            _testGuid = Guid.Parse(TestId);
-            var testApiResponse = await GetTestByIdService.ExecuteAsync(_testGuid);
-            if (testApiResponse.Data.IsPremium)
-            {
-                //LoadDashboard();
-                await LoadFreeTestAsync(TestId);
-            }
-        
-            else
-                await LoadFreeTestAsync(TestId);
-        
-            if (testApiResponse.Status != CustomStatusCodes.SuccessStatus)
-                throw new Exception("TestGame: Error during retrieving TestApiResponse");
-        
-            _testDto.FromTest(testApiResponse.Data);
-            _title = testApiResponse.Data.Name;
-        
-            LoadPracticeTestScreen();
+            _testDto.FromTest(data.Data);
+            _dashboardSetup = _testDto.GetQuestionCountByTag();
+            Console.WriteLine($"Total questions: {_testDto.QuestionsDTO.Count}");
+            LoadDashboard();
+            // LoadPracticeTestScreen();
         }
         catch (Exception ex)
         {
@@ -205,7 +207,8 @@
 
     private void LoadDashboard()
     {
-        throw new NotImplementedException();
+        _showLoadingScreen = false;
+        _showPracticeTestHeader = true;
     }
 
     private void HandleGetAnswer(QuestionDTO questionDto)
@@ -250,7 +253,7 @@
     private void LoadPracticeTestScreen()
     {
         _showLoadingScreen = false;
-        _showPracticeTest = true;
+        _showPracticeTestQuestions = true;
         StateHasChanged();
     }
 

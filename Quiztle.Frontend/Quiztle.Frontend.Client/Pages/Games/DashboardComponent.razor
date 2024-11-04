@@ -1,0 +1,66 @@
+<MudContainer Style="background-color: rgba(0, 0, 0, 0.05); border-radius: 15px;">
+    @foreach (var tag in TagsAmountDictionary.Keys)
+    {
+        <MudSlider
+            Disabled="!IsPaid"
+            @bind-Value="_tagValues[tag]"
+            Min="0"
+            Max="@TagsAmountDictionary[tag]"
+            Color="Color.Info">
+
+            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary" @onclick="() => SetExclusiveTagValue(tag)">
+                @tag
+            </MudChip>
+            @_tagValues[tag].ToString() of @TagsAmountDictionary[tag]
+        </MudSlider>
+    }
+
+    <div class="d-flex justify-content-center align-items-center m-3" style="height: 100%;">
+        <button class="btn btn-outline-secondary btn-lg m-3" @onclick="ResetValues">
+            Reset
+        </button>
+        <button class="btn btn-primary btn-lg m-3">
+            Generate Practice Test with total of @TotalSelected questions
+        </button>
+    </div>
+
+</MudContainer>
+
+@code {
+    [Parameter] public Dictionary<string, int> TagsAmountDictionary { get; set; } = new Dictionary<string, int>();
+    [Parameter] public bool IsPaid { get; set; } = false;
+    private Dictionary<string, double> _tagValues = new Dictionary<string, double>();
+
+    private double TotalSelected => _tagValues.Values.Sum();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        InitializeDefaultValues();
+    }
+
+    private void InitializeDefaultValues()
+    {
+        foreach (var tag in TagsAmountDictionary.Keys)
+        {
+            _tagValues[tag] = Math.Min(10, TagsAmountDictionary[tag]);
+        }
+    }
+
+    private void SetExclusiveTagValue(string selectedTag)
+    {
+        foreach (var tag in TagsAmountDictionary.Keys)
+        {
+            _tagValues[tag] = tag == selectedTag ? TagsAmountDictionary[tag] : 0;
+        }
+
+        StateHasChanged();
+    }
+
+    private void ResetValues()
+    {
+        InitializeDefaultValues();
+        StateHasChanged();
+    }
+
+}

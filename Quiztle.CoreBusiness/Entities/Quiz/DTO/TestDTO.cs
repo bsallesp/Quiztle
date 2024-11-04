@@ -36,6 +36,13 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 QuestionsDTO[n] = value;
             }
         }
+        
+        public Dictionary<string, int> GetQuestionCountByTag()
+        {
+            return QuestionsDTO
+                .GroupBy(q => q.Tag ?? "Undefined")
+                .ToDictionary(g => g.Key, g => g.Count());
+        }
 
         public int GetTotalSelectedAnswers()
         {

@@ -9,20 +9,15 @@
 @page "/Courses"
 
 <div class="container d-flex flex-wrap justify-content-evenly main-div">
-
-    @* <FreeCourseCard Title="Azure AZ-900 Fundamentals" *@
-    @*                 Image="microsoft-certified-fundamentals-badge.svg" *@
-    @*                 QuestionsAmount="40" *@
-    @*                 Contents="Az900Contents" *@
-    @*                 testId="ac6a50d3-149f-4348-ae0a-ad3e6d764971"> *@
-    @* </FreeCourseCard> *@
-    @* *@
-    @* <FreeCourseCard Title="Azure AZ-104 Associate" *@
-    @*                 Image="microsoft-certified-fundamentals-badge.svg" *@
-    @*                 QuestionsAmount="40" *@
-    @*                 Contents="Az104Contents" *@
-    @*                 testId="d31168d7-f494-4130-9f25-6439f01d11ac"> *@
-    @* </FreeCourseCard> *@
+    
+    <PremiumCourseCard Title="AZ-104: Associate Administrator"
+                       Image="microsoft-certified-associate-badge.svg"
+                       QuestionsAmount="2000"
+                       Contents="Az104Contents"
+                       Enabled="true"
+                       PriceId="price_1QF4UmLKiSsrfvcH7ppsKrUd"
+                       TestId="12a28fee-2890-4553-9827-a5d1c71611dd">
+    </PremiumCourseCard>
 
     <PremiumCourseCard Title="AZ-900 (2000 Questions)"
                        Image="microsoft-certified-fundamentals-badge.svg"
@@ -37,7 +32,7 @@
                        Image="microsoft-certified-associate-badge.svg"
                        QuestionsAmount="200"
                        Contents="Az204Contents"
-                        Enabled="true"
+                       Enabled="true"
                        PriceId="price_1QF4UmLKiSsrfvcH7ppsKrUd"
                        TestId="d31168d7-f494-4130-9f25-6439f01d11ac">
     </PremiumCourseCard>
