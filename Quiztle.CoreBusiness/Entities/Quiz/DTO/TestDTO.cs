@@ -37,7 +37,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             }
         }
         
-        public Dictionary<string, int> GetQuestionCountByTag()
+        public Dictionary<string, int> GetTagsGrid()
         {
             return QuestionsDTO
                 .GroupBy(q => q.Tag ?? "Undefined")

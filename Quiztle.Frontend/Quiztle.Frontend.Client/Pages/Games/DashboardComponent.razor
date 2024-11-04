@@ -1,34 +1,57 @@
+@using Quiztle.CoreBusiness.Entities.Paid
 <MudContainer Style="background-color: rgba(0, 0, 0, 0.05); border-radius: 15px;">
+    @if (!HasPaid)
+    {
+        <div class="d-flex justify-content-center align-items-center m-3" style="height: 100%;">
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                You are using the free version.
+                The paid version offers dozens more questions, detailed progress tracking,
+                and additional features to enhance your learning experience.
+            </MudAlert>
+            <button class="btn btn-primary btn-lg m-3">
+                Get Premium Now =D
+            </button>
+        </div>
+        <button></button>
+    }
+
     @foreach (var tag in TagsAmountDictionary.Keys)
     {
         <MudSlider
-            Disabled="!IsPaid"
+            Disabled="!HasPaid"
             @bind-Value="_tagValues[tag]"
             Min="0"
             Max="@TagsAmountDictionary[tag]"
             Color="Color.Info">
 
-            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary" @onclick="() => SetExclusiveTagValue(tag)">
+            <MudChip
+                Size="Size.Small" T="string"
+                Color="Color.Tertiary"
+                @onclick="HasPaid ? () => SetExclusiveTagValue(tag) : null">
                 @tag
             </MudChip>
+
             @_tagValues[tag].ToString() of @TagsAmountDictionary[tag]
         </MudSlider>
     }
 
-    <div class="d-flex justify-content-center align-items-center m-3" style="height: 100%;">
-        <button class="btn btn-outline-secondary btn-lg m-3" @onclick="ResetValues">
-            Reset
-        </button>
-        <button class="btn btn-primary btn-lg m-3">
-            Generate Practice Test with total of @TotalSelected questions
-        </button>
-    </div>
+    @if (HasPaid)
+    {
+        <div class="d-flex justify-content-center align-items-center m-3" style="height: 100%;">
+            <button class="btn btn-outline-secondary btn-lg m-3" @onclick="ResetValues">
+                Reset
+            </button>
+            <button class="btn btn-primary btn-lg m-3">
+                Generate Practice Test with total of @TotalSelected questions
+            </button>
+        </div>
+    }
 
 </MudContainer>
 
 @code {
     [Parameter] public Dictionary<string, int> TagsAmountDictionary { get; set; } = new Dictionary<string, int>();
-    [Parameter] public bool IsPaid { get; set; } = false;
+    [Parameter] public bool HasPaid { get; set; } = false;
     private Dictionary<string, double> _tagValues = new Dictionary<string, double>();
 
     private double TotalSelected => _tagValues.Values.Sum();
@@ -43,7 +66,7 @@
     {
         foreach (var tag in TagsAmountDictionary.Keys)
         {
-            _tagValues[tag] = Math.Min(10, TagsAmountDictionary[tag]);
+            _tagValues[tag] = Math.Min(HasPaid ? 10 : 1, TagsAmountDictionary[tag]);
         }
     }
 
