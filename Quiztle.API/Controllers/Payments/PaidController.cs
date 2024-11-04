@@ -44,6 +44,8 @@ namespace Quiztle.API.Controllers.Payments
         {
             try
             {
+                Console.WriteLine($"Controller: {paid.UserEmail}, {paid.TestId}");
+                
                 bool isPaid = await _paidRepository.IsPaid(paid);
 
                 return Ok(isPaid);

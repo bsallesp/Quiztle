@@ -38,8 +38,10 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
                 EnsurePaidNotNull();
 
                 var test = await _context.Tests!.Where(x => x.Id.ToString() == paid.TestId).FirstOrDefaultAsync();
-
-                Console.WriteLine($"Test / PriceId: {test!.PriceId}");
+                if (test == null) return false;
+                
+                paid.PriceId = test.PriceId;
+                Console.WriteLine($"Test / PriceId: {paid.PriceId}, {paid.UserEmail}, {paid.TestId}");
                 
                 var result = await _context.Paids!
                     .Where(e => e.UserEmail == paid.UserEmail && e.PriceId == paid.PriceId)

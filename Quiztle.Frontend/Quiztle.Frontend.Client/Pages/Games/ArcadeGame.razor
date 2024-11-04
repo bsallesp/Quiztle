@@ -2,9 +2,11 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.Blazor.Client.APIServices.Tests
+@using Quiztle.CoreBusiness.Entities.Paid
 @using Quiztle.CoreBusiness.Entities.Performance
 @using Quiztle.CoreBusiness.Entities.Quiz.DTO
 @using Quiztle.CoreBusiness.Utils
+@using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils;
 
@@ -13,6 +15,7 @@
 @inject AddTestPerformanceService AddTestPerformanceService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject GetUserInfos GetUserInfos
+@inject PaidService PaidService
 
 @rendermode InteractiveAuto
 @attribute [Authorize]
@@ -25,9 +28,9 @@
 @if (_showFinalScreen)
 {
     <FinalScreenComponent Title="Azure AZ-900 Fundamentals"
-                          Score="@_testDTO.GetTotalCorrectAnswers()"
+                          Score="@_testDto.GetTotalCorrectAnswers()"
                           QuestionsAmount="200"
-                          TotalQuestions="@_testDTO.QuestionsDTO.Count()">
+                          TotalQuestions="@_testDto.QuestionsDTO.Count()">
     </FinalScreenComponent>
 }
 
@@ -36,34 +39,34 @@
     <MudContainer MaxWidth="MaxWidth.Medium">
         <div class="main-div">
             <div style="padding-bottom:80px;">
-                @if (_testDTO.QuestionsDTO != null)
+                @if (_testDto.QuestionsDTO != null)
                 {
                     <div class="d-flex justify-content-center align-items-center text-center">
                         <div class="me-3 p-3">
 
-                            @if (_testDTO.ShieldSVG == null)
+                            @if (_testDto.ShieldSVG == null)
                             {
                                 <img src="img/courses/default.svg" style="width: 100px; height: 100px;" />
                             }
                             else
                             {
-                                <img src="img/courses/@_testDTO.ShieldSVG" style="width: 100px; height: 100px;" />
+                                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;" />
                             }
 
                         </div>
                         <div style="padding: 10px 10px;">
                             <h1>
-                                @_testDTO.Name
+                                @_testDto.Name
                             </h1>
                             <h3>
-                                @(_testDTO.QuestionsDTO.Count + " questions")
+                                @(_testDto.QuestionsDTO.Count + " questions")
                             </h3>
                         </div>
                     </div>
 
-                    @foreach (var questionDTO in _testDTO.QuestionsDTO)
+                    @foreach (var questionDTO in _testDto.QuestionsDTO)
                     {
-                        var index = _testDTO.QuestionsDTO.IndexOf(questionDTO);
+                        var index = _testDto.QuestionsDTO.IndexOf(questionDTO);
                         <QuestionDTOArcadeComponent ShowResults="ShowResults"
                                                     questionDTO="questionDTO"
                                                     Number="@index"
@@ -77,17 +80,17 @@
             <div class="fixed-bottom-container">
 
                 <ProgressBar @ref=progressBar
-                             TotalQuestions="@_testDTO!.QuestionsDTO!.Count"
-                             AnsweredQuestions="@_testDTO.GetTotalSelectedOrFinishedQuestions()" />
+                             TotalQuestions="@_testDto!.QuestionsDTO!.Count"
+                             AnsweredQuestions="@_testDto.GetTotalSelectedOrFinishedQuestions()" />
 
                 @if (!ShowResults)
                 {
-                    bool disabledFinishButton = (_testDTO.GetTotalSelectedOrFinishedQuestions() != _testDTO.QuestionsDTO.Count);
+                    bool disabledFinishButton = (_testDto.GetTotalSelectedOrFinishedQuestions() != _testDto.QuestionsDTO.Count);
 
                     <button disabled="@(disabledFinishButton ? "disabled" : null)"
                             class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
                         <h3 class="mb-0">
-                            FINISH (@_testDTO.GetTotalSelectedOrFinishedQuestions() of @_testDTO.QuestionsDTO.Count)
+                            FINISH (@_testDto.GetTotalSelectedOrFinishedQuestions() of @_testDto.QuestionsDTO.Count)
                         </h3>
                     </button>
                 }
@@ -110,7 +113,7 @@
 @if (_showLoadingScreen)
 {
     <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
-        @if (_testDTO!.QuestionsDTO!.Count < 1)
+        @if (_testDto!.QuestionsDTO!.Count < 1)
         {
             <h4>
                 <img src="gif/Rocket.gif" style="width: 100px; height: 100px;" />
@@ -121,14 +124,6 @@
     </div>
 }
 
-@if (_showPaymentScreen)
-{
-    <h1>
-        PAY HERE
-    </h1>
-    <button>Pay</button>
-}
-
 @code {
     ProgressBar progressBar = new();
 
@@ -137,13 +132,11 @@
     [Parameter]
     public string TestId { get; set; } = "";
 
-    private TestDTO _testDTO = new();
+    private readonly TestDTO _testDto = new();
     private Guid _testGuid = new Guid();
     private bool _showFinalScreen = false;
-    private bool _showPaymentScreen = false;
     private bool _showLoadingScreen = true;
     private bool _showPracticeTest = false;
-    private bool _showGoogleLogin = false;
 
     private bool _showResults = false;
     public bool ShowResults
@@ -158,16 +151,16 @@
         }
     }
 
-    private void HandleGetAnswer(QuestionDTO questionDTO)
+    private void HandleGetAnswer(QuestionDTO questionDto)
     {
-        questionDTO.IsFinished = true;
-        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
+        questionDto.IsFinished = true;
+        progressBar.AnsweredQuestions = _testDto.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
 
     private void HandleSelectAnswer()
     {
-        progressBar.AnsweredQuestions = _testDTO.GetTotalSelectedOrFinishedQuestions();
+        progressBar.AnsweredQuestions = _testDto.GetTotalSelectedOrFinishedQuestions();
         StateHasChanged();
     }
 
@@ -189,15 +182,16 @@
         ShowResults = true;
         _showFinalScreen = true;
     }
-
-
+    
     protected override async Task OnParametersSetAsync()
     {
-        var result = await GetUserInfos.GetUserEmail();
+        var isPaid = await PaidService.IsPaidService(new Paid()
+        {
+            UserEmail = await GetUserInfos.GetUserEmail(),
+            TestId = TestId
+        });
 
-        if (string.IsNullOrEmpty(result)) _showGoogleLogin = true;
-
-        // return base.OnParametersSetAsync();
+        Console.WriteLine(isPaid ? "Test Paid!" : "Test Not Paid!");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -212,21 +206,20 @@
         try
         {
             _testGuid = Guid.Parse(TestId);
-            var testAPIReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
-            if (testAPIReponse.Data.IsPremium)
+            var testApiReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (testApiReponse.Data.IsPremium)
             {
-                LoadPaymentInterface();
                 Console.WriteLine("Is Premium!");
                 return;
             }
 
-            if (testAPIReponse.Status != CustomStatusCodes.SuccessStatus)
+            if (testApiReponse.Status != CustomStatusCodes.SuccessStatus)
                 throw new Exception("TestGame: Error during retrieving TestApiResponse");
 
-            _testDTO.FromTest(testAPIReponse.Data);
-            _title = testAPIReponse.Data.Name;
+            _testDto.FromTest(testApiReponse.Data);
+            _title = testApiReponse.Data.Name;
 
-            if (!testAPIReponse.Data.IsPremium)
+            if (!testApiReponse.Data.IsPremium)
             {
                 LoadPracticeTest();
             }
@@ -243,19 +236,11 @@
         StateHasChanged();
     }
 
-    private void LoadPaymentInterface()
-    {
-        _showPaymentScreen = true;
-        _showLoadingScreen = false;
-        _showPracticeTest = false;
-        StateHasChanged();
-    }
-
     private async Task AddTestPerformance()
     {
         var userId = await GetUserInfos.GetUserId();
 
-        var testPerformance = _testDTO.CreateTestPerformance(userId);
+        var testPerformance = _testDto.CreateTestPerformance(userId);
 
         await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
