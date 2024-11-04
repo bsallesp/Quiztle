@@ -46,11 +46,11 @@
 
                             @if (_testDto.ShieldSVG == null)
                             {
-                                <img src="img/courses/default.svg" style="width: 100px; height: 100px;" />
+                                <img src="img/courses/default.svg" style="width: 100px; height: 100px;"/>
                             }
                             else
                             {
-                                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;" />
+                                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;"/>
                             }
 
                         </div>
@@ -81,7 +81,7 @@
 
                 <ProgressBar @ref=progressBar
                              TotalQuestions="@_testDto!.QuestionsDTO!.Count"
-                             AnsweredQuestions="@_testDto.GetTotalSelectedOrFinishedQuestions()" />
+                             AnsweredQuestions="@_testDto.GetTotalSelectedOrFinishedQuestions()"/>
 
                 @if (!ShowResults)
                 {
@@ -116,8 +116,8 @@
         @if (_testDto!.QuestionsDTO!.Count < 1)
         {
             <h4>
-                <img src="gif/Rocket.gif" style="width: 100px; height: 100px;" />
-                <br />
+                <img src="gif/Rocket.gif" style="width: 100px; height: 100px;"/>
+                <br/>
                 LOADING...
             </h4>
         }
@@ -129,8 +129,7 @@
 
     private string _title = "Quiztle";
 
-    [Parameter]
-    public string TestId { get; set; } = "";
+    [Parameter] public string TestId { get; set; } = "";
 
     private readonly TestDTO _testDto = new();
     private Guid _testGuid = new Guid();
@@ -139,6 +138,7 @@
     private bool _showPracticeTest = false;
 
     private bool _showResults = false;
+
     public bool ShowResults
     {
         get => _showResults;
@@ -150,7 +150,7 @@
             }
         }
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         var hasPaid = await PaidService.IsPaidService(new Paid()
@@ -159,13 +159,53 @@
             TestId = TestId
         });
 
-        if (hasPaid) await LoadTestAsync();
-        else GoToBuy();
+        if (hasPaid) await LoadPremiumTestAsync();
+        else await LoadFreeTestAsync(TestId);
     }
 
-    private void GoToBuy()
+    private async Task LoadFreeTestAsync(string TestId)
     {
-        Nav.NavigateTo($"/Buy/TestId/{TestId}", true);
+        var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+        var freeTest = data.Data.GetFreeTest(2);
+        _testDto.FromTest(freeTest);
+        LoadPracticeTestScreen();
+    }
+    
+    
+
+    private async Task LoadPremiumTestAsync()
+    {
+        try
+        {
+            var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+            _testGuid = Guid.Parse(TestId);
+            var testApiResponse = await GetTestByIdService.ExecuteAsync(_testGuid);
+            if (testApiResponse.Data.IsPremium)
+            {
+                //LoadDashboard();
+                await LoadFreeTestAsync(TestId);
+            }
+        
+            else
+                await LoadFreeTestAsync(TestId);
+        
+            if (testApiResponse.Status != CustomStatusCodes.SuccessStatus)
+                throw new Exception("TestGame: Error during retrieving TestApiResponse");
+        
+            _testDto.FromTest(testApiResponse.Data);
+            _title = testApiResponse.Data.Name;
+        
+            LoadPracticeTestScreen();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private void LoadDashboard()
+    {
+        throw new NotImplementedException();
     }
 
     private void HandleGetAnswer(QuestionDTO questionDto)
@@ -199,45 +239,17 @@
         ShowResults = true;
         _showFinalScreen = true;
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        await LoadTestAsync();
+        await LoadPremiumTestAsync();
         StateHasChanged();
     }
 
-    private async Task LoadTestAsync()
+    private void LoadPracticeTestScreen()
     {
-        try
-        {
-            _testGuid = Guid.Parse(TestId);
-            var testApiReponse = await GetTestByIdService.ExecuteAsync(_testGuid);
-            if (testApiReponse.Data.IsPremium)
-            {
-                Console.WriteLine("Is Premium!");
-                return;
-            }
-
-            if (testApiReponse.Status != CustomStatusCodes.SuccessStatus)
-                throw new Exception("TestGame: Error during retrieving TestApiResponse");
-
-            _testDto.FromTest(testApiReponse.Data);
-            _title = testApiReponse.Data.Name;
-
-            if (!testApiReponse.Data.IsPremium)
-            {
-                LoadPracticeTest();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
-    private void LoadPracticeTest()
-    {
+        _showLoadingScreen = false;
         _showPracticeTest = true;
         StateHasChanged();
     }
@@ -250,4 +262,5 @@
 
         await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
+
 }

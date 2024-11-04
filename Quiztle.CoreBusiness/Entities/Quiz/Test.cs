@@ -63,6 +63,21 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             }
         }
 
+        public Test GetFreeTest(int countPerTag)
+        {
+            var selectedQuestions = Questions
+                .GroupBy(q => q.Tag ?? "Undefined")
+                .SelectMany(g => g.Take(countPerTag))
+                .ToList();
+
+            return new Test
+            {
+                Id = Guid.NewGuid(),
+                Name = Name + " FreeTest",
+                Questions = selectedQuestions,
+                Created = DateTime.UtcNow
+            };
+        }
 
         public Question GetRandomQuestion()
         {
