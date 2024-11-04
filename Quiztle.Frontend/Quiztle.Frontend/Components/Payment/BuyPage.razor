@@ -1,5 +1,4 @@
-﻿@page "/Buy"
-@page "/Buy/{priceId}/testid/{testId}"
+﻿@page "/Buy/TestId/{TestId}"
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.CoreBusiness.Entities.Paid
@@ -11,7 +10,7 @@
 @inject GetUserInfos GetUserInfos
 @inject PaidService PaidService
 
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 
 <div class="container-lg p2">
     <h1>Pay</h1>
@@ -26,46 +25,46 @@
 
 @code {
     [Parameter]
-    public string priceId { get; set; } = "";
+    public string PriceId { get; set; } = "";
 
     [Parameter]
-    public string testId { get; set; } = "";
+    public string TestId { get; set; } = "";
 
-    private string _finalURL = "";
+    private string _finalUrl = "";
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        
-        
-        CreateSession();
-        
-        return base.OnParametersSetAsync();
+        var hasPaid = await PaidService.IsPaidService(new Paid()
+        {
+            TestId = TestId,
+            UserEmail = await GetUserInfos.GetUserEmail()
+        });
+
+        if (hasPaid) PayedAlreadyWarning();
+        else await CreateSession();
+    }
+
+    private void PayedAlreadyWarning()
+    {
+        Console.WriteLine("PayedAlreadyWarning");
     }
 
     private async Task CreateSession()
     {
         var email = await GetUserInfos.GetUserEmail();
-
-        Console.WriteLine("priceId --------" + priceId);
+        var paidsRegister = await PaidService.GetPaidByEmailService(email);
         
-        Paid paid = new()
-            {
-                UserEmail = email,
-                PriceId = priceId
-            };
-
-        var sessionStartDTO = new SessionStartDTO
-            {
-                Email = paid.UserEmail,
-                PriceId = priceId,
-                TestId = testId
-            };
-
-        Console.WriteLine(priceId);
         
-        var sessionURL = await StripeSessionsService.CreateSession(sessionStartDTO);
+        var sessionURL = await StripeSessionsService.CreateSession(new SessionStartDTO()
+        {
+            TestId = TestId,
+            PriceId = paidsRegister.FirstOrDefault().PriceId,
+            Email = email
+        });
+
+        Console.WriteLine(sessionURL);
         
-        _finalURL = sessionURL;
-        Nav.NavigateTo(sessionURL);
+        // _finalUrl = sessionURL;
+        // Nav.NavigateTo(sessionURL);
     }
 }

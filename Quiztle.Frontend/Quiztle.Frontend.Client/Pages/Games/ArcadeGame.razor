@@ -17,7 +17,7 @@
 @inject GetUserInfos GetUserInfos
 @inject PaidService PaidService
 
-@rendermode InteractiveAuto
+@rendermode @(new InteractiveAutoRenderMode(false))
 @attribute [Authorize]
 
 <title>
@@ -150,6 +150,23 @@
             }
         }
     }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var hasPaid = await PaidService.IsPaidService(new Paid()
+        {
+            UserEmail = await GetUserInfos.GetUserEmail(),
+            TestId = TestId
+        });
+
+        if (hasPaid) await LoadTestAsync();
+        else GoToBuy();
+    }
+
+    private void GoToBuy()
+    {
+        Nav.NavigateTo($"/Buy/TestId/{TestId}", true);
+    }
 
     private void HandleGetAnswer(QuestionDTO questionDto)
     {
@@ -183,17 +200,6 @@
         _showFinalScreen = true;
     }
     
-    protected override async Task OnParametersSetAsync()
-    {
-        var isPaid = await PaidService.IsPaidService(new Paid()
-        {
-            UserEmail = await GetUserInfos.GetUserEmail(),
-            TestId = TestId
-        });
-
-        Console.WriteLine(isPaid ? "Test Paid!" : "Test Not Paid!");
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
