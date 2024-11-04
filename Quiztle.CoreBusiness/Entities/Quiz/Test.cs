@@ -39,7 +39,11 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("TestQuestions")]
         public ICollection<TestQuestion> TestQuestions { get; set; } = [];
 
+        
+        [JsonPropertyName("PriceId")]
+        public string? PriceId { get; set; } = "";
 
+        
         [JsonPropertyName("ShieldSVG")]
         public string? ShieldSVG { get; set; } = "default.svg";
 

@@ -6,7 +6,7 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
     public class PaidRepository
     {
         private readonly PostgreQuiztleContext _context;
-
+        
         public PaidRepository(PostgreQuiztleContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -37,6 +37,10 @@ namespace Quiztle.DataContext.DataService.Repository.Payments
             {
                 EnsurePaidNotNull();
 
+                var test = await _context.Tests!.Where(x => x.Id.ToString() == paid.TestId).FirstOrDefaultAsync();
+
+                Console.WriteLine($"Test / PriceId: {test!.PriceId}");
+                
                 var result = await _context.Paids!
                     .Where(e => e.UserEmail == paid.UserEmail && e.PriceId == paid.PriceId)
                     .OrderByDescending(e => e.Created)

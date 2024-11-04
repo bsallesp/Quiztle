@@ -624,6 +624,10 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("uuid")
                         .HasAnnotation("Relational:JsonPropertyName", "PDFDataId");
 
+                    b.Property<string>("PriceId")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "PriceId");
+
                     b.Property<string>("ShieldSVG")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "ShieldSVG");
