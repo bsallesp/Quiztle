@@ -21,7 +21,7 @@
                 detailed progress tracking,
                 and additional features to enhance your learning experience.
             </MudAlert>
-            <button class="btn btn-primary btn-lg m-3">
+            <button class="btn btn-primary btn-lg m-3" @onclick="GetPremium">
                 Get Premium
                 <MudIcon Icon="@Icons.Material.Filled.RocketLaunch" Size="Size.Medium"/>
             </button>
@@ -42,5 +42,14 @@
         {
             _showLeaveAlert = false;
         }
+    }
+
+    private Task GetPremium()
+    {
+        Nav.NavigateTo($"/Buy/TestId/{TestId}");
+
+        return Task.CompletedTask;
+
+        // throw new NotImplementedException();
     }
 }
