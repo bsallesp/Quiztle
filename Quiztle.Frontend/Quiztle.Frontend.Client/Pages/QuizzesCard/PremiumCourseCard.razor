@@ -1,7 +1,7 @@
 ﻿@using Quiztle.Frontend.Client.APIServices.StripeService
 
 <div class="container bg-fx">
-    <img src="img/courses/@Image" />
+    <img src="img/courses/@Image"/>
 
     <div class="card-title text-center">
         @Title
@@ -26,46 +26,45 @@
     </div>
 
     <form method="post" @onsubmit="PlayGame" @formname="play-game">
-        <AntiforgeryToken />
-        <div>
+        <AntiforgeryToken/>
+        <div class="text-center">
             <button
-                class="btn-primary"
                 style="padding: 20px;
-                text;
-                 border-radius: 10px;
-                 margin: 15px;
-                    width: 100%"
-                type="submit">PLAY NOW
+                border-radius: 10px;
+                margin: 10px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;"
+                class="btn-primary"
+                type="submit">
+                <h2 style="margin: 0;">
+                    PLAY NOW
+                </h2>
             </button>
+
         </div>
     </form>
 
     <div class="crown">
-        <img src="svg/courses/crown.svg" />
+        <img src="svg/courses/crown.svg"/>
     </div>
 </div>
 
 @code {
-    [Parameter]
-    public required string Image { get; set; }
+    [Parameter] public required string Image { get; set; }
 
-    [Parameter]
-    public required string Title { get; set; }
+    [Parameter] public required string Title { get; set; }
 
-    [Parameter]
-    public required int QuestionsAmount { get; set; }
+    [Parameter] public required int QuestionsAmount { get; set; }
 
-    [Parameter]
-    public required string[] Contents { get; set; }
+    [Parameter] public required string[] Contents { get; set; }
 
-    [Parameter]
-    public required string PriceId { get; set; }
+    [Parameter] public required string PriceId { get; set; }
 
-    [Parameter]
-    public required bool Enabled { get; set; }
+    [Parameter] public required bool Enabled { get; set; }
 
-    [Parameter]
-    public required string TestId { get; set; }
+    [Parameter] public required string TestId { get; set; }
 
     private void PlayGame()
     {
@@ -76,4 +75,5 @@
     {
         return base.OnParametersSetAsync();
     }
+
 }
