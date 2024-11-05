@@ -5,20 +5,17 @@
             <div class="close-btn">
                 <button @onclick="CloseBtn">
                     close
-                    <img src="svg/utils/close-bold.svg" style="width: 40px; height: 40px;" />
+                    <img src="svg/utils/close-bold.svg" style="width: 40px; height: 40px;"/>
                 </button>
             </div>
-
-            <img src="svg/test-rating/@Image" />
+            <img src="svg/test-rating/@Image"/>
 
             <div class="card-title text-center">
                 @Title
             </div>
-
             <div class="card-title text-center">
                 Score:
             </div>
-
             <div class="questions-container">
                 <div class="questions-amount">
                     @Score
@@ -29,25 +26,17 @@
             </div>
 
             <div class="message text-center">
-                <h3>@message</h3>
+                <h3 style="color: ghostwhite">@message</h3>
             </div>
-
-@*             <div class="card-buttons">
-                <a href="/signup" class="btn btn-primary">Next Game</a>
-            </div> *@
         </div>
     </div>
 }
 
 @code {
-    [Parameter]
-    public required string Title { get; set; }
-    [Parameter]
-    public required int Score { get; set; }
-    [Parameter]
-    public required int QuestionsAmount { get; set; }
-    [Parameter]
-    public required int TotalQuestions { get; set; }
+    [Parameter] public required string Title { get; set; }
+    [Parameter] public required int Score { get; set; }
+    [Parameter] public required int QuestionsAmount { get; set; }
+    [Parameter] public required int TotalQuestions { get; set; }
 
     private string message = "";
 
@@ -64,18 +53,18 @@
 
     private void SetImageBasedOnScore()
     {
-         var percentage = (double)Score / TotalQuestions * 100;
+        var percentage = (double)Score / TotalQuestions * 100;
 
         if (percentage < 50)
         {
             Image = "less-50-shield.svg";
             message = GetRandomFeedback(new string[]
             {
-            "Don't lose hope! Keep practicing, and you'll get there!",
-            "Every effort counts! Keep pushing forward!",
-            "Learning is a journey. You're making progress!",
-            "Mistakes are part of the process. Try again!",
-            "Stay determined! Success is just around the corner!"
+                "Don't lose hope! Keep practicing, and you'll get there!",
+                "Every effort counts! Keep pushing forward!",
+                "Learning is a journey. You're making progress!",
+                "Mistakes are part of the process. Try again!",
+                "Stay determined! Success is just around the corner!"
             });
         }
         else if (percentage >= 50 && percentage < 80)
@@ -83,11 +72,11 @@
             Image = "50-shield.svg";
             message = GetRandomFeedback(new string[]
             {
-            "Nice job! You're improving, keep it up!",
-            "You're on the right path! A bit more practice will take you further!",
-            "Solid effort! You're getting closer to your goal!",
-            "Good work! Every attempt makes you stronger!",
-            "You're doing well! Keep honing your skills!"
+                "Nice job! You're improving, keep it up!",
+                "You're on the right path! A bit more practice will take you further!",
+                "Solid effort! You're getting closer to your goal!",
+                "Good work! Every attempt makes you stronger!",
+                "You're doing well! Keep honing your skills!"
             });
         }
         else
@@ -95,11 +84,11 @@
             Image = "80-shield.svg";
             message = GetRandomFeedback(new string[]
             {
-            "Fantastic! You're a star performer!",
-            "Awesome job! You've mastered this topic!",
-            "Impressive work! You should be proud of yourself!",
-            "Exceptional! Your hard work truly shows!",
-            "Outstanding achievement! Keep aiming high!"
+                "Fantastic! You're a star performer!",
+                "Awesome job! You've mastered this topic!",
+                "Impressive work! You should be proud of yourself!",
+                "Exceptional! Your hard work truly shows!",
+                "Outstanding achievement! Keep aiming high!"
             });
         }
     }
@@ -110,10 +99,10 @@
         int index = random.Next(feedbacks.Length);
         return feedbacks[index];
     }
-
-
+    
     private void CloseBtn()
     {
         _isVisible = false;
     }
+
 }
