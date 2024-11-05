@@ -40,14 +40,6 @@
       "publishAllPorts": true,
       "useSSL": true
     },
-    "WSL2": {
-      "commandName": "WSL2",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "distributionName": ""
-    },
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": false,

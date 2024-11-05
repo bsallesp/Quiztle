@@ -1,21 +1,5 @@
 @using Quiztle.CoreBusiness.Entities.Paid
 <MudContainer Style="background-color: rgba(0, 0, 0, 0.05); border-radius: 15px;">
-    @if (!HasPaid)
-    {
-        <div class="justify-content-center text-center align-items-center m-3" style="height: 100%;">
-            <MudAlert Style="margin: 20px" Severity="Severity.Info" Variant="Variant.Outlined">
-                You are using the free version (2 by topic). 
-                The paid version offers hundred more questions,
-                detailed progress tracking,
-                and additional features to enhance your learning experience.
-            </MudAlert>
-            <button class="btn btn-primary btn-lg m-3">
-                Get Premium Now =D
-            </button>
-        </div>
-        <button></button>
-    }
-
     @foreach (var tag in TagsAmountDictionary.Keys)
     {
         <MudSlider

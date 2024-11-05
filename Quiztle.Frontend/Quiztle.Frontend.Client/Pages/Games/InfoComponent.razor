@@ -1,0 +1,40 @@
+@rendermode InteractiveAuto
+
+@if (_showLeaveAlert)
+{
+    <MudContainer>
+        <MudContainer
+            Style="background-color: rgba(0, 0, 0, 0.05);
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 15px;">
+            <MudAlert
+                Style="margin: 20px 10px"
+                Severity="Severity.Info"
+                Variant="Variant.Outlined"
+                ShowCloseIcon="true" CloseIconClicked="(() => CloseMe(true))">
+                You are using the free version (2 by topic).
+                The paid version offers hundred more questions,
+                detailed progress tracking,
+                and additional features to enhance your learning experience.
+            </MudAlert>
+            <button class="btn btn-primary btn-lg m-3">
+                Get Premium Now =D
+            </button>
+            <button></button>
+        </MudContainer>
+    </MudContainer>
+}
+
+@code
+{
+    private bool _showLeaveAlert = true;
+
+    private void CloseMe(bool value)
+    {
+        if (value)
+        {
+            _showLeaveAlert = false;
+        }
+    }
+}

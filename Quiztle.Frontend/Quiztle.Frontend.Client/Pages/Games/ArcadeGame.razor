@@ -41,6 +41,13 @@
 
 @if (_showPracticeTestHeader)
 {
+    if (!_hasPaid)
+    {
+        <InfoComponent>
+            
+        </InfoComponent>
+    }
+    
     <div class="d-flex justify-content-center align-items-center text-center">
         <div class="me-3 p-3">
 
