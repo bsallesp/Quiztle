@@ -134,9 +134,9 @@
                             style="border-radius: 5px;
                             margin-top: 7px;"
                             class="btn btn-primary"
-                            @onclick="() => PlayAgain()">
+                            @onclick="PlayAgain">
                             <h3 class="mb-0">
-                                Next Game
+                                Play again <MudIcon Icon="@Icons.Material.Filled.Replay" Size="Size.Medium"/>
                             </h3>
                         </button>
                     </div>
@@ -241,17 +241,7 @@
         StateHasChanged();
     }
 
-    private void PlayAgain()
-    {
-        try
-        {
-            Nav.NavigateTo($"/Games/Arcade/{_testGuid}");
-        }
-        catch
-        {
-            Nav.NavigateTo($"/Games/Arcade/");
-        }
-    }
+    private void PlayAgain() => Nav.NavigateTo($"/Games/Arcade/{TestId}", true);
 
     private async Task FinalizeTestResponse()
     {
