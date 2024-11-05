@@ -628,6 +628,10 @@ namespace Quiztle.DataContext.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "PriceId");
 
+                    b.Property<int>("PriceInCents")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "PriceInCents");
+
                     b.Property<string>("ShieldSVG")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "ShieldSVG");

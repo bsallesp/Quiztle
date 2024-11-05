@@ -7,46 +7,38 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         [JsonPropertyName("Id")]
         public Guid Id { get; set; }
 
-
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "";
 
-
         [JsonPropertyName("Questions")]
         public List<Question> Questions { get; set; } = new List<Question>();
-
-
+        
         [JsonPropertyName("Responses")]
         public List<Response>? Responses { get; set; } = new List<Response>();
-
-
+        
         [JsonPropertyName("PDFDataId")]
         public Guid? PDFDataId { get; set; } = null;
-
 
         [JsonPropertyName("Created")]
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
-
         [JsonPropertyName("IsAvaiable")]
         public bool IsAvaiable { get; set; } = false;
 
-
         [JsonPropertyName("IsPremium")]
         public bool IsPremium { get; set; } = false;
-
-
+        
         [JsonPropertyName("TestQuestions")]
         public ICollection<TestQuestion> TestQuestions { get; set; } = [];
-
         
         [JsonPropertyName("PriceId")]
         public string? PriceId { get; set; } = "";
-
+        
+        [JsonPropertyName("PriceInCents")]
+        public int PriceInCents { get; set; } = 0;
         
         [JsonPropertyName("ShieldSVG")]
         public string? ShieldSVG { get; set; } = "default.svg";
-
 
         public void ShuffleQuestions()
         {
@@ -99,7 +91,6 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             int index = rng.Next(Questions.Count);
             return Questions[index];
         }
-
 
         public static Test GetTestSample()
         {
