@@ -13,7 +13,6 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public int TotalCorrectAnswers = 0;
         public string ShieldSVG = "";
         
-        
         public void FromTest(Test test)
         {
             Id = test.Id;
@@ -73,7 +72,6 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             return totalSelectedOrFinished;
         }
 
-
         public int GetTotalCorrectAnswers()
         {
             TotalCorrectAnswers = 0;
@@ -89,7 +87,18 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return TotalCorrectAnswers;
         }
+        
+        public List<QuestionDTO> GetRandomQuestionsByTag(string tag, int amount)
+        {
+            var filteredQuestions = QuestionsDTO
+                .Where(q => q.Tag == tag)
+                .OrderBy(_ => Guid.NewGuid())
+                .Take(amount)
+                .ToList();
 
+            return filteredQuestions;
+        }
+        
         public void SetQuestionsAmount(int amount)
         {
             if (amount >= QuestionsDTO.Count)
@@ -148,7 +157,6 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             return testPerformance;
         }
 
-
         private int CalculateScore()
         {
             int totalQuestions = this.QuestionsDTO.Count;
@@ -161,5 +169,17 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
 
             return correctAnswers * 100 / totalQuestions;
         }
+        
+        public void Reset()
+        {
+            Id = Guid.NewGuid();
+            Name = string.Empty;
+            QuestionsDTO.Clear();
+            PDFDataId = Guid.Empty;
+            Created = DateTime.UtcNow;
+            TotalCorrectAnswers = 0;
+            ShieldSVG = string.Empty;
+        }
+
     }
 }

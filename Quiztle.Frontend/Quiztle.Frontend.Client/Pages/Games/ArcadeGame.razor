@@ -64,6 +64,7 @@
     <MudContainer MaxWidth="MaxWidth.Medium">
         <DashboardComponent
             @ref="_dashboardComponent"
+            LoadPracticeTest="LoadTestFromDashboard"
             HasPaid="_hasPaid"
             TagsAmountDictionary="_dashboardSetup">
         </DashboardComponent>
@@ -162,7 +163,7 @@
 
     [Parameter] public string TestId { get; set; } = "";
 
-    private readonly TestDTO _testDto = new();
+    private TestDTO _testDto = new();
     private Guid _testGuid = new Guid();
     private bool _showFinalScreen = false;
     private bool _showLoadingScreen = true;
@@ -172,6 +173,7 @@
     private bool _showResults = false;
     private bool _hasPaid = false;
     private string _shield = "default.svg";
+    private Test FullTest;
 
     private DashboardComponent _dashboardComponent;
 
@@ -189,6 +191,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Console.WriteLine($"{TestId}...");
+        var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+        FullTest = data.Data;
+        
+        
         _hasPaid = await PaidService.IsPaidService(new Paid()
         {
             UserEmail = await GetUserInfos.GetUserEmail(),
@@ -202,15 +209,12 @@
     {
         try
         {
-            var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
-            Console.WriteLine(data.Data.Questions.Count);
-            _shield = data.Data.ShieldSVG ?? "default.svg";
-            _testDto.FromTest(data.Data);
-            _dashboardSetup = data.Data.GetQuestionCountByTag();
-            Console.WriteLine(_dashboardSetup.Count);
+            _testDto.FromTest(FullTest);
+            _shield = FullTest.ShieldSVG ?? "default.svg";
+            _dashboardSetup = FullTest.GetQuestionCountByTag();
             if (!_hasPaid)
             {
-                _testDto.FromTest(data.Data.GetFreeTest(2));
+                _testDto.FromTest(FullTest.GetFreeTest(2));
                 LoadPracticeTestScreen();
             }
 
@@ -221,7 +225,21 @@
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
-
+    
+    private void LoadTestFromDashboard()
+    {
+        _testDto.Reset();
+        var tempTestDt0 = new TestDTO();
+        tempTestDt0.FromTest(FullTest);
+        
+        foreach (var item in _dashboardComponent.TagValues)
+            _testDto.QuestionsDTO.AddRange(
+                tempTestDt0.GetRandomQuestionsByTag(
+                    item.Key, (int)item.Value));
+                
+        LoadPracticeTestScreen();
+    }
+    
     private void LoadDashboardScreen()
     {
         _showLoadingScreen = false;
@@ -265,5 +283,6 @@
         testPerformance.TestId = Guid.Parse(TestId);
         await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
+
 
 }

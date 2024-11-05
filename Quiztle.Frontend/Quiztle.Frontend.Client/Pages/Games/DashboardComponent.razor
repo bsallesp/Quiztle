@@ -4,7 +4,7 @@
     {
         <MudSlider
             Disabled="!HasPaid"
-            @bind-Value="_tagValues[tag]"
+            @bind-Value="TagValues[tag]"
             Min="0"
             Max="@TagsAmountDictionary[tag]"
             Color="Color.Info">
@@ -16,17 +16,20 @@
                 @tag
             </MudChip>
 
-            @_tagValues[tag].ToString() of @TagsAmountDictionary[tag]
+            @TagValues[tag].ToString() of @TagsAmountDictionary[tag]
         </MudSlider>
     }
 
     @if (HasPaid)
     {
-        <div class="d-flex justify-content-center align-items-center m-3" style="height: 100%;">
-            <button class="btn btn-outline-secondary btn-lg m-3" @onclick="ResetValues">
+        <div class="d-flex justify-content-center align-items-center m-3"
+             style="height: 100%;">
+            <button
+                class="btn btn-outline-secondary btn-lg m-3"
+                @onclick="ResetValues">
                 Reset
             </button>
-            <button class="btn btn-primary btn-lg m-3">
+            <button class="btn btn-primary btn-lg m-3" @onclick="LoadPracticeTestClick">
                 Generate Practice Test with total of @TotalSelected questions
             </button>
         </div>
@@ -35,11 +38,14 @@
 </MudContainer>
 
 @code {
+    [Parameter]
+    public Action? LoadPracticeTest { get; set; }
+    
     [Parameter] public Dictionary<string, int> TagsAmountDictionary { get; set; } = new Dictionary<string, int>();
     [Parameter] public bool HasPaid { get; set; } = false;
-    private Dictionary<string, double> _tagValues = new Dictionary<string, double>();
+    [Parameter] public Dictionary<string, double> TagValues { get; set; } = [];
 
-    private double TotalSelected => _tagValues.Values.Sum();
+    private double TotalSelected => TagValues.Values.Sum();
 
     protected override void OnInitialized()
     {
@@ -51,7 +57,7 @@
     {
         foreach (var tag in TagsAmountDictionary.Keys)
         {
-            _tagValues[tag] = Math.Min(HasPaid ? 10 : 2, TagsAmountDictionary[tag]);
+            TagValues[tag] = Math.Min(HasPaid ? 10 : 2, TagsAmountDictionary[tag]);
         }
     }
 
@@ -59,7 +65,7 @@
     {
         foreach (var tag in TagsAmountDictionary.Keys)
         {
-            _tagValues[tag] = tag == selectedTag ? TagsAmountDictionary[tag] : 0;
+            TagValues[tag] = tag == selectedTag ? TagsAmountDictionary[tag] : 0;
         }
 
         StateHasChanged();
@@ -71,4 +77,9 @@
         StateHasChanged();
     }
 
+    private void LoadPracticeTestClick()
+    {
+        
+        LoadPracticeTest?.Invoke();
+    }
 }
