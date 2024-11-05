@@ -11,15 +11,26 @@ using Quiztle.Frontend.Client.APIServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddScoped(sp =>
-    new HttpClient
-    {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "http://localhost:5514")
-        //BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:5002")
-    });
+// Console.WriteLine("--------------------------------------------");
+// Console.WriteLine(builder.HostEnvironment.IsDevelopment());
+// Console.WriteLine(builder.HostEnvironment.IsProduction());
+// Console.WriteLine("--------------------------------------------");
+// Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
+
+#region Configuraï¿½ï¿½o da API
+var quiztleApiurl = builder.Configuration["ApiSettings:BaseUrl"];
+if (string.IsNullOrEmpty(quiztleApiurl))
+    throw new Exception("API URL is not configured in appsettings.json");
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(quiztleApiurl),
+    Timeout = Timeout.InfiniteTimeSpan
+});
+Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {quiztleApiurl}");
+#endregion
 
 builder.Services.AddMudServices();
-
 builder.Services.AddTransient<GetQuestionsService>();
 builder.Services.AddTransient<GetAllScratchesService>();
 builder.Services.AddTransient<GetDraftByIdService>();
@@ -30,28 +41,9 @@ builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
-
 builder.Services.AddTransient<GetUserInfos>();
 
 builder.Services.AddAuthorizationCore();
-
-//Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
-
-#region Configuração da API
-var QuiztleAPIURL = builder.Configuration["ApiSettings:BaseUrl"];
-if (string.IsNullOrEmpty(QuiztleAPIURL))
-    throw new Exception("API URL is not configured in appsettings.json");
-
-//Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {QuiztleAPIURL}");
-
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri(QuiztleAPIURL),
-    Timeout = Timeout.InfiniteTimeSpan
-});
-
-#endregion
-
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 

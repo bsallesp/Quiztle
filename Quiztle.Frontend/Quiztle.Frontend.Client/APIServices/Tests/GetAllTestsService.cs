@@ -48,11 +48,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
                 var stringResponse = await _httpClient.GetStringAsync("api/GetAllTests");
                 List<Test> dataTemp = JsonSerializer.Deserialize<List<Test>>(stringResponse)!;
 
-                //foreach (var item in dataTemp)
-                //{
-                //    Console.WriteLine(item.Name);
-                //}
-
                 if (onlyAvaiableTests) dataTemp = dataTemp.Where(t => t.IsAvaiable == true).ToList();
 
                 APIResponse<List<Test>> apiResult = new() { Data = dataTemp, Message = "Total: " + dataTemp.Count };
@@ -69,5 +64,37 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
                 };
             }
         }
+        
+        public async Task<APIResponse<List<Test>>> ExecuteAsync(bool includeQuestions = false, bool onlyAvaiableTests = false)
+        {
+            try
+            {
+                var queryParam = $"?includeQuestions={includeQuestions}";
+                var stringResponse = await _httpClient.GetStringAsync($"api/GetAllTests/alltests/includequestions/{includeQuestions}{queryParam}");
+                
+                List<Test> dataTemp = JsonSerializer.Deserialize<List<Test>>(stringResponse)!;
+
+                if (onlyAvaiableTests)
+                    dataTemp = dataTemp.Where(t => t.IsAvaiable == true).ToList();
+
+                APIResponse<List<Test>> apiResult = new()
+                {
+                    Data = dataTemp,
+                    Message = "Total: " + dataTemp.Count
+                };
+
+                return apiResult;
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<Test>>
+                {
+                    Status = CustomStatusCodes.ErrorStatus,
+                    Data = new List<Test>(),
+                    Message = "error in GetAllTestsService " + DateTime.UtcNow + "\n" + ex.Message.ToString()
+                };
+            }
+        }
+
     }
 }

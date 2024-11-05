@@ -1,93 +1,39 @@
-﻿@using Quiztle.Frontend.Client.APIServices.StripeService
+﻿@using Quiztle.Blazor.Client.APIServices.Tests
+@using Quiztle.Frontend.Client.APIServices.StripeService
 @using Quiztle.Frontend.Client.Utils
 
 @inject GetUserInfos GetUserInfos
 @inject StripeCustomerService StripeCustomerService
+@inject GetAllTestsService GetAllTestsService
 
 @rendermode InteractiveAuto
 
 @page "/Courses"
 
 <div class="container d-flex flex-wrap justify-content-evenly main-div">
-    
-    <PremiumCourseCard Title="AZ-104: Associate Administrator"
-                       Image="microsoft-certified-associate-badge.svg"
-                       QuestionsAmount="2000"
-                       Contents="Az104Contents"
-                       Enabled="true"
-                       PriceId="price_1QF4UmLKiSsrfvcH7ppsKrUd"
-                       TestId="12a28fee-2890-4553-9827-a5d1c71611dd">
-    </PremiumCourseCard>
 
-    <PremiumCourseCard Title="AZ-900 (2000 Questions)"
-                       Image="microsoft-certified-fundamentals-badge.svg"
-                       QuestionsAmount="200"
-                       Contents="Az900Contents"
-                       Enabled="true"
-                       PriceId="price_1QFJwTLKiSsrfvcHkMrgGwvz"
-                       TestId="ac6a50d3-149f-4348-ae0a-ad3e6d764971">
-    </PremiumCourseCard>
+    @foreach (var test in Tests)
+    {
+        <PremiumCourseCard
+            Title="@test.Name"
+            Image="@test.ShieldSVG"
+            QuestionsAmount="@test.Questions.Count"
+            Contents="test.GetTagsSet()"
+            Enabled="@test.IsAvaiable"
+            PriceId="@test.PriceId"
+            TestId="@test.Id.ToString()">
+        </PremiumCourseCard>
+    }
 
-    <PremiumCourseCard Title="AZ-104 (1000 questions)"
-                       Image="microsoft-certified-associate-badge.svg"
-                       QuestionsAmount="200"
-                       Contents="Az204Contents"
-                       Enabled="true"
-                       PriceId="price_1QF4UmLKiSsrfvcH7ppsKrUd"
-                       TestId="d31168d7-f494-4130-9f25-6439f01d11ac">
-    </PremiumCourseCard>
 </div>
 
 @code {
-    private string[] Az900Contents =
-    {
-        "Azure cloud concepts",
-        "Azure architecture and services",
-        "Azure management and governance"
-    };
+    IEnumerable<Test> Tests = [];
 
-    private string[] Az204Contents =
+    protected override async Task OnParametersSetAsync()
     {
-        "Develop Azure compute solutions",
-        "Develop for Azure storage",
-        "Implement Azure security",
-        "Monitor, troubleshoot, and optimize Azure solutions",
-        "Connect to and consume Azure services"
-    };
+        var result = await GetAllTestsService.ExecuteAsync(true, true);
+        Tests = result.Data;
+    }
 
-    private string[] Az104Contents =
-    {
-        "Manage Azure identities and governance",
-        "Implement and manage storage",
-        "Deploy and manage Azure compute resources",
-        "Implement and manage virtual networking",
-        "Monitor and maintain Azure resources"
-    };
-
-    private string[] Ai102Contents =
-    {
-        "Plan and manage an Azure AI solution",
-        "Implement image and video processing solutions",
-        "Implement natural language processing solutions",
-        "Implement knowledge mining solutions",
-        "Implement conversational AI solutions"
-    };
-
-    private string[] Dp203Contents =
-    {
-        "Design and implement data storage",
-        "Design and develop data processing",
-        "Design and implement data security",
-        "Monitor and optimize data solutions",
-        "Design data integration"
-    };
-
-    private string[] Az305Contents =
-    {
-        "Design identity, governance, and monitoring solutions",
-        "Design data storage solutions",
-        "Design business continuity solutions",
-        "Design infrastructure solutions",
-        "Design solutions for applications"
-    };
 }

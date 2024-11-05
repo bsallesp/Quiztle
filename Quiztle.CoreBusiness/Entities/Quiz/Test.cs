@@ -70,6 +70,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 .ToDictionary(g => g.Key, g => g.Count());
         }
 
+        public string?[] GetTagsSet() => Questions.Select(t => t.Tag).Distinct().ToArray();
+
         public Test GetFreeTest(int countPerTag)
         {
             var selectedQuestions = Questions

@@ -15,10 +15,21 @@ namespace Quiztle.API.Controllers.Tests
             _testRepository = testRepository ?? throw new ArgumentNullException(nameof(testRepository));
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Test>>> ExecuteAsync()
+        [HttpGet("alltests")]
+        public async Task<ActionResult<List<Test>>> GetAllTestsAsync()
         {
             var response = await _testRepository.GetAllTestsAsync();
+            if (response == null)
+            {
+                return NotFound();
+            }
+            return Ok(response);
+        }
+        
+        [HttpGet("alltests/includequestions/{includeQuestions}")]
+        public async Task<ActionResult<List<Test>>> GetAllTestsWithQuestionsAsync(bool includeQuestions = false)
+        {
+            var response = await _testRepository.GetAllTestsAsync(includeQuestions);
             if (response == null)
             {
                 return NotFound();

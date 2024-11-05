@@ -268,11 +268,27 @@ namespace Quiztle.DataContext.DataService.Repository.Quiz
         public async Task<List<Test>> GetAllTestsAsync()
         {
             EnsureTestNotNull();
+            
             var response = await _context.Tests!
                 .Include(q => q.Questions)
                 .ToListAsync();
+            
             return response;
         }
+        
+        public async Task<List<Test>> GetAllTestsAsync(bool includeQuestions = true)
+        {
+            EnsureTestNotNull();
+
+            var query = _context.Tests!.AsQueryable();
+
+            if (includeQuestions)
+                query = query.Include(q => q.Questions);
+            
+            var response = await query.ToListAsync();
+            return response;
+        }
+
 
         public async Task UpdateTest(Test test)
         {

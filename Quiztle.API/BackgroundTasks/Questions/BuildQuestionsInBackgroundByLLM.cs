@@ -177,10 +177,15 @@ namespace Quiztle.API.BackgroundTasks.Questions
             return questionsToken.ToObject<List<Question>>();
         }
 
-        private async Task AddQuestionsToDraftAsync(Draft draft, List<Question> questions)
+        private Task AddQuestionsToDraftAsync(Draft draft, List<Question> questions)
         {
-            draft.Questions ??= new List<Question>();
+            draft.Questions ??= [];
+            foreach (var item in questions)
+            {
+                item.Tag = draft.Tag;
+            }
             draft.Questions.AddRange(questions);
+            return Task.CompletedTask;
         }
 
         private async Task LogErrorAsync(Exception ex)
