@@ -47,18 +47,9 @@
         </InfoComponent>
     }
 
-    <div class="d-flex justify-content-center align-items-center text-center">
+    <div class="justify-content-center align-items-center text-center">
         <div class="me-3 p-3">
-
-            @if (_testDto.ShieldSVG == null)
-            {
-                <img src="img/courses/default.svg" style="width: 100px; height: 100px;"/>
-            }
-            else
-            {
-                <img src="img/courses/@_testDto.ShieldSVG" style="width: 100px; height: 100px;"/>
-            }
-
+            <img src="img/courses/@_shield" style="width: 150px; height: 150px;"/>
         </div>
         <div style="padding: 10px 10px;">
             <h1>
@@ -168,6 +159,7 @@
     private Dictionary<string, int> _dashboardSetup = [];
     private bool _showResults = false;
     private bool _hasPaid = false;
+    private string _shield = "default.svg";
 
     private DashboardComponent _dashboardComponent;
 
@@ -194,22 +186,13 @@
         await LoadTestAsync();
     }
 
-    private async Task LoadFreeTestAsync(string TestId)
-    {
-        var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
-        _dashboardSetup = data.Data.GetQuestionCountByTag();
-        var freeTest = data.Data.GetFreeTest(2);
-        _testDto.FromTest(freeTest);
-        LoadDashboardScreen();
-        LoadPracticeTestScreen();
-    }
-
     private async Task LoadTestAsync()
     {
         try
         {
             var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
             Console.WriteLine(data.Data.Questions.Count);
+            _shield = data.Data.ShieldSVG ?? "default.svg";
             _testDto.FromTest(data.Data);
             _dashboardSetup = data.Data.GetQuestionCountByTag();
             Console.WriteLine(_dashboardSetup.Count);

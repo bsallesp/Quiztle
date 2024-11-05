@@ -35,19 +35,22 @@ namespace Quiztle.API.Prompts
 
         private static void AddHeader(StringBuilder promptBuilder)
         {
-            promptBuilder.AppendLine("As a specialist in constructing exams for official certification exams, " +
-                                     "create distinct and unambiguous questions based strictly on the provided text. " +
-                                     "Ensure there is only one correct answer per question, and that the incorrect options " +
-                                     "are plausible yet clearly distinguishable as incorrect. " +
-                                     "Use specific examples from the text to create the questions.");
+            promptBuilder.AppendLine("As a specialist in creating questions for official certification exams, " +
+                                     "develop distinct and unambiguous questions. " +
+                                     "Ensure that each question has only one correct answer, and that the incorrect options " +
+                                     "are plausible yet clearly identifiable as incorrect. " +
+                                     "Questions should be grammatically as close as possible to those on official exams. " +
+                                     "The student will not have access to the text.");
         }
 
         private static void AddSummaryInstruction(StringBuilder promptBuilder)
         {
-            promptBuilder.AppendLine("Before generating the questions, summarize the key points from the article. " +
-                                     "Identify crucial facts or concepts that can serve as the basis for your questions.");
+            promptBuilder.AppendLine("The article may contain parts that are not very relevant, avoid create questions with this content." +
+                                     "your objective is very simple, use what you already know about the subject, " +
+                                     "check the article for any updates, " +
+                                     "and create questions as close as possible to the official exam.");
         }
-
+        
         private static void AddArticleContent(StringBuilder promptBuilder, string bookArticle)
         {
             promptBuilder.AppendLine("----------------------BEGIN OF ARTICLE-----------------------------------------------------------");

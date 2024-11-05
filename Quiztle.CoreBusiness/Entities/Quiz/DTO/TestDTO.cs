@@ -12,6 +12,8 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public int TotalCorrectAnswers = 0;
         public string ShieldSVG = "";
+        
+        
         public void FromTest(Test test)
         {
             Id = test.Id;
