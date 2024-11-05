@@ -21,8 +21,7 @@
 @attribute [Authorize]
 
 <title>
-    @if (_title != null)
-        @("certcool - " + _title)
+    certcool - @_testDto.Name
 </title>
 
 @if (_showLoadingScreen)
@@ -44,10 +43,10 @@
     if (!_hasPaid)
     {
         <InfoComponent>
-            
+
         </InfoComponent>
     }
-    
+
     <div class="d-flex justify-content-center align-items-center text-center">
         <div class="me-3 p-3">
 
@@ -101,22 +100,26 @@
                     }
                 }
             </div>
-            <div class="fixed-bottom-container">
+            <div class="fixed-bottom-container text-center">
 
                 <ProgressBar
                     @ref=progressBar
                     TotalQuestions="@_testDto!.QuestionsDTO!.Count"
-                    AnsweredQuestions="@_testDto.GetTotalSelectedOrFinishedQuestions()"
-                    />
+                    AnsweredQuestions="@_testDto.GetTotalSelectedOrFinishedQuestions()"/>
 
                 @if (!ShowResults)
                 {
                     bool disabledFinishButton = (_testDto.GetTotalSelectedOrFinishedQuestions() != _testDto.QuestionsDTO.Count);
 
-                    <button disabled="@(disabledFinishButton ? "disabled" : null)"
-                            class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="FinalizeTestResponse">
-                        <h3 class="mb-0">
-                            FINISH (@_testDto.GetTotalSelectedOrFinishedQuestions() of @_testDto.QuestionsDTO.Count)
+                    <button
+                        style="border-radius: 5px;
+                        margin-top: 7px; width: 90%"
+                        disabled="@(disabledFinishButton ? "disabled" : null)"
+                        class="btn btn-primary"
+                        @onclick="FinalizeTestResponse">
+                        <h3
+                            class="mb-0">
+                            Keep Going! (@_testDto.GetTotalSelectedOrFinishedQuestions() of @_testDto.QuestionsDTO.Count)
                         </h3>
                     </button>
                 }
@@ -124,7 +127,11 @@
                 @if (ShowResults)
                 {
                     <div style="background-color: mintcream;">
-                        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" @onclick="() => PlayAgain()">
+                        <button
+                            style="border-radius: 5px;
+                            margin-top: 7px;"
+                            class="btn btn-primary"
+                            @onclick="() => PlayAgain()">
                             <h3 class="mb-0">
                                 Next Game
                             </h3>
@@ -196,7 +203,7 @@
         LoadDashboardScreen();
         LoadPracticeTestScreen();
     }
-    
+
     private async Task LoadTestAsync()
     {
         try
@@ -211,6 +218,7 @@
                 _testDto.FromTest(data.Data.GetFreeTest(2));
                 LoadPracticeTestScreen();
             }
+
             LoadDashboardScreen();
         }
         catch (Exception ex)

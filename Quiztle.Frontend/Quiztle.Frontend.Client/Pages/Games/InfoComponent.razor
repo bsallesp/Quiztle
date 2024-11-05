@@ -5,9 +5,12 @@
     <MudContainer>
         <MudContainer
             Style="background-color: rgba(0, 0, 0, 0.05);
-        margin-top: 15px;
-        padding: 15px;
-        border-radius: 15px;">
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            justify-items: center;
+        ">
             <MudAlert
                 Style="margin: 20px 10px"
                 Severity="Severity.Info"
@@ -29,6 +32,8 @@
 @code
 {
     private bool _showLeaveAlert = true;
+    
+    [Parameter] public string? TestId { get; set; }
 
     private void CloseMe(bool value)
     {
