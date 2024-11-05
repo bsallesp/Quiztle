@@ -15,111 +15,111 @@
 
 @rendermode @(new InteractiveServerRenderMode(false))
 
-<MudContainer
-    Gutters="true"
-    Style="text-align: center;
-    margin-top: 10px;
-    justify-items: center;
-    color: lightgrey;
-">
-    <MudContainer
-        Gutters="true"
-        Style="
-        padding-top: 15px;
-        border-radius: 7px;
-        background-color: rgba(0, 0, 0, 0.05);">
-        @if (HasPaid)
-        {
-        <MudAlert
-            Severity="Severity.Info"
-            Variant="Variant.Filled">
-            You already got the @_testDto.Name
-        </MudAlert>
-        }
+@* <MudContainer *@
+@*     Gutters="true" *@
+@*     Style="text-align: center; *@
+@*     margin-top: 10px; *@
+@*     justify-items: center; *@
+@*     color: lightgrey; *@
+@* "> *@
+@*     <MudContainer *@
+@*         Gutters="true" *@
+@*         Style=" *@
+@*         padding-top: 15px; *@
+@*         border-radius: 7px; *@
+@*         background-color: rgba(0, 0, 0, 0.05);"> *@
+@*         @if (HasPaid) *@
+@*         { *@
+@*         <MudAlert *@
+@*             Severity="Severity.Info" *@
+@*             Variant="Variant.Filled"> *@
+@*             You already got the @_testDto.Name *@
+@*         </MudAlert> *@
+@*         } *@
+@* *@
+@*         @if (!HasPaid) *@
+@*         { *@
+@*         <img src="img/courses/@_testDto.ShieldSVG" width="150" height="150" alt=""/> *@
+@*         <h1 style="padding: 10px"> *@
+@*             @_testDto.Name *@
+@*         </h1> *@
+@*         <h2 style="padding: 10px"> *@
+@*             @_testDto.QuestionsDTO.Count Questions *@
+@*             <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Size="Size.Medium"></MudIcon> *@
+@*         </h2> *@
+@*         <h2 style="padding: 10px"> *@
+@*             Performance history *@
+@*             <MudIcon Icon="@Icons.Material.Filled.BubbleChart" Size="Size.Medium"></MudIcon> *@
+@*         </h2> *@
+@*         } *@
+@*     </MudContainer> *@
+@* </MudContainer> *@
 
-        @if (!HasPaid)
-        {
-        <img src="img/courses/@_testDto.ShieldSVG" width="150" height="150" alt=""/>
-        <h1 style="padding: 10px">
-            @_testDto.Name
-        </h1>
-        <h2 style="padding: 10px">
-            @_testDto.QuestionsDTO.Count Questions
-            <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Size="Size.Medium"></MudIcon>
-        </h2>
-        <h2 style="padding: 10px">
-            Performance history
-            <MudIcon Icon="@Icons.Material.Filled.BubbleChart" Size="Size.Medium"></MudIcon>
-        </h2>
-        }
-    </MudContainer>
-</MudContainer>
-
-<div class="container-lg p2">
-    <h1>Pay</h1>
-
-    <form method="post" @onsubmit="CreateSession" @formname="create-session-and-pay">
-        <AntiforgeryToken/>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
+@* <div class="container-lg p2"> *@
+@*     <h1>Pay</h1> *@
+@* *@
+@*     <form method="post" @onsubmit="CreateSession" @formname="create-session-and-pay"> *@
+@*         <AntiforgeryToken/> *@
+@*         <div> *@
+@*             <button type="submit">Submit</button> *@
+@*         </div> *@
+@*     </form> *@
+@* </div> *@
 
 @code {
-[Parameter] public string PriceId { get; set; } = "";
+    [Parameter] public string PriceId { get; set; } = "";
 
-[Parameter] public string TestId { get; set; } = "";
+    [Parameter] public string TestId { get; set; } = "";
 
-private readonly TestDTO _testDto = new TestDTO();
+    private readonly TestDTO _testDto = new TestDTO();
 
-private bool HasPaid { get; set; } = false;
+    private bool HasPaid { get; set; } = false;
 
-private string _finalUrl = "";
+    private string _finalUrl = "";
 
-protected override async Task OnParametersSetAsync()
-{
-if (!await LoadTestAsync()) Nav.NavigateTo("/Error");
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!await LoadTestAsync()) Nav.NavigateTo("/Error");
 
-HasPaid = await PaidService.IsPaidService(new Paid()
-{
-TestId = TestId,
-UserEmail = await GetUserInfos.GetUserEmail()
-});
-Console.WriteLine(!HasPaid ? "Nao pagou" : "Pagou");
-await LoadTestAsync();
-}
+        HasPaid = await PaidService.IsPaidService(new Paid()
+        {
+            TestId = TestId,
+            UserEmail = await GetUserInfos.GetUserEmail()
+        });
+        Console.WriteLine(!HasPaid ? "Nao pagou" : "Pagou");
+        await LoadTestAsync();
+    }
 
-private async Task<bool> LoadTestAsync()
-{
-if (string.IsNullOrEmpty(TestId)) return false;
-var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
-if (string.IsNullOrEmpty(test.Data.Id.ToString())) return false;
-_testDto.FromTest(test.Data);
-return true;
-}
+    private async Task<bool> LoadTestAsync()
+    {
+        if (string.IsNullOrEmpty(TestId)) return false;
+        var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+        if (string.IsNullOrEmpty(test.Data.Id.ToString())) return false;
+        _testDto.FromTest(test.Data);
+        return true;
+    }
 
-private void PayedAlreadyWarning()
-{
-}
+    private void PayedAlreadyWarning()
+    {
+    }
 
-private async Task CreateSession()
-{
-var email = await GetUserInfos.GetUserEmail();
-var paidsRegister = await PaidService.GetPaidByEmailService(email);
+    private async Task CreateSession()
+    {
+        var email = await GetUserInfos.GetUserEmail();
+        var paidsRegister = await PaidService.GetPaidByEmailService(email);
 
 
-var sessionURL = await StripeSessionsService.CreateSession(new SessionStartDTO()
-{
-TestId = TestId,
-PriceId = paidsRegister.FirstOrDefault().PriceId,
-Email = email
-});
+        var sessionURL = await StripeSessionsService.CreateSession(new SessionStartDTO()
+        {
+            TestId = TestId,
+            PriceId = paidsRegister.FirstOrDefault().PriceId,
+            Email = email
+        });
 
-Console.WriteLine(sessionURL);
+        Console.WriteLine(sessionURL);
 
 // _finalUrl = sessionURL;
 // Nav.NavigateTo(sessionURL);
-}
+    }
 
 }

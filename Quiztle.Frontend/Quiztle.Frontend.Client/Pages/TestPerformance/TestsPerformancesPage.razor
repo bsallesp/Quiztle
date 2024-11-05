@@ -3,17 +3,21 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Quiztle.CoreBusiness.DTOs
+@using Quiztle.CoreBusiness.Entities.Paid
 @using Quiztle.CoreBusiness.Entities.Performance
+@using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.Performance
 @using Quiztle.Frontend.Client.Utils
 @using Quiztle.Frontend.Client.Utils.Components
 
 @inject GetUserInfos GetUserInfos
 @inject GetTestPerformancesByUserIdService GetTestPerformancesByUserIdService
+@inject PaidService PaidService
+
 @attribute [Authorize]
 
 
-@if (_testPerformances != null)
+@if (_testPerformances != null && HasPaid)
 {
     <div class="full-screen-container">
         <div class="greeting">
@@ -52,11 +56,11 @@
                                 questions: @groupedPerformances.MediaScore().ToString("00.00")%
                             </h4>
 
-                            <PerformanceBarComponent heightBar="15"
-                                                     goodNumber="@groupedPerformances.TotalHits()"
-                                                     badNumber="@groupedPerformances.TotalMiss()"
-                                                     showFinalScore="false">
-
+                            <PerformanceBarComponent
+                                heightBar="15"
+                                goodNumber="@groupedPerformances.TotalHits()"
+                                badNumber="@groupedPerformances.TotalMiss()"
+                                showFinalScore="false">
                             </PerformanceBarComponent>
                         </div>
 
@@ -68,7 +72,7 @@
                                 coming soon
                             </span>
 
-@*                             <PerformanceByTestComponent>
+                            @*                             <PerformanceByTestComponent>
 
                             </PerformanceByTestComponent>
 
@@ -130,14 +134,24 @@
     private SetGroupedPerformancesDTO _setGroupedTestPerformanceDTO = new();
 
     private string _userId = "";
+    private bool HasPaid = false;
 
     protected override async Task OnParametersSetAsync()
     {
         _userId = await GetUserInfos.GetUserId();
         _testPerformances = await GetTestPerformancesByUserIdService.ExecuteAsync(Guid.Parse(_userId));
-        _setGroupedTestPerformanceDTO.GroupAndFill(_testPerformances);
+        var testPerformances = _testPerformances as TestPerformance[] ?? _testPerformances.ToArray();
+        _setGroupedTestPerformanceDTO.GroupAndFill(testPerformances);
+
+        HasPaid = await PaidService.IsPaidService(new Paid()
+        {
+            UserEmail = await GetUserInfos.GetUserEmail(),
+            TestId = testPerformances.FirstOrDefault()?.TestId.ToString()
+        });
+        
+        if(!HasPaid) Nav.NavigateTo($"/Buy/TestId/{_testPerformances.FirstOrDefault().TestId}");
     }
-    
+
     bool _expanded = false;
 
     private void OnExpandCollapseClick()
