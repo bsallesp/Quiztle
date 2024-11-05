@@ -3,22 +3,15 @@ using Quiztle.CoreBusiness.Utils;
 using Quiztle.CoreBusiness.Entities.Quiz;
 using System.Text.Json;
 
-namespace Quiztle.Blazor.Client.APIServices.Tests
+namespace Quiztle.Blazor.Client.APIServices
 {
-    public class GetDraftByIdService
+    public class GetTestByIdService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
-
-        public GetDraftByIdService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
-
         public async Task<APIResponse<Test>> ExecuteAsync(Guid id)
         {
             try
             {
-                var stringResponse = await _httpClient.GetStringAsync("api/GetTestById/" + id);
+                var stringResponse = await httpClient.GetStringAsync("api/GetTestById/" + id);
                 Test testResponse = JsonSerializer.Deserialize<Test>(stringResponse)!;
 
                 return new APIResponse<Test>

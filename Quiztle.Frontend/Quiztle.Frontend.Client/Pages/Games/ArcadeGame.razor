@@ -11,7 +11,7 @@
 @using Quiztle.Frontend.Client.Utils;
 
 @inject GetQuestionsService GetQuestionsService
-@inject GetDraftByIdService GetTestByIdService
+@inject GetTestByIdService GetTestByIdService
 @inject AddTestPerformanceService AddTestPerformanceService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject GetUserInfos GetUserInfos
@@ -262,7 +262,7 @@
         var userId = await GetUserInfos.GetUserId();
 
         var testPerformance = _testDto.CreateTestPerformance(userId);
-
+        testPerformance.TestId = Guid.Parse(TestId);
         await AddTestPerformanceService.ExecuteAsync(testPerformance);
     }
 

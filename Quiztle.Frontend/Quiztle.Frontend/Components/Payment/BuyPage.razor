@@ -1,7 +1,9 @@
 ﻿@page "/Buy/TestId/{TestId}"
 
 @using Microsoft.AspNetCore.Authorization
+@using Quiztle.Blazor.Client.APIServices
 @using Quiztle.CoreBusiness.Entities.Paid
+@using Quiztle.CoreBusiness.Entities.Quiz
 @using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.StripeService
 
@@ -9,14 +11,55 @@
 @inject StripeCustomerService StripeCustomerService
 @inject GetUserInfos GetUserInfos
 @inject PaidService PaidService
+@inject GetTestByIdService GetTestByIdService
 
 @rendermode @(new InteractiveServerRenderMode(false))
+
+<MudContainer
+    Gutters="true"
+    Style="text-align: center;
+    margin-top: 10px;
+    justify-items: center;
+    color: lightgrey;
+">
+    <MudContainer
+        Gutters="true"
+        Style="
+        padding-top: 15px;
+        border-radius: 7px;
+        background-color: rgba(0, 0, 0, 0.05);">
+        @if (HasPaid)
+        {
+        <MudAlert
+            Severity="Severity.Info"
+            Variant="Variant.Filled">
+            You already got the @_testDto.Name
+        </MudAlert>
+        }
+
+        @if (!HasPaid)
+        {
+        <img src="img/courses/@_testDto.ShieldSVG" width="150" height="150" alt=""/>
+        <h1 style="padding: 10px">
+            @_testDto.Name
+        </h1>
+        <h2 style="padding: 10px">
+            @_testDto.QuestionsDTO.Count Questions
+            <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Size="Size.Medium"></MudIcon>
+        </h2>
+        <h2 style="padding: 10px">
+            Performance history
+            <MudIcon Icon="@Icons.Material.Filled.BubbleChart" Size="Size.Medium"></MudIcon>
+        </h2>
+        }
+    </MudContainer>
+</MudContainer>
 
 <div class="container-lg p2">
     <h1>Pay</h1>
 
     <form method="post" @onsubmit="CreateSession" @formname="create-session-and-pay">
-        <AntiforgeryToken />
+        <AntiforgeryToken/>
         <div>
             <button type="submit">Submit</button>
         </div>
@@ -24,47 +67,59 @@
 </div>
 
 @code {
-    [Parameter]
-    public string PriceId { get; set; } = "";
+[Parameter] public string PriceId { get; set; } = "";
 
-    [Parameter]
-    public string TestId { get; set; } = "";
+[Parameter] public string TestId { get; set; } = "";
 
-    private string _finalUrl = "";
+private readonly TestDTO _testDto = new TestDTO();
 
-    protected override async Task OnParametersSetAsync()
-    {
-        var hasPaid = await PaidService.IsPaidService(new Paid()
-        {
-            TestId = TestId,
-            UserEmail = await GetUserInfos.GetUserEmail()
-        });
+private bool HasPaid { get; set; } = false;
 
-        if (hasPaid) PayedAlreadyWarning();
-        else await CreateSession();
-    }
+private string _finalUrl = "";
 
-    private void PayedAlreadyWarning()
-    {
-        Console.WriteLine("PayedAlreadyWarning");
-    }
+protected override async Task OnParametersSetAsync()
+{
+if (!await LoadTestAsync()) Nav.NavigateTo("/Error");
 
-    private async Task CreateSession()
-    {
-        var email = await GetUserInfos.GetUserEmail();
-        var paidsRegister = await PaidService.GetPaidByEmailService(email);
-        
-        
-        var sessionURL = await StripeSessionsService.CreateSession(new SessionStartDTO()
-        {
-            TestId = TestId,
-            PriceId = paidsRegister.FirstOrDefault().PriceId,
-            Email = email
-        });
+HasPaid = await PaidService.IsPaidService(new Paid()
+{
+TestId = TestId,
+UserEmail = await GetUserInfos.GetUserEmail()
+});
+Console.WriteLine(!HasPaid ? "Nao pagou" : "Pagou");
+await LoadTestAsync();
+}
 
-        Console.WriteLine(sessionURL);
-        
-        // _finalUrl = sessionURL;
-        // Nav.NavigateTo(sessionURL);
-    }
+private async Task<bool> LoadTestAsync()
+{
+if (string.IsNullOrEmpty(TestId)) return false;
+var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+if (string.IsNullOrEmpty(test.Data.Id.ToString())) return false;
+_testDto.FromTest(test.Data);
+return true;
+}
+
+private void PayedAlreadyWarning()
+{
+}
+
+private async Task CreateSession()
+{
+var email = await GetUserInfos.GetUserEmail();
+var paidsRegister = await PaidService.GetPaidByEmailService(email);
+
+
+var sessionURL = await StripeSessionsService.CreateSession(new SessionStartDTO()
+{
+TestId = TestId,
+PriceId = paidsRegister.FirstOrDefault().PriceId,
+Email = email
+});
+
+Console.WriteLine(sessionURL);
+
+// _finalUrl = sessionURL;
+// Nav.NavigateTo(sessionURL);
+}
+
 }
