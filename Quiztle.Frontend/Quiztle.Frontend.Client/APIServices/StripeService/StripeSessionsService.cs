@@ -15,13 +15,14 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         }
 
 
-        public async Task<string> CreateSession(SessionStartDTO sessionStartDTO)
+        public async Task<string> CreateSession(SessionStartDTO sessionStartDto)
         {
             try
             {
                 var url = "api/StripeSessions/sessions/createsession";
 
-                var content = new StringContent(JsonSerializer.Serialize(sessionStartDTO), Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonSerializer.Serialize(sessionStartDto), Encoding.UTF8,
+                    "application/json");
 
                 var result = await _httpClient.PostAsync(url, content);
 
@@ -35,8 +36,7 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 return "";
             }
         }
-
-
+        
         public async Task<List<Stripe.Checkout.Session>> GetAllSessions()
         {
             try
@@ -50,16 +50,16 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return new List<Stripe.Checkout.Session>(); // Retorna uma lista vazia em caso de erro
+                return new List<Stripe.Checkout.Session>();
             }
         }
-
-
+        
         public async Task<bool> IsPaidSession(string sessionId, string customerId, string priceId)
         {
             try
             {
-                var url = $"api/StripeSessions/sessions/ispayedsession?sessionId={Uri.EscapeDataString(sessionId)}&customerId={Uri.EscapeDataString(customerId)}&priceId={Uri.EscapeDataString(priceId)}";
+                var url =
+                    $"api/StripeSessions/sessions/ispayedsession?sessionId={Uri.EscapeDataString(sessionId)}&customerId={Uri.EscapeDataString(customerId)}&priceId={Uri.EscapeDataString(priceId)}";
                 var result = await _httpClient.GetAsync(url);
 
                 if (result.IsSuccessStatusCode)
@@ -82,7 +82,8 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
-                var url = $"api/StripeSessions/sessions/ispayedsessionbycustomer?customerId={Uri.EscapeDataString(customerId)}&priceId={Uri.EscapeDataString(priceId)}";
+                var url =
+                    $"api/StripeSessions/sessions/ispayedsessionbycustomer?customerId={Uri.EscapeDataString(customerId)}&priceId={Uri.EscapeDataString(priceId)}";
                 var result = await _httpClient.GetAsync(url);
 
                 if (result.IsSuccessStatusCode)

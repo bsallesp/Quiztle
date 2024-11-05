@@ -17,16 +17,15 @@ namespace Quiztle.API.Controllers.StripeController
 
             return Ok(sessions);
         }
-
-
+        
         [HttpPost("sessions/createsession")]
-        public async Task<ActionResult> CreateSession([FromBody] SessionStartDTO sessionStartDTO)
+        public async Task<ActionResult> CreateSession([FromBody] SessionStartDTO sessionStartDto)
         {
-            if (sessionStartDTO == null) return BadRequest("SessionStartDTO cannot be null.");
-
-            if (string.IsNullOrEmpty(sessionStartDTO.PriceId) ||
-                string.IsNullOrEmpty(sessionStartDTO.Email) ||
-                string.IsNullOrEmpty(sessionStartDTO.TestId)
+            if (sessionStartDto == null) return BadRequest("SessionStartDTO cannot be null.");
+            
+            if (string.IsNullOrEmpty(sessionStartDto.PriceId) ||
+                string.IsNullOrEmpty(sessionStartDto.Email) ||
+                string.IsNullOrEmpty(sessionStartDto.TestId)
                 )
                 return BadRequest("PriceId and Email are required.");
 
@@ -40,7 +39,7 @@ namespace Quiztle.API.Controllers.StripeController
                 {
                     new SessionLineItemOptions
                     {
-                        Price = sessionStartDTO.PriceId,
+                        Price = sessionStartDto.PriceId,
                         Quantity = 1
                     }
                 },
@@ -49,9 +48,10 @@ namespace Quiztle.API.Controllers.StripeController
                 CancelUrl = domain + cancelPage,
                 Metadata = new Dictionary<string, string>
                 {
-                    { "price_id", sessionStartDTO.PriceId },
-                    { "customer_email", sessionStartDTO.Email },
-                    { "test_id", sessionStartDTO.TestId }
+                    { "price_id", sessionStartDto.PriceId },
+                    { "customer_email", sessionStartDto.Email },
+                    { "test_id", sessionStartDto.TestId },
+                    { "amount", sessionStartDto.Amount.ToString() }
                 }
             };
 
@@ -64,17 +64,14 @@ namespace Quiztle.API.Controllers.StripeController
             }
             catch (StripeException ex)
             {
-                // Handle Stripe-specific exceptions here
                 return BadRequest($"Stripe error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // Handle other exceptions
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
+        
         [HttpGet("sessions/getpaidsessions")]
         public ActionResult GetPaidSessions()
         {
@@ -90,7 +87,6 @@ namespace Quiztle.API.Controllers.StripeController
 
             return Ok(paidSessions);
         }
-
 
         [HttpGet("sessions/getpaidsessionsbyuserid")]
         public async Task<List<PaidSessionDto>> GetPaidSessionsByUserid(string userId)
@@ -123,7 +119,6 @@ namespace Quiztle.API.Controllers.StripeController
 
             return paidSessionDtos;
         }
-
 
         [HttpGet("sessions/{sessionId}/lineitems")]
         public ActionResult<PaidSessionDto> GetLineItemsBySessionId(string sessionId)
@@ -165,8 +160,7 @@ namespace Quiztle.API.Controllers.StripeController
                 return NotFound(new { error = ex.Message });
             }
         }
-
-
+        
         [HttpGet("sessions/ispayedsession")]
         public async Task<ActionResult<bool>> IsPaidSession(string sessionId, string customerId, string priceId)
         {
@@ -189,8 +183,7 @@ namespace Quiztle.API.Controllers.StripeController
                 return NotFound(new { error = ex.Message });
             }
         }
-
-
+        
         [HttpGet("sessions/ispayedsessionbycustomer")]
         public async Task<ActionResult<bool>> IsPaidSessionByCustomer(string customerId, string priceId)
         {

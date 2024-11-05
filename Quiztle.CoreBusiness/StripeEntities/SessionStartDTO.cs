@@ -11,7 +11,7 @@ public class SessionStartDTO
 
 
     [JsonPropertyName("Amount")]
-    public long Amount { get; set; }
+    public int Amount { get; set; }
 
 
     [JsonPropertyName("Email")]
