@@ -131,13 +131,13 @@
 
     private string _userId = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         _userId = await GetUserInfos.GetUserId();
         _testPerformances = await GetTestPerformancesByUserIdService.ExecuteAsync(Guid.Parse(_userId));
         _setGroupedTestPerformanceDTO.GroupAndFill(_testPerformances);
     }
-
+    
     bool _expanded = false;
 
     private void OnExpandCollapseClick()
