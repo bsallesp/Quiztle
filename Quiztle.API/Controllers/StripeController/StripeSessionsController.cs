@@ -6,7 +6,7 @@ namespace Quiztle.API.Controllers.StripeController
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StripeSessionsController : ControllerBase
+    public class StripeSessionsController(IConfiguration configuration) : ControllerBase
     {
         [HttpGet("sessions/all")]
         public ActionResult GetAllSessions()
@@ -29,20 +29,24 @@ namespace Quiztle.API.Controllers.StripeController
                 )
                 return BadRequest("PriceId and Email are required.");
 
-            string domain = "http://localhost:5008/";
-            string successPage = "success";
-            string cancelPage = "abandoned";
+            string domain = Environment.GetEnvironmentVariable("DOMAIN_FRONTEND") ??
+                            configuration["Domains:Frontend"] ??
+                            throw new ArgumentNullException("API domain is not configured.");
+            
+            
+            string successPage = $"/games/Arcade/{sessionStartDto.TestId}";
+            string cancelPage = $"/games/Arcade/{sessionStartDto.TestId}";
 
             var options = new SessionCreateOptions
             {
-                LineItems = new List<SessionLineItemOptions>
-                {
+                LineItems =
+                [
                     new SessionLineItemOptions
                     {
                         Price = sessionStartDto.PriceId,
                         Quantity = 1
                     }
-                },
+                ],
                 Mode = "payment",
                 SuccessUrl = domain + successPage,
                 CancelUrl = domain + cancelPage,
