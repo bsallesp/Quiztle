@@ -24,3 +24,8 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Quiztle.Frontend.dll"]
+
+#docker build -f C:\Users\bsall\source\repos\bsallesp\BrunoTheBot.Blazor\Quiztle.Frontend\Quiztle.Frontend\Dockerfile -t quiztle-frontend C:\Users\bsall\source\repos\bsallesp\BrunoTheBot.Blazor
+#docker login
+#docker tag quiztle-frontend brunosallesdev/quiztlefrontend:latest
+#docker push brunosallesdev/quiztlefrontend:latest
