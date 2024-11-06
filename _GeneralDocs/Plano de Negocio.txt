@@ -1,3 +1,23 @@
+We offer hundreds of expertly crafted questions to help you prepare for your official exam. Each question includes one correct answer and several incorrect options, allowing you to practice regularly, reinforce your knowledge, and sharpen your skills. With the paid version, you receive two years of access to a personalized dashboard, enabling you to create customized tests by topic to tailor your study sessions. Track your progress with detailed performance statistics to monitor your evolution and identify areas for improvement. With consistent practice, you'll be fully prepared to succeed on the official exam.
+
+For any questions or issues, please contact us at talk@certcool.com.
+
+Summary:
+
+Hundreds of practice questions with one correct and multiple incorrect answers.
+Two years of access to a personalized dashboard for creating custom tests by topic.
+Detailed performance statistics to track progress and focus on improvement.
+Consistent practice prepares you for success on the official exam.
+Covers all major domains for Azure AZ-900:
+Cloud Concepts (10-15%)
+Azure Core Services (25-30%)
+Core Solutions and Management Tools (10-15%)
+General Security and Network Security Features (10-15%)
+Identity, Governance, Privacy, and Compliance (20-25%)
+Azure Cost Management and Service Level Agreements (10-15%)
+For assistance, reach out to talk@certcool.com.
+
+
 1. **Direct Factual Question**  
 Direct question about a specific fact or data.
 
