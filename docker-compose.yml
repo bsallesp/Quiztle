@@ -1,0 +1,78 @@
+﻿services:
+  certcool:
+    image: certcool
+    build:
+      context: .
+      dockerfile: Certcool/Certcool/Dockerfile
+
+  certcool.client:
+    image: certcool.client
+    build:
+      context: .
+      dockerfile: Certcool/Certcool.Client/Dockerfile
+
+  certcool.frontend:
+    image: certcool.frontend
+    build:
+      context: .
+      dockerfile: Certcool.Frontend/Certcool.Frontend/Dockerfile
+
+  certcool.frontend.client:
+    image: certcool.frontend.client
+    build:
+      context: .
+      dockerfile: Certcool.Frontend/Certcool.Frontend.Client/Dockerfile
+
+  cerccool.frontend:
+    image: cerccool.frontend
+    build:
+      context: .
+      dockerfile: Cerccool.Frontend/Cerccool.Frontend/Dockerfile
+
+  cerccool.frontend.client:
+    image: cerccool.frontend.client
+    build:
+      context: .
+      dockerfile: Cerccool.Frontend/Cerccool.Frontend.Client/Dockerfile
+
+  certcool.frontend-1:
+    image: certcool.frontend-1
+    build:
+      context: .
+      dockerfile: Certcool.Frontend/Certcool.Frontend/Dockerfile
+
+  certcool.frontend.client-1:
+    image: certcool.frontend.client-1
+    build:
+      context: .
+      dockerfile: Certcool.Frontend/Certcool.Frontend.Client/Dockerfile
+
+  certcool-1:
+    image: certcool-1
+    build:
+      context: .
+      dockerfile: ../Certcool/Certcool/Certcool/Dockerfile
+
+  certcool.client-1:
+    image: certcool.client-1
+    build:
+      context: .
+      dockerfile: ../Certcool/Certcool/Certcool.Client/Dockerfile
+
+  quiztle.frontend:
+    image: quiztle.frontend
+    build:
+      context: .
+      dockerfile: Quiztle.Frontend/Quiztle.Frontend/Dockerfile
+
+  testdockererase:
+    image: testdockererase
+    build:
+      context: .
+      dockerfile: TestDockerErase/TestDockerErase/Dockerfile
+
+  testdockererase.client:
+    image: testdockererase.client
+    build:
+      context: .
+      dockerfile: TestDockerErase/TestDockerErase.Client/Dockerfile

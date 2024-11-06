@@ -1,0 +1,23 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  quiztle.frontend:
+    build:
+      context: "C:\\Users\\bsall\\source\\repos\\bsallesp\\BrunoTheBot.Blazor"
+      dockerfile: "Quiztle.Frontend/Quiztle.Frontend/Dockerfile"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/Quiztle.Frontend.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net8.0/Quiztle.Frontend.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "quiztle.frontend:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\bsall\\AppData\\Roaming\\Microsoft\\UserSecrets:/root/.microsoft/usersecrets"
+    - "C:\\Users\\bsall\\.nuget\\packages:/root/.nuget/packages"
+    - "C:\\Users\\bsall\\source\\repos\\bsallesp\\BrunoTheBot.Blazor\\Quiztle.Frontend\\\
+      Quiztle.Frontend:/app:rw"
+    - "C:\\Users\\bsall\\source\\repos\\bsallesp\\BrunoTheBot.Blazor:/src:rw"
+    working_dir: "/app"

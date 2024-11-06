@@ -1,0 +1,25 @@
+@page "/test123"
+
+@rendermode InteractiveWebAssembly
+
+<h3>EnvironmentTest</h3>
+
+<p>@environmentMessage</p>
+
+@code {
+    private string environmentMessage;
+
+    protected override void OnInitialized()
+    {
+// Capturando o ambiente atual
+        environmentMessage = $"Current Environment: {GetCurrentEnvironment()}";
+        Console.WriteLine($"Detected Environment: {environmentMessage}"); // Log no console
+    }
+
+    private string GetCurrentEnvironment()
+    {
+        string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"; // Valor padrão
+        return env;
+    }
+
+}
