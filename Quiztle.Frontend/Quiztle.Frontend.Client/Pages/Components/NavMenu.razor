@@ -25,18 +25,8 @@
             </a>
         </div>
         <div class="menu-item">
-            <a href="/create-order">
-                Pricing
-            </a>
-        </div>
-        <div class="menu-item">
             <a href="/support">
                 Support
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="/company">
-                Company
             </a>
         </div>
         <LoginProfileComponent></LoginProfileComponent>
@@ -68,18 +58,7 @@
     <MudNavMenu>
         <MudNavLink Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Href="/about">About</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Href="/create-order">Pricing</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Href="/support">Support</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Href="/company">Company</MudNavLink>
-        <AuthorizeView>
-            <Authorized>
-                <MudNavLink Match="NavLinkMatch.All" Href="/profile">Profile</MudNavLink>
-                <MudNavLink Match="NavLinkMatch.All" Href="/logout">Logout</MudNavLink>
-            </Authorized>
-            <NotAuthorized>
-                <MudNavLink Match="NavLinkMatch.All" Href="/Account/Login">Login</MudNavLink>
-            </NotAuthorized>
-        </AuthorizeView>
     </MudNavMenu>
 </MudDrawer>
 

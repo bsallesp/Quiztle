@@ -4,7 +4,10 @@
     @if (isSignedIn)
     {
         <NavLink href="/Profile" class="nav-link" active-class="active">
-            <img src="svg/user.svg" style="height:50px; width:50px" alt="User Profile" />
+            <MudIcon
+                Icon="@Icons.Material.Outlined.Person" Color="Color.Tertiary"
+                Style="width: 50px; height: 50px">
+            </MudIcon>
         </NavLink>
     }
     else

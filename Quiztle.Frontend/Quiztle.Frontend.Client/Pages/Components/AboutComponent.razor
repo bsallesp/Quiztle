@@ -1,64 +1,53 @@
 ﻿@page "/about"
 
-    <div style="margin-top:100px;">
+<MudContainer Style="margin-top: 30px" MaxWidth="MaxWidth.Medium">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h3" GutterBottom="true">About Us</MudText>
+            <MudText Typo="Typo.h5">
+                At Certcool, we're dedicated to revolutionizing the way people learn and engage with educational content. Our mission is to provide a platform that offers a massive quantity of practice questions at a super affordable price, making learning interactive, efficient, and enjoyable.
+            </MudText>
+        </MudItem>
 
-    </div>
-    <MudContainer MaxWidth="MaxWidth.Medium">
-        <MudGrid>
-            <MudItem xs="12">
-                <MudText Typo="Typo.h3" GutterBottom="true">About Us</MudText>
-                <MudText Typo="Typo.h5">
-                    At Quiztle, we're dedicated to revolutionizing the way people learn and engage with educational content. Our mission is to provide an easy-to-use platform that empowers users to create personalized quizzes from any PDF document, making learning interactive, efficient, and enjoyable.
-                </MudText>
-            </MudItem>
+        <div></div>
 
-            <div></div>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4" GutterBottom="true">Our Vision</MudText>
+            <MudText Typo="Typo.body1">
+                We envision a world where knowledge is easily accessible and engaging for everyone. By harnessing the power of advanced technologies, we strive to make education more interactive and tailored to individual needs.
+            </MudText>
+        </MudItem>
 
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" GutterBottom="true">Our Vision</MudText>
-                <MudText Typo="Typo.body1">
-                    We envision a world where knowledge is easily accessible and engaging for everyone. By harnessing the power of advanced technologies like natural language processing, we strive to make education more interactive and tailored to individual needs.
-                </MudText>
-            </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4" GutterBottom="true">How It Works</MudText>
+            <MudText Typo="Typo.body1">
+                <b>Get Access to Massive Practice Questions:</b> Access a wide variety of practice questions across multiple topics.<br />
+                <b>Affordable Pricing:</b> Our platform offers super affordable prices for all users.<br />
+                <b>Interactive Learning:</b> Engage with the questions and improve your knowledge and retention.
+            </MudText>
+        </MudItem>
 
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" GutterBottom="true">How It Works</MudText>
-                <MudText Typo="Typo.body1">
-                    <b>Upload Your PDF:</b> Simply upload any PDF document to our platform.<br />
-                    <b>Automatic Processing:</b> Our microservice in Flask converts the PDF into text strings.<br />
-                    <b>Quiz Generation:</b> Using the ChatGPT API, we transform these strings into relevant quiz questions.<br />
-                    <b>Interactive Learning:</b> Users can then interact with the generated quizzes, enhancing their knowledge and retention.
-                </MudText>
-            </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4" GutterBottom="true">Who We Serve</MudText>
+            <MudText Typo="Typo.body1">
+                Our platform caters to a diverse audience, including:
+                <ul>
+                    <li>Students: From primary to higher education, looking to reinforce their learning.</li>
+                    <li>Professionals: Seeking continuous education and skill enhancement.</li>
+                    <li>Educators: Wanting to create interactive quizzes quickly and efficiently.</li>
+                </ul>
+            </MudText>
+        </MudItem>
 
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" GutterBottom="true">Who We Serve</MudText>
-                <MudText Typo="Typo.body1">
-                    Our platform caters to a diverse audience, including:
-                    <ul>
-                        <li>Students: From primary to higher education, looking to reinforce their learning.</li>
-                        <li>Professionals: Seeking continuous education and skill enhancement.</li>
-                        <li>Educators: Wanting to create interactive quizzes quickly and efficiently.</li>
-                    </ul>
-                </MudText>
-            </MudItem>
-
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" GutterBottom="true">Why Choose Quiztle?</MudText>
-                <MudText Typo="Typo.body1">
-                    <ul>
-                        <li><b>Efficiency:</b> Automated quiz generation saves you time and effort.</li>
-                        <li><b>Interactivity:</b> Engage with the content in a fun and interactive manner.</li>
-                        <li><b>Customization:</b> Create quizzes tailored to your specific learning needs.</li>
-                    </ul>
-                </MudText>
-            </MudItem>
-
-            <MudItem xs="12">
-                <MudText Typo="Typo.h4" GutterBottom="true">Meet the Founder</MudText>
-                <MudText Typo="Typo.body1">
-                    Quiztle was founded by a seasoned full-stack engineer passionate about leveraging technology to simplify and enhance the learning process. With expertise in Blazor, C#, .NET, Azure, and more, our founder is committed to delivering a robust and scalable application that meets the highest standards of performance and usability.
-                </MudText>
-            </MudItem>
-        </MudGrid>
-    </MudContainer>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h4" GutterBottom="true">Why Choose Certcool?</MudText>
+            <MudText Typo="Typo.body1">
+                <ul>
+                    <li><b>Efficiency:</b> A massive collection of practice questions available at affordable rates.</li>
+                    <li><b>Interactivity:</b> Engage with the content in a fun and interactive manner.</li>
+                    <li><b>Customization:</b> Tailored quizzes to meet your learning needs.</li>
+                </ul>
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
