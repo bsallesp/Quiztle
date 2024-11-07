@@ -152,17 +152,14 @@
     <FinalScreenComponent Title="Azure AZ-900 Fundamentals"
                           Score="@_testDto.GetTotalCorrectAnswers()"
                           QuestionsAmount="200"
+                          TestId="@TestId"
+                          HasPaid="@_hasPaid"
                           TotalQuestions="@_testDto.QuestionsDTO.Count()">
     </FinalScreenComponent>
 }
 
 @code {
-    ProgressBar progressBar = new();
-
-    private string _title = "Quiztle";
-
     [Parameter] public string TestId { get; set; } = "";
-
     private TestDTO _testDto = new();
     private Guid _testGuid = new Guid();
     private bool _showFinalScreen = false;
@@ -174,6 +171,9 @@
     private bool _hasPaid = false;
     private string _shield = "default.svg";
     private Test FullTest;
+    private string _title = "Quiztle";
+    
+    ProgressBar progressBar = new();
 
     private DashboardComponent _dashboardComponent;
 

@@ -26,8 +26,31 @@
             </div>
 
             <div class="message text-center">
-                <h3 style="color: ghostwhite">@message</h3>
+                <h3 style="color: ghostwhite">@_message</h3>
             </div>
+
+            @if (HasPaid)
+            {
+                <MudButton
+                    Style="margin-top: 10px"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    FullWidth="true"
+                    OnClick="GoStats">
+                    View Stats
+                </MudButton>
+            }
+            else
+            {
+                <MudButton
+                    Style="margin-top: 10px"
+                    Variant="Variant.Filled"
+                    Color="Color.Secondary"
+                    FullWidth="true"
+                    OnClick="GoBuy">
+                    Get Premium, access all questions and check statistics
+                </MudButton>
+            }
         </div>
     </div>
 }
@@ -37,11 +60,10 @@
     [Parameter] public required int Score { get; set; }
     [Parameter] public required int QuestionsAmount { get; set; }
     [Parameter] public required int TotalQuestions { get; set; }
-
-    private string message = "";
-
+    [Parameter] public required bool HasPaid { get; set; }
+    [Parameter] public required string TestId { get; set; }
+    private string? _message = "";
     private bool _isVisible = true;
-
     public required string Image { get; set; } = "";
 
     protected override Task OnParametersSetAsync()
@@ -58,7 +80,7 @@
         if (percentage < 50)
         {
             Image = "less-50-shield.svg";
-            message = GetRandomFeedback(new string[]
+            _message = GetRandomFeedback(new string[]
             {
                 "Don't lose hope! Keep practicing, and you'll get there!",
                 "Every effort counts! Keep pushing forward!",
@@ -70,7 +92,7 @@
         else if (percentage >= 50 && percentage < 80)
         {
             Image = "50-shield.svg";
-            message = GetRandomFeedback(new string[]
+            _message = GetRandomFeedback(new string[]
             {
                 "Nice job! You're improving, keep it up!",
                 "You're on the right path! A bit more practice will take you further!",
@@ -82,7 +104,7 @@
         else
         {
             Image = "80-shield.svg";
-            message = GetRandomFeedback(new string[]
+            _message = GetRandomFeedback(new string[]
             {
                 "Fantastic! You're a star performer!",
                 "Awesome job! You've mastered this topic!",
@@ -99,10 +121,13 @@
         int index = random.Next(feedbacks.Length);
         return feedbacks[index];
     }
-    
+
     private void CloseBtn()
     {
         _isVisible = false;
     }
 
+    private void GoStats() => Nav.NavigateTo("/testPerformances");
+
+    private void GoBuy() => Nav.NavigateTo($"/Buy/TestId/{TestId}");
 }
