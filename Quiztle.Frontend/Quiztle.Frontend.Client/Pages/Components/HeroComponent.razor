@@ -1,21 +1,25 @@
-﻿
+﻿@rendermode InteractiveAuto
+
 <div class="hero">
     <div class="hero-content">
         <div class="display-main-1">
-            
-                Earn certification through real, hands-on learning.
-            
+            Earn certification through real, hands-on learning.
         </div>
         <div class="display-main-2">
-
             Read, answer, learn.
-
         </div>
 
         <div class="hero-buttons">
-            <a href="/signup" class="btn btn-primary">Get Started Now</a>
-            <a href="/learn-more" class="btn btn-secondary">Learn More</a>
+            <button class="btn btn-primary" @onclick="GoTest">Get Started Now</button>
+            <a href="/About" class="btn btn-secondary">Learn More</a>
         </div>
-
     </div>
 </div>
+
+@code {
+    private void GoTest()
+    {
+        Nav.NavigateTo("/Games/Arcade/e254723e-3379-4183-8891-a1862f454470", true);
+    }
+}
+
