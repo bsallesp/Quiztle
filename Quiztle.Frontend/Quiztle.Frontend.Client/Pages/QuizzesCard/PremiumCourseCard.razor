@@ -1,9 +1,13 @@
 ﻿@using Quiztle.Frontend.Client.APIServices.StripeService
 
 <div class="container bg-fx">
-    <img src="img/courses/@Image"/>
+    <MudImage
+        Src="@($"img/courses/{Image}")"
+        Width="200"
+        Height="200">
+    </MudImage>
 
-    <div class="card-title text-center">
+    <div class="card-title text-center m-0">
         @Title
     </div>
 
@@ -50,7 +54,7 @@
     </form>
 
     <div class="crown">
-        <img src="svg/courses/crown.svg"/>
+        <img src="svg/courses/crown.svg" alt=""/>
     </div>
 </div>
 
