@@ -27,11 +27,14 @@
 
     <form method="post" @onsubmit="PlayGame" @formname="@TestId">
         <AntiforgeryToken/>
-        <div class="text-center">
+        <div
+            style="padding: 20px;
+            width: 100%;
+                border-radius: 10px;"
+            class="text-center">
             <button
                 style="padding: 20px;
                 border-radius: 10px;
-                margin: 10px;
                 width: 100%;
                 display: flex;
                 align-items: center;
