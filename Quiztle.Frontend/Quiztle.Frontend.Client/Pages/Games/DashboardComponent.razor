@@ -1,29 +1,61 @@
 @using Quiztle.CoreBusiness.Entities.Paid
-<MudContainer Style="background-color: rgba(0, 0, 0, 0.05); border-radius: 15px;">
-    @foreach (var tag in TagsAmountDictionary.Keys)
-    {
-        <MudSlider
-            Disabled="!HasPaid"
-            @bind-Value="TagValues[tag]"
-            Min="0"
-            Max="@TagsAmountDictionary[tag]"
-            Color="Color.Info">
 
-            <MudChip
-                Size="Size.Small" T="string"
-                Color="Color.Tertiary"
-                @onclick="HasPaid ? () => SetExclusiveTagValue(tag) : null">
-                @tag
-            </MudChip>
+<MudContainer
+    Style="background-color: rgba(0, 0, 0, 0.05);
+ border-radius: 15px;">
+    <MudButton
+        Style="width: 100%;
+    border-radius: 15px;"
 
-            @TagValues[tag].ToString() of @TagsAmountDictionary[tag]
-        </MudSlider>
-    }
+        OnClick="OnExpandCollapseClick">
+        @if (_expanded)
+        {
+        <h5 style="margin: 0">
+            Collapse
+        </h5>
+        <MudIcon Icon="@Icons.Material.Filled.ArrowDropUp" Size="Size.Large"></MudIcon>
+        }
+        else
+        {
+        <h5 style="margin: 0">
+            Expand
+        </h5>
+        <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Large"></MudIcon>
+        }
 
-    @if (HasPaid)
-    {
-        <div class="d-flex justify-content-center align-items-center m-3"
-             style="height: 100%;">
+    </MudButton>
+    <MudDivider/>
+    <MudCollapse Expanded="_expanded">
+        @foreach (var tag in TagsAmountDictionary.Keys)
+        {
+        <MudContainer
+            Style="background-color: rgba(0, 0, 0, 0.075);
+                margin-top: 10px;
+                border-radius: 15px;">
+            <MudSlider
+                Disabled="!HasPaid"
+                @bind-Value="TagValues[tag]"
+                Min="0"
+                Max="@TagsAmountDictionary[tag]"
+                Color="Color.Info">
+
+                <MudChip
+                    Size="Size.Small" T="string"
+                    Color="Color.Tertiary"
+                    @onclick="HasPaid ? () => SetExclusiveTagValue(tag) : null">
+                    @tag
+                </MudChip>
+                <span>
+                        @TagValues[tag].ToString() of @TagsAmountDictionary[tag]
+                    </span>
+            </MudSlider>
+            <MudDivider/>
+        </MudContainer>
+        }
+
+        @if (HasPaid)
+        {
+        <div class="d-flex justify-content-center align-items-center m-3">
             <button
                 class="btn btn-outline-secondary btn-lg m-3"
                 @onclick="ResetValues">
@@ -33,53 +65,59 @@
                 Generate Practice Test with total of @TotalSelected questions
             </button>
         </div>
-    }
+        }
 
+
+    </MudCollapse>
 </MudContainer>
 
 @code {
-    [Parameter]
-    public Action? LoadPracticeTest { get; set; }
-    
-    [Parameter] public Dictionary<string, int> TagsAmountDictionary { get; set; } = new Dictionary<string, int>();
-    [Parameter] public bool HasPaid { get; set; } = false;
-    [Parameter] public Dictionary<string, double> TagValues { get; set; } = [];
+[Parameter] public Action? LoadPracticeTest { get; set; }
+[Parameter] public Dictionary<string, int> TagsAmountDictionary { get; set; } = new Dictionary<string, int>();
+[Parameter] public bool HasPaid { get; set; } = false;
+[Parameter] public Dictionary<string, double> TagValues { get; set; } = [];
 
-    private double TotalSelected => TagValues.Values.Sum();
+bool _expanded = true;
+private double TotalSelected => TagValues.Values.Sum();
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        InitializeDefaultValues();
-    }
+private void OnExpandCollapseClick()
+{
+_expanded = !_expanded;
+}
 
-    private void InitializeDefaultValues()
-    {
-        foreach (var tag in TagsAmountDictionary.Keys)
-        {
-            TagValues[tag] = Math.Min(HasPaid ? 10 : 2, TagsAmountDictionary[tag]);
-        }
-    }
+protected override void OnInitialized()
+{
+base.OnInitialized();
+InitializeDefaultValues();
+}
 
-    private void SetExclusiveTagValue(string selectedTag)
-    {
-        foreach (var tag in TagsAmountDictionary.Keys)
-        {
-            TagValues[tag] = tag == selectedTag ? TagsAmountDictionary[tag] : 0;
-        }
+private void InitializeDefaultValues()
+{
+foreach (var tag in TagsAmountDictionary.Keys)
+{
+TagValues[tag] = Math.Min(HasPaid ? 10 : 2, TagsAmountDictionary[tag]);
+}
+}
 
-        StateHasChanged();
-    }
+private void SetExclusiveTagValue(string selectedTag)
+{
+foreach (var tag in TagsAmountDictionary.Keys)
+{
+TagValues[tag] = tag == selectedTag ? TagsAmountDictionary[tag] : 0;
+}
 
-    private void ResetValues()
-    {
-        InitializeDefaultValues();
-        StateHasChanged();
-    }
+StateHasChanged();
+}
 
-    private void LoadPracticeTestClick()
-    {
-        
-        LoadPracticeTest?.Invoke();
-    }
+private void ResetValues()
+{
+InitializeDefaultValues();
+StateHasChanged();
+}
+
+private void LoadPracticeTestClick()
+{
+LoadPracticeTest?.Invoke();
+}
+
 }
