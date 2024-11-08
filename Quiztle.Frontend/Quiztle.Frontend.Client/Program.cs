@@ -37,6 +37,7 @@ builder.Services.AddTransient<GetTestByIdService>();
 builder.Services.AddTransient<RemoveQuestionService>();
 builder.Services.AddTransient<UpdateQuestionService>();
 builder.Services.AddTransient<AddTestPerformanceService>();
+builder.Services.AddTransient<GetAllTestsService>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdService>();
 builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();

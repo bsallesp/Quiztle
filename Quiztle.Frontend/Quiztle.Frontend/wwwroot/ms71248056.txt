@@ -1,0 +1,5 @@
+﻿{
+  "Description": "Domain ownership verification file for Microsoft 365 - place in the website root",
+  "Domain": "certcool.com",
+  "Id": "f5d1b0c6-ee70-4b80-9795-014896186c6b"
+}

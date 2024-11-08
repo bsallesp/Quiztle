@@ -33,7 +33,6 @@ var builder = WebApplication.CreateBuilder(args);
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
 
-
 builder.Services.AddHttpClient<OllamaRequest>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);
