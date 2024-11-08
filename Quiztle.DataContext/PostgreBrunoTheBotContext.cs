@@ -121,6 +121,7 @@ namespace Quiztle.DataContext
         }
 
         public DbSet<AILog>? AILogs { get; set; }
+        public DbSet<Log>? Logs { get; set; }
         public DbSet<Book>? Books { get; set; }
         public DbSet<BookTask>? BookTasks { get; set; }
         public DbSet<Chapter>? Chapters { get; set; }

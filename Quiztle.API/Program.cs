@@ -84,6 +84,7 @@ builder.Services.AddTransient<CreateTestByScratchController>();
 builder.Services.AddTransient<GetAllScratchesController>();
 builder.Services.AddTransient<TestPerformance>();
 builder.Services.AddTransient<GetTestPerformancesByUserIdController>();
+builder.Services.AddTransient<CreateLogController>();
 
 builder.Services.AddTransient<GetChaptersFromLLM>();
 builder.Services.AddTransient<GetContentFromLLLM>();
@@ -93,6 +94,7 @@ builder.Services.AddTransient<GetQuestionsFromLLM>();
 builder.Services.AddTransient<GetAllBookSectionsFromLLM>();
 
 builder.Services.AddTransient<AILogRepository>();
+builder.Services.AddTransient<LogRepository>();
 builder.Services.AddTransient<BookRepository>();
 builder.Services.AddTransient<BookTaskRepository>();
 builder.Services.AddTransient<PDFDataRepository>();

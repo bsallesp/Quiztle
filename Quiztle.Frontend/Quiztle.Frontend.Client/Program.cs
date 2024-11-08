@@ -43,6 +43,7 @@ builder.Services.AddTransient<StripeCustomerService>();
 builder.Services.AddTransient<StripeSessionsService>();
 builder.Services.AddTransient<PaidService>();
 builder.Services.AddTransient<GetUserInfos>();
+builder.Services.AddTransient<CreateLogService>();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();

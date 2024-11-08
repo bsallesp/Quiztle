@@ -36,6 +36,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddTransient<GetUserInfos>();
+builder.Services.AddTransient<CreateLogService>();
 
 builder.Services.AddTransient<GetAllTestsService>();
 builder.Services.AddTransient<GetQuestionsService>();

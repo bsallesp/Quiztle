@@ -737,6 +737,31 @@ namespace Quiztle.DataContext.Migrations
                     b.ToTable("AILogs");
                 });
 
+            modelBuilder.Entity("Quiztle.CoreBusiness.Log.Log", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GuidLog")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("Quiztle.CoreBusiness.User", b =>
                 {
                     b.Property<Guid>("Id")
