@@ -721,6 +721,9 @@ namespace Quiztle.DataContext.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("GuidLog")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("JSON")
                         .IsRequired()
                         .HasColumnType("text");

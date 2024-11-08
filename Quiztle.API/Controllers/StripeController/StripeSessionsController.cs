@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using NuGet.Protocol;
+using Quiztle.CoreBusiness.Log;
+using Quiztle.DataContext.Repositories;
 using Stripe;
 using Stripe.Checkout;
 
@@ -6,8 +10,12 @@ namespace Quiztle.API.Controllers.StripeController
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StripeSessionsController(IConfiguration configuration) : ControllerBase
+    public class StripeSessionsController(IConfiguration configuration, AILogRepository aiLogRepository)
+        : ControllerBase
     {
+        private IConfiguration _configuration = configuration;
+        private readonly AILogRepository _aiLogRepository = aiLogRepository;
+
         [HttpGet("sessions/all")]
         public ActionResult GetAllSessions()
         {
@@ -17,23 +25,53 @@ namespace Quiztle.API.Controllers.StripeController
 
             return Ok(sessions);
         }
-        
+
         [HttpPost("sessions/createsession")]
         public async Task<ActionResult> CreateSession([FromBody] SessionStartDTO sessionStartDto)
         {
-            if (sessionStartDto == null) return BadRequest("SessionStartDTO cannot be null.");
+            var guidLog = Guid.NewGuid();
+            await _aiLogRepository.CreateAILogAsync(new AILog
+            {
+                JSON = sessionStartDto.ToJson(),
+                GuidLog = guidLog,
+                Name = $"Session Start Attempt"
+            });
             
-            if (string.IsNullOrEmpty(sessionStartDto.PriceId) ||
-                string.IsNullOrEmpty(sessionStartDto.Email) ||
-                string.IsNullOrEmpty(sessionStartDto.TestId)
-                )
-                return BadRequest("PriceId and Email are required.");
+            var sessionStartErrors = new string[4];
+            var errorIndex = 0;
 
-            string domain = Environment.GetEnvironmentVariable("DOMAIN_FRONTEND") ??
-                            configuration["Domains:Frontend"] ??
-                            throw new ArgumentNullException("API domain is not configured.");
-            
-            
+            if (sessionStartDto.Email == null) sessionStartErrors[errorIndex++] = "Email cannot be null.";
+            if (sessionStartDto.PriceId == null) sessionStartErrors[errorIndex++] = "PriceId cannot be null.";
+            if (sessionStartDto.TestId == null) sessionStartErrors[errorIndex++] = "TestId cannot be null.";
+            if (sessionStartDto.Amount == 0) sessionStartErrors[errorIndex++] = "Amount cannot be null.";
+            if (errorIndex > 0)
+            {
+                await _aiLogRepository.CreateAILogAsync(new AILog
+                {
+                    JSON = sessionStartDto.ToJson() + sessionStartErrors[errorIndex++],
+                    GuidLog = guidLog,
+                    Name = $"Session Start Error"
+                });
+                
+                return BadRequest(string.Join(", ", sessionStartErrors.Take(errorIndex)));
+            }
+
+            var domain = Environment.GetEnvironmentVariable("DOMAIN_FRONTEND") ??
+                         _configuration["Domains:Frontend"];
+
+            if (domain == null)
+            {
+                await _aiLogRepository.CreateAILogAsync(new AILog
+                {
+                    JSON = sessionStartDto.ToJson() + " Domain configuration missing.",
+                    GuidLog = guidLog,
+                    Name = $"Session Start Error"
+                });
+
+                return BadRequest("API domain is not configured.");
+            }
+
+
             string successPage = $"/games/Arcade/{sessionStartDto.TestId}";
             string cancelPage = $"/games/Arcade/{sessionStartDto.TestId}";
 
@@ -64,14 +102,36 @@ namespace Quiztle.API.Controllers.StripeController
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
 
+                await _aiLogRepository.CreateAILogAsync(new AILog
+                {
+                    Id = Guid.NewGuid(),
+                    GuidLog = guidLog,
+                    JSON = sessionStartDto.ToJson() + session.ToJson(),
+                    Name = "Session Start - Success"
+                });
+
                 return Ok(session.Url);
             }
             catch (StripeException ex)
             {
+                await _aiLogRepository.CreateAILogAsync(new AILog
+                {
+                    JSON = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
+                    GuidLog = guidLog,
+                    Name = $"Create Session /  StripeException:"
+                });
+
                 return BadRequest($"Stripe error: {ex.Message}");
             }
             catch (Exception ex)
             {
+                await _aiLogRepository.CreateAILogAsync(new AILog
+                {
+                    JSON = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
+                    GuidLog = guidLog,
+                    Name = $"Create Session / Exception:"
+                });
+
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -154,7 +214,7 @@ namespace Quiztle.API.Controllers.StripeController
                     {
                         PriceId = item.Price.Id,
                         Quantity = item.Quantity ?? 0
-                    }).ToList() // Preenche a lista de line items
+                    }).ToList()
                 };
 
                 return Ok(paidSessionDto);
@@ -164,7 +224,7 @@ namespace Quiztle.API.Controllers.StripeController
                 return NotFound(new { error = ex.Message });
             }
         }
-        
+
         [HttpGet("sessions/ispayedsession")]
         public async Task<ActionResult<bool>> IsPaidSession(string sessionId, string customerId, string priceId)
         {
@@ -187,7 +247,7 @@ namespace Quiztle.API.Controllers.StripeController
                 return NotFound(new { error = ex.Message });
             }
         }
-        
+
         [HttpGet("sessions/ispayedsessionbycustomer")]
         public async Task<ActionResult<bool>> IsPaidSessionByCustomer(string customerId, string priceId)
         {
