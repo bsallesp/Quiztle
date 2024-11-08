@@ -72,8 +72,7 @@ namespace Quiztle.API.Controllers.StripeController
 
                 return BadRequest("API domain is not configured.");
             }
-
-
+            
             string successPage = $"/games/Arcade/{sessionStartDto.TestId}";
             string cancelPage = $"/games/Arcade/{sessionStartDto.TestId}";
 

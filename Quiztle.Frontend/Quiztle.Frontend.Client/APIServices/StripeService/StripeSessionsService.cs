@@ -24,12 +24,27 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         {
             try
             {
+                var logGuid = Guid.NewGuid();
                 var url = "api/StripeSessions/sessions/createsession";
+                var fullUrl = new Uri(_httpClient.BaseAddress, url);
 
-                var content = new StringContent(JsonSerializer.Serialize(sessionStartDto), Encoding.UTF8,
-                    "application/json");
+                var content = new StringContent(JsonSerializer.Serialize(sessionStartDto), Encoding.UTF8, "application/json");
 
-                var result = await _httpClient.PostAsync(url, content);
+                var result = await _httpClient.PostAsync(fullUrl, content);
+
+                Console.WriteLine($"Full URL: {fullUrl}");
+                Console.WriteLine($"Status Code: {result.StatusCode}");
+                
+                await _createLogService.ExecuteAsync(new Log()
+                {
+                    GuidLog = logGuid,
+                    Name = GetType().Name, // Dynamically gets the class name
+                    Content = $"URL: {url}, " +
+                              $"Headers: {string.Join(", ", _httpClient.DefaultRequestHeaders)}, " +
+                              $"BaseAddress: {_httpClient.BaseAddress}, " +
+                              $"Timeout: {_httpClient.Timeout}, " +
+                              $"MaxResponseContentBufferSize: {_httpClient.MaxResponseContentBufferSize}"
+                });
 
                 if (result.IsSuccessStatusCode) return await result.Content.ReadAsStringAsync();
 

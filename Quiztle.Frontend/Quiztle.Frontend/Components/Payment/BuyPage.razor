@@ -36,6 +36,13 @@
             Amount = test.Data.PriceInCents,
             UserEmail = await GetUserInfos.GetUserEmail()
         };
+        
+        await CreateLogService.ExecuteAsync(new Log
+        {
+            GuidLog = _logGuid,
+            Content = $"{_paidAttempt.ToJson()}",
+            Name = "BuyPage / Start"
+        });
 
         if (!_paidAttempt.IsValid())
         {
