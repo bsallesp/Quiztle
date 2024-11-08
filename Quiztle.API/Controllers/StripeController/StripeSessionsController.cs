@@ -10,11 +10,13 @@ namespace Quiztle.API.Controllers.StripeController
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StripeSessionsController(IConfiguration configuration, AILogRepository aiLogRepository)
+    public class StripeSessionsController(
+        IConfiguration configuration,
+        LogRepository logRepository)
         : ControllerBase
     {
         private IConfiguration _configuration = configuration;
-        private readonly AILogRepository _aiLogRepository = aiLogRepository;
+        private readonly LogRepository _logRepository = logRepository;
 
         [HttpGet("sessions/all")]
         public ActionResult GetAllSessions()
@@ -30,11 +32,11 @@ namespace Quiztle.API.Controllers.StripeController
         public async Task<ActionResult> CreateSession([FromBody] SessionStartDTO sessionStartDto)
         {
             var guidLog = Guid.NewGuid();
-            await _aiLogRepository.CreateAILogAsync(new AILog
+            await _logRepository.CreateLogAsync(new Log
             {
-                JSON = sessionStartDto.ToJson(),
+                Content = sessionStartDto.ToJson(),
                 GuidLog = guidLog,
-                Name = $"Session Start Attempt"
+                Name = $"Session Start Attempt",
             });
             
             var sessionStartErrors = new string[4];
@@ -46,9 +48,9 @@ namespace Quiztle.API.Controllers.StripeController
             if (sessionStartDto.Amount == 0) sessionStartErrors[errorIndex++] = "Amount cannot be null.";
             if (errorIndex > 0)
             {
-                await _aiLogRepository.CreateAILogAsync(new AILog
+                await _logRepository.CreateLogAsync(new Log
                 {
-                    JSON = sessionStartDto.ToJson() + sessionStartErrors[errorIndex++],
+                    Content = sessionStartDto.ToJson() + sessionStartErrors[errorIndex++],
                     GuidLog = guidLog,
                     Name = $"Session Start Error"
                 });
@@ -61,9 +63,9 @@ namespace Quiztle.API.Controllers.StripeController
 
             if (domain == null)
             {
-                await _aiLogRepository.CreateAILogAsync(new AILog
+                await _logRepository.CreateLogAsync(new Log
                 {
-                    JSON = sessionStartDto.ToJson() + " Domain configuration missing.",
+                    Content = sessionStartDto.ToJson() + " Domain configuration missing.",
                     GuidLog = guidLog,
                     Name = $"Session Start Error"
                 });
@@ -102,11 +104,11 @@ namespace Quiztle.API.Controllers.StripeController
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
 
-                await _aiLogRepository.CreateAILogAsync(new AILog
+                await _logRepository.CreateLogAsync(new Log
                 {
                     Id = Guid.NewGuid(),
                     GuidLog = guidLog,
-                    JSON = sessionStartDto.ToJson() + session.ToJson(),
+                    Content = sessionStartDto.ToJson() + session.ToJson(),
                     Name = "Session Start - Success"
                 });
 
@@ -114,9 +116,9 @@ namespace Quiztle.API.Controllers.StripeController
             }
             catch (StripeException ex)
             {
-                await _aiLogRepository.CreateAILogAsync(new AILog
+                await _logRepository.CreateLogAsync(new Log
                 {
-                    JSON = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
+                    Content = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
                     GuidLog = guidLog,
                     Name = $"Create Session /  StripeException:"
                 });
@@ -125,9 +127,9 @@ namespace Quiztle.API.Controllers.StripeController
             }
             catch (Exception ex)
             {
-                await _aiLogRepository.CreateAILogAsync(new AILog
+                await _logRepository.CreateLogAsync(new Log
                 {
-                    JSON = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
+                    Content = sessionStartDto.ToJson() + "\n" + ex.Message + "\n" + ex.StackTrace,
                     GuidLog = guidLog,
                     Name = $"Create Session / Exception:"
                 });

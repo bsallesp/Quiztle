@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Paid
@@ -34,7 +35,7 @@ namespace Quiztle.CoreBusiness.Entities.Paid
 
 
         [JsonPropertyName("Amount")]
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
 
 
         [JsonPropertyName("Currency")]
@@ -59,5 +60,26 @@ namespace Quiztle.CoreBusiness.Entities.Paid
 
         [JsonPropertyName("LastUpdated")]
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        
+        public bool IsValid() =>
+            !string.IsNullOrWhiteSpace(TestId) &&
+            !string.IsNullOrWhiteSpace(PriceId) &&
+            Amount > 0 &&
+            !string.IsNullOrWhiteSpace(UserEmail);
+
+        public string ToJson() => JsonSerializer.Serialize(this);
+        
+        public SessionStartDTO ToSessionStartDTO() => new SessionStartDTO
+        {
+            ClientId = UserId?.ToString(),
+            CustomerId = CustomerId,
+            Amount = Amount,
+            Email = UserEmail,
+            PriceId = PriceId,
+            TestId = TestId,
+            Description = Description,
+            Created = Created
+        };
+
     }
 }

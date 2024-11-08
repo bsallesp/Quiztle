@@ -4,6 +4,7 @@
 @using Quiztle.Blazor.Client.APIServices
 @using Quiztle.CoreBusiness.Entities.Paid
 @using Quiztle.CoreBusiness.Entities.Quiz
+@using Quiztle.CoreBusiness.Log
 @using Quiztle.Frontend.Client.APIServices
 @using Quiztle.Frontend.Client.APIServices.StripeService
 
@@ -14,54 +15,74 @@
 @inject GetTestByIdService GetTestByIdService
 
 @rendermode @(new InteractiveServerRenderMode(false))
+@attribute [Authorize]
 
 @code {
-    [Parameter] public string PriceId { get; set; } = "";
     [Parameter] public string TestId { get; set; } = "";
-    private readonly TestDTO _testDto = new TestDTO();
     private bool HasPaid { get; set; } = false;
     private string _finalUrl = "";
+    private Guid _logGuid;
+    private Paid _paidAttempt = new Paid();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (string.IsNullOrEmpty(TestId)) Nav.NavigateTo("/Error");
-
-        HasPaid = await PaidService.IsPaidService(new Paid()
+        _logGuid = Guid.NewGuid();
+        
+        var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
+        _paidAttempt = new Paid()
         {
-            TestId = TestId,
+            TestId = test.Data.Id.ToString(),
+            PriceId = test.Data.PriceId,
+            Amount = test.Data.PriceInCents,
             UserEmail = await GetUserInfos.GetUserEmail()
-        });
+        };
 
-        if (HasPaid)
+        if (!_paidAttempt.IsValid())
         {
-            Console.WriteLine("paid....");
-            Nav.NavigateTo($"/Games/Arcade/{TestId}");
+            await CreateLogService.ExecuteAsync(new Log
+            {
+                GuidLog = _logGuid,
+                Content = $"Cannot mount Paid Attempt: {_paidAttempt.ToJson()}",
+                Name = "BuyPage / StartError"
+            });
+            Nav.NavigateTo("/error");
         }
-        else
+        try
         {
-            Console.WriteLine("not paid....");
-            await CreateSession();
+            HasPaid = await PaidService.IsPaidService(_paidAttempt);
+
+            if (HasPaid) Nav.NavigateTo($"/Games/Arcade/{TestId}");
+            else await CreateSession();
+        }
+        
+        catch (Exception e)
+        {
+            var logEntry = new Log
+            {
+                GuidLog = _logGuid,
+                Content = $"Exception Message: {e.Message}, StackTrace: {e.StackTrace}, InnerException: {e.InnerException?.Message ?? "N/A"}",
+                Name = "BuyPage / Paid Error"
+            };
+            await CreateLogService.ExecuteAsync(logEntry);
         }
     }
 
     private async Task CreateSession()
     {
-        var email = await GetUserInfos.GetUserEmail();
-        var test = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
-
-        Console.WriteLine(test.Data.PriceId);
-        
-        _finalUrl = await StripeSessionsService.CreateSession(new SessionStartDTO()
+        try
         {
-            TestId = TestId,
-            PriceId = test.Data.PriceId,
-            Email = email,
-            Amount = test.Data.PriceInCents
-        });
-
-        Console.WriteLine($"Final url: {_finalUrl}");
-        
-        if (!string.IsNullOrEmpty(_finalUrl))
+            _finalUrl = await StripeSessionsService.CreateSession(_paidAttempt.ToSessionStartDTO());
             Nav.NavigateTo(_finalUrl, true);
+        }
+        catch (Exception e)
+        {
+            var logEntry = new Log
+            {
+                GuidLog = _logGuid,
+                Content = $"Exception Message: {e.Message}, StackTrace: {e.StackTrace}, InnerException: {e.InnerException?.Message ?? "N/A"}",
+                Name = "BuyPage / Paid Error"
+            };
+            await CreateLogService.ExecuteAsync(logEntry);
+        }
     }
 }

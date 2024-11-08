@@ -2,19 +2,24 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Quiztle.Blazor.Client.APIServices;
+using Quiztle.CoreBusiness.Log;
 
 namespace Quiztle.Frontend.Client.APIServices.StripeService
 {
     public class StripeSessionsService
     {
         private readonly HttpClient _httpClient;
+        private readonly CreateLogService _createLogService;
+        private readonly Guid _guidLog;
 
-        public StripeSessionsService(HttpClient httpClient)
+        public StripeSessionsService(HttpClient httpClient, CreateLogService createLogService)
         {
             _httpClient = httpClient;
+            _createLogService = new CreateLogService(_httpClient);
+            _guidLog = Guid.NewGuid();
         }
-
-
+        
         public async Task<string> CreateSession(SessionStartDTO sessionStartDto)
         {
             try
@@ -32,7 +37,13 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                await _createLogService.ExecuteAsync(new Log()
+                {
+                    Name = "CreateSession error",
+                    Content = ex.Message,
+                    GuidLog = _guidLog
+                });
+                
                 return "";
             }
         }

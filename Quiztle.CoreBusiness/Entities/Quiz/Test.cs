@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Quiztle.CoreBusiness.Entities.Quiz
 {
@@ -102,5 +103,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
                 Created = DateTime.UtcNow
             };
         }
+        
+        public string ToJson() => JsonSerializer.Serialize(this);
     }
 }
