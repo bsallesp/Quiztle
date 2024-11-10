@@ -12,6 +12,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public int TotalCorrectAnswers = 0;
         public string ShieldSVG = "";
+        public int Price;
         
         public void FromTest(Test test)
         {
@@ -21,6 +22,7 @@ namespace Quiztle.CoreBusiness.Entities.Quiz
             //PDFDataId = test.PDFDataId;
             Created = test.Created;
             ShieldSVG = test.ShieldSVG!;
+            Price = test.PriceInCents;
         }
 
         public void ShuffleQuestions()

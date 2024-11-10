@@ -16,16 +16,30 @@
                 Severity="Severity.Info"
                 Variant="Variant.Outlined"
                 ShowCloseIcon="true" CloseIconClicked="(() => CloseMe(true))">
-                You are using the free version (2 by topic).
-                The paid version offers hundred more questions,
-                detailed progress tracking,
-                and additional features to enhance your learning experience.
+                <h4 style="font-weight: 700">
+                    You are using the free version (2 by topic).
+
+                    The paid version offers:
+                </h4>
+                <hr/>
+                <h5>
+                    <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small"/>
+                    Two years of duration,
+                    <hr/>
+                    <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Size="Size.Small"/>
+                    Hundred more questions,
+                    <hr/>
+                    <MudIcon Icon="@Icons.Material.Filled.Assessment" Size="Size.Small"/>
+                    Detailed progress tracking,
+                    <hr/>
+                    <MudIcon Icon="@Icons.Material.Filled.AddCircle" Size="Size.Small"/>
+                    And additional features to enhance your learning experience.
+                </h5>
             </MudAlert>
             <button class="btn btn-primary btn-lg m-3" @onclick="GetPremium">
-                Get Premium
+                Get Premium for $4.99
                 <MudIcon Icon="@Icons.Material.Filled.RocketLaunch" Size="Size.Medium"/>
             </button>
-            <button></button>
         </MudContainer>
     </MudContainer>
 }
@@ -33,8 +47,9 @@
 @code
 {
     private bool _showLeaveAlert = true;
-    
+
     [Parameter] public string? TestId { get; set; }
+    [Parameter] public string? Price { get; set; }
 
     private void CloseMe(bool value)
     {
