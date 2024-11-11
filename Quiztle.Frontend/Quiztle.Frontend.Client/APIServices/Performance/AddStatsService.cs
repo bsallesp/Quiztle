@@ -22,17 +22,11 @@ namespace Quiztle.Frontend.Client.APIServices.Performance
             try
             {
                 var url = "api/AddPerformance/";
-
                 var stringResponse = await _httpClient.PostAsJsonAsync(url, stats);
-
-                Console.WriteLine(stringResponse);
-
                 return stats;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in AddStatsService: " + ex);
-
                 return new();
             }
         }

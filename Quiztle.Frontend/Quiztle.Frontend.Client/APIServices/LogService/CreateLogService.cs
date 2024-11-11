@@ -18,12 +18,9 @@ namespace Quiztle.Blazor.Client.APIServices
             {
                 var url = "api/CreateLog/";
                 var httpResponse = await _httpClient.PostAsJsonAsync(url, log);
-
-                Console.WriteLine(httpResponse.Headers.ToString());
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 throw;
             }
         }

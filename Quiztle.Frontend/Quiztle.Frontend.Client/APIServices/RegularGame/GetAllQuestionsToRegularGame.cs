@@ -39,13 +39,10 @@ namespace Quiztle.Blazor.Client.APIServices.RegularGame
                         }
                     }
                 }
-                
                 return questions;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex}");
-
                 throw new Exception("An error occurred while processing the book. See inner exception for details.", ex);
             }
 

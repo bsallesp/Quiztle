@@ -31,9 +31,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 var content = new StringContent(JsonSerializer.Serialize(sessionStartDto), Encoding.UTF8, "application/json");
 
                 var result = await _httpClient.PostAsync(fullUrl, content);
-
-                Console.WriteLine($"Full URL: {fullUrl}");
-                Console.WriteLine($"Status Code: {result.StatusCode}");
                 
                 await _createLogService.ExecuteAsync(new Log()
                 {
@@ -75,7 +72,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return new List<Stripe.Checkout.Session>();
             }
         }
@@ -98,7 +94,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return false;
             }
         }
@@ -122,7 +117,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return false;
             }
         }
@@ -136,12 +130,10 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 var result = JsonSerializer.Deserialize<List<Customer>>(stringResponse)!;
 
-                Console.WriteLine(result);
                 return result.FirstOrDefault()?.Email ?? ""; // Retorna vazio se não encontrado
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return ex.ToString();
             }
         }

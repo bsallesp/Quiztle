@@ -20,11 +20,8 @@ namespace Quiztle.Blazor.Client.APIServices
         {
             try
             {
-                Console.WriteLine("UploadAsync started.");
-
                 if (file == null || file.Size == 0)
                 {
-                    Console.WriteLine("No file selected or file is empty.");
                     throw new InvalidOperationException("No file selected or file is empty.");
                 }
 
@@ -32,19 +29,9 @@ namespace Quiztle.Blazor.Client.APIServices
                 using var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024));
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
                 content.Add(content: fileContent, name: "file", fileName: file.Name);
-
-                Console.WriteLine($"Uploading file: {file.Name} to {_uploadEndpoint}");
-                Console.WriteLine($"Full URI: {_httpClient.BaseAddress}{_uploadEndpoint}");
-
                 var response = await _httpClient.PostAsync(_uploadEndpoint, content);
-                Console.WriteLine($"Response status code: {response.StatusCode}");
-
                 response.EnsureSuccessStatusCode();
-
                 var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("File uploaded successfully.");
-                Console.WriteLine($"Server response: {responseContent}");
-
                 return new APIResponse<bool>
                 {
                     Status = CustomStatusCodes.SuccessStatus,

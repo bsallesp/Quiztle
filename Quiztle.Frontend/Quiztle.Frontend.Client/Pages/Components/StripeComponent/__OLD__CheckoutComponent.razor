@@ -40,11 +40,7 @@
 
         var service = new PriceService();
         var price = await service.CreateAsync(options);
-
         priceId = price.Id;
-
-        Console.WriteLine($"Price ID: {price.Id}");
-        Console.WriteLine($"Product ID: {price.Product}");
     }
 
     private async Task CreateCardHolder()
@@ -80,9 +76,6 @@
     {
         StripeConfiguration.ApiKey
         = "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";
-
-        Console.WriteLine("Getting CreatePayMethod...");
-
         var options = new PaymentMethodCreateOptions
             {
                 Type = "card",
@@ -137,9 +130,6 @@
         var result = await service.CreateAsync(options);
 
         priceId = result.Id;
-
-        Console.WriteLine($"Session ID: {result.Id}");
-        Console.WriteLine($"Session URL: {result.Url}");
     }
 
     private async Task CreatePaymentIntent(string payMethodId)
@@ -148,8 +138,6 @@
         {
             StripeConfiguration.ApiKey =
             "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";
-
-            Console.WriteLine("Getting CreatePaymentIntent...");
 
             var options = new PaymentIntentCreateOptions
                 {
@@ -164,15 +152,6 @@
                 };
             var service = new PaymentIntentService();
             var paymentIntent = await service.CreateAsync(options);
-
-            Console.WriteLine($"Amount: {paymentIntent.Amount}");
-            Console.WriteLine($"Currency: {paymentIntent.Currency}");
-            Console.WriteLine($"Status: {paymentIntent.Status}");
-            Console.WriteLine($"Payment Method Types: {string.Join(", ", paymentIntent.PaymentMethodTypes)}");
-            Console.WriteLine($"Client Secret: {paymentIntent.ClientSecret}");
-            Console.WriteLine($"Description: {paymentIntent.Description}");
-            Console.WriteLine($"Receipt Email: {paymentIntent.ReceiptEmail}");
-
         }
         catch (Exception e)
         {

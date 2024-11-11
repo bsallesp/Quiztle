@@ -29,7 +29,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return "";
             }
         }
@@ -46,7 +45,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return new List<Customer>(); // Retorna uma lista vazia em caso de erro
             }
         }
@@ -58,13 +56,10 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
                 var url = $"api/StripeCustomer/search/email?email={Uri.EscapeDataString(email)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 var result = JsonSerializer.Deserialize<List<Customer>>(stringResponse)!;
-
-                Console.WriteLine(result);
                 return result.FirstOrDefault()?.Email ?? ""; // Retorna vazio se não encontrado
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return ex.ToString();
             }
         }
@@ -75,12 +70,10 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             {
                 var url = $"api/StripeCustomer/search/customeridbyemail?email={Uri.EscapeDataString(email)}";
                 var stringResponse = await _httpClient.GetStringAsync(url);
-                Console.WriteLine(stringResponse);
                 return stringResponse;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return ex.ToString();
             }
         }
@@ -97,7 +90,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 return new List<object>(); // Retorna uma lista vazia em caso de erro
             }
         }

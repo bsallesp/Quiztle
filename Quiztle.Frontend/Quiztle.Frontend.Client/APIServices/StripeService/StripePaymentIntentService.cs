@@ -20,9 +20,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         //{
         //    try
         //    {
-        //        Console.WriteLine(priceId);
-        //        Console.WriteLine(customerId);
-        //        Console.WriteLine(customerEmail);
 
         //        var url = $"api/StripeSessions/sessions/createsession?priceID={priceId}&customerId={customerId}&customerEmail={customerEmail}";
 
@@ -34,7 +31,6 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         //    }
         //    catch (Exception ex)
         //    {
-        //        Console.WriteLine(ex);
         //        return "";
         //    }
         //}
@@ -48,13 +44,11 @@ namespace Quiztle.Frontend.Client.APIServices.StripeService
         //        var result = JsonSerializer.Deserialize<List<Customer>>(stringResponse)!;
 
 
-        //        Console.WriteLine(result);
         //        return result.FirstOrDefault()!.Email;
         //    }
 
         //    catch (Exception ex)
         //    {
-        //        Console.WriteLine(ex);
         //        return ex.ToString();
         //    }
         //}

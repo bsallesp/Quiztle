@@ -19,7 +19,5 @@
     {
         var questionsResult = await GetQuestionsService.ExecuteAsync();
         _questions = questionsResult.Data.ToList();
-        Console.WriteLine(questionsResult.Message);
-        Console.WriteLine(_questions.Count);
     }
 }

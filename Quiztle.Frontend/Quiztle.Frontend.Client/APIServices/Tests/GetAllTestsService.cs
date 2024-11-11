@@ -20,14 +20,7 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/GetAllTests");
                 List<Test> dataTemp = JsonSerializer.Deserialize<List<Test>>(stringResponse)!;
-
-                foreach(var item in dataTemp)
-                {
-                    Console.WriteLine(item.Name);
-                }
-
                 APIResponse<List<Test>> apiResult = new() { Data = dataTemp, Message = "Total: " + dataTemp.Count};
-
                 return apiResult;
             }
             catch (Exception ex)

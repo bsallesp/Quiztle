@@ -20,7 +20,6 @@ namespace Quiztle.Blazor.Client.APIServices
             {
                 var url = "api/PDFFileList/list-files";
                 var stringResponse = await _httpClient.GetStringAsync(url);
-                Console.WriteLine(stringResponse);
                 APIResponse<PDFFileListResponse> filesAPIResponse =
                     JsonSerializer.Deserialize<APIResponse<PDFFileListResponse>>(stringResponse)
                     ?? new APIResponse<PDFFileListResponse> { Data = new PDFFileListResponse() };
@@ -28,7 +27,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch (HttpRequestException httpEx)
             {
-                Console.WriteLine($"HttpRequestException: {httpEx.Message}\nStatus Code: {httpEx.StatusCode}");
                 return new APIResponse<PDFFileListResponse>
                 {
                     Status = CustomStatusCodes.ErrorStatus,
@@ -38,7 +36,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}\nStack Trace: {ex.StackTrace}");
                 return new APIResponse<PDFFileListResponse>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

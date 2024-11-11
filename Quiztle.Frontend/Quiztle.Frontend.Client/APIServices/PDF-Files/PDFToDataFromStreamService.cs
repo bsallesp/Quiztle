@@ -16,14 +16,9 @@ namespace Quiztle.Blazor.Client.APIServices
             {
                 var queryString = $"?fileName={Uri.EscapeDataString(fileName)}&pdfDataName={Uri.EscapeDataString(pdfDataName)}&partialOutputRate={partialOutputRate}";
                 var fullUrl = $"{_httpClient.BaseAddress}{_baseServiceUrl}{queryString}";
-                Console.WriteLine($"{DateTime.Now} Complete URI: {fullUrl}");
-
                 var response = await _httpClient.GetAsync(fullUrl);
                 response.EnsureSuccessStatusCode();
-
                 var responseData = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"{DateTime.Now} Response status code: {response.StatusCode}");
-
                 return new APIResponse<string>
                 {
                     Data = responseData,
@@ -33,7 +28,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now} Exception occurred: {ex.Message}");
                 return new APIResponse<string>
                 {
                     Data = "",

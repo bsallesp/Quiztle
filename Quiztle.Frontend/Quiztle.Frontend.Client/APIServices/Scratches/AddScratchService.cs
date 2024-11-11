@@ -42,8 +42,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message + " " + ex.Data.ToString());
-
                 return new APIResponse<Scratch>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

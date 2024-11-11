@@ -27,13 +27,11 @@ namespace Quiztle.Blazor.Client.APIServices
                 }
                 else
                 {
-                    // Se a solicitação não for bem-sucedida, retorne uma resposta de erro
                     return new APIResponse<Book> { Status = CustomStatusCodes.ErrorStatus, Data = new() };
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao executar a solicitação HTTP: {ex.Message}");
                 return new APIResponse<Book> { Status = CustomStatusCodes.ErrorStatus, Data = new() };
             }
         }

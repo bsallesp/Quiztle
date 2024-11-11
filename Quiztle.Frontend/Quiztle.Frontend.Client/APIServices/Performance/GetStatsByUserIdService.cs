@@ -16,25 +16,14 @@ namespace Quiztle.Frontend.Client.APIServices.Performance
         {
             try
             {
-                Console.WriteLine(_httpClient.BaseAddress);
-
                 var url = "api/GetTestPerformancesByUserId/";
-
                 var endpoint = url + userId.ToString();
-
-                Console.WriteLine(endpoint);
-
                 var stringResponse = await _httpClient.GetStringAsync(endpoint);
-
                 var performances = JsonSerializer.Deserialize<IEnumerable<TestPerformance>>(stringResponse);
-
                 return performances!;
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in AddStatsService: " + ex);
-
                 return [];
             }
         }

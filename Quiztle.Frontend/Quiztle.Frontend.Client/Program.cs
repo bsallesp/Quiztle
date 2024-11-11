@@ -11,12 +11,6 @@ using Quiztle.Frontend.Client.APIServices;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-// Console.WriteLine("--------------------------------------------");
-// Console.WriteLine(builder.HostEnvironment.IsDevelopment());
-// Console.WriteLine(builder.HostEnvironment.IsProduction());
-// Console.WriteLine("--------------------------------------------");
-// Console.WriteLine($"Environment: {builder.HostEnvironment.Environment}");
-
 #region Configura��o da API
 var quiztleApiurl = builder.Configuration["ApiSettings:BaseUrl"];
 if (string.IsNullOrEmpty(quiztleApiurl))
@@ -27,7 +21,6 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(quiztleApiurl),
     Timeout = Timeout.InfiniteTimeSpan
 });
-Console.WriteLine($"API Base URL Acquired in quiztle webassembly: {quiztleApiurl}");
 #endregion
 
 builder.Services.AddMudServices();

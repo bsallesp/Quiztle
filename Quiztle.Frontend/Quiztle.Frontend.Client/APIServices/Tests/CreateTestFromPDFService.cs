@@ -24,10 +24,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
                     + "&name=" + Uri.EscapeDataString(name)
                     + "&startPage=" + startPage.ToString()
                     + "&endPage=" + endPage.ToString();
-
-                Console.WriteLine(url);
-
-
                 var stringResponse = await _httpClient.GetStringAsync(url);
                 
                 Test testsAPIResponse = JsonSerializer.Deserialize<Test>(stringResponse)!;
@@ -42,8 +38,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message + " " + ex.Data.ToString());
-
                 return new APIResponse<Test>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

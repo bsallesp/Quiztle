@@ -35,8 +35,6 @@ namespace Quiztle.Blazor.Client.APIServices
 
                 if (!stringResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Error in GetUserByEmailService:");
-
                     return new APIResponse<User>
                     {
                         Status = CustomStatusCodes.ErrorStatus,
@@ -57,9 +55,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + " " + ex.Data.ToString());
-
-                // Retorna uma resposta de erro caso uma exceção seja lançada
                 return new APIResponse<User>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

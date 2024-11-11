@@ -58,24 +58,14 @@
     private async Task SubmitPayment()
     {
         var priceId = await CreateOneTimePrice(_amount * 100);
-
-        Console.WriteLine($"PASSING HERE... {priceId}");
-
         var sessionURL = await CreateSession(priceId);
-
-        Console.WriteLine("PASSING HERE");
-
         if (!string.IsNullOrEmpty(sessionURL)) NavigationManager.NavigateTo(sessionURL, false);
-        else Console.WriteLine("We got error, sessionURL not in hands.");
     }
 
     private async Task<string> CreateOneTimePrice(int price)
     {
         StripeConfiguration.ApiKey
         = "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";
-
-        Console.WriteLine("Getting CreateOneTimePrice...");
-
         var options = new PriceCreateOptions
             {
                 UnitAmount = price,
@@ -85,12 +75,8 @@
                     Name = "One-Time Product",
                 },
             };
-
         var service = new PriceService();
         var priceResult = await service.CreateAsync(options);
-
-        Console.WriteLine($"Price ID: {priceResult.Id}");
-
         return priceResult.Id;
     }
 
@@ -98,18 +84,10 @@
     {
         StripeConfiguration.ApiKey
         = "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";
-
         var options = new PriceListOptions { Limit = 3 };
         var service = new PriceService();
         StripeList<Price> prices = await service.ListAsync(options);
         _prices = prices;
-
-        foreach (var item in prices)
-        {
-            Console.WriteLine(item.Id);
-            Console.WriteLine(item.Type);
-            Console.WriteLine(item.UnitAmount);
-        }
     }
 
     private async Task CreatePrice()
@@ -131,28 +109,15 @@
     {
         StripeConfiguration.ApiKey
         = "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";
-
         var options = new Stripe.Checkout.SessionListOptions { Limit = 3 };
         var service = new Stripe.Checkout.SessionService();
         StripeList<Stripe.Checkout.Session> sessions = await service.ListAsync(options);
-
-        Console.WriteLine(sessions.Count());
-        foreach (var item in sessions)
-        {
-            Console.WriteLine(item.Id);
-            Console.WriteLine("---");
-            Console.WriteLine(item.Created);
-        }
     }
 
     private async Task<string> CreateSession(string priceId)
     {
         StripeConfiguration.ApiKey =
         "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";
-
-        Console.WriteLine("Getting CreateSession...");
-        Console.WriteLine(priceId);
-
         var options = new Stripe.Checkout.SessionCreateOptions
         {
             PaymentMethodTypes = new List<string> { "card" },
@@ -173,10 +138,6 @@
         var result = await service.CreateAsync(options);
 
         _sessionId = result.Id;
-
-        Console.WriteLine($"Session ID: {result.Id}");
-        Console.WriteLine($"Session URL: {result.Url}");
-
         return result.Url;
     }
 
@@ -184,20 +145,9 @@
     {
         StripeConfiguration.ApiKey
         = "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";
-
-        Console.WriteLine("Getting ListPaymentIntents...");
-
         var options = new PaymentIntentListOptions { Limit = 100 };
         var service = new PaymentIntentService();
         StripeList<PaymentIntent> paymentIntents = await service.ListAsync(options);
-
-        Console.WriteLine(paymentIntents.Count());
-        foreach (var item in paymentIntents)
-        {
-            Console.WriteLine(item.Id);
-            Console.WriteLine("---");
-            Console.WriteLine(item.Created);
-        }
     }
 
     private async Task CreatePaymentIntent()
@@ -206,9 +156,6 @@
         {
             StripeConfiguration.ApiKey =
             "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";
-
-            Console.WriteLine("Getting CreatePaymentIntent...");
-
             var options = new PaymentIntentCreateOptions
                 {
                     Amount = _amount,
@@ -216,21 +163,10 @@
                 };
             var service = new PaymentIntentService();
             var paymentIntent = await service.CreateAsync(options);
-
-            Console.WriteLine($"Amount: {paymentIntent.Id}");
-            Console.WriteLine($"Amount: {paymentIntent.Amount}");
-            Console.WriteLine($"Currency: {paymentIntent.Currency}");
-            Console.WriteLine($"Status: {paymentIntent.Status}");
-            Console.WriteLine($"Payment Method Types: {string.Join(", ", paymentIntent.PaymentMethodTypes)}");
-            Console.WriteLine($"Client Secret: {paymentIntent.ClientSecret}");
-            Console.WriteLine($"Description: {paymentIntent.Description}");
-            Console.WriteLine($"Receipt Email: {paymentIntent.ReceiptEmail}");
-
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-
-            throw;
+            throw new Exception(ex.ToString());
         }
     }
 }

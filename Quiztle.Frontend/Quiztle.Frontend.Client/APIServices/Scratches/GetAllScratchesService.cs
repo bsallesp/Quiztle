@@ -32,11 +32,7 @@ namespace Quiztle.Blazor.Client.APIServices
                     };
                 }
 
-                // Converte a resposta para o tipo List<Scratch>
                 var scratches = await response.Content.ReadFromJsonAsync<List<Scratch>>();
-
-                Console.WriteLine("Total scratches: " + scratches!.Count);
-
                 return new APIResponse<List<Scratch>>
                 {
                     Status = CustomStatusCodes.SuccessStatus,
@@ -46,8 +42,6 @@ namespace Quiztle.Blazor.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + " " + ex.Data?.ToString());
-
                 return new APIResponse<List<Scratch>>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

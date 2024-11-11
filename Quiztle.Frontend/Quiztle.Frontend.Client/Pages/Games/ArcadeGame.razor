@@ -192,7 +192,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine($"{TestId}...");
         var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
         FullTest = data.Data;
         
@@ -223,7 +222,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            throw new Exception(ex.ToString());
         }
     }
     

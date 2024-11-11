@@ -98,7 +98,6 @@ namespace Quiztle.Blazor.Client.APIServices.Responses
 
         public async Task<APIResponse<Response>> UpdateResponseAsync(Guid id, Response updatedResponse)
         {
-            Console.WriteLine("Getting into UpdateResponseAsync in ResponsesService...");
             try
             {
                 var responseContent = new StringContent(JsonSerializer.Serialize(updatedResponse), Encoding.UTF8, "application/json");
@@ -120,7 +119,6 @@ namespace Quiztle.Blazor.Client.APIServices.Responses
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 return new APIResponse<Response>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

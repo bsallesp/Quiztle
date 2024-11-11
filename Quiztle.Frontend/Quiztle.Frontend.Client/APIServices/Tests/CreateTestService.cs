@@ -20,16 +20,9 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             try
             {
                 var url = "api/CreateTest/";
-
-                Console.WriteLine(url);
-                Console.WriteLine($"Base Address: {_httpClient.BaseAddress}");
-                Console.WriteLine($"Test Object: {JsonSerializer.Serialize(test)}");
-
                 var httpResponse = await _httpClient.PostAsJsonAsync(url, test);
-
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Sucess");
                     var testsAPIResponse = await httpResponse.Content.ReadFromJsonAsync<Test>();
                     return testsAPIResponse == null
                         ? throw new Exception("CreateTestService: testsAPIResponse is null")
@@ -44,11 +37,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
                 {
                     var statusCode = (int)httpResponse.StatusCode;
                     var errorMessage = await httpResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error Status Code: {statusCode}");
-                    Console.WriteLine($"Error Message: {errorMessage}");
-                    Console.WriteLine($"Error Response Content: {errorMessage}");
-
-
                     return new APIResponse<Test>
                     {
                         Status = CustomStatusCodes.ErrorStatus,
@@ -60,8 +48,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + " ERROR IN CreateTestService... : " + ex.Data.ToString());
-
                 return new APIResponse<Test>
                 {
                     Status = CustomStatusCodes.ErrorStatus,

@@ -30,7 +30,6 @@ namespace Quiztle.Frontend.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in IsPaidService: {ex.Message}");
                 return false;
             }
         }
@@ -51,7 +50,6 @@ namespace Quiztle.Frontend.Client.APIServices
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetPaidByEmailService: {ex.Message}");
                 return null;
             }
         }
@@ -73,13 +71,10 @@ namespace Quiztle.Frontend.Client.APIServices
                 {
                     return await response.Content.ReadAsStringAsync();
                 }
-
-                Console.WriteLine($"CreatePaidAsync: Failed with status {response.StatusCode}");
                 return string.Empty;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"CreatePaidAsync: An exception occurred: {ex}");
                 return string.Empty;
             }
         }

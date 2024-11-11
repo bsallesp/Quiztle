@@ -19,7 +19,6 @@ namespace Quiztle.Blazor.Client.APIServices.Tests
             try
             {
                 var stringResponse = await _httpClient.GetStringAsync("api/GetAllTestsByPDFDataId/" + id);
-                Console.WriteLine(stringResponse);
                 APIResponse<List<Test>> testsAPIResponse = JsonSerializer.Deserialize<APIResponse<List<Test>>>(stringResponse)!;
                 return testsAPIResponse;
             }
