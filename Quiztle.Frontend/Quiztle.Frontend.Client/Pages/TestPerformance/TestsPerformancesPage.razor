@@ -17,7 +17,7 @@
 @attribute [Authorize]
 
 
-@if (_testPerformances != null && HasPaid)
+@if (_testPerformances != null && _hasPaid)
 {
     <div class="full-screen-container">
         <div class="greeting">
@@ -134,7 +134,7 @@
     private SetGroupedPerformancesDTO _setGroupedTestPerformanceDTO = new();
 
     private string _userId = "";
-    private bool HasPaid = false;
+    private bool _hasPaid = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -143,13 +143,13 @@
         var testPerformances = _testPerformances as TestPerformance[] ?? _testPerformances.ToArray();
         _setGroupedTestPerformanceDTO.GroupAndFill(testPerformances);
 
-        HasPaid = await PaidService.IsPaidService(new Paid()
+        _hasPaid = await PaidService.IsPaidService(new Paid()
         {
             UserEmail = await GetUserInfos.GetUserEmail(),
             TestId = testPerformances.FirstOrDefault()?.TestId.ToString()
         });
         
-        if(!HasPaid) Nav.NavigateTo($"/Buy/TestId/{_testPerformances.FirstOrDefault().TestId}");
+        if(!_hasPaid) Nav.NavigateTo($"/Buy/TestId/{_testPerformances.FirstOrDefault().TestId}");
     }
 
     bool _expanded = false;

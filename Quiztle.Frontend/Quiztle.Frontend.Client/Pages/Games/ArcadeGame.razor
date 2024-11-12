@@ -18,10 +18,10 @@
 @inject PaidService PaidService
 
 @rendermode @(new InteractiveAutoRenderMode(false))
-@attribute [Authorize]
+@* @attribute [Authorize] *@
 
 <title>
-    certcool - @_testDto.Name
+    @_testDto.Name - certcool
 </title>
 
 @if (_showLoadingScreen)
@@ -194,14 +194,17 @@
     {
         var data = await GetTestByIdService.ExecuteAsync(Guid.Parse(TestId));
         FullTest = data.Data;
-        
-        
+
         _hasPaid = await PaidService.IsPaidService(new Paid()
         {
             UserEmail = await GetUserInfos.GetUserEmail(),
             TestId = TestId
         });
 
+        Console.WriteLine(TestId);
+        Console.WriteLine(await GetUserInfos.GetUserEmail());
+        Console.WriteLine(_hasPaid);
+        
         await LoadTestAsync();
     }
 
@@ -263,7 +266,7 @@
 
     private async Task FinalizeTestResponse()
     {
-        await AddTestPerformance();
+        if(!string.IsNullOrEmpty(await GetUserInfos.GetUserEmail())) await AddTestPerformance();
         ShowResults = true;
         _showFinalScreen = true;
     }

@@ -10,20 +10,23 @@
         OnClick="OnExpandCollapseClick">
         @if (_expanded)
         {
-            <h5 style="margin: 0">
-                Settings
-            </h5>
+            <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Large"></MudIcon>
             <MudIcon Icon="@Icons.Material.Filled.ArrowDropUp" Size="Size.Large"></MudIcon>
         }
         else
         {
-            <h5 style="margin: 0">
-                Settings
-            </h5>
+            <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Large"></MudIcon>
             <MudIcon Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Large"></MudIcon>
         }
-
     </MudButton>
+
+    @if (!HasPaid)
+    {
+    <p class="text-center" style="margin: 0">
+        Settings are disable in free version =(
+    </p>
+    }
+    
     <MudDivider/>
     <MudCollapse Expanded="_expanded">
         @foreach (var tag in TagsAmountDictionary.Keys)
@@ -85,7 +88,7 @@
     [Parameter] public bool HasPaid { get; set; } = false;
     [Parameter] public Dictionary<string, double> TagValues { get; set; } = [];
 
-    bool _expanded = true;
+    bool _expanded = false;
     private double TotalSelected => TagValues.Values.Sum();
 
     private void OnExpandCollapseClick()
@@ -128,4 +131,5 @@
         _expanded = false;
         LoadPracticeTest?.Invoke();
     }
+
 }

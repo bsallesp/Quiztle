@@ -11,51 +11,63 @@
 <div class="main-div">
     @if (questionDTO != null)
     {
-        <h4 style="padding: 10px;">
-            @(1 + Number) - @questionDTO.Question!.Name
-            <MudChip Size="Size.Small" T="string" Color="Color.Tertiary">@questionDTO.Tag</MudChip>
-        </h4>
+    <h4 style="
+    padding: 10px;
+    margin-bottom: 0;
+    font-weight: bold;">
+        @(1 + Number) - @questionDTO.Question!.Name
+        <MudChip
+            Style="white-space: normal;
+                word-wrap: break-word;
+                font-weight: lighter;
+                padding: 15px;"
+            Size="Size.Small" T="string"
+            Color="Color.Tertiary">@questionDTO.Tag
+        </MudChip>
+    </h4>
 
-        @foreach (var option in questionDTO.OptionsDTO)
+    @foreach (var option in questionDTO.OptionsDTO)
+    {
+    if (!IsFinished)
+    {
+    <h6 @onclick="() => SelectOption(option)"
+        class="@($"option {GetOptionStyle(option)}")">
+        @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+    </h6>
+    }
+    else
+    {
+    var isCorrect = option.IsCorrect;
+    var isSelected = option.IsSelected;
+
+    var cssClass = isSelected
+    ? (isCorrect ? "correct" : "incorrect")
+    : (isCorrect ? "correct" : "");
+
+    <h6 class="option @cssClass">
+        @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
+        @if (option.IsCorrect && option.IsSelected)
         {
-            if (!IsFinished)
-            {
-                <h6 @onclick="() => SelectOption(option)"
-                    class="@($"option {GetOptionStyle(option)}")">
-                    @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-                </h6>
-            }
-            else
-            {
-                var isCorrect = option.IsCorrect;
-                var isSelected = option.IsSelected;
-
-                var cssClass = isSelected
-                ? (isCorrect ? "correct" : "incorrect")
-                : (isCorrect ? "correct" : "");
-
-                <h6 class="option @cssClass">
-                    @letters[questionDTO.OptionsDTO.IndexOf(option)] @option.Name
-                    @if (option.IsCorrect && option.IsSelected)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.Star" Title="Star"></MudIcon>
-                    }
-                    else if (option.IsSelected && !option.IsCorrect)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.Error" Title="Star"></MudIcon>
-                    }
-                </h6>
-            }
+        <MudIcon Icon="@Icons.Material.Filled.Star" Title="Star"></MudIcon>
         }
+        else if (option.IsSelected && !option.IsCorrect)
+        {
+        <MudIcon Icon="@Icons.Material.Filled.Error" Title="Star"></MudIcon>
+        }
+    </h6>
+    }
+    }
     }
     <div class="d-flex justify-content-between">
-        <button disabled="@_disableHintButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
+        <button disabled="@_disableHintButton"
+                class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
                 @onclick="ShowHint">
             <h3 class="mb-0">
                 Hint
             </h3>
         </button>
-        <button disabled="@_disableGetAnswerButton" class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
+        <button disabled="@_disableGetAnswerButton"
+                class="btn btn-primary w-50 d-flex align-items-center justify-content-center hint-button"
                 @onclick="() => GetAnswer()">
             <h3 class="mb-0">
                 Get Answer
@@ -64,180 +76,181 @@
     </div>
     @if (_showHint)
     {
-        <div class="hint-text text-center">
-            <h6>
-                <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info" />
-                @questionDTO!.Question!.Hint
-            </h6>
-        </div>
+    <div class="hint-text text-center">
+        <h6>
+            <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info"/>
+            @questionDTO!.Question!.Hint
+        </h6>
+    </div>
     }
     @if (_showResolution)
     {
-        <div class="hint-text text-center">
-            <h6>
-                <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info" />
-                @questionDTO!.Question!.Resolution
-            </h6>
-        </div>
+    <div class="hint-text text-center">
+        <h6>
+            <MudIcon Icon="@Icons.Material.Filled.Info" Title="Info"/>
+            @questionDTO!.Question!.Resolution
+        </h6>
+    </div>
     }
     @if (Admin)
     {
-        <input class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="font-size: 30px" type="number" @bind="_rate" />
-        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
-                @onclick="() => RateIt()"
-                style="background-color: lightgreen">
-            <h3 class="mb-0">
-                Rate
-            </h3>
-        </button>
-        <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
-                @onclick="() => DeleteQuestion()"
-                style="background-color: red">
-            <h3 class="mb-0">
-                Delete
-            </h3>
-        </button>
+    <input class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="font-size: 30px"
+           type="number" @bind="_rate"/>
+    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+            @onclick="() => RateIt()"
+            style="background-color: lightgreen">
+        <h3 class="mb-0">
+            Rate
+        </h3>
+    </button>
+    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+            @onclick="() => DeleteQuestion()"
+            style="background-color: red">
+        <h3 class="mb-0">
+            Delete
+        </h3>
+    </button>
     }
 </div>
 
 @code {
-    [Parameter]
-    public QuestionDTO? questionDTO { get; set; }
-    [Parameter]
-    public int Number { get; set; }
-    [Parameter]
-    public Guid responseGuid { get; set; }
-    [Parameter]
-    public bool Admin { get; set; } = false;
-    [Parameter]
-    public bool IsFinished { get; set; } = false;
-    [Parameter]
-    public Action? OnGetAnswer { get; set; }
-    [Parameter]
-    public Action? OnSelectAnswer { get; set; }
-    [Parameter]
-    public string Tag { get; set; } = "";
+[Parameter]
+public QuestionDTO? questionDTO { get; set; }
+[Parameter]
+public int Number { get; set; }
+[Parameter]
+public Guid responseGuid { get; set; }
+[Parameter]
+public bool Admin { get; set; } = false;
+[Parameter]
+public bool IsFinished { get; set; } = false;
+[Parameter]
+public Action? OnGetAnswer { get; set; }
+[Parameter]
+public Action? OnSelectAnswer { get; set; }
+[Parameter]
+public string Tag { get; set; } = "";
 
-    private bool _showHint;
-    private bool _showResolution;
-    private bool _disableHintButton = false;
-    private bool _disableGetAnswerButton = false;
-    private int _rate;
-    private bool _showResults;
-    private HashSet<Guid> _selectedOptionIds = new HashSet<Guid>();
+private bool _showHint;
+private bool _showResolution;
+private bool _disableHintButton = false;
+private bool _disableGetAnswerButton = false;
+private int _rate;
+private bool _showResults;
+private HashSet<Guid> _selectedOptionIds = new HashSet<Guid>();
 
-    [Parameter]
-    public bool ShowResults
-    {
-        get => _showResults;
-        set
-        {
-            if (_showResults != value)
-            {
-                _showResults = value;
-                if (_showResults)
-                {
-                    _disableGetAnswerButton = true;
-                    _disableHintButton = true;
-                    _showHint = false;
-                    _showResolution = true;
-                    PreserveSelections();
-                    StateHasChanged();
-                }
-            }
-        }
-    }
+[Parameter]
+public bool ShowResults
+{
+get => _showResults;
+set
+{
+if (_showResults != value)
+{
+_showResults = value;
+if (_showResults)
+{
+_disableGetAnswerButton = true;
+_disableHintButton = true;
+_showHint = false;
+_showResolution = true;
+PreserveSelections();
+StateHasChanged();
+}
+}
+}
+}
 
-    private void ShowHint()
-    {
-        if (_showResults || _showHint) return;
-        _showHint = !_showHint;
-        _disableHintButton = true;
-    }
+private void ShowHint()
+{
+if (_showResults || _showHint) return;
+_showHint = !_showHint;
+_disableHintButton = true;
+}
 
-    private async void DeleteQuestion()
-    {
-        var id = questionDTO!.Question!.Id;
-        questionDTO.Question.Rate = _rate;
-        var update = await RemoveQuestionService.ExecuteAsync(id);
-    }
+private async void DeleteQuestion()
+{
+var id = questionDTO!.Question!.Id;
+questionDTO.Question.Rate = _rate;
+var update = await RemoveQuestionService.ExecuteAsync(id);
+}
 
-    private async void RateIt()
-    {
-        var id = questionDTO!.Question!.Id;
-        questionDTO.Question.Rate = _rate;
-        var update = await UpdateQuestionService.ExecuteAsync(id, questionDTO.Question);
-    }
+private async void RateIt()
+{
+var id = questionDTO!.Question!.Id;
+questionDTO.Question.Rate = _rate;
+var update = await UpdateQuestionService.ExecuteAsync(id, questionDTO.Question);
+}
 
-    private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
+private string[] letters = { "A)", "B)", "C)", "D)", "E)", "F)" };
 
-    protected override Task OnParametersSetAsync()
-    {
-        return base.OnParametersSetAsync();
-    }
+protected override Task OnParametersSetAsync()
+{
+return base.OnParametersSetAsync();
+}
 
-    protected override Task OnInitializedAsync()
-    {
-        if (questionDTO != null) _rate = questionDTO.Question!.Rate;
-        return base.OnInitializedAsync();
-    }
+protected override Task OnInitializedAsync()
+{
+if (questionDTO != null) _rate = questionDTO.Question!.Rate;
+return base.OnInitializedAsync();
+}
 
 
-    private void GetAnswer()
-    {
-        ShowResults = true;
-        _showResolution = true;
-        _disableHintButton = true;
-        _disableGetAnswerButton = true;
-        IsFinished = true;
+private void GetAnswer()
+{
+ShowResults = true;
+_showResolution = true;
+_disableHintButton = true;
+_disableGetAnswerButton = true;
+IsFinished = true;
 
-        OnGetAnswer?.Invoke();
-        OnSelectAnswer?.Invoke();
-        PreserveSelections();
-        StateHasChanged();
-    }
+OnGetAnswer?.Invoke();
+OnSelectAnswer?.Invoke();
+PreserveSelections();
+StateHasChanged();
+}
 
-    private string GetOptionStyle(OptionDTO option)
-    {
-        if (ShowResults)
-        {
-            if (_selectedOptionIds.Contains(option.Id) && !option.IsCorrect)
-            {
-                return "incorrect";
-            }
-            if (!_selectedOptionIds.Contains(option.Id) && option.IsCorrect)
-            {
-                return "correct";
-            }
-        }
-        return _selectedOptionIds.Contains(option.Id) ? "selected" : "";
-    }
+private string GetOptionStyle(OptionDTO option)
+{
+if (ShowResults)
+{
+if (_selectedOptionIds.Contains(option.Id) && !option.IsCorrect)
+{
+return "incorrect";
+}
+if (!_selectedOptionIds.Contains(option.Id) && option.IsCorrect)
+{
+return "correct";
+}
+}
+return _selectedOptionIds.Contains(option.Id) ? "selected" : "";
+}
 
-    private void PreserveSelections()
-    {
-        _selectedOptionIds.Clear();
-        foreach (var option in questionDTO!.OptionsDTO.Where(o => o.IsSelected))
-        {
-            _selectedOptionIds.Add(option.Id);
-        }
-    }
+private void PreserveSelections()
+{
+_selectedOptionIds.Clear();
+foreach (var option in questionDTO!.OptionsDTO.Where(o => o.IsSelected))
+{
+_selectedOptionIds.Add(option.Id);
+}
+}
 
-    private void SelectOption(OptionDTO selectedOption)
-    {
-        if (ShowResults || IsFinished) return;
-        UnselectAll();
-        selectedOption.IsSelected = true;
-        _selectedOptionIds.Add(selectedOption.Id);
-        OnSelectAnswer!.Invoke();
-        StateHasChanged();
-    }
+private void SelectOption(OptionDTO selectedOption)
+{
+if (ShowResults || IsFinished) return;
+UnselectAll();
+selectedOption.IsSelected = true;
+_selectedOptionIds.Add(selectedOption.Id);
+OnSelectAnswer!.Invoke();
+StateHasChanged();
+}
 
-    private void UnselectAll()
-    {
-        foreach (var option in questionDTO!.OptionsDTO)
-        {
-            option.IsSelected = false;
-        }
-        _selectedOptionIds.Clear();
-    }
+private void UnselectAll()
+{
+foreach (var option in questionDTO!.OptionsDTO)
+{
+option.IsSelected = false;
+}
+_selectedOptionIds.Clear();
+}
 }
